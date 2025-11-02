@@ -1,0 +1,301 @@
+{
+    "groupe1": [
+        { 
+            "id": "DB833822",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 2 circuits",
+            "quantity": 2,
+            "price": 72.41,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833823",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 3 circuits",
+            "quantity": 3,
+            "price": 96.97,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833824",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 4 circuits",
+            "quantity": 4,
+            "price": 119.94,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833825",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 5 circuits",
+            "quantity": 5,
+            "price": 144.50,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833826",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 6 circuits",
+            "quantity": 6,
+            "price": 169.06,
+            "packs": [1, 2, 3],
+            "image": "/images/distributeur_6.png"
+        },
+        { 
+            "id": "DB833827",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 7 circuits",
+            "quantity": 7,
+            "price": 192.88,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833828",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 8 circuits",
+            "quantity": 8,
+            "price": 217.55,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833829",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 9 circuits",
+            "quantity": 9,
+            "price": 241.31,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833830",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 10 circuits",
+            "quantity": 10,
+            "price": 265.77,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833831",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 11 circuits",
+            "quantity": 11,
+            "price": 289.53,
+            "image": "/images/box.png"
+        },
+        { 
+            "id": "DB833832",
+            "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 12 circuits",
+            "quantity": 12,
+            "price": 313.94,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        }
+    ],
+    "groupe2": [
+        {
+            "id": "PX802112",
+            "description": "Pexxafloor Tuyau PERT 16x2 mm - 200 m - NU",
+            "type": "PERT",
+            "quantity": 200,
+            "price": 178.00,
+            "packs": [1, 2, 3],
+            "image": "/images/Pexxafloor-Tuyau-PERT-16x2mm-500m-NU.png"
+        },
+        {
+            "id": "PX802115",
+            "description": "Pexxafloor Tuyau PERT 16x2 mm - 500 m - NU",
+            "type": "PERT",
+            "quantity": 500,
+            "price": 445.00,
+            "packs": [1, 2, 3],
+            "image": "/images/Pexxafloor-Tuyau-PERT-16x2mm-500m-NU.png"
+        },
+        {
+            "id": "PX802018",
+            "description": "Pexxafloor Tuyau PERT-AL-PERT 16x2 mm - 100 m - NU ",
+            "type": "PERT-AL-PERT",
+            "quantity": 100,
+            "price": 112.00,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "PX802019",
+            "description": "Pexxafloor Tuyau PERT-AL-PERT 16x2 mm - 500 m - NU ",
+            "type": "PERT-AL-PERT",
+            "quantity": 200,
+            "price": 560.00,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        }
+    ],
+    "groupe3": [
+        {
+            "id": "DB810911",
+            "description": "Set raccords EK3/4x16 (2 pcs)",
+            "quantity": 2,
+            "price": 5.49,
+            "packs": [1, 2, 3],
+            "image": "/images/google.png"
+        }
+    ],
+    "groupe4": [
+        {
+            "id": "DB833971",
+            "description": "PexxaFloor Courbe-guide 16-18 mm",
+            "quantity": 1,
+            "price": 1.20,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        }
+    ],
+    "groupe5": [
+        {
+            "id": "DB833963",
+            "description": "Bande Isolation PE à bavette 160mm*8mm*25m",
+            "quantity": 25,
+            "price": 51.75,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        }
+    ],
+    "groupe6": [
+        {
+            "id": "DB833601",
+            "description": "Treillis Galvanisé 10x10cm  3mm 1,20 x 2,10m",
+            "quantity": 2.52,
+            "price": 25.00,
+            "packs": [1],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833605",
+            "description": "Treillis Galvanisé 15x15cm  3mm 1,20 x 2,10m",
+            "quantity": 2.52,
+            "price": 24.00,
+            "packs": [1],
+            "image": "/images/box.png"
+        }
+    ],
+    "groupe7": [
+        {
+            "id": "DB833611",
+            "description": "Fil à ligature pour treillis galvanisé 100 mm noir (1000 pc)",
+            "quantity": 1000,
+            "price": 19.25,
+            "packs": [1],
+            "image": "/images/box.png"
+        }
+    ],
+    "groupe8": [
+        {
+            "id": "DB833961",
+            "description": "Feuille PE imprimée 15x15cm 1.2mx100m Epaisseur 0.15mm",
+            "quantity": 120,
+            "price": 175.00,
+            "packs": [2],
+            "image": "/images/box.png"
+        }
+    ],
+    "groupe9": [
+        {
+            "id": "DB833964",
+            "description": "PexxaFloor Agrafe 40mm pour tuyau 16-20mm (300pcs)",
+            "quantity": 300,
+            "price": 28.00,
+            "packs": [2],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833966",
+            "description": "PexxaFloor Agrafe 60mm pour tuyau 16-20mm (300pcs)",
+            "quantity": 300,
+            "price": 32.00,
+            "packs": [2],
+            "image": "/images/box.png"
+        }
+    ],
+    "groupe10": [
+        {
+            "id": "DB833951",
+            "description": "Feuille à plot chauffage sol 140x80cm sans isolation",
+            "quantity": 2.52,
+            "price": 17.50,
+            "packs": [3],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833952",
+            "description": "Plaque à plot Noire 100 x 50 x 1,5 cm isolation",
+            "quantity": 0.50,
+            "price": 17.53,
+            "packs": [3],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833953",
+            "description": "Plaque à plot Noire 100 x 50 x 3 cm isolation",
+            "quantity": 0.50,
+            "price": 19.31,
+            "packs": [3],
+            "image": "/images/box.png"
+        }
+    ],
+    "options": [
+        {
+            "id": "DB833932",
+            "description": "PexxaFloor Kit de Contrôle chauffage sol (sans pompe)",
+            "quantity": 1,
+            "price": 247.65,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833936",
+            "description": "PexxaFloor Kit pour Circulateur chauffage sol (sans pompe)",
+            "quantity": 1,
+            "price": 254.20,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833938",
+            "description": "PexxaFloor Vanne 3-voies thermostatique 4/4M x 4/4M x 4/4M",
+            "quantity": 1,
+            "price": 73.31,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        }
+    ],
+    "included": [
+        {
+            "id": "DB833851",
+            "description": "PexxaFloor Kit Terminal Purgeur manuel 1\"M",
+            "quantity": 1,
+            "price": 18.52,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833862",
+            "description": "PexxaFloor Kit Terminal Manomètre Vidange 1\"M",
+            "quantity": 1,
+            "price": 19.90,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833881",
+            "description": "PexxaFloor Vanne Union avec Thermomètre Rouge 4/4MF",
+            "quantity": 1,
+            "price": 42.52,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        },
+        {
+            "id": "DB833882",
+            "description": "PexxaFloor Vanne Union avec Thermomètre Bleu 4/4MF",
+            "quantity": 1,
+            "price": 42.52,
+            "packs": [1, 2, 3],
+            "image": "/images/box.png"
+        }
+    ]
+}

@@ -1,0 +1,228 @@
+{
+    "Navbar": {
+      "home": "Accueil",
+      "how-it-works": "Comment ça marche",
+      "benefits": "Avantages",
+      "contact": "Contact"
+    },
+    "Hero": {
+        "eyebrow": "Devis instantané",
+        "title": { "line1": "Chauffage au sol", "line2": "sur mesure" },
+        "subtitle": "Obtenez une estimation immédiate de votre installation en indiquant simplement la surface à chauffer.",
+        "surfaceLabel": "Surface à chauffer en mètres carrés",
+        "surfacePlaceholder": "Ex. 85",
+        "cta": "Calculer mon prix",
+        "points": {
+          "fast": "Estimation en quelques secondes",
+          "trust": "Prix transparents, sans surprises",
+          "efficient": "Confort & efficacité énergétique"
+        }
+    },
+    "Systems": {
+        "title": "Choisissez le système idéal pour votre espace",
+        "set1": {
+          "title": "Set 1A — Treillis acier",
+          "insulation": "Pas d'isolation standard"
+        },
+        "set2": {
+          "title": "Set 1B — Plaque Tacker",
+          "insulation": "Isolation 20–30mm"
+        },
+        "set3": {
+          "title": "Set 1C — Plaque à plots",
+          "height": "À partir de 20mm",
+          "insulation": "Isolation 0–30mm"
+        },
+        "calculate": "Calculer",
+        "ease-installation": "Facilité d'installation",
+        "speed-installation": "Vitesse de pose",
+        "price": "Prix",
+        "height-installation": "Hauteur d'installation",
+        "insulation": "Isolation",
+        "view-package": "Voir le pack"
+    },
+    "HowItWorks": {
+        "title": "Comment ça marche",
+        "steps": {
+          "fast": {
+            "title": "Rapide",
+            "desc": "Obtenez une estimation en quelques secondes."
+          },
+          "simple": {
+            "title": "Simple et efficace",
+            "desc": "Entrez la surface à chauffer, nous faisons le reste."
+          },
+          "transparent": {
+            "title": "Prix transparents",
+            "desc": "Aucune surprise, tout est clair dès le départ."
+          },
+          "multiple": {
+            "title": "Plusieurs systèmes pour une surface",
+            "desc": "Pour une même surface, découvrez différents prix selon le système."
+          },
+          "customizable": {
+            "title": "Pack modifiable à la demande",
+            "desc": "Adaptez le contenu du pack selon vos besoins."
+          },
+          "instantUpdate": {
+            "title": "Prix mis à jour instantanément",
+            "desc": "Chaque modification se reflète immédiatement dans le prix."
+          }
+        }
+    },
+    "Footer": {
+        "tagline": "Votre solution chauffage au sol rapide et transparente.",
+        "home": "Accueil",
+        "how-it-works": "Comment ça marche",
+        "benefits": "Avantages",
+        "contact": "Contact",
+        "rights": "Tous droits réservés.",
+        "privacy": "Politique de confidentialité",
+        "terms": "Conditions générales"
+    },
+    "Login": { 
+      "title": "Se connecter", 
+      "subtitle": "Chauffage au sol intelligent par PexxaFloor",
+      "cta": "Se connecter", 
+      "google": "Continuer avec Google", 
+      "or": "Ou",
+      "noAccount": "Pas encore de compte ?",
+      "createAccount": "Créer un compte"
+    },
+    "Signup": {
+        "title": "Créer un compte", 
+        "subtitle": "Rejoignez PexxaFloor et profitez d’un confort optimal",
+        "or": "Ou",
+        "cta": "Créer mon compte", 
+        "google": "S'inscrire avec Google",
+        "success": "Compte créé ! Vérifie tes emails pour confirmer ton adresse.",
+        "alreadyAccount": "Déjà un compte ?",
+        "login": "Se connecter",
+        "errors": { "required": "Email et mot de passe sont requis.", "tooShort": "Min. 8 caractères.", "mismatch": "Les mots de passe ne correspondent pas." }
+    },
+    "ProSignup": {
+        "title": "Devenir client pro",
+        "subtitle": "Remplissez ce formulaire pour accéder à nos tarifs professionnels et avantages dédiés.",
+        "yourDetails": "Vos informations",
+        "firstName": "Prénom",
+        "lastName": "Nom",
+        "phone": "Téléphone",
+        "companyDetails": "Informations société",
+        "company": "Nom de la société",
+        "businessType": "Type d'activité",
+        "businessTypes": {
+          "installer": "Installateur",
+          "electrician": "Électricien",
+          "builder": "Entrepreneur / Bâtiment",
+          "architect": "Architecte",
+          "retailer": "Revendeur / Magasin",
+          "other": "Autre"
+        },
+        "addr1": "Adresse (ligne 1)",
+        "addr2": "Adresse (ligne 2)",
+        "optional": "optionnel",
+        "town": "Ville",
+        "county": "Province / Comté",
+        "postcode": "Code postal",
+        "vat": "Numéro de TVA",
+        "whatsapp": "Numéro Whatsapp",
+        "cta": "Envoyer la demande",
+        "sending": "Envoi en cours…",
+        "success": "Votre demande a été envoyée. Nous revenons vers vous rapidement.",
+        "errors": {
+          "required": "Veuillez compléter tous les champs obligatoires.",
+          "session": "Votre session a expiré. Merci de vous reconnecter."
+        }
+    },
+    "AdminPro": {
+      "title": "Demandes professionnelles",
+      "pendingTitle": "En attente",
+      "recentTitle": "Récentes demandes",
+      "empty": "Aucune demande trouvée.",
+      "reviewDecision": "Revoir la décision",
+      "searchPlaceholder": "Chercher une société",
+      "th": {
+        "company": "Entreprise",
+        "contact": "Contact",
+        "details": "Détails",
+        "status": "Statut",
+        "actions": "Actions"
+      },
+      "labels": {
+        "name": "Nom complet",
+        "email": "Email",
+        "phone": "Téléphone",
+        "company": "Entreprise",
+        "type": "Secteur d’activité",
+        "address": "Adresse",
+        "created": "Date de création",
+        "status": "Statut",
+        "vat": "Numéro TVA",
+        "whatsapp": "Numéro Whatsapp"
+      },
+      "status": {
+        "pending": "En attente",
+        "verified": "Validé",
+        "rejected": "Rejeté",
+        "in_review": "En cours de vérification",
+        "suspended": "Suspendu",
+        "revision": "En révision"
+      },
+      "approve": "Valider",
+      "reject": "Rejeter",
+      "view": "Voir détails",
+      "hide": "Masquer détails",
+      "startReview": "Commencer la vérification",
+      "suspend": "Suspendre"
+    },
+    "Packs": {
+      "loading": "Chargement des produits...",
+      "description": "Découvrez le contenu de ce pack pour votre chauffage au sol.",
+      "content": "Contenu du pack",
+      "article": "Article",
+      "qty": "Quantité",
+      "unitPrice": "Prix unitaire",
+      "total": "Total",
+      "orderCta": "Commander maintenant"
+    },
+    "Profile": {
+      "pro": {
+        "title": "Devenir un client professionnel ?",
+        "desc": "Recevez des promotions exclusives et d'autres avantages. Demandez à devenir pro maintenant et recevez une réponse rapidement.",
+        "button": "Devenir Pro"
+      }
+    },
+    "Success": {
+      "payment_successfull": "Paiement réussi",
+      "payment_informations": "Merci pour votre achat! Votre commande a été enregistrée. Vous pouvez la retrouver sur votre page profil.",
+      "check_order": "Voir ma commande",
+      "back_home": "Retour à l'accueil"
+    },
+    "AddToBasketButton": {
+      "addToBasket": "Ajouter au panier"
+    },
+    "CartDrawer": {
+      "myCart": "Mon panier",
+      "emptyCart": "Votre panier est vide",
+      "productsIncluded": "produits inclus",
+      "edit": "Modifier",
+      "checkCart": "Voir mon panier",
+      "products_included": "Produits inclus"
+    },
+    "UserButton": {
+      "login": "Se connecter",
+      "profilePage": "Mon profil",
+      "signOut": "Se déconnecter"
+    },
+    "Admin": {
+      "adminPanel": "Panneau d'administration",
+      "catalogManagement": "Gestion du catalogue",
+      "catalogManagementDetails": "Catégories, sous-catégories et produits",
+      "professionalRequests": "Demandes Professionnelles",
+      "professionalRequestsDetails": "Gérez les demandes envoyées par des installateurs / pro",
+      "orderManagement": "Gestion des commandes",
+      "orderManagementDetails": "Vérifize les commandes pour les envoyer en préparation",
+      "userRolesManagement": "Gestion des rôles utilisateurs",
+      "userRolesManagementDetails": "Admin, magasinier, livreur"
+    }
+  }

@@ -1,0 +1,228 @@
+{
+    "Navbar": {
+      "home": "Home",
+      "how-it-works": "Hoe het werkt",
+      "benefits": "Voordelen",
+      "contact": "Contact"
+    },
+    "Hero": {
+        "eyebrow": "Directe offerte",
+        "title": { "line1": "Vloerverwarming", "line2": "op maat" },
+        "subtitle": "Krijg meteen een schatting door enkel het te verwarmen oppervlak in te geven.",
+        "surfaceLabel": "Oppervlakte in vierkante meter",
+        "surfacePlaceholder": "Bijv. 85",
+        "cta": "Mijn prijs berekenen",
+        "points": {
+          "fast": "Schatting in enkele seconden",
+          "trust": "Transparante prijzen",
+          "efficient": "Comfort & energie-efficiënt"
+        }
+    },
+    "Systems": {
+        "title": "Kies het ideale systeem voor uw ruimte",
+        "set1": {
+          "title": "Set 1A — Staaldraadmat",
+          "insulation": "Geen standaard isolatie"
+        },
+        "set2": {
+          "title": "Set 1B — Tackerplaat",
+          "insulation": "Isolatie 20–30mm"
+        },
+        "set3": {
+          "title": "Set 1C — Noppenplaat",
+          "height": "Vanaf 20mm",
+          "insulation": "Isolatie 0–30mm"
+        },
+        "calculate": "Bereken set prijs",
+        "ease-installation": "Leg gemak",
+        "speed-installation": "Leg snelheid",
+        "price": "Prijs",
+        "height-installation": "Inbouwhoogte",
+        "insulation": "Isolatie",
+        "view-package": "Bekijk pakket"
+    },
+    "HowItWorks": {
+        "title": "Hoe werkt het",
+        "steps": {
+          "fast": {
+            "title": "Snel",
+            "desc": "Ontvang binnen enkele seconden een prijsindicatie."
+          },
+          "simple": {
+            "title": "Eenvoudig en efficiënt",
+            "desc": "Voer de te verwarmen oppervlakte in, wij doen de rest."
+          },
+          "transparent": {
+            "title": "Transparante prijzen",
+            "desc": "Geen verrassingen, alles is vanaf het begin duidelijk."
+          },
+          "multiple": {
+            "title": "Meerdere systemen voor één oppervlakte",
+            "desc": "Voor dezelfde oppervlakte ziet u verschillende prijzen per systeem."
+          },
+          "customizable": {
+            "title": "Aanpasbaar pakket",
+            "desc": "Pas de inhoud van het pakket aan uw behoeften aan."
+          },
+          "instantUpdate": {
+            "title": "Prijs direct bijgewerkt",
+            "desc": "Elke wijziging wordt onmiddellijk in de prijs weergegeven."
+          }
+        }
+    },
+    "Footer": {
+        "tagline": "Uw snelle en transparante vloerverwarmingsoplossing.",
+        "home": "Home",
+        "how-it-works": "Hoe het werkt",
+        "benefits": "Voordelen",
+        "contact": "Contact",
+        "rights": "Alle rechten voorbehouden.",
+        "privacy": "Privacybeleid",
+        "terms": "Algemene voorwaarden"
+    },
+    "Login": { 
+      "title": "Log in", 
+      "subtitle": "Slimme vloerverwarming van PexxaFloor",
+      "cta": "Log in", 
+      "google": "Verder met Google", 
+      "or": "Of",
+      "noAccount": "Nog geen lid ?",
+      "createAccount": "Signup"
+    },
+    "Signup": {
+        "title": "Maak een account aan", 
+        "subtitle": "Sluit u aan bij PexxaFloor en geniet van optimaal comfort",
+        "cta": "Mijn account aanmaken", 
+        "google": "Signup met Google",
+        "or": "Of",
+        "alreadyAccount": "Al lid ?",
+        "login": "Login",
+        "success": "Account aangemaakt! Controleer je e-mail om je adres te bevestigen.",
+        "errors": { "required": "E-mailadres en wachtwoord zijn vereist.", "tooShort": "Min. 8 tekens.", "mismatch": "De wachtwoorden komen niet overeen." }
+    },
+    "ProSignup": {
+      "title": "Word professionele klant",
+      "subtitle": "Vul dit formulier in om toegang te krijgen tot onze professionele tarieven en exclusieve voordelen.",
+      "yourDetails": "Uw gegevens",
+      "firstName": "Voornaam",
+      "lastName": "Achternaam",
+      "phone": "Telefoon",
+      "companyDetails": "Bedrijfsgegevens",
+      "company": "Bedrijfsnaam",
+      "businessType": "Type activiteit",
+      "businessTypes": {
+        "installer": "Installateur",
+        "electrician": "Elektricien",
+        "builder": "Aannemer / Bouw",
+        "architect": "Architect",
+        "retailer": "Detailhandel / Winkel",
+        "other": "Anders"
+      },
+      "addr1": "Adres (regel 1)",
+      "addr2": "Adres (regel 2)",
+      "optional": "optioneel",
+      "town": "Stad",
+      "county": "Provincie",
+      "postcode": "Postcode",
+      "vat": "BTW-nummer",
+      "whatsapp": "WhatsApp-nummer",
+      "cta": "Verzoek indienen",
+      "sending": "Bezig met verzenden…",
+      "success": "Uw aanvraag is verzonden. We nemen snel contact met u op.",
+      "errors": {
+        "required": "Vul alle verplichte velden in.",
+        "session": "Uw sessie is verlopen. Gelieve opnieuw in te loggen."
+      }
+    },    
+    "AdminPro": {
+      "title": "Professionele aanvragen",
+      "pendingTitle": "In afwachting",
+      "recentTitle": "Recente aanvragen",
+      "empty": "Geen aanvragen gevonden.",
+      "reviewDecision": "Besluit Herzien",
+      "searchPlaceholder": "Bedrijf opzoeken",
+      "th": {
+        "company": "Bedrijf",
+        "contact": "Contactpersoon",
+        "details": "Details",
+        "status": "Status",
+        "actions": "Acties"
+      },
+      "labels": {
+        "name": "Volledige naam",
+        "email": "E-mailadres",
+        "phone": "Telefoon",
+        "company": "Bedrijf",
+        "type": "Activiteitstype",
+        "address": "Adres",
+        "created": "Aangemaakt op",
+        "status": "Status",
+        "vat": "BTW Number",
+        "whatsapp": "Whatsapp Nummer"
+      },
+      "status": {
+        "pending": "In afwachting",
+        "verified": "Goedgekeurd",
+        "rejected": "Geweigerd",
+        "in_review": "In Behandeling",
+        "suspended": "Opgeschort",
+        "revision": "In Revisie"
+      },
+      "approve": "Goedkeuren",
+      "reject": "Weigeren",
+      "view": "Details bekijken",
+      "hide": "Details verbergen",
+      "startReview": "Start Review",
+      "suspend": "Opschorten"
+    },
+    "Packs": {
+      "loading": "Producten worden geladen...",
+      "description": "Ontdek de inhoud van dit pakket voor vloerverwarming.",
+      "content": "Inhoud van het pakket",
+      "article": "Artikel",
+      "qty": "Aantal",
+      "unitPrice": "Stukprijs",
+      "total": "Totaal",
+      "orderCta": "Nu bestellen"
+    },
+    "Profile": {
+      "pro": {
+        "title": "Professionele klant worden ?",
+        "desc": "Profiteer van exclusieve promoties en andere voordelen. Meld je nu aan als professional en ontvang snel een reactie.",
+        "button": "Pro klant worden"
+      }
+    },
+    "Success": {
+      "payment_successfull": "Succesvolle betaling",
+      "payment_informations": "Bedankt voor uw aankoop! Uw bestelling is geregistreerd. U vindt deze op uw profielpagina.",
+      "check_order": "Mijn bestelling zien",
+      "back_home": "Terug home"
+    },
+    "AddToBasketButton": {
+      "addToBasket": "Toevoegen aan winkelwagen"
+    },
+    "CartDrawer": {
+      "myCart": "Mijn winkelwagen",
+      "emptyCart": "Uw winkelwagen is leeg",
+      "productsIncluded": "producten inbegrepen",
+      "edit": "Bewerken",
+      "checkCart": "Mijn winkelwagen zien",
+      "products_included": "Products included"
+    },
+    "UserButton": {
+      "login": "Login",
+      "profilePage": "Mijn profiel",
+      "signOut": "Afmelden"
+    },
+    "Admin": {
+      "adminPanel": "Beheerderspaneel",
+      "catalogManagement": "Catalogusbeheer",
+      "catalogManagementDetails": "Categorieën, subcategorieën en producten",
+      "professionalRequests": "Professionele verzoeken",
+      "professionalRequestsDetails": "Beheer verzoeken die door installateurs / professionals zijn verzonden",
+      "orderManagement": "Orderbeheer",
+      "orderManagementDetails": "Controleer de bestellingen om ze ter voorbereiding te versturen",
+      "userRolesManagement": "Beheer van gebruikersrollen",
+      "userRolesManagementDetails": "Administratief medewerker, magazijnmedewerker, bezorger"
+    }
+  }
