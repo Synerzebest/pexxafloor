@@ -5,7 +5,7 @@
       "benefits": "Voordelen",
       "contact": "Contact"
     },
-    "Hero": {
+    "SurfaceCalculator": {
         "eyebrow": "Directe offerte",
         "title": { "line1": "Vloerverwarming", "line2": "op maat" },
         "subtitle": "Krijg meteen een schatting door enkel het te verwarmen oppervlak in te geven.",
@@ -199,7 +199,8 @@
       "back_home": "Terug home"
     },
     "AddToBasketButton": {
-      "addToBasket": "Toevoegen aan winkelwagen"
+      "addToBasket": "Toevoegen aan winkelwagen",
+      "addedToBasket": "Toegevoegd aan winkelwagen"
     },
     "CartDrawer": {
       "myCart": "Mijn winkelwagen",
@@ -224,5 +225,10 @@
       "orderManagementDetails": "Controleer de bestellingen om ze ter voorbereiding te versturen",
       "userRolesManagement": "Beheer van gebruikersrollen",
       "userRolesManagementDetails": "Administratief medewerker, magazijnmedewerker, bezorger"
+    },
+    "NotFound": {
+      "title": "Oeps! Pagina niet gevonden",
+      "subtitle": "We konden de pagina die u zoekt niet vinden.",
+      "backHome": "Home teruggaan"
     }
   }

@@ -5,31 +5,9 @@ import { Input, Dropdown } from "antd";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
+import type { ProductSearchResult } from "@/types/ProductType";
+import Image from "next/image";
 
-type Product = {
-    id: string;
-    slug: string;
-    price: string;
-    name_fr: string;
-    name_nl: string;
-    name_en: string;
-    subcategory: {
-      id: string;
-      slug: string;
-      name_fr: string;
-      name_nl: string;
-      name_en: string;
-      category: {
-        id: string;
-        slug: string;
-        name_fr: string;
-        name_nl: string;
-        name_en: string;
-      };
-    };
-    product_images: { image_url: string }[];
-  };
-  
 export default function ProductSearch() {
   const supabase = createClientComponentClient();
   const locale = useLocale();
@@ -37,7 +15,7 @@ export default function ProductSearch() {
 
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<Product[]>([]);
+  const [results, setResults] = useState<ProductSearchResult[]>([]);
 
   useEffect(() => {
     if (!query || query.length < 2) {
@@ -64,7 +42,7 @@ export default function ProductSearch() {
         .limit(8);
 
       console.log(data)
-      if (!error) setResults(data as Product[]);
+      if (!error) setResults(data as ProductSearchResult[]);
       setLoading(false);
     };
 
@@ -101,7 +79,7 @@ export default function ProductSearch() {
           className="flex items-center gap-3 cursor-pointer"
         >
           {img && (
-            <img
+            <Image
               src={img}
               alt={name}
               className="w-12 h-12 object-cover rounded"

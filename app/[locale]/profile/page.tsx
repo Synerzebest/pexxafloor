@@ -2,7 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Navbar, Footer, UserOrders, UserProApplications } from "@/components";
+import { Navbar, Footer, UserOrders } from "@/components";
 import ProButton from "@/components/profile/ProButton";
 import LogoutButton from "@/components/auth/LogoutButton";
 
@@ -19,8 +19,7 @@ export default async function ProfilePage() {
     <>
       <Navbar />
       <div className="max-w-4xl mx-auto py-8 px-4">
-        <ProButton locale={locale} />
-        <UserProApplications userId={user?.id} />
+        <ProButton userId={user?.id} locale={locale} />
         <UserOrders />
         <LogoutButton />
       </div>

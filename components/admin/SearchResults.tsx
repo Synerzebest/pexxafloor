@@ -1,7 +1,6 @@
 'use client';
 
-import { Fragment } from "react";
-import { motion } from "framer-motion";
+import { Fragment, ReactNode } from "react";
 import type { AppRow } from "./ProRequestsTable";
 
 export default function SearchResults({
@@ -9,7 +8,7 @@ export default function SearchResults({
   renderRow,
 }: {
   results: AppRow[];
-  renderRow: (r: AppRow, i: number) => any; 
+  renderRow: (r: AppRow, i: number) => ReactNode; 
 }) {
   return (
     <section className="mt-8">

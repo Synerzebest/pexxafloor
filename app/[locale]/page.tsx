@@ -1,10 +1,10 @@
-import { Navbar, HowItWorks, Footer, SurfaceWrapper } from "@/components"
+import { Navbar, HowItWorks, Footer, Hero } from "@/components"
  
 export default function HomePage() {
   return (
     <>
       <Navbar />
-      <SurfaceWrapper />
+      <Hero />
       <HowItWorks />
       <Footer />
     </>

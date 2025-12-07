@@ -37,19 +37,44 @@ export default function ProSignupForm({ locale }: Props) {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setErr(null); setOk(null);
-
-    // Validations minimales
+    setErr(null);
+    setOk(null);
+  
     if (!firstName || !lastName || !phone || !email || !companyName || !vat || !addr1 || !town || !postcode) {
       setErr(t('errors.required'));
       return;
     }
-
+  
     setLoading(true);
+  
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setLoading(false); setErr(t('errors.session')); return; }
-
-    const { error } = await supabase.from('pro_applications').insert({
+    if (!user) {
+      setLoading(false);
+      setErr(t('errors.session'));
+      return;
+    }
+  
+    // 🔍 Vérifier s’il existe déjà une demande pour cet utilisateur
+    const { data: existing, error: checkError } = await supabase
+      .from("pro_applications")
+      .select("id, status")
+      .eq("user_id", user.id)
+      .maybeSingle();
+  
+    if (checkError) {
+      setLoading(false);
+      setErr("Erreur de vérification, veuillez réessayer.");
+      return;
+    }
+  
+    if (existing) {
+      setLoading(false);
+      setErr("Vous avez déjà une demande en cours ou validée.");
+      return;
+    }
+  
+    // ✅ Créer la nouvelle demande
+    const { error } = await supabase.from("pro_applications").insert({
       user_id: user.id,
       first_name: firstName,
       last_name: lastName,
@@ -64,13 +89,15 @@ export default function ProSignupForm({ locale }: Props) {
       town,
       county: county || null,
       postcode,
-      status: 'PENDING'
+      status: "PENDING"
     });
-
+  
     setLoading(false);
+  
     if (error) setErr(error.message);
     else setOk(t('success'));
   }
+  
 
   return (
     <section className="bg-white">

@@ -8,11 +8,13 @@ import { LogOutIcon, User } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
+import type { User as UserType } from "@supabase/supabase-js";
+
 
 
 const UserButton: React.FC = () => {
   const supabase = createClientComponentClient();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserType | null>(null);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const locale = useLocale();
@@ -98,7 +100,7 @@ const UserButton: React.FC = () => {
         aria-expanded={open}
         onClick={() => setOpen(v => !v)}
         onKeyDown={onButtonKeyDown}
-        className="inline-flex items-center gap-2 rounded-full px-0 md:px-2 py-1.5 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition"
+        className="cursor-pointer inline-flex items-center gap-2 rounded-full px-0 md:px-2 py-1.5 hover:bg-gray-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 transition"
       >
         {/* Avatar + fallback */}
         <span className="relative inline-flex h-8 w-8 items-center justify-center">

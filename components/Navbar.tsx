@@ -12,10 +12,16 @@ import { useCart } from "@/context/CartContext";
 import UserButton from './UserButton';
 import ProductSearch from './ProductSearch';
 import { PhoneCall } from 'lucide-react';
+import { Category } from "@/types/CategoryType";
 
 const SUPPORTED_LOCALES = ['fr', 'nl', 'en'] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 const logoImage = "/images/logo.png";
+type Translatable = {
+  name_fr: string;
+  name_nl: string;
+  name_en: string;
+};
 
 function swapLocaleInPath(pathname: string, nextLocale: SupportedLocale) {
   const parts = pathname.split('/').filter(Boolean);
@@ -27,33 +33,6 @@ function swapLocaleInPath(pathname: string, nextLocale: SupportedLocale) {
   }
   return '/' + parts.join('/');
 }
-
-type SubSubcategory = {
-  id: string;
-  slug: string;
-  name_fr: string;
-  name_nl: string;
-  name_en: string;
-};
-
-type Subcategory = {
-  id: string;
-  slug: string;
-  name_fr: string;
-  name_nl: string;
-  name_en: string;
-  subsubcategories: SubSubcategory[];
-};
-
-type Category = {
-  id: string;
-  slug: string;
-  name_fr: string;
-  name_nl: string;
-  name_en: string;
-  subcategories: Subcategory[];
-};
-
 
 export default function Navbar() {
   const locale = useLocale() as SupportedLocale;
@@ -73,17 +52,18 @@ export default function Navbar() {
   useEffect(() => {
     async function fetchCategories() {
       const { data, error } = await supabase
-        .from("categories")
-        .select(`
+      .from("categories")
+      .select(`
+        id, slug, name_fr, name_nl, name_en,
+        subcategories:subcategories!category_id (
           id, slug, name_fr, name_nl, name_en,
-          subcategories:subcategories!category_id (
-            id, slug, name_fr, name_nl, name_en,
-            subsubcategories:subsubcategories!fk_subsubcategories_subcategories (
-              id, slug, name_fr, name_nl, name_en
-            )
+          subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
+            id, slug, name_fr, name_nl, name_en
           )
-        `)
-        .order("order");
+        )
+      `)
+      .order("order");
+
   
       if (error) {
         console.error("Erreur fetch catégories:", error);
@@ -97,7 +77,7 @@ export default function Navbar() {
   
   
 
-  const getName = (obj: any) =>
+  const getName = (obj: Translatable) =>
     locale === 'fr' ? obj.name_fr : locale === 'nl' ? obj.name_nl : obj.name_en;
 
   const onChangeLocale = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -143,7 +123,8 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           <UserButton />
           
-          <button
+          <motion.button
+            whileHover={{scale: 1.1}}
             onClick={async () => {
               const { data: { session } } = await supabase.auth.getSession();
               if (!session) router.push(`/${locale}/login`);
@@ -157,15 +138,19 @@ export default function Navbar() {
                 {items.length}
               </span>
             )}
-          </button>
+          </motion.button>
 
-          <Link
-            href={`/${locale}/quote`}
-            className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-2 text-xs font-medium text-orange-700 shadow-sm"
+          <motion.div
+            whileHover={{scale: 1.05}}
           >
-            <Sparkles className="h-4 w-4" />
-            Get a Quote
-          </Link>
+            <Link
+              href={`/${locale}/quote`}
+              className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-2 text-xs font-medium text-orange-700 shadow-sm"
+            >
+              <Sparkles className="h-4 w-4" />
+              Get a Quote
+            </Link>
+          </motion.div>
 
           <select
             value={locale}

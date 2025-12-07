@@ -5,13 +5,13 @@
       "benefits": "Benefits",
       "contact": "Contact"
     },
-    "Hero": {
+    "SurfaceCalculator": {
       "eyebrow": "Instant quote",
       "title": { "line1": "Underfloor heating", "line2": "tailored" },
       "subtitle": "Get an immediate estimate by simply entering the area to heat.",
       "surfaceLabel": "Area to heat in square meters",
       "surfacePlaceholder": "e.g. 85",
-      "cta": "Calculate my price",
+      "cta": "Get my price",
       "points": {
         "fast": "Estimate in seconds",
         "trust": "Transparent pricing",
@@ -203,7 +203,8 @@
       "back_home": "Back home"
     },
     "AddToBasketButton": {
-      "addToBasket": "Add to basket"
+      "addToBasket": "Add to basket",
+      "addedToBasket": "Added to basket"
     },
     "CartDrawer": {
       "myCart": "My cart",
@@ -228,5 +229,10 @@
       "orderManagementDetails": "Check orders to send them for preparation",
       "userRolesManagement": "User roles management",
       "userRolesManagementDetails": "Admin, storekeeper, delivery person"
+    },
+    "NotFound": {
+      "title": "Whoops! Page not found",
+      "subtitle": "We couldn't find the page you are looking for.",
+      "backHome": "Get back home"
     }
   }

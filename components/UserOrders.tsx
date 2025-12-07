@@ -9,13 +9,16 @@ import {
   ClockCircleOutlined,
   CloseCircleOutlined,
   AppstoreOutlined,
+  InboxOutlined,
 } from "@ant-design/icons";
+import type { CartItem } from "@/context/CartContext";
+import type { PackProduct } from "@/types/PackProductType";
 
 type Order = {
   id: string;
   status: string;
   total: number;
-  items: any[];
+  items: CartItem[];
   created_at: string;
 };
 
@@ -48,23 +51,51 @@ export default function UserOrders() {
     fetchOrders();
   }, [supabase]);
 
+  // 🎨 Statuts et couleurs
   const renderStatus = (status: string) => {
-    switch (status) {
+    switch (status.toLowerCase()) {
       case "paid":
         return (
-          <Tag icon={<CheckCircleOutlined />} color="success">
+          <Tag
+            icon={<CheckCircleOutlined />}
+            style={{ backgroundColor: "#dcfce7", color: "#166534", borderColor: "#bbf7d0" }}
+          >
             Payée
           </Tag>
         );
-      case "pending":
+      case "preparing":
         return (
-          <Tag icon={<ClockCircleOutlined />} color="warning">
-            En attente
+          <Tag
+            icon={<ClockCircleOutlined />}
+            style={{ backgroundColor: "#ffedd5", color: "#9a3412", borderColor: "#fed7aa" }}
+          >
+            En préparation
+          </Tag>
+        );
+      case "packed":
+        return (
+          <Tag
+            icon={<InboxOutlined />}
+            style={{ backgroundColor: "#dbeafe", color: "#1e3a8a", borderColor: "#bfdbfe" }}
+          >
+            Emballée
+          </Tag>
+        );
+      case "ready":
+        return (
+          <Tag
+            icon={<InboxOutlined />}
+            style={{ backgroundColor: "#cffafe", color: "#155e75", borderColor: "#a5f3fc" }}
+          >
+            Prête
           </Tag>
         );
       case "cancelled":
         return (
-          <Tag icon={<CloseCircleOutlined />} color="error">
+          <Tag
+            icon={<CloseCircleOutlined />}
+            style={{ backgroundColor: "#fee2e2", color: "#991b1b", borderColor: "#fecaca" }}
+          >
             Annulée
           </Tag>
         );
@@ -125,7 +156,7 @@ export default function UserOrders() {
                     children: (
                       <List
                         dataSource={o.items}
-                        renderItem={(item: any, idx: number) => (
+                        renderItem={(item: CartItem, idx: number) => (
                           <List.Item>
                             {item.type === "pack" ? (
                               <div className="w-full">
@@ -150,7 +181,7 @@ export default function UserOrders() {
                                       label: `${item.products?.length || 0} produits inclus`,
                                       children: (
                                         <ul className="ml-5 list-disc text-sm text-gray-700">
-                                          {item.products?.map((p: any) => (
+                                          {item.products?.map((p: PackProduct) => (
                                             <li key={p.id}>
                                               {p.description} —{" "}
                                               {p.unit_price.toFixed(2)} €
@@ -165,15 +196,12 @@ export default function UserOrders() {
                             ) : (
                               <div className="flex justify-between w-full">
                                 <span>
-                                  {item.product?.name ||
-                                    item.name ||
-                                    "Produit"}{" "}
+                                  {item.product?.name ?? "Produit"}
                                   × {item.quantity}
                                 </span>
                                 <span className="font-medium">
                                   {(
-                                    (item.product?.price || item.price) *
-                                    item.quantity
+                                    (item.product?.price ?? 0) * item.quantity
                                   ).toFixed(2)}{" "}
                                   €
                                 </span>

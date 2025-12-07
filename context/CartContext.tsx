@@ -2,10 +2,15 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
+import type { PackProduct } from "@/types/PackProductType";
+
 type ProductItem = {
   type: "product";
   product_id: string;
   quantity: number;
+  name?: string;
+  price?: number;
+  image?: string;
   product?: {
     name: string;
     price: number;
@@ -21,12 +26,7 @@ type PackItem = {
   pasDePose: number;
   tuyauType: "PERT" | "PERT-AL-PERT";
   quantities: Record<string, number>; 
-  products: {
-    id: string;
-    description: string;
-    unit_price: number;
-    total_price?: number; 
-  }[];
+  products: PackProduct[];
   total: number; 
   quantity: number;
   createdAt?: string; 
@@ -121,7 +121,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return prev;
     });
   
-    setIsOpen(true);
   };  
 
   const removeFromCart = (id: string) => {

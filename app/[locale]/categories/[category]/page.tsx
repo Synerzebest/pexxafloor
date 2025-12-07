@@ -16,39 +16,53 @@ export default async function CategoryPage({
   const locale = (await getLocale()) as SupportedLocale;
 
   const { data, error } = await supabase
-    .from("categories")
-    .select<any>(`
+  .from("categories")
+  .select(`
+    id,
+    slug,
+    name_fr,
+    name_nl,
+    name_en,
+
+    subcategories:subcategories!subcategories_category_id_fkey (
       id,
       slug,
       name_fr,
       name_nl,
       name_en,
-      subcategories (
+
+      subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
         id,
         slug,
         name_fr,
         name_nl,
         name_en,
-        products (
+        
+        products:products!products_subsub_id_fkey (
           id,
           slug,
           name_fr,
           name_nl,
           name_en,
           price,
-          product_images!fk_product ( image_url )
+          product_images!product_images_product_id_fkey ( image_url )
         )
       )
-    `)
-    .eq("slug", category)
-    .single<Category>();
+    )
+  `)
+  .eq("slug", category)
+  .single();
+
 
   if (error || !data) return notFound();
+
+  const categoryData = data as Category | null;
+  if (!categoryData) return notFound();
 
   return (
     <>
       <Navbar />
-      <CategoryContent category={data} locale={locale} />
+      <CategoryContent category={categoryData} locale={locale} />
       <Footer />
     </>
   );

@@ -5,7 +5,7 @@
       "benefits": "Avantages",
       "contact": "Contact"
     },
-    "Hero": {
+    "SurfaceCalculator": {
         "eyebrow": "Devis instantané",
         "title": { "line1": "Chauffage au sol", "line2": "sur mesure" },
         "subtitle": "Obtenez une estimation immédiate de votre installation en indiquant simplement la surface à chauffer.",
@@ -199,7 +199,8 @@
       "back_home": "Retour à l'accueil"
     },
     "AddToBasketButton": {
-      "addToBasket": "Ajouter au panier"
+      "addToBasket": "Ajouter au panier",
+      "addedToBasket": "Ajouté au panier"
     },
     "CartDrawer": {
       "myCart": "Mon panier",
@@ -221,8 +222,13 @@
       "professionalRequests": "Demandes Professionnelles",
       "professionalRequestsDetails": "Gérez les demandes envoyées par des installateurs / pro",
       "orderManagement": "Gestion des commandes",
-      "orderManagementDetails": "Vérifize les commandes pour les envoyer en préparation",
+      "orderManagementDetails": "Vérifiez les commandes pour les envoyer en préparation",
       "userRolesManagement": "Gestion des rôles utilisateurs",
       "userRolesManagementDetails": "Admin, magasinier, livreur"
+    },
+    "NotFound": {
+      "title": "Oups! Page introuvable",
+      "subtitle": "Nous n'avons pas pu trouver la page que vous cherchez.",
+      "backHome": "Retour à l'accueil"
     }
   }

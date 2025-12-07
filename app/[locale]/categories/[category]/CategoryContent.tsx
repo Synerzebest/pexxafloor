@@ -4,34 +4,10 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { SlidersHorizontal } from "lucide-react";
 import { ProductCard } from "@/components";
+import { Category } from "@/types/CategoryType";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
-type Product = {
-  id: string;
-  slug: string;
-  name_fr: string;
-  name_nl: string;
-  name_en: string;
-  price: number;
-  product_images?: { image_url: string }[];
-};
-type Subcategory = {
-  id: string;
-  slug: string;
-  name_fr: string;
-  name_nl: string;
-  name_en: string;
-  products: Product[];
-};
-type Category = {
-  id: string;
-  slug: string;
-  name_fr: string;
-  name_nl: string;
-  name_en: string;
-  subcategories: Subcategory[];
-};
 
 export default function CategoryContent({
   category,
@@ -40,8 +16,9 @@ export default function CategoryContent({
   category: Category;
   locale: SupportedLocale;
 }) {
-  const getName = (obj: any) =>
-    locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en;
+  const getName = (
+    obj: { name_fr: string; name_nl: string; name_en: string }
+  ) => (locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en);
 
   return (
     <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-16">
@@ -85,28 +62,44 @@ export default function CategoryContent({
                 </Link>
               </div>
 
-              {/* Produits en aperçu */}
-              {sub.products?.length > 0 ? (
-                <div className="overflow-x-auto pb-2">
-                  <ul className="flex gap-6 snap-x snap-mandatory scroll-smooth">
-                    {sub.products.slice(0, 4).map((prod) => (
-                      <li
-                        key={prod.id}
-                        className="snap-start flex-shrink-0 w-64"
-                      >
-                        <ProductCard
-                          product={prod}
-                          locale={locale}
-                          categorySlug={category.slug}
-                          subcategorySlug={sub.slug}
-                        />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              {/* Aperçu des produits : on parcourt chaque subsubcategory */}
+              {sub.subsubcategories?.length > 0 ? (
+                sub.subsubcategories.map((ssc) => (
+                  <div key={ssc.id} className="space-y-4">
+                    {/* Sous-sous-catégorie titre */}
+                    <h3 className="text-xl font-semibold text-gray-700">
+                      {getName(ssc)}
+                    </h3>
+
+                    {ssc.products.length > 0 ? (
+                      <div className="overflow-x-auto pb-2">
+                        <ul className="flex gap-6 snap-x snap-mandatory scroll-smooth">
+                          {ssc.products.slice(0, 4).map((prod) => (
+                            <li
+                              key={prod.id}
+                              className="snap-start flex-shrink-0 w-64"
+                            >
+                              <ProductCard
+                                product={prod}
+                                locale={locale}
+                                categorySlug={category.slug}
+                                subcategorySlug={sub.slug}
+                                subsubcategorySlug={ssc.slug}
+                              />
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <p className="text-gray-500 italic">
+                        Aucun produit dans {getName(ssc)}
+                      </p>
+                    )}
+                  </div>
+                ))
               ) : (
                 <p className="text-gray-500 italic">
-                  Aucun produit dans cette sous-catégorie
+                  Aucune sous-sous-catégorie dans cette sous-catégorie
                 </p>
               )}
             </motion.section>

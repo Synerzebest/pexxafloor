@@ -2,7 +2,7 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
-import { Collapse, InputNumber, Button, Spin, message, Radio, Checkbox } from "antd";
+import { Collapse, InputNumber, Button, Spin, message, Radio } from "antd";
 import Image from "next/image";
 import { Navbar, Footer } from "@/components";
 import { useCart } from "@/context/CartContext";

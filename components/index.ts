@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import ProductGallery from "./ProductGallery";
 import AddToCartButton from "./AddToCartButton";
 import UserOrders from "./UserOrders";
-import UserProApplications from "./profile/UserProApplications";
+import Hero from "./Hero";
 
 export {
     Navbar,
@@ -17,5 +17,5 @@ export {
     Footer,
     AddToCartButton,
     UserOrders,
-    UserProApplications
+    Hero
 }

@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import Hero from './Hero';
+import SurfaceCalculator from './SurfaceCalculator';
 import SystemSection from './SystemSection';
 
 export default function SurfaceWrapper() {
@@ -8,7 +8,7 @@ export default function SurfaceWrapper() {
 
   return (
     <>
-      <Hero surface={surface} setSurface={setSurface} />
+      <SurfaceCalculator surface={surface} setSurface={setSurface} />
       <SystemSection surface={surface} setSurface={setSurface} />
     </>
   );

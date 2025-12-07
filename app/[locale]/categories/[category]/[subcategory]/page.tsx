@@ -2,59 +2,48 @@ import { supabase } from "@/lib/supabaseClient";
 import { notFound } from "next/navigation";
 import { Navbar, Footer, ProductCard } from "@/components";
 import { getLocale } from "next-intl/server";
+import { SubCategory } from "@/types/SubCategoryType";
+import { Product } from "@/types/ProductType";
 
-// ---- Types ----
 type SupportedLocale = "fr" | "nl" | "en";
 
-type ProductImage = { image_url: string };
-type Product = {
-  id: string;
-  slug: string;
+type Translatable = {
   name_fr: string;
   name_nl: string;
   name_en: string;
-  price: number;
-  product_images?: ProductImage[];
-};
-type Subcategory = {
-  id: string;
-  slug: string;
-  name_fr: string;
-  name_nl: string;
-  name_en: string;
-  products: Product[];
 };
 
-// ---- Page ----
 export default async function SubcategoryPage({
   params,
 }: {
   params: Promise<{ locale: string; category: string; subcategory: string }>;
 }) {
-  // ✅ Attente des params
   const { category, subcategory } = await params;
 
-  // ✅ Récupérer locale via next-intl
   const locale = (await getLocale()) as SupportedLocale;
 
-  // ---- Query Supabase ----
   const { data, error } = await supabase
   .from("subcategories")
-  .select<any>(`
+  .select(`
     id,
     slug,
     name_fr,
     name_nl,
     name_en,
-    products (
+    subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
       id,
       slug,
       name_fr,
       name_nl,
       name_en,
-      price,
-      product_images!fk_product (
-        image_url
+      products:products!products_subsub_id_fkey (
+        id,
+        slug,
+        name_fr,
+        name_nl,
+        name_en,
+        price,
+        product_images!fk_product ( image_url )
       )
     )
   `)
@@ -62,18 +51,17 @@ export default async function SubcategoryPage({
   .single();
 
 
+
   if (error) {
     console.error("Supabase error:", error);
   }
 
-  const subcat = data as Subcategory | null;
+  const subcat = data as SubCategory | null;
   if (!subcat) return notFound();
 
-  // ---- Helper nom selon locale ----
-  const getName = (obj: any) =>
+  const getName = (obj: Translatable) =>
     locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en;
 
-  // ---- Render ----
   return (
     <>
       <Navbar />
@@ -84,15 +72,18 @@ export default async function SubcategoryPage({
         </h1>
 
         <ul className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {subcat.products.map((prod) => (
-            <ProductCard
-              key={prod.id}
-              product={prod}
-              locale={locale}
-              categorySlug={category}
-              subcategorySlug={subcat.slug}
-            />
-          ))}
+          {subcat.subsubcategories.flatMap((ssc) =>
+            ssc.products.map((prod: Product) => (
+              <ProductCard
+                key={prod.id}
+                product={prod}
+                locale={locale}
+                categorySlug={category}
+                subcategorySlug={subcat.slug}
+                subsubcategorySlug={ssc.slug}
+              />
+            ))
+          )}
         </ul>
       </div>
 
