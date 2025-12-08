@@ -2,7 +2,6 @@ import { supabase } from "@/lib/supabaseClient";
 import { notFound } from "next/navigation";
 import { Navbar, Footer, ProductGallery, AddToCartButton } from "@/components";
 import { Product } from "@/types/ProductType";
-import type { PageProps } from "next";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -12,16 +11,22 @@ export interface ProductWithImages extends Product {
   product_images?: ProductImage[] | null;
 }
 
-export default async function ProductPage({
-  params,
-}: PageProps<{
+// 1) Définir le type de params comme une PROMISE
+type ProductRouteParams = Promise<{
   locale: string;
   category: string;
   subcategory: string;
   product: string;
-}>) {
+}>;
 
-  const { product, locale } = params;
+// 2) Utiliser ce type dans la signature de la page
+export default async function ProductPage({
+  params,
+}: {
+  params: ProductRouteParams;
+}) {
+  // 3) IMPORTANT : await params
+  const { product, locale } = await params;
 
   const { data, error } = await supabase
     .from("products_with_discount")
@@ -92,7 +97,6 @@ export default async function ProductPage({
               {getDesc(prod)}
             </p>
 
-            {/* Prix */}
             <div className="mb-6">
               {isDiscounted ? (
                 <>

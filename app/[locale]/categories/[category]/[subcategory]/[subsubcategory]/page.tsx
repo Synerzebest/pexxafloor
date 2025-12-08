@@ -51,7 +51,7 @@ export default async function SubSubCategoryPage({
 
   if (error || !data) return notFound();
 
-  const subSubCategoryData = data as SubSubCategory;
+  const subSubCategoryData = data as unknown as SubSubCategory;
 
   return (
     <>

@@ -55,6 +55,7 @@ export default async function ProRequestsAdminPage() {
       <ProRequestsTable
         pending={pending ?? []}
         recent={recent ?? []}
+        locale={locale}
       />
 
       <Footer />

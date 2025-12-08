@@ -42,7 +42,7 @@ export default function ProductSearch() {
         .limit(8);
 
       console.log(data)
-      if (!error) setResults(data as ProductSearchResult[]);
+      if (!error) setResults(data as unknown as ProductSearchResult[]);
       setLoading(false);
     };
 

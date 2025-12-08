@@ -56,7 +56,7 @@ export default async function CategoryPage({
 
   if (error || !data) return notFound();
 
-  const categoryData = data as Category | null;
+  const categoryData = data as unknown as Category | null;
   if (!categoryData) return notFound();
 
   return (
