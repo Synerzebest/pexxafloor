@@ -32,7 +32,7 @@ export default function LoginForm({ locale }: { locale: string }) {
     await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/api/auth/callback?next=/${locale}/profile`
+        redirectTo: `${window.location.origin}/auth/callback?next=/${locale}/profile`
       }
     });
   }

@@ -1,19 +1,17 @@
-import createMiddleware from "next-intl/middleware";
-import { routing } from "./i18n/routing";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { createMiddlewareClient } from "@supabase/auth-helpers-nextjs";
+import createIntlMiddleware from "next-intl/middleware";
+import { createServerClient } from "@supabase/ssr";
+import { routing } from "./i18n/routing";
 
-const intlMiddleware = createMiddleware(routing);
+const intl = createIntlMiddleware(routing);
 
-// Règles par route
 const ACCESS_RULES: Record<string, string[]> = {
   "/admin": ["admin"],
   "/storekeeper": ["admin", "storekeeper"],
   "/delivery": ["admin", "delivery"],
 };
 
-// 🧠 Enlève la locale du path : /fr/admin/users → /admin/users
 function stripLocale(pathname: string) {
   const parts = pathname.split("/");
   if (["fr", "nl", "en"].includes(parts[1])) {
@@ -23,52 +21,74 @@ function stripLocale(pathname: string) {
 }
 
 export async function middleware(req: NextRequest) {
-  const rawPath = req.nextUrl.pathname;
-  const path = stripLocale(rawPath);
+  const res = NextResponse.next();
 
-  // Trouve le préfixe protégé : /admin, /delivery, /storekeeper
-  const protectedPrefix = Object.keys(ACCESS_RULES).find(prefix =>
-    path.startsWith(prefix)
+  // ⚠️ IMPORTANT : nouvel adapter cookies compatible Next 15
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name) {
+          return req.cookies.get(name)?.value;
+        },
+        set(name, value, options) {
+          res.cookies.set({ name, value, ...options });
+        },
+        remove(name, options) {
+          res.cookies.delete({ name, ...options });
+        }
+      }
+    }
   );
 
-  if (!protectedPrefix) {
-    return intlMiddleware(req);
-  }
+  const url = req.nextUrl;
+  const rawPath = url.pathname;
+  const path = stripLocale(rawPath);
+  const locale = rawPath.split("/")[1] || routing.defaultLocale;
 
-  const res = NextResponse.next();
-  const supabase = createMiddlewareClient({ req, res });
+  // Charger session Supabase
   const {
     data: { session }
   } = await supabase.auth.getSession();
 
-  // PAS CONNECTÉ → login locale
-  if (!session) {
-    const locale = rawPath.split("/")[1] || routing.defaultLocale;
-    return NextResponse.redirect(new URL(`/${locale}/login`, req.url));
+
+  // 1. LOGIN / SIGNUP — si user connecté → redirect
+  if (session && (path === "/login" || path === "/signup")) {
+    url.pathname = `/${locale}/profile`;
+    return NextResponse.redirect(url);
   }
 
-  // Charger le rôle
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("user_role")
-    .eq("id", session.user.id)
-    .single();
 
-  const userRole = profile?.user_role;
+  // 2. PAGES PROTÉGÉES
+  const protectedPrefix = Object.keys(ACCESS_RULES).find(prefix =>
+    path.startsWith(prefix)
+  );
 
-  if (!userRole) {
-    return NextResponse.redirect(new URL("/", req.url));
+  if (protectedPrefix) {
+    // Pas connecté → redirect login
+    if (!session) {
+      url.pathname = `/${locale}/login`;
+      return NextResponse.redirect(url);
+    }
+
+    // Vérifier le rôle
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("user_role")
+      .eq("id", session.user.id)
+      .single();
+
+    const role = profile?.user_role;
+
+    if (!role || !ACCESS_RULES[protectedPrefix].includes(role)) {
+      url.pathname = `/${locale}`;
+      return NextResponse.redirect(url);
+    }
   }
 
-  const allowed = ACCESS_RULES[protectedPrefix];
-
-  // Vérification des permissions
-  if (!allowed.includes(userRole)) {
-    const locale = rawPath.split("/")[1] || routing.defaultLocale;
-    return NextResponse.redirect(new URL(`/${locale}`, req.url));
-  }
-
-  return intlMiddleware(req);
+  // 3. Appliquer next-intl
+  return intl(req);
 }
 
 export const config = {

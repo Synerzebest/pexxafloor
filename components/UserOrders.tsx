@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 import { List, Card, Tag, Collapse, Spin, Empty } from "antd";
 import {
   ShoppingOutlined,
@@ -23,18 +23,27 @@ type Order = {
 };
 
 export default function UserOrders() {
-  const supabase = createClientComponentClient();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let mounted = true;
+
     async function fetchOrders() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+
       if (!user) {
-        setOrders([]);
-        setLoading(false);
+        if (mounted) {
+          setOrders([]);
+          setLoading(false);
+        }
         return;
       }
 
@@ -44,14 +53,25 @@ export default function UserOrders() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
 
-      if (!error && data) setOrders(data as Order[]);
-      setLoading(false);
+      if (!error && data && mounted) {
+        setOrders(data as Order[]);
+      }
+      if (mounted) setLoading(false);
     }
 
     fetchOrders();
-  }, [supabase]);
 
-  // 🎨 Statuts et couleurs
+    // 🔥 mise à jour automatique quand la session change
+    const { data: subscription } = supabase.auth.onAuthStateChange(() => {
+      fetchOrders();
+    });
+
+    return () => {
+      mounted = false;
+      subscription.subscription.unsubscribe();
+    };
+  }, []);
+
   const renderStatus = (status: string) => {
     switch (status.toLowerCase()) {
       case "paid":
@@ -140,9 +160,7 @@ export default function UserOrders() {
                   </span>
                   <div className="flex items-center gap-3">
                     {renderStatus(o.status)}
-                    <span className="font-bold text-lg">
-                      {o.total.toFixed(2)} €
-                    </span>
+                    <span className="font-bold text-lg">{o.total.toFixed(2)} €</span>
                   </div>
                 </div>
               }
@@ -171,7 +189,6 @@ export default function UserOrders() {
                                   </span>
                                 </div>
 
-                                {/* Sous-produits du pack */}
                                 <Collapse
                                   size="small"
                                   className="mt-2"
@@ -183,8 +200,7 @@ export default function UserOrders() {
                                         <ul className="ml-5 list-disc text-sm text-gray-700">
                                           {item.products?.map((p: PackProduct) => (
                                             <li key={p.id}>
-                                              {p.description} —{" "}
-                                              {p.unit_price.toFixed(2)} €
+                                              {p.description} — {p.unit_price.toFixed(2)} €
                                             </li>
                                           ))}
                                         </ul>
@@ -196,14 +212,10 @@ export default function UserOrders() {
                             ) : (
                               <div className="flex justify-between w-full">
                                 <span>
-                                  {item.product?.name ?? "Produit"}
-                                  × {item.quantity}
+                                  {item.product?.name ?? "Produit"} × {item.quantity}
                                 </span>
                                 <span className="font-medium">
-                                  {(
-                                    (item.product?.price ?? 0) * item.quantity
-                                  ).toFixed(2)}{" "}
-                                  €
+                                  {((item.product?.price ?? 0) * item.quantity).toFixed(2)} €
                                 </span>
                               </div>
                             )}
