@@ -5,6 +5,7 @@ import Link from "next/link";
 import { SlidersHorizontal } from "lucide-react";
 import { ProductCard } from "@/components";
 import { Category } from "@/types/CategoryType";
+import { SubSubCategory } from "@/types/SubSubCategoryType";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -64,7 +65,7 @@ export default function CategoryContent({
 
               {/* Aperçu des produits : on parcourt chaque subsubcategory */}
               {sub.subsubcategories?.length > 0 ? (
-                sub.subsubcategories.map((ssc) => (
+                sub.subsubcategories.map((ssc: SubSubCategory) => (
                   <div key={ssc.id} className="space-y-4">
                     {/* Sous-sous-catégorie titre */}
                     <h3 className="text-xl font-semibold text-gray-700">
