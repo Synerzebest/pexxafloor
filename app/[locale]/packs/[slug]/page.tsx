@@ -53,6 +53,8 @@ export default function PackPage() {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  const tuyauOptions = ["PERT", "PERT-AL-PERT"] as const;
+
   // Calculs principaux
   const tubLength = (surface / pasDePose) * 100;
   const circuitsNumber = Math.ceil(tubLength / 100);
@@ -69,8 +71,23 @@ export default function PackPage() {
 
       setProducts(restoredProducts);
       setQuantities(existingPack.quantities);
-      setIncluded([]);
-      setOptions([]);
+      // Pour l'édition, restaurer les inclus et options à partir de la configuration globale
+      const currentPackNumber =
+        slug === "treillis" ? 1 : slug === "agrafe" ? 2 : slug === "natte" ? 3 : null;
+      setIncluded(packs.included.filter((p: Product) => p.packs?.includes(currentPackNumber!)));
+      setOptions(packs.options.filter((p: Product) => p.packs?.includes(currentPackNumber!)));
+      
+      // Restaurer les options sélectionnées
+      const restoredOptions: Record<string, boolean> = {};
+      packs.options
+        .filter(p => p.packs?.includes(currentPackNumber!))
+        .forEach(opt => {
+          if (existingPack.products.some(ep => ep.id === opt.id)) {
+            restoredOptions[opt.id] = true;
+          }
+        });
+      setSelectedOptions(restoredOptions);
+      
       setLoading(false);
       return;
     }
@@ -214,7 +231,7 @@ export default function PackPage() {
       total += inc.price;
     }
     return total;
-  }, [products, quantities, selectedOptions, included]);
+  }, [products, quantities, selectedOptions, included, options]);
 
   if (!packNumber)
     return <div className="p-10 text-center text-red-600">Pack introuvable</div>;
@@ -229,39 +246,47 @@ export default function PackPage() {
   return (
     <>
       <Navbar />
-      <section className="mx-auto max-w-6xl px-4 py-8">
+      <section className="mx-auto max-w-7xl px-4 py-8 md:py-12">
+        <h1 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
+              Pack {slug?.[0]?.toUpperCase() + slug?.slice(1)}
+        </h1>
         {existingPack && (
-          <div className="mb-4 text-sm text-gray-600 bg-gray-50 p-3 rounded">
+          <div className="mb-6 text-sm text-orange-700 bg-orange-100 p-3 rounded-lg border border-orange-200">
             Vous modifiez un pack déjà présent dans votre panier.
           </div>
         )}
 
-        <div className="grid gap-8 md:grid-cols-2">
-          {/* Galerie */}
-          <div className="sticky top-24 self-start flex flex-col items-center">
-            {products.length > 0 && (
-              <>
-                <div className="w-full max-w-[400px]">
+        {/* Grille principale : Galerie (1/3) | Contenu + Prix (2/3) */}
+        <div className="grid gap-10 lg:grid-cols-3">
+          
+          {/* COLONNE 1 (lg:col-span-1) : GALERIE */}
+          <div className="lg:col-span-1">
+            <div className="lg:sticky lg:top-24 self-start bg-white p-4 rounded-xl border border-gray-100">
+              <div className="flex flex-col items-center">
+                
+                {/* Image principale - Petite et centrale */}
+                <div className="w-full max-w-[300px] mb-4">
                   <Image
-                    src={selectedImage || products[0].image || "/images/box.png"}
+                    src={selectedImage || products[0]?.image || "/images/box.png"}
                     alt="Image du pack"
-                    width={500}
-                    height={350}
-                    className="rounded-lg shadow w-full h-auto object-contain bg-gray-50"
+                    width={300}
+                    height={200}
+                    className="rounded-lg w-full h-auto object-contain"
                   />
                 </div>
 
-                <div className="mt-4 grid grid-cols-5 gap-2 max-w-[500px]">
-                  {products.map((p, idx) => (
+                {/* Miniatures */}
+                <div className="mt-2 grid grid-cols-4 gap-2 max-w-[300px] w-full">
+                  {products.filter(p => p.image).slice(0, 4).map((p, idx) => (
                     <div key={p.id}>
                       <Image
                         src={p.image || "/images/box.png"}
                         alt={p.description}
-                        width={80}
-                        height={80}
-                        className={`rounded-lg cursor-pointer object-cover border transition-all duration-200 ${
+                        width={70}
+                        height={70}
+                        className={`rounded-md cursor-pointer object-cover w-full h-16 border transition-all duration-200 ${
                           selectedImage === p.image || (!selectedImage && idx === 0)
-                            ? "border-orange-600 ring-2 ring-orange-500"
+                            ? "border-orange-600 ring-1 ring-orange-500"
                             : "border-gray-200 hover:border-orange-400"
                         }`}
                         onClick={() => setSelectedImage(p.image || "/images/box.png")}
@@ -269,214 +294,318 @@ export default function PackPage() {
                     </div>
                   ))}
                 </div>
-              </>
-            )}
-          </div>
-
-          {/* Configuration */}
-          <div>
-            <h1 className="mb-6 text-2xl font-bold text-gray-800">
-              Pack {slug?.charAt(0).toUpperCase() + slug?.slice(1)}
-            </h1>
-
-            {/* Pas de pose */}
-            <div className="mb-6">
-              <p className="mb-2 font-medium text-gray-700">Pas de pose</p>
-              <Radio.Group
-                value={pasDePose}
-                onChange={(e) => setPasDePose(e.target.value)}
-              >
-                <Radio value={20}>20 cm</Radio>
-                <Radio value={15}>15 cm</Radio>
-                <Radio value={10}>10 cm</Radio>
-              </Radio.Group>
-            </div>
-
-            {/* Type de tuyau */}
-            <div className="mb-6">
-              <p className="mb-2 font-medium text-gray-700">Type de tuyau</p>
-              <Radio.Group
-                value={tuyauType}
-                onChange={(e) => setTuyauType(e.target.value)}
-              >
-                <Radio value="PERT">PERT</Radio>
-                <Radio value="PERT-AL-PERT">PERT-AL-PERT</Radio>
-              </Radio.Group>
-            </div>
-
-            {/* Surface */}
-            <div className="mb-6 flex items-center gap-2">
-              <InputNumber
-                value={surface}
-                min={1}
-                onChange={(val) => setSurface(val || 0)}
-              />
-              <span className="text-gray-500">m²</span>
-            </div>
-
-            {/* Produits */}
-            <Collapse
-              className="[&_.ant-collapse-header]:bg-white [&_.ant-collapse-item-active_.ant-collapse-header]:bg-gray-50"
-              accordion
-              items={products.map((item) => {
-                const qty = quantities[item.id] ?? 1;
-                return {
-                  key: item.id,
-                  label: (
-                    <div className="flex items-center gap-3">
-                      <Image
-                        src={item.image || "/images/box.png"}
-                        alt={item.description}
-                        width={40}
-                        height={40}
-                        className="rounded"
-                      />
-                      <div>
-                        <p className="font-medium text-gray-700">
-                          {item.description}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {qty} × {item.price.toFixed(2)} € ={" "}
-                          {(qty * item.price).toFixed(2)} €
-                        </p>
-                      </div>
-                    </div>
-                  ),
-                  children: (
-                    <div className="space-y-3">
-                      <p>{item.description}</p>
-                      <div className="flex items-center gap-2">
-                        <InputNumber
-                          min={1}
-                          value={qty}
-                          onChange={(val) =>
-                            setQuantities((prev) => ({
-                              ...prev,
-                              [item.id]: Math.ceil(val || 1),
-                            }))
-                          }
-                        />
-                        {initialQuantities[item.id] !== qty && (
-                          <Button
-                            size="small"
-                            onClick={() =>
-                              setQuantities((prev) => ({
-                                ...prev,
-                                [item.id]: initialQuantities[item.id],
-                              }))
-                            }
-                          >
-                            Revenir au calcul
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ),
-                };
-              })}
-            />
-
-            {/* Inclus */}
-            <div className="mt-8">
-              <h2 className="font-semibold text-lg mb-3">Inclus dans le pack</h2>
-              <ul className="space-y-2">
-                {included.map((item) => (
-                  <li
-                    key={item.id}
-                    className="flex justify-between items-center border border-gray-200 rounded-lg px-4 py-2 hover:bg-gray-100 transition"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span className="text-orange-500">•</span>
-                      <span className="text-gray-800 text-sm font-medium">{item.description}</span>
-                    </div>
-                    <span className="font-semibold text-gray-700">
-                      {item.price.toFixed(2)} €
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Options */}
-            <div className="mt-8">
-              <h2 className="font-semibold text-lg mb-3">Options disponibles</h2>
-              <div className="flex flex-col gap-2">
-                {options.map((opt) => {
-                  const checked = selectedOptions[opt.id] || false;
-                  return (
-                    <label
-                      key={opt.id}
-                      className={`flex items-center justify-between border rounded-xl px-4 py-3 cursor-pointer transition ${
-                        checked
-                          ? "border-orange-500 bg-orange-50 shadow-sm"
-                          : "border-gray-200 hover:border-orange-400 hover:bg-gray-50"
-                      }`}
-                    >
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={(e) =>
-                            setSelectedOptions((prev) => ({
-                              ...prev,
-                              [opt.id]: e.target.checked,
-                            }))
-                          }
-                          className="w-4 h-4 accent-orange-600"
-                        />
-                        <span className="text-sm font-medium text-gray-800">{opt.description}</span>
-                      </div>
-                      <span className="font-semibold text-gray-700 whitespace-nowrap">
-                        {opt.price.toFixed(2)} €
-                      </span>
-                    </label>
-                  );
-                })}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Total */}
-        <div className="mt-8 flex justify-between items-center border-t pt-4">
-          <div className="text-lg font-bold text-gray-900">
-            Total : {totalPrice.toFixed(2)} €
+          {/* COLONNE 2 (lg:col-span-2) : CONFIGURATION + COMPOSANTS + PRIX EN BAS */}
+          <div className="lg:col-span-2 flex flex-col justify-between">
+            <div className="space-y-8">
+              
+                {/* 1. Configuration (Pas de pose, Tuyau, Surface) */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100 space-y-6">
+                  <h2 className="text-xl font-semibold text-gray-800 border-b pb-3">Paramètres du pack</h2>
+                    
+                  <div className="md:flex md:gap-6 space-y-6 md:space-y-0">
+                      {/* Pas de pose */}
+                      <div className="flex-1">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Pas de pose
+                        </label>
+
+                        <div className="flex gap-2">
+                          {[20, 15, 10].map((val) => (
+                            <button
+                              key={val}
+                              onClick={() => setPasDePose(val)}
+                              className={`
+                                px-4 py-1.5 rounded-lg text-sm border transition cursor-pointer
+                                ${pasDePose === val 
+                                  ? "bg-orange-500 border-orange-500 text-white" 
+                                  : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-500"}
+                              `}
+                            >
+                              {val} cm
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Type de tuyau */}
+                      <div className="flex-1">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Type de tuyau
+                        </label>
+
+                        <div className="flex gap-2">
+                          {tuyauOptions.map((val) => (
+                            <button
+                              key={val}
+                              onClick={() => setTuyauType(val)}
+                              className={`
+                                px-4 py-1.5 rounded-lg text-sm border transition cursor-pointer
+                                ${tuyauType === val
+                                  ? "bg-orange-500 border-orange-500 text-white"
+                                  : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-500"}
+                              `}
+                            >
+                              {val}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Surface */}
+                    <div className="flex-1 pt-4">
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Surface à chauffer <span className="font-semibold text-gray-500">(Tuyau estimé : {Math.ceil(tubLength)} m)</span>
+                        </label>
+
+                        <div className="flex items-center gap-2">
+                        <InputNumber
+                            min={1}
+                            value={surface}
+                            onChange={(val) => setSurface(Number(val))}
+                            size="large"
+                            className="w-24 rounded-lg"
+                        />
+                        <span className="text-gray-500 text-base">m²</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                {/* 2. Produits ajustables (Collapse) */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100">
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-3">Composants Ajustables</h2>
+                    <Collapse
+                    className="border-none [&_.ant-collapse-item]:border-b [&_.ant-collapse-item-last]:border-b-0"
+                    accordion
+                    items={products.map((item) => {
+                        const qty = quantities[item.id] ?? 1;
+                        const isModified = initialQuantities[item.id] !== qty;
+
+                        return {
+                        key: item.id,
+                        label: (
+                            <div className="flex items-center justify-between py-1">
+                            <div className="flex items-center gap-3">
+                                <Image
+                                src={item.image || "/images/box.png"}
+                                alt={item.description}
+                                width={30}
+                                height={30}
+                                className="rounded-md border border-gray-200"
+                                />
+                                <div>
+                                <p className="font-medium text-gray-700 leading-tight">
+                                    {item.description}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                    Prix unitaire : {item.price.toFixed(2)} €
+                                </p>
+                                </div>
+                            </div>
+                            <p className="text-sm font-semibold text-gray-900 text-right">
+                                <span className={isModified ? 'text-orange-600' : 'text-gray-900'}>
+                                    {qty}
+                                </span>{" "}
+                                x {item.price.toFixed(2)} € ={" "}
+                                <span className="font-bold">
+                                    {(qty * item.price).toFixed(2)} €
+                                </span>
+                            </p>
+                            </div>
+                        ),
+                        children: (
+                            <div className="space-y-3 p-3 bg-gray-50 rounded-md">
+                            <p className="text-sm text-gray-600">{item.description}</p>
+                            <div className="flex items-center gap-3">
+                                <InputNumber
+                                min={1}
+                                value={qty}
+                                onChange={(val) =>
+                                    setQuantities((prev) => ({
+                                    ...prev,
+                                    [item.id]: Math.ceil(val || 1),
+                                    }))
+                                }
+                                size="middle"
+                                className="w-24"
+                                />
+                                {isModified && (
+                                <Button
+                                    size="small"
+                                    type="default"
+                                    onClick={() =>
+                                    setQuantities((prev) => ({
+                                        ...prev,
+                                        [item.id]: initialQuantities[item.id],
+                                    }))
+                                    }
+                                    className="border-orange-400 text-orange-600 hover:border-orange-500 hover:text-orange-700"
+                                >
+                                    Réinitialiser ({initialQuantities[item.id]})
+                                </Button>
+                                )}
+                            </div>
+                            </div>
+                        ),
+                        };
+                    })}
+                    />
+                </div>
+                
+                {/* 3. Inclus */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100">
+                    <h2 className="font-semibold text-xl mb-4 text-gray-800 border-b pb-3">Inclus dans le pack</h2>
+                    <ul className="space-y-3">
+                        {included.map((item) => (
+                            <li
+                                key={item.id}
+                                className="flex justify-between items-center bg-gray-50 rounded-lg px-4 py-3 border border-gray-200"
+                            >
+                                <div className="flex items-center gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5 text-green-600">
+                                    <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4-5.5Z" clipRule="evenodd" />
+                                </svg>
+                                <span className="text-gray-800 text-sm font-medium">{item.description}</span>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* 4. Options */}
+                <div className="bg-white p-6 rounded-xl border border-gray-100">
+                    <h2 className="font-semibold text-xl mb-4 text-gray-800 border-b pb-3">Options disponibles (Ajouter)</h2>
+                    <div className="flex flex-col gap-3">
+                        {options.map((opt) => {
+                        const checked = selectedOptions[opt.id] || false;
+                        return (
+                            <label
+                            key={opt.id}
+                            className={`flex items-center justify-between border rounded-xl px-4 py-3 cursor-pointer transition duration-300 ${
+                                checked
+                                ? "border-orange-500 bg-orange-50"
+                                : "border-gray-200 hover:border-orange-400 hover:bg-gray-50"
+                            }`}
+                            >
+                            <div className="flex items-center gap-3">
+                                <input
+                                type="checkbox"
+                                checked={checked}
+                                onChange={(e) =>
+                                    setSelectedOptions((prev) => ({
+                                    ...prev,
+                                    [opt.id]: e.target.checked,
+                                    }))
+                                }
+                                className="w-5 h-5 accent-orange-600 rounded"
+                                />
+                                <span className="text-sm font-medium text-gray-800">{opt.description}</span>
+                            </div>
+                            <span className="font-bold text-gray-700 whitespace-nowrap text-sm">
+                                + {opt.price.toFixed(2)} €
+                            </span>
+                            </label>
+                        );
+                        })}
+                    </div>
+                </div>
+
+            </div>
+            
+            {/* 5. TOTAL / CTA (En bas de la colonne 2 sur desktop) */}
+            <div className="mt-8 pt-6 bg-white p-6 rounded-xl border-orange-200 hidden lg:block">
+                <div className="pt-4">
+                    <div className="flex justify-between items-center mb-4">
+                        <span className="text-xl font-bold text-gray-900">Total à payer :</span>
+                        <span className="text-3xl font-extrabold text-orange-600">
+                            {totalPrice.toFixed(2)} €
+                        </span>
+                    </div>
+                    
+                    <Button
+                        type="primary"
+                        size="large"
+                        className="w-full h-12 bg-orange-600 border-none hover:bg-orange-700 font-bold text-lg rounded-xl"
+                        onClick={() => {
+                            addToCart({
+                                type: "pack",
+                                id: existingPack?.id || `pack-${Date.now()}`,
+                                slug,
+                                surface,
+                                pasDePose,
+                                tuyauType,
+                                quantities,
+                                products: [
+                                    ...products,
+                                    ...included,
+                                    ...options.filter((o) => selectedOptions[o.id]),
+                                ].map((p) => ({
+                                    id: p.id,
+                                    description: p.description,
+                                    unit_price: p.price,
+                                    total_price: p.price * (quantities[p.id] ?? 1),
+                                })),
+                                total: totalPrice,
+                                quantity: 1,
+                            });
+                            message.success(
+                                existingPack ? "Pack mis à jour dans le panier" : "Pack ajouté au panier"
+                            );
+                        }}
+                    >
+                        {existingPack ? "Mettre à jour le panier" : "Ajouter au panier"}
+                    </Button>
+                </div>
+            </div>
+          </div>
+        </div>
+        
+        {/* TOTAL FIXE SUR MOBILE (Visible uniquement sur les petits écrans) */}
+      </section>
+      <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 lg:hidden z-40">
+        <div className="flex justify-between items-center max-w-lg mx-auto">
+          <div className="text-base font-bold text-gray-900">
+            Total : <span className="text-orange-600 text-xl">{totalPrice.toFixed(2)} €</span>
           </div>
           <Button
             type="primary"
             size="large"
-            className="bg-orange-600"
+            className="bg-orange-600 border-none hover:bg-orange-700 font-bold rounded-lg"
             onClick={() => {
-              addToCart({
-                type: "pack",
-                id: existingPack?.id || "",
-                slug,
-                surface,
-                pasDePose,
-                tuyauType,
-                quantities,
-                products: [
-                  ...products,
-                  ...included,
-                  ...options.filter((o) => selectedOptions[o.id]),
-                ].map((p) => ({
-                  id: p.id,
-                  description: p.description,
-                  unit_price: p.price,
-                  total_price: p.price * (quantities[p.id] ?? 1),
-                })),
-                total: totalPrice,
-                quantity: 1,
-              });
-              message.success(
-                existingPack ? "Pack mis à jour dans le panier" : "Pack ajouté au panier"
-              );
+                addToCart({
+                    type: "pack",
+                    id: existingPack?.id || `pack-${Date.now()}`,
+                    slug,
+                    surface,
+                    pasDePose,
+                    tuyauType,
+                    quantities,
+                    products: [
+                      ...products,
+                      ...included,
+                      ...options.filter((o) => selectedOptions[o.id]),
+                    ].map((p) => ({
+                      id: p.id,
+                      description: p.description,
+                      unit_price: p.price,
+                      total_price: p.price * (quantities[p.id] ?? 1),
+                    })),
+                    total: totalPrice,
+                    quantity: 1,
+                  });
+                message.success(
+                    existingPack ? "Pack mis à jour dans le panier" : "Pack ajouté au panier"
+                );
             }}
           >
-            {existingPack ? "Mettre à jour le panier" : "Ajouter au panier"}
+            {existingPack ? "Mettre à jour" : "Ajouter au panier"}
           </Button>
         </div>
-      </section>
+      </div>
       <Footer />
     </>
   );
