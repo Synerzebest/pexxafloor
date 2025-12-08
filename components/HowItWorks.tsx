@@ -24,7 +24,7 @@ export default function HowItWorks() {
           whileInView={{opacity: 1, y: 0}}
           transition={{duration: 0.4}}
           viewport={{once: true}}
-          className="text-center text-3xl font-bold text-orange-600 mb-12"
+          className="text-center text-3xl font-bold text-orange-500 mb-12"
         >
           {t('title')}
         </motion.h2>
@@ -39,7 +39,7 @@ export default function HowItWorks() {
               viewport={{once: true}}
               className="flex flex-col items-start rounded-xl border border-orange-100 bg-orange-50 p-6 shadow-sm hover:shadow-md transition"
             >
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-600 text-white">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-lg bg-orange-500 text-white">
                 <step.icon className="h-6 w-6" />
               </div>
               <h3 className="mb-2 text-lg font-semibold text-gray-900">{step.title}</h3>

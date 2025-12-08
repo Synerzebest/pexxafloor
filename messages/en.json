@@ -5,6 +5,14 @@
       "benefits": "Benefits",
       "contact": "Contact"
     },
+    "Hero": {
+      "badge": "Professional Floor Heating Solutions",
+      "title": "Warmth From",
+      "subtitle": "The Ground Up",
+      "description": "Calculate your perfect floor heating pack in seconds, or explore our complete range of premium heating products.",
+      "calculate_button": "Calculate My Pack",
+      "products_button": "See All Products"
+    },
     "SurfaceCalculator": {
       "eyebrow": "Instant quote",
       "title": { "line1": "Underfloor heating", "line2": "tailored" },

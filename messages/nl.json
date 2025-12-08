@@ -5,6 +5,14 @@
       "benefits": "Voordelen",
       "contact": "Contact"
     },
+    "Hero": {
+      "badge": "Professional Floor Heating Solutions",
+      "title": "Warmte",
+      "subtitle": "vanuit de vloer",
+      "description": "Bereken in enkele seconden uw perfecte vloerverwarmingspakket of ontdek ons volledige assortiment professionele oplossingen.",
+      "calculate_button": "Mijn pakket berekenen",
+      "products_button": "Alle producten bekijken"
+    },
     "SurfaceCalculator": {
         "eyebrow": "Directe offerte",
         "title": { "line1": "Vloerverwarming", "line2": "op maat" },
