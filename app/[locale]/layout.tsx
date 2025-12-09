@@ -5,7 +5,7 @@ import { CartProvider } from "@/context/CartContext"
 import CartDrawer from "@/components/CartDrawer";
 import { Toaster } from "sonner";
 
-export default async function LocaleLayout({ // Renommé de RootLayout à LocaleLayout pour la clarté
+export default async function LocaleLayout({
   children,
   params
 }: Readonly<{
@@ -19,9 +19,8 @@ export default async function LocaleLayout({ // Renommé de RootLayout à Locale
   }
 
   return (
-    // --- IMPORTANT: RETIRER <html> et <body> ici
     <>
-      <div id="locale-wrapper" lang={locale}> {/* Optionnel: Vous pouvez définir 'lang' sur un div pour les lecteurs d'écran */}
+      <div id="locale-wrapper" lang={locale}>
         <NextIntlClientProvider>
           <CartProvider>
             {children}
@@ -31,6 +30,5 @@ export default async function LocaleLayout({ // Renommé de RootLayout à Locale
         </NextIntlClientProvider>
       </div>
     </>
-    // --- IMPORTANT: RETIRER <html> et <body> ici
   );
 }

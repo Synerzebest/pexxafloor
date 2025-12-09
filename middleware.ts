@@ -21,7 +21,7 @@ function stripLocale(pathname: string) {
 }
 
 export async function middleware(req: NextRequest) {
-  // Bypass middleware for OAuth routes
+  // -- BYPASS OAUTH ROUTES --
   if (
     req.nextUrl.pathname.startsWith("/auth/login") ||
     req.nextUrl.pathname.startsWith("/auth/callback")
@@ -29,79 +29,67 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const res = NextResponse.next();
+  // IMPORTANT : ne pas créer res avant intl
+  let response = intl(req);
 
-  // ⚠️ IMPORTANT : nouvel adapter cookies compatible Next 15
+  // Supabase session handling
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name) {
-          return req.cookies.get(name)?.value;
+        get: (name) => req.cookies.get(name)?.value,
+        set: (name, value, options) => {
+          response.cookies.set({ name, value, ...options });
         },
-        set(name, value, options) {
-          res.cookies.set({ name, value, ...options });
+        remove: (name, options) => {
+          response.cookies.delete({ name, ...options });
         },
-        remove(name, options) {
-          res.cookies.delete({ name, ...options });
-        }
-      }
+      },
     }
   );
+
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   const url = req.nextUrl;
   const rawPath = url.pathname;
   const path = stripLocale(rawPath);
   const locale = rawPath.split("/")[1] || routing.defaultLocale;
 
-  // Charger session Supabase
-  const {
-    data: { session }
-  } = await supabase.auth.getSession();
-
-
-  // 1. LOGIN / SIGNUP — si user connecté → redirect
+  // 1. LOGIN / SIGNUP redirect if logged in
   if (session && (path === "/login" || path === "/signup")) {
     url.pathname = `/${locale}/profile`;
     return NextResponse.redirect(url);
   }
 
-
-  // 2. PAGES PROTÉGÉES
-  const protectedPrefix = Object.keys(ACCESS_RULES).find(prefix =>
+  // 2. Protected pages
+  const protectedPrefix = Object.keys(ACCESS_RULES).find((prefix) =>
     path.startsWith(prefix)
   );
 
   if (protectedPrefix) {
-    // Pas connecté → redirect login
     if (!session) {
       url.pathname = `/${locale}/login`;
       return NextResponse.redirect(url);
     }
 
-    // Vérifier le rôle
     const { data: profile } = await supabase
       .from("profiles")
       .select("user_role")
       .eq("id", session.user.id)
       .single();
 
-    const role = profile?.user_role;
-
-    if (!role || !ACCESS_RULES[protectedPrefix].includes(role)) {
+    if (!profile || !ACCESS_RULES[protectedPrefix].includes(profile.user_role)) {
       url.pathname = `/${locale}`;
       return NextResponse.redirect(url);
     }
   }
 
-  // 3. Appliquer next-intl
-  return intl(req);
+  return response;
 }
 
 export const config = {
-  matcher: [
-    "/((?!api|_next|_vercel|auth|.*\\..*).*)",
-  ],
+  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };
-

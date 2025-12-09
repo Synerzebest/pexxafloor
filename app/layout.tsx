@@ -19,7 +19,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={newsreader.variable}>
-      <body>{children}</body>
+      <body>
+            {children}
+      </body>
     </html>
   );
 }

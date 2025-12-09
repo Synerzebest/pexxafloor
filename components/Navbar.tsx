@@ -7,7 +7,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Menu as LucideMenu, Sparkles, X, ShoppingCart } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 import { useCart } from "@/context/CartContext";
 import UserButton from './UserButton';
 import ProductSearch from './ProductSearch';
@@ -38,7 +38,11 @@ export default function Navbar() {
   const locale = useLocale() as SupportedLocale;
   const pathname = usePathname() ?? '/';
   const router = useRouter();
-  const supabase = createClientComponentClient();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  
   const t = useTranslations('Navbar');
   const { items, openCart } = useCart();
 
