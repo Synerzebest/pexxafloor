@@ -88,9 +88,9 @@ export default function Hero() {
             className="flex items-center gap-2 cursor-pointer"
           >
             <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4, duration: 1.5 }}
               className="
                 cursor-pointer flex items-center gap-2 
                 bg-orange-500 hover:bg-orange-600 
@@ -112,9 +112,9 @@ export default function Hero() {
             className="flex items-center gap-2 cursor-pointer"
           >
             <motion.button
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.35 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1}}
+              transition={{ delay: 0.4, duration: 1.5 }}
               className="
                 cursor-pointer flex items-center gap-2 
                 border-2 border-orange-400 text-orange-600 
@@ -134,6 +134,7 @@ export default function Hero() {
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
           className="
             inline-flex items-center gap-2 
             rounded-full border border-orange-200 bg-orange-50 

@@ -310,26 +310,48 @@ export default function PackPage() {
                       {/* Pas de pose */}
                       <div className="flex-1">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Pas de pose
+                          Pas de pose (distance entre les tuyaux)
                         </label>
 
                         <div className="flex gap-2">
-                          {[20, 15, 10].map((val) => (
-                            <button
-                              key={val}
-                              onClick={() => setPasDePose(val)}
-                              className={`
-                                px-4 py-1.5 rounded-lg text-sm border transition cursor-pointer
-                                ${pasDePose === val 
-                                  ? "bg-orange-500 border-orange-500 text-white" 
-                                  : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-500"}
-                              `}
-                            >
-                              {val} cm
-                            </button>
-                          ))}
+                          {[20, 15, 10].map((val) => {
+                            const tooltips: Record<number, string> = {
+                              20: "Pour des constructions bien isolées ou pour chauffage d'appoint",
+                              15: "Pour des constructions moyennement isolées",
+                              10: "Pour des constructions anciennes ou faiblement isolées",
+                            };
+
+                            return (
+                              <div key={val} className="relative group">
+                                <button
+                                  onClick={() => setPasDePose(val)}
+                                  className={`
+                                    px-4 py-1.5 rounded-lg text-sm border transition cursor-pointer
+                                    ${pasDePose === val 
+                                      ? "bg-orange-500 border-orange-500 text-white" 
+                                      : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-500"}
+                                  `}
+                                >
+                                  {val} cm
+                                </button>
+
+                                {/* Tooltip */}
+                                <span className="
+                                  absolute left-1/2 -translate-x-1/2 -top-10
+                                  opacity-0 group-hover:opacity-100
+                                  pointer-events-none
+                                  whitespace-nowrap
+                                  bg-gray-900 text-white text-xs py-1 px-2 rounded shadow-lg
+                                  transition-opacity duration-200
+                                ">
+                                  {tooltips[val]}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
+
                       {/* Type de tuyau */}
                       <div className="flex-1">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -337,28 +359,50 @@ export default function PackPage() {
                         </label>
 
                         <div className="flex gap-2">
-                          {tuyauOptions.map((val) => (
-                            <button
-                              key={val}
-                              onClick={() => setTuyauType(val)}
-                              className={`
-                                px-4 py-1.5 rounded-lg text-sm border transition cursor-pointer
-                                ${tuyauType === val
-                                  ? "bg-orange-500 border-orange-500 text-white"
-                                  : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-500"}
-                              `}
-                            >
-                              {val}
-                            </button>
-                          ))}
+                          {tuyauOptions.map((val) => {
+                            const tooltips: Record<string, string> = {
+                              "PERT":
+                                "Tuyau souple, barrière anti-oxygène, le plus utilisé pour le chauffage au sol",
+                              "PERT-AL-PERT":
+                                "Couche d'aluminium en sandwich entre deux couches de PERT, très malléable",
+                            };
+
+                            return (
+                              <div key={val} className="relative group">
+                                <button
+                                  onClick={() => setTuyauType(val)}
+                                  className={`
+                                    px-4 py-1.5 rounded-lg text-sm border transition cursor-pointer
+                                    ${tuyauType === val
+                                      ? "bg-orange-500 border-orange-500 text-white"
+                                      : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-500"}
+                                  `}
+                                >
+                                  {val}
+                                </button>
+
+                                {/* Tooltip */}
+                                <span className="
+                                  absolute left-1/2 -translate-x-1/2 -top-10
+                                  opacity-0 group-hover:opacity-100
+                                  pointer-events-none
+                                  whitespace-nowrap
+                                  bg-gray-900 text-white text-xs py-1 px-2 rounded shadow-lg
+                                  transition-opacity duration-200
+                                ">
+                                  {tooltips[val]}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Surface */}
                     <div className="flex-1 pt-4">
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Surface à chauffer <span className="font-semibold text-gray-500">(Tuyau estimé : {Math.ceil(tubLength)} m)</span>
+                        Surface à chauffer
                         </label>
 
                         <div className="flex items-center gap-2">
@@ -371,13 +415,18 @@ export default function PackPage() {
                         />
                         <span className="text-gray-500 text-base">m²</span>
                         </div>
+                        <p className="text-gray-500 text-sm mt-1">
+                          Tuyau estimé : {Math.ceil(tubLength)} m / nombre de circuits estimé : {circuitsNumber}
+                        </p>
                     </div>
                 </div>
 
 
                 {/* 2. Produits ajustables (Collapse) */}
                 <div className="bg-white p-6 rounded-xl border border-gray-100">
-                    <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-3">Composants Ajustables</h2>
+                    <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-3">
+                    Tout ce dont vous avez besoin pour votre surface de {surface} m² !
+                    </h2>
                     <Collapse
                     className="border-none [&_.ant-collapse-item]:border-b [&_.ant-collapse-item-last]:border-b-0"
                     accordion
@@ -521,15 +570,13 @@ export default function PackPage() {
                 <div className="pt-4">
                     <div className="flex justify-between items-center mb-4">
                         <span className="text-xl font-bold text-gray-900">Total à payer :</span>
-                        <span className="text-3xl font-extrabold text-orange-600">
+                        <span className="text-3xl font-bold text-orange-600">
                             {totalPrice.toFixed(2)} €
                         </span>
                     </div>
                     
-                    <Button
-                        type="primary"
-                        size="large"
-                        className="w-full h-12 bg-orange-600 border-none hover:bg-orange-700 font-bold text-lg rounded-xl"
+                    <button
+                        className="w-full text-white h-12 bg-orange-600 border-none hover:bg-orange-700 cursor-pointer duration-300 rounded-xl"
                         onClick={() => {
                             addToCart({
                                 type: "pack",
@@ -558,7 +605,7 @@ export default function PackPage() {
                         }}
                     >
                         {existingPack ? "Mettre à jour le panier" : "Ajouter au panier"}
-                    </Button>
+                    </button>
                 </div>
             </div>
           </div>
@@ -571,10 +618,8 @@ export default function PackPage() {
           <div className="text-base font-bold text-gray-900">
             Total : <span className="text-orange-600 text-xl">{totalPrice.toFixed(2)} €</span>
           </div>
-          <Button
-            type="primary"
-            size="large"
-            className="bg-orange-600 border-none hover:bg-orange-700 font-bold rounded-lg"
+          <button
+            className="bg-orange-600 text-white border-none hover:bg-orange-700 rounded-lg"
             onClick={() => {
                 addToCart({
                     type: "pack",
@@ -603,7 +648,7 @@ export default function PackPage() {
             }}
           >
             {existingPack ? "Mettre à jour" : "Ajouter au panier"}
-          </Button>
+          </button>
         </div>
       </div>
       <Footer />

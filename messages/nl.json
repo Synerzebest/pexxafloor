@@ -50,33 +50,23 @@
         "view-package": "Bekijk pakket"
     },
     "HowItWorks": {
-        "title": "Hoe werkt het",
-        "steps": {
-          "fast": {
-            "title": "Snel",
-            "desc": "Ontvang binnen enkele seconden een prijsindicatie."
-          },
-          "simple": {
-            "title": "Eenvoudig en efficiënt",
-            "desc": "Voer de te verwarmen oppervlakte in, wij doen de rest."
-          },
-          "transparent": {
-            "title": "Transparante prijzen",
-            "desc": "Geen verrassingen, alles is vanaf het begin duidelijk."
-          },
-          "multiple": {
-            "title": "Meerdere systemen voor één oppervlakte",
-            "desc": "Voor dezelfde oppervlakte ziet u verschillende prijzen per systeem."
-          },
-          "customizable": {
-            "title": "Aanpasbaar pakket",
-            "desc": "Pas de inhoud van het pakket aan uw behoeften aan."
-          },
-          "instantUpdate": {
-            "title": "Prijs direct bijgewerkt",
-            "desc": "Elke wijziging wordt onmiddellijk in de prijs weergegeven."
-          }
+      "title": {"line1": "Hoe onze", "line2": " calculator werkt"},
+      "subtitle": "Ontvang uw gepersonaliseerde vloerverwarmingspakket in drie eenvoudige stappen.",
+      "steps": {
+        "first": {
+          "title": "Oppervlak om te verwarmen",
+          "desc": "Voer eenvoudigweg het oppervlak in vierkante meters in dat u wilt verwarmen in onze rekenmachine."
+        },
+        "second": {
+          "title": "Jouw gepersonaliseerde pakket",
+          "desc": "Wij berekenen direct de exacte producten en hoeveelheden die u nodig hebt."
+        },
+        "third": {
+          "title": "Bestel & Geniet",
+          "desc": "Koop uw gepersonaliseerde pakket en ontvang het zo snel mogelijk."
         }
+      },
+      "cta": "Calculator proberen"
     },
     "Footer": {
         "tagline": "Uw snelle en transparante vloerverwarmingsoplossing.",

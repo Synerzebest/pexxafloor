@@ -50,33 +50,23 @@
       "view-package": "View package"
     },
     "HowItWorks": {
-      "title": "How it works",
+      "title": {"line1": "How our", "line2": " calculator works"},
+      "subtitle": "Get your personalized floor heating pack in three simple steps.",
       "steps": {
-        "fast": {
-          "title": "Fast",
-          "desc": "Get an estimate in just a few seconds."
+        "first": {
+          "title": "Surface To Heat",
+          "desc": "Simply input the square meters you want to heat in our calculator."
         },
-        "simple": {
-          "title": "Simple and efficient",
-          "desc": "Enter the area to heat and we handle the rest."
+        "second": {
+          "title": "Get Your Custom Pack",
+          "desc": "We instantly calculate the exact products and quantities you need."
         },
-        "transparent": {
-          "title": "Transparent pricing",
-          "desc": "No surprises, everything is clear from the start."
-        },
-        "multiple": {
-          "title": "Multiple systems for one area",
-          "desc": "For the same area, see different prices depending on the system."
-        },
-        "customizable": {
-          "title": "Customizable package",
-          "desc": "Adjust the pack contents to suit your needs."
-        },
-        "instantUpdate": {
-          "title": "Instant price updates",
-          "desc": "Every change is instantly reflected in the price."
+        "third": {
+          "title": "Order & Enjoy",
+          "desc": "Purchase your custom pack and receive it as soon as possible."
         }
-      }
+      },
+      "cta": "Try Calculator Now"
     },
     "Footer": {
       "tagline": "Your fast and transparent underfloor heating solution.",

@@ -50,33 +50,23 @@
         "view-package": "Voir le pack"
     },
     "HowItWorks": {
-        "title": "Comment ça marche",
-        "steps": {
-          "fast": {
-            "title": "Rapide",
-            "desc": "Obtenez une estimation en quelques secondes."
-          },
-          "simple": {
-            "title": "Simple et efficace",
-            "desc": "Entrez la surface à chauffer, nous faisons le reste."
-          },
-          "transparent": {
-            "title": "Prix transparents",
-            "desc": "Aucune surprise, tout est clair dès le départ."
-          },
-          "multiple": {
-            "title": "Plusieurs systèmes pour une surface",
-            "desc": "Pour une même surface, découvrez différents prix selon le système."
-          },
-          "customizable": {
-            "title": "Pack modifiable à la demande",
-            "desc": "Adaptez le contenu du pack selon vos besoins."
-          },
-          "instantUpdate": {
-            "title": "Prix mis à jour instantanément",
-            "desc": "Chaque modification se reflète immédiatement dans le prix."
-          }
+      "title": {"line1": "Comment", "line2": " ça marche"},
+      "subtitle": "Obtenez votre pack de chauffage au sol personnalisé en trois étapes simples",
+      "steps": {
+        "first": {
+          "title": "Surface à chauffer",
+          "desc": "Il vous suffit d'entrer la surface en mètres carrés que vous souhaitez chauffer dans notre calculateur."
+        },
+        "second": {
+          "title": "Votre pack personnalisé",
+          "desc": "Nous calculons instantanément les produits et les quantités exactes dont vous avez besoin."
+        },
+        "third": {
+          "title": "Commandez & Profitez",
+          "desc": "Achetez votre pack personnalisé et recevez-le dans les plus brefs délais."
         }
+      },
+      "cta": "Vers le calculateur"
     },
     "Footer": {
         "tagline": "Votre solution chauffage au sol rapide et transparente.",
