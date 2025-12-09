@@ -1,82 +1,79 @@
-'use client';
+"use client";
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import Image from 'next/image';
 import { Loader2, Mail, Lock, LogInIcon } from 'lucide-react';
+import { loginWithEmail } from "@/app/actions/loginEmail";
 
 export default function LoginForm({ locale }: { locale: string }) {
   const t = useTranslations('Login');
   const router = useRouter();
-  const supabase = createClientComponentClient();
 
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  async function loginEmail(e: React.FormEvent) {
-    e.preventDefault();
-    setErr(null);
+  async function handleSubmit(formData: FormData) {
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password: pwd });
-    setLoading(false);
-    if (error) setErr(error.message);
-    else router.push(`/${locale}/profile`);
-  }
-
-  async function loginGoogle() {
     setErr(null);
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback?next=/${locale}/profile`
-      }
-    });
+
+    const result = await loginWithEmail(formData);
+
+    setLoading(false);
+
+    if (result.error) {
+      setErr(result.error.message);
+    } else {
+      router.push(`/${locale}/profile`);
+    }
   }
 
   return (
     <div className="mx-auto mt-20 max-w-md rounded-3xl border border-gray-100 bg-white/80 p-8 shadow-xl backdrop-blur-sm">
-      {/* Logo / Branding */}
+
+      {/* Logo */}
       <div className="flex flex-col items-center">
         <Image
           src="/images/logo.png"
           alt="PexxaFloor Logo"
           width={120}
           height={80}
-          className="h-auto w-auto object-contain"
           priority
         />
-        <h1 className="mt-4 text-3xl font-bold text-gray-900">
-          {t('title')}
-        </h1>
-        <p className="mt-1 text-sm text-gray-500">
-          {t('subtitle')}
-        </p>
+        <h1 className="mt-4 text-3xl font-bold text-gray-900">{t('title')}</h1>
+        <p className="mt-1 text-sm text-gray-500">{t('subtitle')}</p>
       </div>
 
-      {/* Form */}
-      <form onSubmit={loginEmail} className="mt-8 space-y-4">
+      <form action={handleSubmit} className="mt-8 space-y-4">
+
+        {/* Hidden inputs for server action */}
+        <input type="hidden" name="email" value={email} />
+        <input type="hidden" name="password" value={pwd} />
+
         <div className="relative">
           <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
           <input
             type="email"
+            name="emailField"
             placeholder="you@example.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition"
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-3 py-2 text-gray-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition"
           />
         </div>
+
         <div className="relative">
           <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
           <input
             type="password"
+            name="passwordField"
             placeholder="••••••••"
             value={pwd}
             onChange={(e) => setPwd(e.target.value)}
-            className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-3 py-2 text-gray-900 placeholder-gray-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition"
+            className="w-full rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-3 py-2 text-gray-900 focus:border-orange-400 focus:ring-2 focus:ring-orange-200 transition"
           />
         </div>
 
@@ -98,15 +95,15 @@ export default function LoginForm({ locale }: { locale: string }) {
         <div className="flex-grow border-t border-gray-200" />
       </div>
 
-      {/* Google Login */}
-      <button
-        onClick={loginGoogle}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 py-2 font-medium text-gray-700 hover:bg-gray-50 transition cursor-pointer"
+      {/* Google login now uses your route handler */}
+      <a
+        href="/auth/login/google"
+        className="flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 py-2 font-medium text-gray-700 hover:bg-gray-50 transition"
       >
         <Image src="/images/google.png" alt="Google" width={18} height={18} />
         {t('google')}
-      </button>
-      
+      </a>
+
       <div className="mt-6 text-center text-sm text-gray-600">
         {t('noAccount')}{" "}
         <a

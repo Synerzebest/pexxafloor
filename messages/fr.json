@@ -9,9 +9,9 @@
       "badge": "Solutions professionnelles de chauffage au sol",
       "title": "La chaleur",
       "subtitle": "qui vient du sol",
-      "description": "Calculez votre pack de chauffage au sol en quelques secondes ou explorez notre gamme complète de solutions professionnelles.",
+      "description": { "bold1": "Calculez", "text1": " votre pack de chauffage au sol en quelques secondes ou ", "bold2": "explorez ", "text2": "notre gamme complète de solutions professionnelles."},
       "calculate_button": "Calculer mon pack",
-      "products_button": "Voir tous les produits"
+      "products_button": "Explorez tous les produits"
     },
     "SurfaceCalculator": {
         "eyebrow": "Devis instantané",

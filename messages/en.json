@@ -9,7 +9,7 @@
       "badge": "Professional Floor Heating Solutions",
       "title": "Warmth From",
       "subtitle": "The Ground Up",
-      "description": "Calculate your perfect floor heating pack in seconds, or explore our complete range of premium heating products.",
+      "description": { "bold1": "Calculate", "text1": " your perfect floor heating pack in seconds, or ", "bold2": "explore ", "text2": "our complete range of premium heating products."},
       "calculate_button": "Calculate My Pack",
       "products_button": "See All Products"
     },

@@ -68,7 +68,10 @@ export default function Hero() {
             mx-auto md:mx-0
           "
         >
-          {t("description")}
+          <b>{t("description.bold1")}</b>
+          {t("description.text1")}
+          <b>{t('description.bold2')}</b>
+          {t('description.text2')}
         </motion.p>
 
         {/* CTA buttons */}

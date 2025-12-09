@@ -21,6 +21,14 @@ function stripLocale(pathname: string) {
 }
 
 export async function middleware(req: NextRequest) {
+  // Bypass middleware for OAuth routes
+  if (
+    req.nextUrl.pathname.startsWith("/auth/login") ||
+    req.nextUrl.pathname.startsWith("/auth/callback")
+  ) {
+    return NextResponse.next();
+  }
+
   const res = NextResponse.next();
 
   // ⚠️ IMPORTANT : nouvel adapter cookies compatible Next 15
@@ -92,5 +100,8 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
+  matcher: [
+    "/((?!api|_next|_vercel|auth|.*\\..*).*)",
+  ],
 };
+
