@@ -1,10 +1,12 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { getLocale } from "next-intl/server";
-import { createServerClient } from "@supabase/ssr";
-import SignupForm from "@/components/auth/SignupForm";
+"use server";
 
-export default async function SignupPage() {
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
+
+export async function signupWithEmail(formData: FormData) {
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -25,13 +27,10 @@ export default async function SignupPage() {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.signUp({
+    email,
+    password,
+  });
 
-  const locale = await getLocale();
-
-  if (user) redirect(`/${locale}/profile`);
-
-  return <SignupForm locale={locale} />;
+  return { data, error };
 }

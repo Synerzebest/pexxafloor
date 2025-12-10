@@ -82,6 +82,8 @@
     "Login": { 
       "title": "Sign in", 
       "subtitle": "Smart underfloor heating by PexxaFloor",
+      "email": "Email",
+      "password": "Password",
       "cta": "sign in", 
       "google": "Continue with Google", 
       "or": "Or",
@@ -91,6 +93,9 @@
     "Signup": {
       "title": "Signup", 
       "subtitle": "Join PexxaFloor and enjoy optimal comfort",
+      "email": "Email",
+      "password": "Password",
+      "confirm": "Confirm password",
       "cta": "Create my account", 
       "google": "Signup with Google",
       "or": "Or",

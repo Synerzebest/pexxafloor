@@ -82,6 +82,8 @@
     "Login": { 
       "title": "Se connecter", 
       "subtitle": "Chauffage au sol intelligent par PexxaFloor",
+      "email": "Email",
+      "password": "Mot de passe",
       "cta": "Se connecter", 
       "google": "Continuer avec Google", 
       "or": "Ou",
@@ -91,6 +93,9 @@
     "Signup": {
         "title": "Créer un compte", 
         "subtitle": "Rejoignez PexxaFloor et profitez d’un confort optimal",
+        "email": "Email",
+        "password": "Mot de passe",
+        "confirm": "Confirmer mot de passe",
         "or": "Ou",
         "cta": "Créer mon compte", 
         "google": "S'inscrire avec Google",

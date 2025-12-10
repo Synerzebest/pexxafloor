@@ -82,6 +82,8 @@
     "Login": { 
       "title": "Log in", 
       "subtitle": "Slimme vloerverwarming van PexxaFloor",
+      "email": "Email",
+      "password": "Wachtwoord",
       "cta": "Log in", 
       "google": "Verder met Google", 
       "or": "Of",
@@ -91,6 +93,9 @@
     "Signup": {
         "title": "Maak een account aan", 
         "subtitle": "Sluit u aan bij PexxaFloor en geniet van optimaal comfort",
+        "email": "Email",
+        "password": "Wachtwoord",
+        "confirm": "Wachwoord bevestigen",
         "cta": "Mijn account aanmaken", 
         "google": "Signup met Google",
         "or": "Of",
