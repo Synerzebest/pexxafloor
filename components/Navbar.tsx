@@ -152,7 +152,7 @@ export default function Navbar() {
               className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-3 py-2 text-xs font-medium text-orange-700 shadow-sm"
             >
               <Sparkles className="h-4 w-4" />
-              Get a Quote
+              {t('quote_btn')}
             </Link>
           </motion.div>
 

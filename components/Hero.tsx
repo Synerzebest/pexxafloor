@@ -90,7 +90,7 @@ export default function Hero() {
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.4, duration: 1.5 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
               className="
                 cursor-pointer flex items-center gap-2 
                 bg-orange-500 hover:bg-orange-600 
@@ -114,7 +114,7 @@ export default function Hero() {
             <motion.button
               initial={{ opacity: 0 }}
               animate={{ opacity: 1}}
-              transition={{ delay: 0.4, duration: 1.5 }}
+              transition={{ delay: 0.4, duration: 0.8 }}
               className="
                 cursor-pointer flex items-center gap-2 
                 border-2 border-orange-400 text-orange-600 
