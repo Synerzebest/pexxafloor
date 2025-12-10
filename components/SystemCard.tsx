@@ -136,7 +136,7 @@ export default function SystemCard({
             animate={{ opacity: 1, y: 0 }}
             className="text-right text-lg font-semibold text-orange-600"
           >
-            {calculatedPrice.toFixed(2)} €
+            {calculatedPrice.toFixed(2).replace(".", ",")} €
           </motion.div>
         )}
       </div>

@@ -7,6 +7,7 @@ import ProductGallery from "./ProductGallery";
 import AddToCartButton from "./AddToCartButton";
 import UserOrders from "./UserOrders";
 import Hero from "./Hero";
+import FAQSection from "./FAQSection";
 
 export {
     Navbar,
@@ -17,5 +18,6 @@ export {
     Footer,
     AddToCartButton,
     UserOrders,
-    Hero
+    Hero,
+    FAQSection
 }

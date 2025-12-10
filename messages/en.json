@@ -7,8 +7,8 @@
     },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
-      "title": "Warmth From",
-      "subtitle": "The Ground Up",
+      "title": "Floor heating",
+      "subtitle": "simple and tailor-made",
       "description": { "bold1": "Calculate", "text1": " your perfect floor heating pack in seconds, or ", "bold2": "explore ", "text2": "our complete range of premium heating products."},
       "calculate_button": "Calculate My Pack",
       "products_button": "Explore All Products"
@@ -29,15 +29,15 @@
     "Systems": {
       "title": "Choose the ideal system for your space",
       "set1": {
-        "title": "Set 1A — Steel mesh",
+        "title": "Steel mesh",
         "insulation": "No standard insulation"
       },
       "set2": {
-        "title": "Set 1B — Tacker plate",
+        "title": "Tacker plate",
         "insulation": "Insulation 20–30mm"
       },
       "set3": {
-        "title": "Set 1C — Studded plate",
+        "title": "Studded plate",
         "height": "From 20mm",
         "insulation": "Insulation 0–30mm"
       },

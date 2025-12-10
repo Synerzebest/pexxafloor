@@ -7,8 +7,8 @@
     },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
-      "title": "Warmte",
-      "subtitle": "vanuit de vloer",
+      "title": "Vloerverwarming",
+      "subtitle": "eenvoudig en op maat",
       "description": { "bold1": "Bereken", "text1": " in enkele seconden uw perfecte vloerverwarmingspakket of ", "bold2": "ontdek ", "text2": "ons volledige assortiment professionele oplossingen."},
       "calculate_button": "Mijn pakket berekenen",
       "products_button": "Alle producten ontdekken"
@@ -29,15 +29,15 @@
     "Systems": {
         "title": "Kies het ideale systeem voor uw ruimte",
         "set1": {
-          "title": "Set 1A — Staaldraadmat",
+          "title": "Staaldraadmat",
           "insulation": "Geen standaard isolatie"
         },
         "set2": {
-          "title": "Set 1B — Tackerplaat",
+          "title": "Tackerplaat",
           "insulation": "Isolatie 20–30mm"
         },
         "set3": {
-          "title": "Set 1C — Noppenplaat",
+          "title": "Noppenplaat",
           "height": "Vanaf 20mm",
           "insulation": "Isolatie 0–30mm"
         },

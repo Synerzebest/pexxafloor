@@ -7,8 +7,8 @@
     },
     "Hero": {
       "badge": "Solutions professionnelles de chauffage au sol",
-      "title": "La chaleur",
-      "subtitle": "qui vient du sol",
+      "title": "Le chauffage au sol",
+      "subtitle": "simple et sur-mesure",
       "description": { "bold1": "Calculez", "text1": " votre pack de chauffage au sol en quelques secondes ou ", "bold2": "explorez ", "text2": "notre gamme complète de solutions professionnelles."},
       "calculate_button": "Calculer mon pack",
       "products_button": "Explorez tous les produits"
@@ -29,15 +29,15 @@
     "Systems": {
         "title": "Choisissez le système idéal pour votre espace",
         "set1": {
-          "title": "Set 1A — Treillis acier",
+          "title": "Treillis acier",
           "insulation": "Pas d'isolation standard"
         },
         "set2": {
-          "title": "Set 1B — Plaque Tacker",
+          "title": "Système à agrafe (tacker)",
           "insulation": "Isolation 20–30mm"
         },
         "set3": {
-          "title": "Set 1C — Plaque à plots",
+          "title": "Plaque à plots",
           "height": "À partir de 20mm",
           "insulation": "Isolation 0–30mm"
         },
