@@ -3,7 +3,7 @@
 import { useState, Fragment } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createBrowserClient } from '@supabase/ssr';
 import {
   CheckCircle2,
   XCircle,
@@ -46,7 +46,11 @@ export default function ProRequestsTable({
   recent
 }: { locale: string; pending: AppRow[]; recent: AppRow[] }) {
   const t = useTranslations('AdminPro');
-  const supabase = createClientComponentClient();
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+  
   const router = useRouter();
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);

@@ -34,7 +34,7 @@ export default function OrdersAdminPage() {
     <>
       <Navbar />
 
-      <div className="max-w-6xl mx-auto py-10">
+      <div className="max-w-6xl mx-auto py-10 relative top-32">
         {/* Filtres */}
         <div className="flex justify-between mb-4">
           <Select value={filterStatus} onChange={setFilterStatus} style={{ width: 180 }}>
@@ -76,7 +76,9 @@ export default function OrdersAdminPage() {
         />
       </div>
 
-      <Footer />
+      <div className="relative top-32">
+        <Footer />
+      </div>
     </>
   );
 }

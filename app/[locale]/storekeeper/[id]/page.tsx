@@ -81,7 +81,7 @@ export default function StorekeeperOrderPage() {
     return (
       <>
         <Navbar />
-        <div className="p-6">Chargement...</div>
+        <div className="p-6 relative top-24">Chargement...</div>
         <Footer />
       </>
     );
@@ -91,7 +91,7 @@ export default function StorekeeperOrderPage() {
     <>
       <Navbar />
 
-      <div className="p-6 space-y-6">
+      <div className="p-6 space-y-6 relative top-28">
         <h1 className="text-xl font-bold">
           Commande #{id}{" "}
         </h1>
@@ -119,7 +119,9 @@ export default function StorekeeperOrderPage() {
         )}
       </div>
 
-      <Footer />
+      <div className="relative top-36">
+        <Footer />
+      </div>
     </>
   );
 }

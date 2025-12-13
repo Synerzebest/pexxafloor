@@ -246,7 +246,7 @@ export default function PackPage() {
   return (
     <>
       <Navbar />
-      <section className="mx-auto max-w-7xl px-4 py-8 md:py-12">
+      <section className="mx-auto max-w-7xl px-4 py-8 md:py-12 relative top-24">
         <h1 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
               Pack {slug?.[0]?.toUpperCase() + slug?.slice(1)}
         </h1>
@@ -651,7 +651,9 @@ export default function PackPage() {
           </button>
         </div>
       </div>
-      <Footer />
+      <div className="relative top-36">
+        <Footer />
+      </div>
     </>
   );
 }

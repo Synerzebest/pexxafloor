@@ -16,7 +16,7 @@ export default function SurfaceCalculator({surface, setSurface}: SurfaceCalculat
   };
 
   return (
-    <section className="relative overflow-hidden">
+    <section className="relative top-28 overflow-hidden">
       {/* background gradient léger */}
       <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-white via-white to-orange-50/40" />
       {/* glow subtil à droite */}

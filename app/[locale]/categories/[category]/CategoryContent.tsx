@@ -22,7 +22,7 @@ export default function CategoryContent({
   ) => (locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-16">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-16 relative top-24">
       {/* Header catégorie */}
       <div className="flex items-center justify-between mb-10">
         <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">

@@ -36,7 +36,7 @@ export default function ProductCard({ product, locale, categorySlug, subcategory
             src={imageUrl}
             alt={getName(product)}
             fill
-            className="object-cover"
+            className="object-contain"
           />
         </div>
 

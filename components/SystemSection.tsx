@@ -49,7 +49,7 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
 
   return (
     <motion.section
-      className="mx-auto py-16 max-w-7xl"
+      className="mx-auto py-16 max-w-7xl relative top-28 pb-36"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ delay: 0.2 }}

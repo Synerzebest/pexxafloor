@@ -107,7 +107,7 @@ export default function StorekeeperPage() {
   return (
     <>
       <Navbar />
-      <div className="p-6">
+      <div className="p-6 relative top-28">
         <h1 className="text-2xl font-semibold mb-4">
           Commandes en préparation
         </h1>
@@ -135,7 +135,9 @@ export default function StorekeeperPage() {
           pagination={{ pageSize: 10 }}
         />
       </div>
-      <Footer />
+      <div className="relative top-36">
+        <Footer />
+      </div>
     </>
   );
 }

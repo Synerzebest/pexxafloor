@@ -280,7 +280,7 @@ export default function StorekeeperPage() {
   return (
     <>
       <Navbar />
-      <div className="p-6">
+      <div className="p-6 relative top-28">
         <h1 className="text-2xl font-semibold mb-4">
           Commandes emballées
         </h1>
@@ -337,7 +337,9 @@ export default function StorekeeperPage() {
         </Form>
       </Modal>
 
-      <Footer />
+      <div className="relative top-36">
+        <Footer />
+      </div>
     </>
   );
 }

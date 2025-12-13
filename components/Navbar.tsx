@@ -91,7 +91,7 @@ export default function Navbar() {
   };
 
   return (
-    <header className="w-full border-b border-gray-200">
+    <header className="w-full border-b border-gray-200 fixed z-20">
       {/* --- Bandeau principal --- */}
       <div className="flex items-center justify-between gap-4 px-4 bg-white">
         {/* Logo */}

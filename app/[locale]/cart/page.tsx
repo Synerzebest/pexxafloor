@@ -84,7 +84,7 @@ export default function CartPage() {
     return (
       <>
         <Navbar />
-        <div className="max-w-4xl mx-auto py-20 pb-44">
+        <div className="max-w-4xl mx-auto py-20 pb-44 relative top-24">
           <Empty description="Votre panier est vide" />
         </div>
         <Footer />
@@ -103,7 +103,7 @@ export default function CartPage() {
   return (
     <>
       <Navbar />
-      <div className="max-w-4xl mx-auto py-12 px-4">
+      <div className="max-w-4xl mx-auto py-12 px-4 relative top-24">
         <h1 className="text-3xl font-bold mb-8">Mon panier</h1>
 
         <ul className="space-y-5">
@@ -356,7 +356,10 @@ export default function CartPage() {
           </Button>
         </motion.div>
       </div>
-      <Footer />
+
+      <div className="relative top-32">
+        <Footer />
+      </div>
     </>
   );
 }

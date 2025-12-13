@@ -15,7 +15,7 @@ export default function HowItWorksSection() {
   ];
 
   return (
-    <section className="py-24 relative overflow-hidden bg-white">
+    <section className="py-24 relative top-24 overflow-hidden bg-white">
       <div className="absolute inset-0 flex justify-center">
         <div className="w-[900px] h-[900px] bg-white blur-[120px] rounded-full" />
       </div>

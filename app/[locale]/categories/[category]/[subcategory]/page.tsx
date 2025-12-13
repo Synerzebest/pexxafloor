@@ -66,7 +66,7 @@ export default async function SubcategoryPage({
     <>
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-8 relative top-28 pb-36">
         <h1 className="text-2xl font-bold text-orange-600 mb-6">
           {getName(subcat)}
         </h1>

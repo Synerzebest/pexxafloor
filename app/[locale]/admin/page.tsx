@@ -24,7 +24,7 @@ const AdminPage = () => {
   return (
     <>
       <Navbar />
-      <main className="bg-gradient-to-b from-gray-50 to-white px-6 pt-10 pb-36">
+      <main className="bg-gradient-to-b from-gray-50 to-white px-6 pt-10 relative top-32">
         <div className="max-w-6xl mx-auto">
           <motion.h1
             initial={{ opacity: 0, y: 15 }}
@@ -146,7 +146,9 @@ const AdminPage = () => {
           </div>
         </div>
       </main>
-      <Footer />
+      <div className="relative top-48">
+        <Footer />
+      </div>
     </>
   );
 };

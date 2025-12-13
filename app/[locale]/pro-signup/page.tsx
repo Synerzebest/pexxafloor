@@ -16,7 +16,9 @@ export default async function ProSignupPage() {
       <>
         <Navbar />
         <ProSignupForm locale={locale} />
-        <Footer />
+        <div className="relative top-36">
+          <Footer />
+        </div>
       </>
   );
 }

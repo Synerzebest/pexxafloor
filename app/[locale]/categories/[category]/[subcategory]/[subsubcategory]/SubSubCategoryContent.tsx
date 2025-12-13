@@ -36,7 +36,7 @@ export default function SubSubCategoryContent({
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-12">
+    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-12 relative top-24 pb-32">
       {/* Header sous-sous-catégorie */}
       <div className="flex items-center justify-between mb-10">
         <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">

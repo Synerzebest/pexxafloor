@@ -32,7 +32,7 @@ export default function CatalogPage() {
     <>
       <Navbar />
 
-      <div className="p-6 relative top-4">
+      <div className="p-6 relative top-36">
 
         {/* --- MENU --- */}
         <div className="flex flex-wrap justify-center gap-4 mb-10 relative">
@@ -144,7 +144,9 @@ export default function CatalogPage() {
         </div>
       </div>
 
-      <Footer />
+      <div className="relative top-36">
+        <Footer />
+      </div>
     </>
   );
 }

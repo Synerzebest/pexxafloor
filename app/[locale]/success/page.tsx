@@ -20,7 +20,7 @@ export default function SuccessPage() {
   return (
     <>
       <Navbar />
-      <div className="max-w-3xl mx-auto py-20 px-6 text-center">
+      <div className="max-w-3xl mx-auto py-20 px-6 text-center relative top-24">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
@@ -49,7 +49,9 @@ export default function SuccessPage() {
           </div>
         </motion.div>
       </div>
-      <Footer />
+      <div className="relative top-36">
+        <Footer />
+      </div>
     </>
   );
 }

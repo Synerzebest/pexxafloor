@@ -79,7 +79,7 @@ export default function ProfilesAdminPage() {
     <>
       <Navbar />
 
-      <div className="p-8">
+      <div className="p-8 relative top-32">
        <RoleAccessInfo locale={locale} />
 
         <h1 className="text-2xl font-bold mb-6">
@@ -136,7 +136,9 @@ export default function ProfilesAdminPage() {
         />
       </div>
 
-      <Footer />
+      <div className="relative top-32">
+        <Footer />
+      </div>
     </>
   );
 }
