@@ -55,7 +55,7 @@ const Pro = () => {
               
               <p className="text-lg text-gray-500 mb-8">
                 Installateurs, plombiers, chauffagistes : accédez à des conditions privilégiées 
-                et développez votre activité avec FloorHeatPro.
+                et développez votre activité avec Pexxafloor Pro.
               </p>
             </div>
           </div>
