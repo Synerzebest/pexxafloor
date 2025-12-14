@@ -81,7 +81,7 @@ export default function UserButton() {
   }
 
   /** === USER CONNECTÉ === */
-  const name = user.user_metadata?.full_name || "User";
+  const name = user.user_metadata?.full_name || "Me";
   const initials = name
     .trim()
     .split(/\s+/)

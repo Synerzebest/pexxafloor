@@ -23,11 +23,11 @@ export default function Hero() {
     >
       {/* Background Image */}
       <Image
-        src="/images/hero.png"
+        src="/images/hero.jpeg"
         alt="Floor heating background"
         fill
         priority
-        className="object-cover"
+        className="object-cover opacity-40"
       />
 
       {/* Overlay gradient */}

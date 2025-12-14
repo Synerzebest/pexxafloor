@@ -25,7 +25,6 @@ export default async function ProRequestsAdminPage() {
       },
     }
   );
-  
 
   const {
     data: { user },
