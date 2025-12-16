@@ -23,7 +23,6 @@ type Product = {
 
 export default function PackPage() {
   const { slug } = useParams<{ slug: string }>();
-  console.log(slug)
   const searchParams = useSearchParams();
   const { addToCart, items } = useCart();
   const packId = searchParams.get("packId");

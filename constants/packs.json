@@ -14,7 +14,7 @@
             "quantity": 3,
             "price": 96.97,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/distributeur_3.jpg"
         },
         { 
             "id": "DB833824",
@@ -22,7 +22,7 @@
             "quantity": 4,
             "price": 119.94,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/distributeur_4.png"
         },
         { 
             "id": "DB833825",
@@ -30,7 +30,7 @@
             "quantity": 5,
             "price": 144.50,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/distributeur_5.png"
         },
         { 
             "id": "DB833826",
@@ -46,7 +46,7 @@
             "quantity": 7,
             "price": 192.88,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/distributeur_7.png"
         },
         { 
             "id": "DB833828",
@@ -54,7 +54,7 @@
             "quantity": 8,
             "price": 217.55,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/distributeur_8.png"
         },
         { 
             "id": "DB833829",
@@ -62,7 +62,7 @@
             "quantity": 9,
             "price": 241.31,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/distributeur_9.png"
         },
         { 
             "id": "DB833830",
@@ -70,14 +70,15 @@
             "quantity": 10,
             "price": 265.77,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/distributeur_10.png"
         },
         { 
             "id": "DB833831",
             "description": "PexxaFloor Kit Distributeur Inox 1\"FxF débimètre 3/4EK pour 11 circuits",
             "quantity": 11,
             "price": 289.53,
-            "image": "/images/box.png"
+            "packs": [1, 2, 3],
+            "image": "/images/distributeur_11.png"
         },
         { 
             "id": "DB833832",
@@ -85,7 +86,7 @@
             "quantity": 12,
             "price": 313.94,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/distributeur_12.png"
         }
     ],
     "groupe2": [
@@ -143,7 +144,7 @@
             "quantity": 1,
             "price": 1.20,
             "packs": [1, 2, 3],
-            "image": "/images/box.png"
+            "image": "/images/courbe-guide.png"
         }
     ],
     "groupe5": [
