@@ -198,6 +198,7 @@
         {
             "id": "DB833964",
             "description": "PexxaFloor Agrafe 40mm pour tuyau 16-20mm (300pcs)",
+            "height": 40,
             "quantity": 300,
             "price": 28.00,
             "packs": [2],
@@ -206,6 +207,7 @@
         {
             "id": "DB833966",
             "description": "PexxaFloor Agrafe 60mm pour tuyau 16-20mm (300pcs)",
+            "height": 60,
             "quantity": 300,
             "price": 32.00,
             "packs": [2],

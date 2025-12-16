@@ -15,6 +15,7 @@ type Product = {
   quantity: number;
   price: number;
   type?: string;
+  height?: number;
   packs?: number[];
   selectedQuantity?: number;
   image?: string;
@@ -22,6 +23,7 @@ type Product = {
 
 export default function PackPage() {
   const { slug } = useParams<{ slug: string }>();
+  console.log(slug)
   const searchParams = useSearchParams();
   const { addToCart, items } = useCart();
   const packId = searchParams.get("packId");
@@ -43,6 +45,7 @@ export default function PackPage() {
   const [tuyauType, setTuyauType] = useState<"PERT" | "PERT-AL-PERT">(
     existingPack?.tuyauType ?? "PERT"
   );
+  const [typeAgrafe, setTypeAgrafe] = useState<40 | 60>(40);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [included, setIncluded] = useState<Product[]>([]);
@@ -54,6 +57,7 @@ export default function PackPage() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   const tuyauOptions = ["PERT", "PERT-AL-PERT"] as const;
+  const agrageOptions = [40, 60] as const;
 
   // Calculs principaux
   const tubLength = (surface / pasDePose) * 100;
@@ -132,7 +136,6 @@ export default function PackPage() {
       if (existing) existing.selectedQuantity = count;
       else selectedProducts.push({ ...smallest, selectedQuantity: count });
     }
-
     // Groupes 3 à 10
     packs.groupe3
       .filter((p: Product) => p.packs?.includes(packNumber))
@@ -180,12 +183,16 @@ export default function PackPage() {
         q[p.id] = Math.ceil(surface / p.quantity);
       });
 
-    packs.groupe9
-      .filter((p: Product) => p.packs?.includes(packNumber))
+      packs.groupe9
+      .filter(
+        (p: Product) =>
+          p.packs?.includes(packNumber) &&
+          p.height === typeAgrafe
+      )
       .forEach((p) => {
         selectedProducts.push(p);
         q[p.id] = Math.ceil((3 * tubLength) / p.quantity);
-      });
+      });    
 
     if (packNumber === 3) {
       packs.groupe10
@@ -213,7 +220,7 @@ export default function PackPage() {
     setQuantities(q);
     setInitialQuantities(q);
     setLoading(false);
-  }, [surface, pasDePose, packNumber, tuyauType]);
+  }, [surface, pasDePose, packNumber, tuyauType, typeAgrafe]);
 
   // Calcul du total
   const totalPrice = useMemo(() => {
@@ -399,6 +406,55 @@ export default function PackPage() {
                       </div>
                     </div>
 
+                    {slug === "agrafe" ? (
+                    // Hauteur des agrafes
+                    <div className="flex-1">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Hauteur des agrafes
+                      </label>
+
+                      <div className="flex gap-2">
+                        {[40, 60].map((val) => {
+                          const tooltips: Record<number, string> = {
+                            40: "Pour des épaisseurs d'isolant de 40-60 mm",
+                            60: "Pour des épaisseurs d'isolant au-delà de 60 mm",
+                          };
+
+                          return (
+                            <div key={val} className="relative group">
+                              <button
+                                onClick={() => setTypeAgrafe(val as 40 | 60)}
+                                className={`
+                                  px-4 py-1.5 rounded-lg text-sm border transition cursor-pointer
+                                  ${
+                                    typeAgrafe === val
+                                      ? "bg-orange-500 border-orange-500 text-white"
+                                      : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-500"
+                                  }
+                                `}
+                              >
+                                {val} mm
+                              </button>
+
+                              {/* Tooltip */}
+                              <span
+                                className="
+                                  absolute left-1/2 -translate-x-1/2 -top-10
+                                  opacity-0 group-hover:opacity-100
+                                  pointer-events-none
+                                  whitespace-nowrap
+                                  bg-gray-900 text-white text-xs py-1 px-2 rounded shadow-lg
+                                  transition-opacity duration-200
+                                "
+                              >
+                                {tooltips[val]}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : null}
                     {/* Surface */}
                     <div className="flex-1 pt-4">
                         <label className="block text-sm font-medium text-gray-700 mb-2">

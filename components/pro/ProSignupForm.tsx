@@ -73,7 +73,7 @@ export default function ProSignupForm({ locale }: Props) {
       return;
     }
   
-    // ✅ Créer la nouvelle demande
+    // Créer la nouvelle demande
     const { error } = await supabase.from("pro_applications").insert({
       user_id: user.id,
       first_name: firstName,
