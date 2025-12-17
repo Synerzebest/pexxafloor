@@ -12,8 +12,8 @@ import {
 } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
 import { PlusOutlined } from "@ant-design/icons";
-
 import type { SupabaseClient } from "@supabase/supabase-js";
+
 import type { Category } from "@/types/CategoryType";
 import type { SubCategory } from "@/types/SubCategoryType";
 import type { SubSubCategory } from "@/types/SubSubCategoryType";
@@ -42,41 +42,44 @@ export default function ProductForm({
   const [form] = Form.useForm<ProductFormValues>();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(
-    null
-  );
+  const [selectedSubcategory, setSelectedSubcategory] =
+    useState<string | null>(null);
 
-  /* ------------------------------
-   *  PRÉREMPLISSAGE DU FORMULAIRE
-   * ------------------------------ */
+  /* -----------------------------------
+   *         PRÉREMPLISSAGE FORM
+   * ----------------------------------- */
   useEffect(() => {
     if (editing) {
-      form.setFieldsValue(editing);
-
+      // Charger uniquement les champs qui existent dans la table "products"
       const subsub = subsubcategories.find((ss) => ss.id === editing.subsub_id);
-      const sub = subcategories.find((s) => s.id === subsub?.subcategory_id);
+      const sub = subcategories.find((s) => s.id === editing.subcategory_id);
       const cat = categories.find((c) => c.id === sub?.category_id);
 
       if (cat) setSelectedCategory(cat.id);
       if (sub) setSelectedSubcategory(sub.id);
 
       form.setFieldsValue({
-        category_id: cat?.id,
-        subcategory_id: sub?.id,
-        subsub_id: subsub?.id,
+        name_fr: editing.name_fr,
+        name_nl: editing.name_nl,
+        name_en: editing.name_en,
+        subcategory_id: editing.subcategory_id,
+        subsub_id: editing.subsub_id,
+        price: Number(editing.price),
+        description_fr: editing.description_fr,
+        description_nl: editing.description_nl,
+        description_en: editing.description_en,
       });
 
-      // Images existantes
+      // Charger les images déjà existantes
       if (editing.product_images?.length) {
-        const images: UploadFile[] = editing.product_images.map(
-          (img, index) => ({
-            uid: `img-${index}`,
-            name: `image-${index}.jpg`,
+        setFileList(
+          editing.product_images.map((img, i) => ({
+            uid: `img-${i}`,
+            name: `image-${i}.jpg`,
             status: "done",
             url: img.image_url,
-          })
+          }))
         );
-        setFileList(images);
       }
     } else {
       form.resetFields();
@@ -86,11 +89,35 @@ export default function ProductForm({
     }
   }, [editing, form, categories, subcategories, subsubcategories]);
 
-  async function handleSubmit(values: ProductFormValues) {
-    if (editing) await updateProduct(values);
-    else await addProduct(values);
+  /* -----------------------------------
+   *         FONCTION UTILITAIRE
+   *       -> Nettoyer le payload
+   * ----------------------------------- */
+  function sanitizeValues(values: ProductFormValues) {
+    return {
+      name_fr: values.name_fr,
+      name_nl: values.name_nl,
+      name_en: values.name_en,
+      price: values.price,
+      description_fr: values.description_fr ?? "",
+      description_nl: values.description_nl ?? "",
+      description_en: values.description_en ?? "",
+      subcategory_id: values.subcategory_id ?? null,
+      subsub_id: values.subsub_id,
+    };
   }
 
+  /* -----------------------------------
+   *         SOUMISSION
+   * ----------------------------------- */
+  async function handleSubmit(values: ProductFormValues) {
+    if (editing) return updateProduct(values);
+    return addProduct(values);
+  }
+
+  /* -----------------------------------
+   *      AJOUT D’UN NOUVEAU PRODUIT
+   * ----------------------------------- */
   async function addProduct(values: ProductFormValues) {
     const baseSlug = slugify(values.name_fr);
     let slug = baseSlug;
@@ -102,12 +129,13 @@ export default function ProductForm({
         .select("id")
         .eq("slug", slug)
         .maybeSingle();
+
       if (!data) break;
       slug = `${baseSlug}-${counter++}`;
     }
 
     const payload = {
-      ...values,
+      ...sanitizeValues(values),
       slug,
     };
 
@@ -117,9 +145,7 @@ export default function ProductForm({
       .select("id")
       .single();
 
-    if (error || !prod) {
-      return message.error("Erreur lors de l’ajout : " + error?.message);
-    }
+    if (error || !prod) return message.error(error?.message);
 
     await handleImageUpload(prod.id);
     message.success("Produit ajouté !");
@@ -127,12 +153,17 @@ export default function ProductForm({
     fetchAll();
   }
 
+  /* -----------------------------------
+   *         MISE À JOUR PRODUIT
+   * ----------------------------------- */
   async function updateProduct(values: ProductFormValues) {
     if (!editing) return;
 
+    const payload = sanitizeValues(values);
+
     const { error } = await supabase
       .from("products")
-      .update(values)
+      .update(payload)
       .eq("id", editing.id);
 
     if (error) return message.error(error.message);
@@ -143,6 +174,9 @@ export default function ProductForm({
     fetchAll();
   }
 
+  /* -----------------------------------
+   *         UPLOAD IMAGES
+   * ----------------------------------- */
   async function handleImageUpload(productId: string) {
     const newImages = fileList.filter((f) => f.originFileObj);
 
@@ -172,9 +206,13 @@ export default function ProductForm({
     await supabase.from("product_images").insert(savedImages);
   }
 
+  /* -----------------------------------
+   *               UI
+   * ----------------------------------- */
+
   return (
     <Form form={form} layout="vertical" onFinish={handleSubmit}>
-      {/* --- CATÉGORIE --- */}
+      {/* CATÉGORIE */}
       <Form.Item
         name="category_id"
         label="Catégorie"
@@ -194,7 +232,7 @@ export default function ProductForm({
         />
       </Form.Item>
 
-      {/* --- SOUS-CATÉGORIE --- */}
+      {/* SOUS-CATÉGORIE */}
       <Form.Item
         name="subcategory_id"
         label="Sous-catégorie"
@@ -202,7 +240,6 @@ export default function ProductForm({
       >
         <Select
           disabled={!selectedCategory}
-          placeholder="Choisir une sous-catégorie"
           options={subcategories
             .filter((s) => s.category_id === selectedCategory)
             .map((s) => ({
@@ -216,7 +253,7 @@ export default function ProductForm({
         />
       </Form.Item>
 
-      {/* --- SOUS-SOUS-CATÉGORIE --- */}
+      {/* SOUS-SOUS-CATÉGORIE */}
       <Form.Item
         name="subsub_id"
         label="Sous-sous-catégorie"
@@ -233,7 +270,7 @@ export default function ProductForm({
         />
       </Form.Item>
 
-      {/* --- INFOS PRODUIT --- */}
+      {/* INFOS PRODUIT */}
       <Form.Item name="name_fr" label="Nom (FR)" rules={[{ required: true }]}>
         <Input />
       </Form.Item>
@@ -258,7 +295,7 @@ export default function ProductForm({
         <Input.TextArea rows={2} />
       </Form.Item>
 
-      {/* --- IMAGE UPLOAD --- */}
+      {/* IMAGES */}
       <Form.Item label="Images">
         <Upload
           listType="picture-card"
@@ -270,7 +307,7 @@ export default function ProductForm({
         >
           <div>
             <PlusOutlined />
-            <div>Upload</div>
+            <div>Uploader</div>
           </div>
         </Upload>
       </Form.Item>
@@ -282,6 +319,7 @@ export default function ProductForm({
   );
 }
 
+/* UTILITAIRE SLUG */
 function slugify(text: string) {
   return text
     .normalize("NFD")

@@ -173,7 +173,7 @@ export default function ProSignupForm({ locale }: Props) {
 
                 {/* WhatsApp */}
                 <div>
-                  <label className="mb-1 block text-sm text-gray-700 flex items-center gap-1">
+                  <label className="mb-1 text-sm text-gray-700 flex items-center gap-1">
                     <FaWhatsapp className="text-green-500" /> WhatsApp
                   </label>
                   <input
