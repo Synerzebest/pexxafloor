@@ -21,7 +21,7 @@ function stripLocale(pathname: string) {
 }
 
 export async function middleware(req: NextRequest) {
-  // -- BYPASS OAUTH ROUTES --
+  // 1. On laisse passer les routes d'authentification critiques
   if (
     req.nextUrl.pathname.startsWith("/auth/login") ||
     req.nextUrl.pathname.startsWith("/auth/callback")
@@ -29,58 +29,69 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // IMPORTANT : ne pas créer res avant intl
+  // 2. Initialiser la réponse avec l'internationalisation
   let response = intl(req);
 
-  // Supabase session handling
+  // 3. Créer le client Supabase
+  // On utilise createServerClient pour synchroniser les cookies entre req et response
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get: (name) => req.cookies.get(name)?.value,
-        set: (name, value, options) => {
-          response.cookies.set({ name, value, ...options });
+        getAll() {
+          return req.cookies.getAll();
         },
-        remove: (name, options) => {
-          response.cookies.delete({ name, ...options });
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) =>
+            req.cookies.set(name, value)
+          );
+          // On recrée la réponse pour y injecter les nouveaux cookies de session
+          response = intl(req);
+          cookiesToSet.forEach(({ name, value, options }) =>
+            response.cookies.set(name, value, options)
+          );
         },
       },
     }
   );
 
+  // 4. Rafraîchir la session (IMPORTANT : getUser est plus sûr que getSession)
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const url = req.nextUrl;
   const rawPath = url.pathname;
   const path = stripLocale(rawPath);
   const locale = rawPath.split("/")[1] || routing.defaultLocale;
 
-  // 1. LOGIN / SIGNUP redirect if logged in
-  if (session && (path === "/login" || path === "/signup")) {
+  // 5. Redirection si l'utilisateur est déjà connecté et tente d'aller sur login/signup
+  if (user && (path === "/login" || path === "/signup")) {
     url.pathname = `/${locale}/profile`;
     return NextResponse.redirect(url);
   }
 
-  // 2. Protected pages
+  // 6. Gestion des accès protégés (Admin, Storekeeper, etc.)
   const protectedPrefix = Object.keys(ACCESS_RULES).find((prefix) =>
     path.startsWith(prefix)
   );
 
   if (protectedPrefix) {
-    if (!session) {
+    // Si pas de session -> Redirection Login
+    if (!user) {
       url.pathname = `/${locale}/login`;
       return NextResponse.redirect(url);
     }
 
+    // Récupération du rôle depuis la table profiles
     const { data: profile } = await supabase
       .from("profiles")
       .select("user_role")
-      .eq("id", session.user.id)
+      .eq("id", user.id)
       .single();
 
+    // Si pas de profil ou rôle insuffisant -> Redirection Home
     if (!profile || !ACCESS_RULES[protectedPrefix].includes(profile.user_role)) {
       url.pathname = `/${locale}`;
       return NextResponse.redirect(url);
@@ -91,5 +102,6 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
+  // On exclut les fichiers statiques et les routes internes de Next.js
   matcher: ["/((?!api|_next|_vercel|.*\\..*).*)"],
 };

@@ -102,9 +102,15 @@ export default function CategorySection({
     else await add(values);
   }
 
+  const orange = "#f97316";
+
   return (
     <Card
-      title="Catégories"
+      title={
+        <span style={{ fontWeight: 600, fontSize: "18px", color: orange }}>
+          Catégories
+        </span>
+      }
       extra={
         <Button
           icon={<PlusOutlined />}
@@ -112,6 +118,14 @@ export default function CategorySection({
             form.resetFields();
             setEditing(null);
             setOpen(true);
+          }}
+          style={{
+            background: orange,
+            borderColor: orange,
+            color: "white",
+            fontWeight: 600,
+            padding: "0 18px",
+            borderRadius: "8px",
           }}
         >
           Ajouter
@@ -136,25 +150,33 @@ export default function CategorySection({
             title: "Actions",
             render: (_, record) => (
               <Space>
-                <button 
-                    className="bg-blue-500 text-white font-bold rounded-lg py-1 px-2 cursor-pointer hover:bg-blue-600 duration-300"
-                    onClick={() => {
-                        setEditing(record);
-                        form.setFieldsValue(record);
-                        setOpen(true);
-                    }}
-                >
-                    <EditOutlined />
-                </button>
-                <button 
-                    className="bg-red-500 text-white font-bold rounded-lg py-1 px-2 cursor-pointer hover:bg-red-600 duration-300"
-                    onClick={() => {
-                        setDeleting(record);
-                        setOpenDelete(true);
-                      }}
-                >
-                    <DeleteOutlined />
-                </button>
+                <Button 
+                  size="small"
+                  icon={<EditOutlined />}
+                  style={{
+                    background: orange,
+                    borderColor: orange,
+                    color: "white",
+                    borderRadius: "6px",
+                  }}
+                  onClick={() => {
+                      setEditing(record);
+                      form.setFieldsValue(record);
+                      setOpen(true);
+                  }}
+                />
+                <Button 
+                  danger
+                  size="small"
+                  icon={<DeleteOutlined />}
+                  onClick={() => {
+                    setDeleting(record);
+                    setOpenDelete(true);
+                  }}
+                  style={{
+                    borderRadius: "6px",
+                  }}
+                />
               </Space>
             ),
           },
@@ -165,6 +187,8 @@ export default function CategorySection({
       <AnimatePresence>
         {open && (
           <Modal
+            className="product-modal"
+            width="80%"
             open={open}
             onCancel={() => {
               setOpen(false);
@@ -174,7 +198,19 @@ export default function CategorySection({
             footer={null}
             destroyOnClose
             centered
-            title={editing ? "Modifier la catégorie" : "Ajouter une catégorie"}
+            styles={{
+              wrapper: {
+                paddingTop: 40,
+                paddingBottom: 40,
+              },
+              header: { borderBottom: "none", paddingTop: 20 },
+              content: { borderRadius: "12px", padding: "0 24px 24px" },
+            }}
+            title={
+              <span style={{ fontWeight: 600, fontSize: "18px", color: orange }}>
+                {editing ? "Modifier la catégorie" : "Ajouter une catégorie"}
+              </span>
+            }
           >
             <motion.div
               key="modal-content"
@@ -225,7 +261,7 @@ export default function CategorySection({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <Button type="primary" htmlType="submit" block>
+                  <Button type="primary" htmlType="submit" block style={{ backgroundColor: orange, borderColor: orange, height: "48px" }}>
                     {editing ? "Mettre à jour" : "Enregistrer"}
                   </Button>
                 </motion.div>

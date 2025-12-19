@@ -135,8 +135,15 @@ export default function SubSubcategorySection({
       title: "Actions",
       render: (_: unknown, record: SubSubCategory) => (
         <Space>
-          <button
-            className="bg-blue-500 text-white font-bold rounded-lg py-1 px-2 hover:bg-blue-600 duration-300"
+          <Button
+            size="small"
+            icon={<EditOutlined />}
+            style={{
+              background: orange,
+              borderColor: orange,
+              color: "white",
+              borderRadius: "6px",
+            }}
             onClick={() => {
               setEditing(record);
 
@@ -154,27 +161,34 @@ export default function SubSubcategorySection({
 
               setOpen(true);
             }}
-          >
-            <EditOutlined />
-          </button>
+          />
 
-          <button
-            className="bg-red-500 text-white font-bold rounded-lg py-1 px-2 hover:bg-red-600 duration-300"
+          <Button
+            danger
+            size="small"
+            icon={<DeleteOutlined />}
             onClick={() => {
               setDeleting(record);
               setOpenDelete(true);
             }}
-          >
-            <DeleteOutlined />
-          </button>
+            style={{
+              borderRadius: "6px",
+            }}
+          />
         </Space>
       ),
     },
   ];
 
+  const orange = "#f97316";
+
   return (
     <Card
-      title="Sous-sous-catégories"
+      title={
+        <span style={{ fontWeight: 600, fontSize: "18px", color: orange }}>
+          Sous-sous-catégories
+        </span>
+      }
       extra={
         <Button
           icon={<PlusOutlined />}
@@ -183,6 +197,14 @@ export default function SubSubcategorySection({
             setEditing(null);
             setSelectedCategory(null);
             setOpen(true);
+          }}
+          style={{
+            background: orange,
+            borderColor: orange,
+            color: "white",
+            fontWeight: 600,
+            padding: "0 18px",
+            borderRadius: "8px",
           }}
         >
           Ajouter
@@ -200,6 +222,8 @@ export default function SubSubcategorySection({
       <AnimatePresence>
         {open && (
           <Modal
+            className="product-modal"
+            width="80%"
             open={open}
             onCancel={() => {
               setOpen(false);
@@ -210,7 +234,19 @@ export default function SubSubcategorySection({
             footer={null}
             destroyOnClose
             centered
-            title={editing ? "Modifier une sous-sous-catégorie" : "Ajouter une sous-sous-catégorie"}
+            styles={{
+              wrapper: {
+                paddingTop: 40,
+                paddingBottom: 40,
+              },
+              header: { borderBottom: "none", paddingTop: 20 },
+              content: { borderRadius: "12px", padding: "0 24px 24px" },
+            }}
+            title={
+              <span style={{ fontWeight: 600, fontSize: "18px", color: orange }}>
+                {editing ? "Modifier la sous-sous-catégorie" : "Ajouter une sous-sous-catégorie"}
+              </span>
+            }
           >
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
               <Form<SubSubFormValues> form={form} layout="vertical" onFinish={handleSubmit}>
@@ -261,7 +297,7 @@ export default function SubSubcategorySection({
                   <InputNumber style={{ width: "100%" }} />
                 </Form.Item>
 
-                <Button type="primary" htmlType="submit" block>
+                <Button type="primary" htmlType="submit" block style={{ backgroundColor: orange, borderColor: orange, height: "48px" }}>
                   {editing ? "Mettre à jour" : "Enregistrer"}
                 </Button>
               </Form>

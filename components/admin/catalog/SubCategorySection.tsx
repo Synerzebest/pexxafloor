@@ -107,10 +107,15 @@ export default function SubcategorySection({
     if (editing) await update(values);
     else await add(values);
   }
+  const orange = "#f97316";
 
   return (
     <Card
-      title="Sous-catégories"
+      title={
+        <span style={{ fontWeight: 600, fontSize: "18px", color: orange }}>
+          Sous-catégories
+        </span>
+      }
       extra={
         <Button
           icon={<PlusOutlined />}
@@ -118,6 +123,14 @@ export default function SubcategorySection({
             form.resetFields();
             setEditing(null);
             setOpen(true);
+          }}
+          style={{
+            background: orange,
+            borderColor: orange,
+            color: "white",
+            fontWeight: 600,
+            padding: "0 18px",
+            borderRadius: "8px",
           }}
         >
           Ajouter
@@ -145,25 +158,33 @@ export default function SubcategorySection({
             title: "Actions",
             render: (_, record: SubCategory) => (
               <Space>
-                <button
-                  className="bg-blue-500 text-white font-bold rounded-lg py-1 px-2 cursor-pointer hover:bg-blue-600 duration-300"
+                <Button
+                  size="small"
+                  icon={<EditOutlined />}
+                  style={{
+                    background: orange,
+                    borderColor: orange,
+                    color: "white",
+                    borderRadius: "6px",
+                  }}
                   onClick={() => {
                     setEditing(record);
                     form.setFieldsValue(record);
                     setOpen(true);
                   }}
-                >
-                  <EditOutlined />
-                </button>
-                <button
-                  className="bg-red-500 text-white font-bold rounded-lg py-1 px-2 cursor-pointer hover:bg-red-600 duration-300"
+                />
+                <Button
+                  danger
+                  size="small"
                   onClick={() => {
                     setDeleting(record);
                     setOpenDelete(true);
                   }}
-                >
-                  <DeleteOutlined />
-                </button>
+                  icon={<DeleteOutlined />}
+                  style={{
+                    borderRadius: "6px",
+                  }}
+                />
               </Space>
             ),
           },
@@ -174,6 +195,8 @@ export default function SubcategorySection({
       <AnimatePresence>
         {open && (
           <Modal
+            className="product-modal"
+            width="80%"
             open={open}
             onCancel={() => {
               setOpen(false);
@@ -183,10 +206,18 @@ export default function SubcategorySection({
             footer={null}
             destroyOnClose
             centered
+            styles={{
+              wrapper: {
+                paddingTop: 40,
+                paddingBottom: 40,
+              },
+              header: { borderBottom: "none", paddingTop: 20 },
+              content: { borderRadius: "12px", padding: "0 24px 24px" },
+            }}
             title={
-              editing
-                ? "Modifier la sous-catégorie"
-                : "Ajouter une sous-catégorie"
+              <span style={{ fontWeight: 600, fontSize: "18px", color: orange }}>
+                {editing ? "Modifier la sous-catégorie" : "Ajouter une sous-catégorie"}
+              </span>
             }
           >
             <motion.div
@@ -239,7 +270,7 @@ export default function SubcategorySection({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.1 }}
                 >
-                  <Button type="primary" htmlType="submit" block>
+                  <Button type="primary" htmlType="submit" block style={{ backgroundColor: orange, borderColor: orange, height: "48px" }}>
                     {editing ? "Mettre à jour" : "Enregistrer"}
                   </Button>
                 </motion.div>

@@ -22,6 +22,7 @@ import type { SubSubCategory } from "@/types/SubSubCategoryType";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ProductWithSubSub } from "@/types/ProductWithSubSubType";
 
+const orange = "#f97316"; 
 
 export default function ProductSection({
   categories,
@@ -105,39 +106,65 @@ export default function ProductSection({
     {
       title: "Actions",
       render: (_: unknown, record: ProductWithSubSub) => (
-        <Space>
-          <button
-            className="bg-blue-500 text-white font-bold rounded-lg py-1 px-2 cursor-pointer hover:bg-blue-600 duration-300"
+        <Space direction="horizontal">
+          <Button
+            size="small"
+            icon={<EditOutlined />}
             onClick={() => {
               setEditing(record);
               setOpen(true);
             }}
-          >
-            <EditOutlined />
-          </button>
-          <button
-            className="bg-red-500 text-white font-bold rounded-lg py-1 px-2 cursor-pointer hover:bg-red-600 duration-300"
+            style={{
+              background: orange,
+              borderColor: orange,
+              color: "white",
+              borderRadius: "6px",
+            }}
+          />
+      
+          <Button
+            size="small"
+            danger
+            icon={<DeleteOutlined />}
             onClick={() => {
               setDeleting(record);
               setOpenDelete(true);
             }}
-          >
-            <DeleteOutlined />
-          </button>
+            style={{
+              borderRadius: "6px",
+            }}
+          />
         </Space>
-      ),
+      )      
     },
   ];
 
   return (
     <Card
-      title="Produits"
+      title={
+        <span style={{ fontWeight: 600, fontSize: "18px", color: orange }}>
+          Produits
+        </span>
+      }
+      style={{
+        borderRadius: "12px",
+        boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
+        padding: "4px 12px",
+      }}
       extra={
         <Button
           icon={<PlusOutlined />}
           onClick={() => {
             setEditing(null);
             setOpen(true);
+          }}
+          style={{
+            background: orange,
+            borderColor: orange,
+            color: "white",
+            fontWeight: 600,
+            padding: "0 18px",
+            borderRadius: "8px",
           }}
         >
           Ajouter
@@ -149,12 +176,21 @@ export default function ProductSection({
         dataSource={products}
         columns={columns}
         loading={loading}
+        size="middle"
+        style={{
+          marginTop: "12px",
+        }}
+        pagination={{
+          pageSize: 10,
+          showSizeChanger: false,
+        }}
       />
 
       {/* --- MODALE AJOUT / MODIF --- */}
       <AnimatePresence>
         {open && (
           <Modal
+            className="product-modal"
             open={open}
             onCancel={() => {
               setOpen(false);
@@ -163,7 +199,21 @@ export default function ProductSection({
             footer={null}
             destroyOnClose
             centered
-            title={editing ? "Modifier le produit" : "Ajouter un produit"}
+            width="80%"
+            styles={{
+              wrapper: {
+                paddingTop: 40,
+                paddingBottom: 40,
+              },
+              header: { borderBottom: "none", paddingTop: 20 },
+              content: { borderRadius: "12px", padding: "0 24px 24px" },
+            }}
+            
+            title={
+              <span style={{ fontWeight: 600, fontSize: "18px", color: orange }}>
+                {editing ? "Modifier le produit" : "Ajouter un produit"}
+              </span>
+            }
           >
             <motion.div
               key="modal-content"
@@ -217,8 +267,22 @@ export default function ProductSection({
                   justifyContent: "start",
                 }}
               >
-                <Button onClick={() => setOpenDelete(false)}>Annuler</Button>
-                <Button danger type="primary" onClick={confirmDelete}>
+                <Button
+                  onClick={() => setOpenDelete(false)}
+                >
+                  Annuler
+                </Button>
+
+                <Button
+                  danger
+                  type="primary"
+                  onClick={confirmDelete}
+                  style={{
+                    background: "#dc2626",
+                    borderColor: "#dc2626",
+                    borderRadius: "6px",
+                  }}
+                >
                   Supprimer
                 </Button>
               </Space>
