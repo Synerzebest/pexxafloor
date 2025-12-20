@@ -90,19 +90,24 @@ export default function ProductSection({
         ) : null,
     },
     {
-      title: "Sous-sous-catégorie",
-      dataIndex: "subsub_id",
+      title: "Catégories",
       render: (_: unknown, record: ProductWithSubSub) => {
-        const subsub = subsubcategories.find((s) => s.id === record.subsub_id);
-        if (!subsub) return record.subsub_id;
-        const parent = subcategories.find((s) => s.id === subsub.subcategory_id);
-        return parent
-          ? `${parent.name_fr} > ${subsub.name_fr}`
-          : subsub.name_fr;
+        const subsub = subsubcategories.find((ss) => ss.id === record.subsub_id);
+        if (!subsub) return "-";
+    
+        const sub = subcategories.find((s) => s.id === subsub.subcategory_id);
+        const cat = categories.find((c) => c.id === sub?.category_id);
+    
+        return [
+          cat?.name_fr,
+          sub?.name_fr,
+          subsub?.name_fr,
+        ].filter(Boolean).join(" > ");
       },
-    },
+    },    
+    { title: "Réf.", dataIndex: "reference" },
     { title: "FR", dataIndex: "name_fr" },
-    { title: "Prix (€)", dataIndex: "price" },
+    { title: "Prix Brut (€)", dataIndex: "price" },
     {
       title: "Actions",
       render: (_: unknown, record: ProductWithSubSub) => (
