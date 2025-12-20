@@ -11,6 +11,7 @@ export interface Product {
   product_images?: { image_url: string }[] | null;
   applied_discount?: number | null;
   price_after_discount?: number | null;
+  reference: string;
 }
 
 export interface ProductSearchResult extends Product {

@@ -8,6 +8,8 @@ import CategorySection from "@/components/admin/catalog/CategorySection";
 import SubCategorySection from "@/components/admin/catalog/SubCategorySection";
 import SubSubcategorySection from "@/components/admin/catalog/SubSubCategorySection";
 import ProductSection from "@/components/admin/catalog/ProductSection";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 
 const tabs = [
   { key: "categories", label: "Catégories" },
@@ -28,11 +30,31 @@ export default function CatalogPage() {
     supabase,
   } = useFetchStoreData();
 
+  const locale = useLocale();
+
   return (
     <>
       <Navbar />
 
-      <div className="p-6 relative top-36">
+      <div className="absolute top-36 left-4">
+        <Link
+          href={`/${locale}/admin`}
+          className="inline-flex items-center gap-2 text-orange-500 font-medium hover:text-orange-600 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Retour au panneau d’administration
+        </Link>
+      </div>
+
+      <div className="p-6 relative top-44">
 
         {/* --- MENU --- */}
         <div className="flex flex-wrap justify-center gap-4 mb-10 relative">

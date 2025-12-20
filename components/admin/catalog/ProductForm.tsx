@@ -68,6 +68,7 @@ export default function ProductForm({
         description_fr: editing.description_fr,
         description_nl: editing.description_nl,
         description_en: editing.description_en,
+        reference: editing.reference
       });
 
       if (editing.product_images?.length) {
@@ -100,6 +101,7 @@ export default function ProductForm({
       description_en: values.description_en ?? "",
       subcategory_id: values.subcategory_id ?? null,
       subsub_id: values.subsub_id,
+      reference: values.reference
     };
   }
 
@@ -266,6 +268,7 @@ export default function ProductForm({
             <Form.Item name="name_fr" label="Nom (FR)" rules={[{ required: true }]}><Input /></Form.Item>
             <Form.Item name="name_nl" label="Nom (NL)" rules={[{ required: true }]}><Input /></Form.Item>
             <Form.Item name="name_en" label="Nom (EN)" rules={[{ required: true }]}><Input /></Form.Item>
+            <Form.Item name="reference" label="Référence" rules={[{ required: true }]}><Input /></Form.Item>
           </div>
         </div>
 

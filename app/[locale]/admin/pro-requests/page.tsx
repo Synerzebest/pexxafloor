@@ -4,6 +4,7 @@ import { getLocale } from 'next-intl/server';
 import { createServerClient } from '@supabase/ssr';
 import ProRequestsTable from '@/components/admin/ProRequestsTable';
 import { Navbar, Footer } from "@/components";
+import Link from "next/link";
 
 export default async function ProRequestsAdminPage() {
 
@@ -31,8 +32,6 @@ export default async function ProRequestsAdminPage() {
     error: userErr
   } = await supabase.auth.getUser();
 
-  console.log("USER SUPABASE =>", user);
-
   const locale = await getLocale();
 
   if (userErr || !user) {
@@ -53,7 +52,6 @@ export default async function ProRequestsAdminPage() {
     .select(columns)
     .in('status', ['PENDING', 'IN_REVIEW'])
 
-    console.log("pending", pending)
 
   // Historique récent
   const { data: recent } = await supabase
@@ -61,13 +59,30 @@ export default async function ProRequestsAdminPage() {
     .select(columns)
     .in('status', ['VERIFIED', 'REJECTED', 'SUSPENDED', 'REVISION'])
 
-    console.log("data", recent)
 
   return (
     <>
       <Navbar />
 
-      <div className="relative top-32">
+      <div className="absolute top-36 left-4">
+        <Link
+          href={`/${locale}/admin`}
+          className="inline-flex items-center gap-2 text-orange-500 font-medium hover:text-orange-600 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Retour au panneau d’administration
+        </Link>
+      </div>
+
+      <div className="relative top-44">
         <ProRequestsTable
           pending={pending ?? []}
           recent={recent ?? []}

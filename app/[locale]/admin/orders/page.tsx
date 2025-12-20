@@ -8,6 +8,7 @@ import { useLocale } from "next-intl";
 import { useOrdersAdmin } from "@/hooks/useOrdersAdmin";
 import { getOrdersColumns } from "@/components/admin/orders/OrdersColumns";
 import { OrderDetailsModal } from "@/components/admin/orders/OrderDetailsModal";
+import Link from "next/link";
 
 export default function OrdersAdminPage() {
   const locale = useLocale() as 'fr' | 'en' | 'nl';
@@ -34,7 +35,25 @@ export default function OrdersAdminPage() {
     <>
       <Navbar />
 
-      <div className="max-w-6xl mx-auto py-10 relative top-32">
+      <div className="absolute top-36 left-4">
+        <Link
+          href={`/${locale}/admin`}
+          className="inline-flex items-center gap-2 text-orange-500 font-medium hover:text-orange-600 transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          </svg>
+          Retour au panneau d’administration
+        </Link>
+      </div>
+
+      <div className="max-w-6xl mx-auto py-10 relative top-44">
         {/* Filtres */}
         <div className="flex justify-between mb-4">
           <Select value={filterStatus} onChange={setFilterStatus} style={{ width: 180 }}>

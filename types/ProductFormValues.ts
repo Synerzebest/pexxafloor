@@ -12,5 +12,7 @@ export interface ProductFormValues {
     description_fr?: string;
     description_nl?: string;
     description_en?: string;
+
+    reference: string;
   }
   
