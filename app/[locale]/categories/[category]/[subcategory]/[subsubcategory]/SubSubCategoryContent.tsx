@@ -1,9 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
-import { SlidersHorizontal } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components";
-import { SubSubCategory } from "@/types/SubSubCategoryType";
+import { SubSubCategory } from "@/types/SubSubCategoryType";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -13,68 +14,81 @@ type Translatable = {
   name_en: string;
 };
 
+type SubSubCategoryContentProps = {
+  subsubcategory: SubSubCategory;
+  locale: SupportedLocale;
+
+  // Breadcrumb info venant du parent
+  categorySlug: string;
+  subcategorySlug: string;
+  categoryName: Translatable;
+  subcategoryName: Translatable;
+};
+
 export default function SubSubCategoryContent({
   subsubcategory,
   locale,
   categorySlug,
   subcategorySlug,
-}: {
-  subsubcategory: SubSubCategory;
-  locale: SupportedLocale;
-  categorySlug: string;
-  subcategorySlug: string;
-}) {
-  const getName = (obj: Translatable): string => {
-    switch (locale) {
-      case "fr":
-        return obj.name_fr;
-      case "nl":
-        return obj.name_nl;
-      default:
-        return obj.name_en;
-    }
-  };
+  categoryName,
+  subcategoryName,
+}: SubSubCategoryContentProps) {
+  const getName = (obj: Translatable) =>
+    locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-8 py-12 space-y-12 relative top-24 pb-32">
-      {/* Header sous-sous-catégorie */}
-      <div className="flex items-center justify-between mb-10">
-        <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
-          {getName(subsubcategory)}
-        </h1>
-        <button className="flex items-center gap-2 text-gray-600 border rounded-full px-4 py-2 hover:bg-gray-100 transition">
-          <SlidersHorizontal className="w-4 h-4" />
-          Filtres
-        </button>
-      </div>
-
-      {/* Liste des produits */}
-      {subsubcategory.products?.length > 0 ? (
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          viewport={{ once: true }}
+    <div className="max-w-6xl mx-auto px-4 md:px-6 py-12 space-y-16 relative top-28 pb-36">
+      <nav className="flex items-center gap-2 text-sm font-medium text-gray-600">
+        <Link
+          href={`/${locale}/categories/${categorySlug}`}
+          className="hover:text-orange-600 transition"
         >
-          <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+          {getName(categoryName)}
+        </Link>
+
+        <ChevronRight className="w-4 h-4 text-gray-400" />
+
+        <Link
+          href={`/${locale}/categories/${categorySlug}/${subcategorySlug}`}
+          className="hover:text-orange-600 transition"
+        >
+          {getName(subcategoryName)}
+        </Link>
+
+        <ChevronRight className="w-4 h-4 text-gray-400" />
+
+        <span className="text-gray-900">{getName(subsubcategory)}</span>
+      </nav>
+
+      <h1 className="text-4xl font-semibold tracking-tight text-gray-900">
+        {getName(subsubcategory)}
+      </h1>
+      
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.4 }}
+      >
+        {subsubcategory.products.length > 0 ? (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {subsubcategory.products.map((prod) => (
-              <li key={prod.id}>
-                <ProductCard
-                  product={prod}
-                  locale={locale}
-                  categorySlug={categorySlug}
-                  subcategorySlug={subcategorySlug}
-                  subsubcategorySlug={subsubcategory.slug}
-                />
-              </li>
+              <ProductCard
+                key={prod.id}
+                product={prod}
+                locale={locale}
+                categorySlug={categorySlug}
+                subcategorySlug={subcategorySlug}
+                subsubcategorySlug={subsubcategory.slug}
+              />
             ))}
           </ul>
-        </motion.div>
-      ) : (
-        <p className="text-gray-500 italic">
-          Aucun produit dans cette sous-sous-catégorie
-        </p>
-      )}
+        ) : (
+          <p className="text-gray-500 italic">
+            Aucun produit trouvé dans cette sous-sous-catégorie.
+          </p>
+        )}
+      </motion.div>
     </div>
   );
 }

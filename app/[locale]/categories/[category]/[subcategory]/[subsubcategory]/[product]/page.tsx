@@ -2,6 +2,8 @@ import { supabase } from "@/lib/supabaseClient";
 import { notFound } from "next/navigation";
 import { Navbar, Footer, ProductGallery, AddToCartButton } from "@/components";
 import { Product } from "@/types/ProductType";
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -11,23 +13,41 @@ export interface ProductWithImages extends Product {
   product_images?: ProductImage[] | null;
 }
 
-// 1) Définir le type de params comme une PROMISE
+// Ajout du paramètre subsubcategory ici
 type ProductRouteParams = Promise<{
   locale: string;
   category: string;
   subcategory: string;
+  subsubcategory: string;   // ✅ ajouté
   product: string;
 }>;
 
-// 2) Utiliser ce type dans la signature de la page
 export default async function ProductPage({
   params,
 }: {
   params: ProductRouteParams;
 }) {
-  // 3) IMPORTANT : await params
-  const { product, locale } = await params;
+  const { product, locale, category, subcategory, subsubcategory } =
+    await params;
+  const supportedLocale = locale as SupportedLocale;
 
+  const getName = (p: { name_fr: string; name_nl: string; name_en: string }) =>
+    supportedLocale === "fr"
+      ? p.name_fr
+      : supportedLocale === "nl"
+      ? p.name_nl
+      : p.name_en;
+
+  const getDesc = (p: ProductWithImages) =>
+    supportedLocale === "fr"
+      ? p.description_fr
+      : supportedLocale === "nl"
+      ? p.description_nl
+      : p.description_en;
+
+  // -------------------------------------------------------
+  // 1) Produit
+  // -------------------------------------------------------
   const { data, error } = await supabase
     .from("products_with_discount")
     .select(`
@@ -48,43 +68,110 @@ export default async function ProductPage({
     .single();
 
   if (!data || error) return notFound();
+  const prod = data as unknown as ProductWithImages;
 
-  const prod = data as ProductWithImages;
+  // -------------------------------------------------------
+  // 2) Catégorie
+  // -------------------------------------------------------
+  const { data: categoryData, error: catError } = await supabase
+    .from("categories")
+    .select("name_fr, name_nl, name_en")
+    .eq("slug", category)
+    .single();
 
-  const supportedLocale = locale as SupportedLocale;
+  if (catError || !categoryData) return notFound();
 
-  const getName = (p: ProductWithImages): string =>
-    supportedLocale === "fr"
-      ? p.name_fr
-      : supportedLocale === "nl"
-      ? p.name_nl
-      : p.name_en;
+  // -------------------------------------------------------
+  // 3) Sous-catégorie
+  // -------------------------------------------------------
+  const { data: subcategoryData, error: subcatError } = await supabase
+    .from("subcategories")
+    .select("name_fr, name_nl, name_en")
+    .eq("slug", subcategory)
+    .single();
 
-  const getDesc = (p: ProductWithImages): string =>
-    supportedLocale === "fr"
-      ? p.description_fr
-      : supportedLocale === "nl"
-      ? p.description_nl
-      : p.description_en;
+  if (subcatError || !subcategoryData) return notFound();
 
-  const images: string[] =
+  // -------------------------------------------------------
+  // 4) Sous-sous-catégorie
+  // -------------------------------------------------------
+  const { data: subsubData, error: subsubError } = await supabase
+    .from("subsubcategories")
+    .select("name_fr, name_nl, name_en")
+    .eq("slug", subsubcategory)
+    .single();
+
+  if (subsubError || !subsubData) return notFound();
+
+  // -------------------------------------------------------
+  // 5) Images
+  // -------------------------------------------------------
+  const images =
     prod.product_images?.map((img: ProductImage) => img.image_url) ?? [
       "/images/placeholder.png",
     ];
 
+  // -------------------------------------------------------
+  // 6) Prix (HTVA / TVAC / Remise)
+  // -------------------------------------------------------
   const discount = prod.applied_discount ?? 0;
   const isDiscounted = discount > 0;
 
-  const priceHTVA: number = isDiscounted
+  const priceHTVA = isDiscounted
     ? prod.price_after_discount ?? prod.price ?? 0
     : prod.price ?? 0;
 
   const priceTVAC = priceHTVA * 1.21;
 
+  // -------------------------------------------------------
+  // 7) Rendu
+  // -------------------------------------------------------
   return (
     <>
       <Navbar />
-      <div className="max-w-6xl mx-auto px-4 py-10 relative top-36 pb-36">
+
+      <div className="max-w-6xl mx-auto px-4 py-10 relative top-20 sm:top-36 pb-36">
+
+        {/* ------------------ BREADCRUMB ------------------ */}
+        <nav className="flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-600 mb-8 overflow-x-auto no-scrollbar">
+
+        {/* Catégorie */}
+        <Link
+          href={`/${locale}/categories/${category}`}
+          className="hover:text-orange-600 transition whitespace-nowrap max-w-[90px] sm:max-w-[140px] truncate"
+        >
+          {getName(categoryData)}
+        </Link>
+
+        <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" />
+
+        {/* Sous-catégorie */}
+        <Link
+          href={`/${locale}/categories/${category}/${subcategory}`}
+          className="hover:text-orange-600 transition whitespace-nowrap max-w-[90px] sm:max-w-[140px] truncate"
+        >
+          {getName(subcategoryData)}
+        </Link>
+
+        <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" />
+
+        {/* Sous-sous-catégorie */}
+        <Link
+          href={`/${locale}/categories/${category}/${subcategory}/${subsubcategory}`}
+          className="hover:text-orange-600 transition whitespace-nowrap max-w-[90px] sm:max-w-[140px] truncate"
+        >
+          {getName(subsubData)}
+        </Link>
+
+        <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" />
+
+        {/* Produit */}
+        <span className="text-gray-900 whitespace-nowrap max-w-[110px] sm:max-w-[200px] truncate">
+          {getName(prod)}
+        </span>
+      </nav>
+
+        {/* ------------------ CONTENU PRODUIT ------------------ */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <ProductGallery images={images} alt={getName(prod)} />
 
@@ -143,6 +230,7 @@ export default async function ProductPage({
           </div>
         </div>
       </div>
+
       <Footer />
     </>
   );

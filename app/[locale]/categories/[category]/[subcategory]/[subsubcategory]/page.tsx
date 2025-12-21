@@ -20,8 +20,7 @@ export default async function SubSubCategoryPage({
   const { category, subcategory, subsubcategory } = await params;
   const locale = (await getLocale()) as SupportedLocale;
 
-  // 🔹 Récupération complète de la sous-sous-catégorie
-  const { data, error } = await supabase
+  const { data: subsubData, error: subsubError } = await supabase
     .from("subsubcategories")
     .select(`
       id,
@@ -29,39 +28,61 @@ export default async function SubSubCategoryPage({
       name_fr,
       name_nl,
       name_en,
-      products (
+      products:products!products_subsub_id_fkey (
         id,
         slug,
         name_fr,
         name_nl,
         name_en,
         price,
-        product_images!fk_product (
-          image_url
-        )
-      ),
-      subcategory:subcategory_id (
-        slug,
-        category:category_id ( slug )
+        product_images!fk_product (image_url)
       )
     `)
     .eq("slug", subsubcategory)
     .single();
 
+  if (subsubError || !subsubData) {
+    console.error(subsubError);
+    return notFound();
+  }
 
-  if (error || !data) return notFound();
+  const subSubCategoryData = subsubData as unknown as SubSubCategory;
 
-  const subSubCategoryData = data as unknown as SubSubCategory;
+  const { data: subcatData, error: subcatError } = await supabase
+    .from("subcategories")
+    .select("name_fr, name_nl, name_en")
+    .eq("slug", subcategory)
+    .single();
+
+  if (subcatError || !subcatData) {
+    console.error(subcatError);
+    return notFound();
+  }
+
+  const { data: catData, error: catError } = await supabase
+    .from("categories")
+    .select("name_fr, name_nl, name_en")
+    .eq("slug", category)
+    .single();
+
+  if (catError || !catData) {
+    console.error(catError);
+    return notFound();
+  }
 
   return (
     <>
       <Navbar />
+
       <SubSubCategoryContent
         subsubcategory={subSubCategoryData}
         locale={locale}
         categorySlug={category}
         subcategorySlug={subcategory}
+        categoryName={catData}
+        subcategoryName={subcatData}
       />
+
       <Footer />
     </>
   );

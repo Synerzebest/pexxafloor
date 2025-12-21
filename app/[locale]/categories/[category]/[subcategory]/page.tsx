@@ -1,9 +1,10 @@
 import { supabase } from "@/lib/supabaseClient";
 import { notFound } from "next/navigation";
-import { Navbar, Footer, ProductCard } from "@/components";
+import { Navbar, Footer } from "@/components";
 import { getLocale } from "next-intl/server";
-import { SubCategory } from "@/types/SubCategoryType";
-import { Product } from "@/types/ProductType";
+import { SubCategory } from "@/types/SubCategoryType";
+import { Category } from "@/types/CategoryType";
+import SubCategoryContent from "./SubCategoryContent";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -23,34 +24,32 @@ export default async function SubcategoryPage({
   const locale = (await getLocale()) as SupportedLocale;
 
   const { data, error } = await supabase
-  .from("subcategories")
-  .select(`
-    id,
-    slug,
-    name_fr,
-    name_nl,
-    name_en,
-    subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
+    .from("subcategories")
+    .select(`
       id,
       slug,
       name_fr,
       name_nl,
       name_en,
-      products:products!products_subsub_id_fkey (
+      subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
         id,
         slug,
         name_fr,
         name_nl,
         name_en,
-        price,
-        product_images!fk_product ( image_url )
+        products:products!products_subsub_id_fkey (
+          id,
+          slug,
+          name_fr,
+          name_nl,
+          name_en,
+          price,
+          product_images!fk_product ( image_url )
+        )
       )
-    )
-  `)
-  .eq("slug", subcategory)
-  .single();
-
-
+    `)
+    .eq("slug", subcategory)
+    .single();
 
   if (error) {
     console.error("Supabase error:", error);
@@ -59,33 +58,24 @@ export default async function SubcategoryPage({
   const subcat = data as SubCategory | null;
   if (!subcat) return notFound();
 
-  const getName = (obj: Translatable) =>
-    locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en;
+  const { data: categoryData } = await supabase
+    .from("categories")
+    .select("id, slug, name_fr, name_nl, name_en")
+    .eq("slug", category)
+    .single();
+
+  const parentCategory = categoryData as Category | null;
+  if (!parentCategory) return notFound();
 
   return (
     <>
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 py-8 relative top-28 pb-36">
-        <h1 className="text-2xl font-bold text-orange-600 mb-6">
-          {getName(subcat)}
-        </h1>
-
-        <ul className="grid grid-cols-2 md:grid-cols-3 gap-6">
-          {subcat.subsubcategories.flatMap((ssc) =>
-            ssc.products.map((prod: Product) => (
-              <ProductCard
-                key={prod.id}
-                product={prod}
-                locale={locale}
-                categorySlug={category}
-                subcategorySlug={subcat.slug}
-                subsubcategorySlug={ssc.slug}
-              />
-            ))
-          )}
-        </ul>
-      </div>
+      <SubCategoryContent
+        subcategory={subcat}
+        category={parentCategory}
+        locale={locale}
+      />
 
       <Footer />
     </>
