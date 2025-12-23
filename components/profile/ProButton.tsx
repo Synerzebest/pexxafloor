@@ -3,26 +3,44 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";
 import UserProApplicationCard from "./UserProApplicationCard";
 
-export default function ProButton({ locale, userId }: { locale: string; userId: string }) {
+export default function ProButton({
+  locale,
+  userId,
+}: {
+  locale: string;
+  userId: string;
+}) {
   const t = useTranslations("Profile");
-  const supabase = createClientComponentClient();
+
+  // NEW: création du client Supabase côté client
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
+
   const [isPro, setIsPro] = useState(false);
   const [hasApp, setHasApp] = useState(false);
 
   useEffect(() => {
     async function check() {
-      const { data: app } = await supabase
+      const { data: app, error } = await supabase
         .from("pro_applications")
         .select("status")
         .eq("user_id", userId)
         .maybeSingle();
 
+      if (error) {
+        console.error("Supabase error:", error);
+        return;
+      }
+
       setHasApp(!!app);
       setIsPro(app?.status === "VERIFIED");
     }
+
     check();
   }, [userId]);
 
@@ -34,9 +52,7 @@ export default function ProButton({ locale, userId }: { locale: string; userId: 
             <h3 className="text-lg font-semibold text-gray-900">
               {t("pro.title")}
             </h3>
-            <p className="mt-1 text-sm text-gray-700">
-              {t("pro.desc")}
-            </p>
+            <p className="mt-1 text-sm text-gray-700">{t("pro.desc")}</p>
           </div>
           <Link
             href={`/${locale}/pro-signup`}

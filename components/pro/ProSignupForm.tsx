@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createBrowserClient } from '@supabase/ssr';   // ⬅️ NEW
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from "react-icons/fa";
 
@@ -13,7 +13,12 @@ type BusinessType = typeof BUSINESS_TYPES[number];
 
 export default function ProSignupForm({ locale }: Props) {
   const t = useTranslations('ProSignup');
-  const supabase = createClientComponentClient();
+
+  // NEW: client Supabase compatible Next.js 14+
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   // States
   const [firstName, setFirstName] = useState('');
@@ -37,43 +42,42 @@ export default function ProSignupForm({ locale }: Props) {
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+
     setErr(null);
     setOk(null);
-  
+
     if (!firstName || !lastName || !phone || !email || !companyName || !vat || !addr1 || !town || !postcode) {
       setErr(t('errors.required'));
       return;
     }
-  
+
     setLoading(true);
-  
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       setLoading(false);
       setErr(t('errors.session'));
       return;
     }
-  
-    // 🔍 Vérifier s’il existe déjà une demande pour cet utilisateur
+
     const { data: existing, error: checkError } = await supabase
       .from("pro_applications")
       .select("id, status")
       .eq("user_id", user.id)
       .maybeSingle();
-  
+
     if (checkError) {
       setLoading(false);
       setErr("Erreur de vérification, veuillez réessayer.");
       return;
     }
-  
+
     if (existing) {
       setLoading(false);
       setErr("Vous avez déjà une demande en cours ou validée.");
       return;
     }
-  
-    // Créer la nouvelle demande
+
     const { error } = await supabase.from("pro_applications").insert({
       user_id: user.id,
       first_name: firstName,
@@ -91,171 +95,247 @@ export default function ProSignupForm({ locale }: Props) {
       postcode,
       status: "PENDING"
     });
-  
+
     setLoading(false);
-  
+
     if (error) setErr(error.message);
     else setOk(t('success'));
   }
   
+  const inputBase =
+    "w-full rounded-xl border border-slate-300/70 bg-white px-4 py-3 text-slate-900 placeholder-slate-400 " +
+    "focus:outline-none focus:ring-2 focus:ring-orange-500/30 focus:border-orange-500 " +
+    "transition";
+
+  const labelBase =
+    "mb-1.5 block text-xs font-medium uppercase tracking-wide text-slate-500";
 
   return (
-    <section className="bg-white relative top-24">
-      <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-12">
+    <section className="relative top-12 pt-28 pb-24 bg-slate-50">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.35 }}
-          className="rounded-2xl border border-orange-100 bg-orange-50 p-6 md:p-8 shadow-sm"
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="
+            rounded-3xl bg-white/80 backdrop-blur-xl
+            border border-slate-200/60
+            shadow-[0_20px_60px_-20px_rgba(0,0,0,0.15)]
+            p-8 md:p-10
+          "
         >
-          <h1 className="text-2xl md:text-3xl font-bold text-orange-600">{t('title')}</h1>
-          <p className="mt-2 text-sm text-gray-700">{t('subtitle')}</p>
-
-          <form onSubmit={onSubmit} className="mt-6 space-y-8">
-            {/* Your details */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">{t('yourDetails')}</h2>
-              <div className="h-px bg-orange-200 mt-2" />
-              <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="mb-1 block text-sm text-gray-700">{t('firstName')}</label>
-                  <input
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={firstName} onChange={e => setFirstName(e.target.value)}
-                  />
+          {/* Header */}
+          <header className="mb-10 max-w-2xl">
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900">
+              {t("title")}
+            </h1>
+            <p className="mt-3 text-slate-600 leading-relaxed">
+              {t("subtitle")}
+            </p>
+          </header>
+    
+          <form onSubmit={onSubmit} className="space-y-10">
+            {/* GRID PRINCIPALE */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* LEFT – Personal */}
+              <section className="rounded-2xl border border-slate-200/60 p-6 space-y-6">
+                <h2 className="text-base font-medium text-slate-900">
+                  {t("yourDetails")}
+                </h2>
+    
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div>
+                    <label className={labelBase}>{t("firstName")}</label>
+                    <input
+                      className={inputBase}
+                      value={firstName}
+                      onChange={e => setFirstName(e.target.value)}
+                    />
+                  </div>
+    
+                  <div>
+                    <label className={labelBase}>{t("lastName")}</label>
+                    <input
+                      className={inputBase}
+                      value={lastName}
+                      onChange={e => setLastName(e.target.value)}
+                    />
+                  </div>
+    
+                  <div>
+                    <label className={labelBase}>{t("phone")}</label>
+                    <input
+                      className={inputBase}
+                      value={phone}
+                      onChange={e => setPhone(e.target.value)}
+                    />
+                  </div>
+    
+                  <div>
+                    <label className={labelBase}>Email</label>
+                    <input
+                      type="email"
+                      className={inputBase}
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="mb-1 block text-sm text-gray-700">{t('lastName')}</label>
-                  <input
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={lastName} onChange={e => setLastName(e.target.value)}
-                  />
+              </section>
+    
+              {/* RIGHT – Company */}
+              <section className="rounded-2xl border border-slate-200/60 p-6 space-y-6">
+                <h2 className="text-base font-medium text-slate-900">
+                  {t("companyDetails")}
+                </h2>
+    
+                <div className="space-y-5">
+                  <div>
+                    <label className={labelBase}>{t("company")}</label>
+                    <input
+                      className={inputBase}
+                      value={companyName}
+                      onChange={e => setCompany(e.target.value)}
+                    />
+                  </div>
+    
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div>
+                      <label className={labelBase}>{t("vat")}</label>
+                      <input
+                        className={inputBase}
+                        value={vat}
+                        onChange={e => setVat(e.target.value)}
+                      />
+                    </div>
+    
+                    <div>
+                      <label className={`${labelBase} flex items-center gap-2`}>
+                        <FaWhatsapp className="text-green-500 text-sm" />
+                        WhatsApp
+                      </label>
+                      <input
+                        className={inputBase}
+                        value={whatsapp}
+                        onChange={e => setWhatsapp(e.target.value)}
+                      />
+                    </div>
+                  </div>
+    
+                  <div>
+                    <label className={labelBase}>{t("businessType")}</label>
+                    <select
+                      className={inputBase}
+                      value={businessType}
+                      onChange={e => setType(e.target.value as BusinessType)}
+                    >
+                      {BUSINESS_TYPES.map(opt => (
+                        <option key={opt} value={opt}>
+                          {t(`businessTypes.${opt}`)}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-                <div>
-                  <label className="mb-1 block text-sm text-gray-700">{t('phone')}</label>
-                  <input
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={phone} onChange={e => setPhone(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-sm text-gray-700">Email</label>
-                  <input
-                    type="email"
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={email} onChange={e => setEmail(e.target.value)}
-                  />
-                </div>
-              </div>
+              </section>
             </div>
-
-            {/* Company details */}
-            <div>
-              <h2 className="text-lg font-semibold text-gray-900">{t('companyDetails')}</h2>
-              <div className="h-px bg-orange-200 mt-2" />
-              <div className="mt-4 grid grid-cols-1 gap-4">
+    
+            {/* ADDRESS – full width */}
+            <section className="rounded-2xl border border-slate-200/60 p-6 space-y-6">
+              <h2 className="text-base font-medium text-slate-900">
+                {t("address")}
+              </h2>
+    
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label className="mb-1 block text-sm text-gray-700">{t('company')}</label>
+                  <label className={labelBase}>{t("addr1")}</label>
                   <input
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={companyName} onChange={e => setCompany(e.target.value)}
+                    className={inputBase}
+                    value={addr1}
+                    onChange={e => setAddr1(e.target.value)}
                   />
                 </div>
-
-                {/* VAT */}
+    
                 <div>
-                  <label className="mb-1 block text-sm text-gray-700">{t('vat')}</label>
-                  <input
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={vat} onChange={e => setVat(e.target.value)}
-                  />
-                </div>
-
-                {/* WhatsApp */}
-                <div>
-                  <label className="mb-1 text-sm text-gray-700 flex items-center gap-1">
-                    <FaWhatsapp className="text-green-500" /> WhatsApp
+                  <label className={labelBase}>
+                    {t("addr2")}{" "}
+                    <span className="text-slate-400 normal-case">
+                      ({t("optional")})
+                    </span>
                   </label>
                   <input
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={whatsapp} onChange={e => setWhatsapp(e.target.value)}
+                    className={inputBase}
+                    value={addr2}
+                    onChange={e => setAddr2(e.target.value)}
                   />
                 </div>
-
+    
                 <div>
-                  <label className="mb-1 block text-sm text-gray-700">{t('businessType')}</label>
-                  <select
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={businessType}
-                    onChange={e => setType(e.target.value as BusinessType)}
-                  >
-                    {BUSINESS_TYPES.map(opt => (
-                      <option key={opt} value={opt}>{t(`businessTypes.${opt}`)}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="mb-1 block text-sm text-gray-700">{t('addr1')}</label>
+                  <label className={labelBase}>{t("town")}</label>
                   <input
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={addr1} onChange={e => setAddr1(e.target.value)}
+                    className={inputBase}
+                    value={town}
+                    onChange={e => setTown(e.target.value)}
                   />
                 </div>
-
-                <div>
-                  <label className="mb-1 block text-sm text-gray-700">
-                    {t('addr2')} <span className="text-gray-400">({t('optional')})</span>
-                  </label>
-                  <input
-                    className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                    value={addr2} onChange={e => setAddr2(e.target.value)}
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+    
+                <div className="grid grid-cols-2 gap-5">
                   <div>
-                    <label className="mb-1 block text-sm text-gray-700">{t('town')}</label>
+                    <label className={labelBase}>{t("county")}</label>
                     <input
-                      className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                      value={town} onChange={e => setTown(e.target.value)}
+                      className={inputBase}
+                      value={county}
+                      onChange={e => setCounty(e.target.value)}
                     />
                   </div>
+    
                   <div>
-                    <label className="mb-1 block text-sm text-gray-700">{t('county')}</label>
+                    <label className={labelBase}>{t("postcode")}</label>
                     <input
-                      className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                      value={county} onChange={e => setCounty(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <label className="mb-1 block text-sm text-gray-700">{t('postcode')}</label>
-                    <input
-                      className="w-full rounded-xl border border-gray-300 px-3 py-2 focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-                      value={postcode} onChange={e => setPostcode(e.target.value)}
+                      className={inputBase}
+                      value={postcode}
+                      onChange={e => setPostcode(e.target.value)}
                     />
                   </div>
                 </div>
               </div>
-            </div>
-
+            </section>
+    
+            {/* Feedback */}
             {err && (
-              <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{err}</div>
+              <div className="rounded-xl bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-700">
+                {err}
+              </div>
             )}
+    
             {ok && (
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700">{ok}</div>
+              <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-700">
+                {ok}
+              </div>
             )}
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full rounded-xl bg-orange-600 py-3 text-white font-semibold hover:bg-orange-700 transition disabled:opacity-60"
-            >
-              {loading ? t('sending') : t('cta')}
-            </button>
+    
+            {/* CTA */}
+            <div className="flex justify-end">
+              <button
+                type="submit"
+                disabled={loading}
+                className="
+                  inline-flex items-center justify-center
+                  rounded-xl bg-orange-600 text-white
+                  px-10 py-4 text-sm font-semibold
+                  shadow-lg shadow-orange-600/25
+                  hover:bg-orange-700 hover:shadow-xl
+                  active:scale-[0.98]
+                  transition
+                  disabled:opacity-50
+                "
+              >
+                {loading ? t("sending") : t("cta")}
+              </button>
+            </div>
           </form>
         </motion.div>
       </div>
-    </section>
+    </section>  
   );
 }

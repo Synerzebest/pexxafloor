@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { createBrowserClient } from "@supabase/ssr";   // ⬅️ NEW
 import { ProApplication } from "@/types/ProApplicationType";
 import dayjs from "dayjs";
 import { Tag, Spin } from "antd";
@@ -11,14 +11,15 @@ import {
   StopOutlined 
 } from "@ant-design/icons";
 
-
 export default function UserProApplicationCard({ userId }: { userId: string }) {
-  const supabase = createClientComponentClient();
+  const supabase = createBrowserClient(                 // ⬅️ NEW API
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
 
   const [app, setApp] = useState<ProApplication | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Charger la demande PRO
   useEffect(() => {
     async function load() {
       setLoading(true);
@@ -37,7 +38,7 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
     }
 
     load();
-  }, [userId, supabase]);
+  }, [userId]);
 
   const statusColors: Record<ProApplication["status"], string> = {
     PENDING: "default",
@@ -57,7 +58,6 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
     REVISION: "À réviser",
   };
 
-  // Chargement
   if (loading) {
     return (
       <div className="flex justify-center items-center py-10">
@@ -66,7 +66,6 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
     );
   }
 
-  // Aucune demande
   if (!app) {
     return (
       <div className="text-center py-10">
