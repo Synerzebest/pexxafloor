@@ -107,6 +107,7 @@
     "ProSignup": {
       "title": "Word professionele klant",
       "subtitle": "Vul dit formulier in om toegang te krijgen tot onze professionele tarieven en exclusieve voordelen.",
+      "subtitle_advantage": {"first": "Als nieuwe Pro-klant biedt Pexxafloor u ", "price": "10.00€ ", "second": "aankooptegoed op uw eerste bestelling !"},
       "yourDetails": "Uw gegevens",
       "address": "Adres",
       "firstName": "Voornaam",
@@ -126,17 +127,24 @@
       "addr1": "Adres (regel 1)",
       "addr2": "Adres (regel 2)",
       "optional": "optioneel",
-      "town": "Stad",
-      "county": "Provincie",
+      "town": "Gemeente / Stad",
+      "county": "Regio / Provincie",
       "postcode": "Postcode",
       "vat": "BTW-nummer",
       "whatsapp": "WhatsApp-nummer",
       "cta": "Verzoek indienen",
       "sending": "Bezig met verzenden…",
       "success": "Uw aanvraag is verzonden. We nemen snel contact met u op.",
+      "accept": {
+        "prefix": "Ik bevestig dat ik de",
+        "terms": "Algemene Voorwaarden",
+        "and": "en het",
+        "privacy": "Privacybeleid"
+      },
       "errors": {
         "required": "Vul alle verplichte velden in.",
-        "session": "Uw sessie is verlopen. Gelieve opnieuw in te loggen."
+        "session": "Uw sessie is verlopen. Gelieve opnieuw in te loggen.",
+        "acceptTerms": "U moet de voorwaarden accepteren om verder te gaan."
       }
     },    
     "AdminPro": {
@@ -225,7 +233,7 @@
       "catalogManagement": "Catalogusbeheer",
       "catalogManagementDetails": "Categorieën, subcategorieën en producten",
       "professionalRequests": "Professionele verzoeken",
-      "professionalRequestsDetails": "Beheer verzoeken die door installateurs / professionals zijn verzonden",
+      "professionalRequestsDetails": "Beheer registratie verzoeken die door installateurs / professionals zijn verzonden",
       "orderManagement": "Orderbeheer",
       "orderManagementDetails": "Controleer de bestellingen om ze ter voorbereiding te versturen",
       "userRolesManagement": "Beheer van gebruikersrollen",

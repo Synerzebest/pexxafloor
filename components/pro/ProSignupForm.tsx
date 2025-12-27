@@ -2,9 +2,10 @@
 
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { createBrowserClient } from '@supabase/ssr';   // ⬅️ NEW
+import { createBrowserClient } from '@supabase/ssr';
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from "react-icons/fa";
+import Link from "next/link";
 
 type Props = { locale: string };
 
@@ -35,6 +36,7 @@ export default function ProSignupForm({ locale }: Props) {
   const [town, setTown]           = useState('');
   const [county, setCounty]       = useState('');
   const [postcode, setPostcode]   = useState('');
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [ok, setOk] = useState<string|null>(null);
@@ -45,6 +47,11 @@ export default function ProSignupForm({ locale }: Props) {
 
     setErr(null);
     setOk(null);
+
+    if (!acceptedTerms) {
+      setErr(t('errors.acceptTerms'));
+      return;
+    }    
 
     if (!firstName || !lastName || !phone || !email || !companyName || !vat || !addr1 || !town || !postcode) {
       setErr(t('errors.required'));
@@ -125,12 +132,17 @@ export default function ProSignupForm({ locale }: Props) {
           "
         >
           {/* Header */}
-          <header className="mb-10 max-w-2xl">
+          <header className="mb-10">
             <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-900">
               {t("title")}
             </h1>
             <p className="mt-3 text-slate-600 leading-relaxed">
               {t("subtitle")}
+            </p>
+            <p className="text-slate-600 leading-relaxed">
+              {t("subtitle_advantage.first")}
+              <span className="text-orange-500 font-bold">{t("subtitle_advantage.price")}</span>
+              {t("subtitle_advantage.second")}
             </p>
           </header>
     
@@ -314,24 +326,61 @@ export default function ProSignupForm({ locale }: Props) {
               </div>
             )}
     
-            {/* CTA */}
-            <div className="flex justify-end">
-              <button
-                type="submit"
-                disabled={loading}
-                className="
-                  inline-flex items-center justify-center
-                  rounded-xl bg-orange-600 text-white
-                  px-10 py-4 text-sm font-semibold
-                  shadow-lg shadow-orange-600/25
-                  hover:bg-orange-700 hover:shadow-xl
-                  active:scale-[0.98]
-                  transition
-                  disabled:opacity-50
-                "
-              >
-                {loading ? t("sending") : t("cta")}
-              </button>
+            {/* CTA + Terms */}
+            <div className="space-y-4">
+              {/* Checkbox */}
+              <label className="flex items-start gap-3 text-sm text-slate-600">
+                <input
+                  type="checkbox"
+                  required
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="
+                    mt-1 h-4 w-4 rounded
+                    border-slate-300 text-orange-600
+                    focus:ring-orange-500
+                  "
+                />
+
+                <span className="leading-relaxed">
+                  {t("accept.prefix")}{' '}
+                  <Link
+                    href={`/${locale}/terms`}
+                    target="_blank"
+                    className="text-orange-600 underline hover:text-orange-700"
+                  >
+                    {t("accept.terms")}
+                  </Link>{' '}
+                  {t("accept.and")}{' '}
+                  <Link
+                    href={`/${locale}/privacy`}
+                    target="_blank"
+                    className="text-orange-600 underline hover:text-orange-700"
+                  >
+                    {t("accept.privacy")}
+                  </Link>
+                </span>
+              </label>
+
+              {/* Button */}
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="
+                    inline-flex items-center justify-center
+                    rounded-xl bg-orange-600 text-white
+                    px-10 py-4 text-sm font-semibold
+                    shadow-lg shadow-orange-600/25
+                    hover:bg-orange-700 hover:shadow-xl
+                    active:scale-[0.98]
+                    transition
+                    disabled:opacity-50
+                  "
+                >
+                  {loading ? t("sending") : t("cta")}
+                </button>
+              </div>
             </div>
           </form>
         </motion.div>

@@ -111,6 +111,7 @@
     "ProSignup": {
       "title": "Become a trade customer",
       "subtitle": "Fill in this form to access trade pricing and dedicated benefits.",
+      "subtitle_advantage": {"first": "As a new Pro customer, Pexxafloor offers you", "price": "10.00€ ", "second": "of purchase credit on your first order !"},
       "yourDetails": "Your details",
       "address": "Address",
       "firstName": "First name",
@@ -130,17 +131,24 @@
       "addr1": "Address line 1",
       "addr2": "Address line 2",
       "optional": "optional",
-      "town": "Town",
-      "county": "County",
+      "town": "Commune / Town",
+      "county": "Region / Province",
       "postcode": "Postcode",
       "vat": "VAT Number",
       "whatsapp": "Whatsapp Number",
       "cta": "Submit request",
       "sending": "Submitting…",
       "success": "Your request has been sent. We’ll get back to you shortly.",
+      "accept": {
+        "prefix": "I confirm that I have read and accept the",
+        "terms": "Terms and Conditions",
+        "and": "and the",
+        "privacy": "Privacy Policy"
+      },
       "errors": {
         "required": "Please complete all required fields.",
-        "session": "Your session expired. Please sign in again."
+        "session": "Your session expired. Please sign in again.",
+        "acceptTerms": "You must accept the terms and conditions to continue."
       }
     },
     "AdminPro": {
@@ -229,7 +237,7 @@
       "catalogManagement": "Catalog Management",
       "catalogManagementDetails": "Categories, subcategories and products",
       "professionalRequests": "Professional Requests",
-      "professionalRequestsDetails": "Manage requests sent by installers / pros",
+      "professionalRequestsDetails": "Manage registration requests sent by installers / pros",
       "orderManagement": "Order Management",
       "orderManagementDetails": "Check orders to send them for preparation",
       "userRolesManagement": "User roles management",

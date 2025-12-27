@@ -107,6 +107,7 @@
     "ProSignup": {
         "title": "Devenir client pro",
         "subtitle": "Remplissez ce formulaire pour accéder à nos tarifs professionnels et avantages dédiés.",
+        "subtitle_advantage": {"first": "En tant que nouveau client Pro, Pexxafloor vous offre ", "price": "10.00€ ", "second": "de crédit d'achat sur votre première commande !"},
         "yourDetails": "Vos informations",
         "address": "Addresse",
         "firstName": "Prénom",
@@ -126,17 +127,24 @@
         "addr1": "Adresse (ligne 1)",
         "addr2": "Adresse (ligne 2)",
         "optional": "optionnel",
-        "town": "Ville",
-        "county": "Province / Comté",
+        "town": "Commune / Ville",
+        "county": "Région / Province",
         "postcode": "Code postal",
         "vat": "Numéro de TVA",
         "whatsapp": "Numéro Whatsapp",
         "cta": "Envoyer la demande",
         "sending": "Envoi en cours…",
         "success": "Votre demande a été envoyée. Nous revenons vers vous rapidement.",
+        "accept": {
+          "prefix": "Je confirme avoir lu et accepté les",
+          "terms": "Conditions Générales de Vente",
+          "and": "et la",
+          "privacy": "Politique de Confidentialité"
+        },
         "errors": {
           "required": "Veuillez compléter tous les champs obligatoires.",
-          "session": "Votre session a expiré. Merci de vous reconnecter."
+          "session": "Votre session a expiré. Merci de vous reconnecter.",
+          "acceptTerms": "Vous devez accepter les conditions pour continuer."
         }
     },
     "AdminPro": {
@@ -225,7 +233,7 @@
       "catalogManagement": "Gestion du catalogue",
       "catalogManagementDetails": "Catégories, sous-catégories et produits",
       "professionalRequests": "Demandes Professionnelles",
-      "professionalRequestsDetails": "Gérez les demandes envoyées par des installateurs / pro",
+      "professionalRequestsDetails": "Gérez les demandes d'inscription envoyées par des installateurs / pro",
       "orderManagement": "Gestion des commandes",
       "orderManagementDetails": "Vérifiez les commandes pour les envoyer en préparation",
       "userRolesManagement": "Gestion des rôles utilisateurs",
