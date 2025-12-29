@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { SlidersHorizontal, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components";
 import { Category } from "@/types/CategoryType";
 import { SubSubCategory } from "@/types/SubSubCategoryType";
@@ -32,40 +32,39 @@ export default function CategoryContent({
       {/* ---------- GRILLE DE SOUS-CATÉGORIES ---------- */}
       {category.subcategories?.length > 0 && (
         <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  viewport={{ once: true }}
-  className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
->
-  {category.subcategories.map((sub) => (
-    <Link
-      key={sub.id}
-      href={`/${locale}/categories/${category.slug}/${sub.slug}`}
-      className="group relative flex items-center justify-between p-5 rounded-xl 
-                 bg-white border border-gray-200 hover:border-orange-400
-                 shadow-sm hover:shadow-md transition"
-    >
-      <div>
-        <h2 className="text-xl font-semibold group-hover:text-orange-600 transition">
-          {getName(sub)}
-        </h2>
-        <p className="text-sm text-gray-500">
-          {sub.subsubcategories?.length ?? 0} sous-catégories
-        </p>
-      </div>
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
+          {category.subcategories.map((sub) => (
+            <Link
+              key={sub.id}
+              href={`/${locale}/categories/${category.slug}/${sub.slug}`}
+              className="group relative flex items-center justify-between p-5 rounded-xl 
+                        bg-white border border-gray-200 hover:border-orange-400
+                        shadow-sm hover:shadow-md transition"
+            >
+              <div>
+                <h2 className="text-xl font-semibold group-hover:text-orange-600 transition">
+                  {getName(sub)}
+                </h2>
+                <p className="text-sm text-gray-500">
+                  {sub.subsubcategories?.length ?? 0} sous-catégories
+                </p>
+              </div>
 
-      <div
-        className="w-10 h-10 rounded-full 
-                   bg-orange-50 group-hover:bg-orange-100 
-                   flex items-center justify-center 
-                   transition shadow-inner"
-      >
-        <ChevronRight className="text-orange-600" />
-      </div>
-    </Link>
-  ))}
-</motion.div>
-
+              <div
+                className="w-10 h-10 rounded-full 
+                          bg-orange-50 group-hover:bg-orange-100 
+                          flex items-center justify-center 
+                          transition shadow-inner"
+              >
+                <ChevronRight className="text-orange-600" />
+              </div>
+            </Link>
+          ))}
+        </motion.div>
       )}
 
       {/* ---------- SECTIONS DE PRODUITS POUR CHAQUE SOUS-CATÉGORIE ---------- */}

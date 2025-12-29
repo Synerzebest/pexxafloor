@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabaseClient";
+import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
 import { notFound } from "next/navigation";
 import { Navbar, Footer, ProductGallery, AddToCartButton } from "@/components";
 import { Product } from "@/types/ProductType";
@@ -13,12 +13,11 @@ export interface ProductWithImages extends Product {
   product_images?: ProductImage[] | null;
 }
 
-// Ajout du paramètre subsubcategory ici
 type ProductRouteParams = Promise<{
   locale: string;
   category: string;
   subcategory: string;
-  subsubcategory: string;   // ✅ ajouté
+  subsubcategory: string;
   product: string;
 }>;
 
@@ -29,6 +28,7 @@ export default async function ProductPage({
 }) {
   const { product, locale, category, subcategory, subsubcategory } =
     await params;
+  const supabase = await createSupabaseServerAuthClient();
   const supportedLocale = locale as SupportedLocale;
 
   const getName = (p: { name_fr: string; name_nl: string; name_en: string }) =>
@@ -46,7 +46,28 @@ export default async function ProductPage({
       : p.description_en;
 
   // -------------------------------------------------------
-  // 1) Produit
+  // 1) USER + IS_PRO
+  // -------------------------------------------------------
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  let isPro = false;
+
+  console.log(user)
+  if (user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("is_pro")
+      .eq("id", user.id)
+      .single();
+
+    isPro = !!profile?.is_pro;
+    console.log("user data:", profile);
+  }
+
+  // -------------------------------------------------------
+  // 2) PRODUIT
   // -------------------------------------------------------
   const { data, error } = await supabase
     .from("products_with_discount")
@@ -71,60 +92,52 @@ export default async function ProductPage({
   const prod = data as unknown as ProductWithImages;
 
   // -------------------------------------------------------
-  // 2) Catégorie
+  // 3) CATEGORIES
   // -------------------------------------------------------
-  const { data: categoryData, error: catError } = await supabase
+  const { data: categoryData } = await supabase
     .from("categories")
     .select("name_fr, name_nl, name_en")
     .eq("slug", category)
     .single();
 
-  if (catError || !categoryData) return notFound();
-
-  // -------------------------------------------------------
-  // 3) Sous-catégorie
-  // -------------------------------------------------------
-  const { data: subcategoryData, error: subcatError } = await supabase
+  const { data: subcategoryData } = await supabase
     .from("subcategories")
     .select("name_fr, name_nl, name_en")
     .eq("slug", subcategory)
     .single();
 
-  if (subcatError || !subcategoryData) return notFound();
-
-  // -------------------------------------------------------
-  // 4) Sous-sous-catégorie
-  // -------------------------------------------------------
-  const { data: subsubData, error: subsubError } = await supabase
+  const { data: subsubData } = await supabase
     .from("subsubcategories")
     .select("name_fr, name_nl, name_en")
     .eq("slug", subsubcategory)
     .single();
 
-  if (subsubError || !subsubData) return notFound();
+  if (!categoryData || !subcategoryData || !subsubData) return notFound();
 
   // -------------------------------------------------------
-  // 5) Images
+  // 4) IMAGES
   // -------------------------------------------------------
   const images =
-    prod.product_images?.map((img: ProductImage) => img.image_url) ?? [
+    prod.product_images?.map((img) => img.image_url) ?? [
       "/images/placeholder.png",
     ];
 
   // -------------------------------------------------------
-  // 6) Prix (HTVA / TVAC / Remise)
+  // 5) PRIX – LOGIQUE OFFICIELLE
   // -------------------------------------------------------
+  const TVA = 1.21;
+
+  const priceBrutHTVA = prod.price ?? 0;
   const discount = prod.applied_discount ?? 0;
-  const isDiscounted = discount > 0;
+  const priceNetHTVA =
+    prod.price_after_discount ?? priceBrutHTVA;
 
-  const priceHTVA = isDiscounted
-    ? prod.price_after_discount ?? prod.price ?? 0
-    : prod.price ?? 0;
+  const priceBrutTVAC = priceBrutHTVA * TVA;
 
-  const priceTVAC = priceHTVA * 1.21;
+  const showProPrices = isPro && user; // PRO connecté UNIQUEMENT
 
   // -------------------------------------------------------
-  // 7) Rendu
+  // 6) RENDU
   // -------------------------------------------------------
   return (
     <>
@@ -132,90 +145,58 @@ export default async function ProductPage({
 
       <div className="max-w-6xl mx-auto px-4 py-10 relative top-20 sm:top-36 pb-36">
 
-        {/* ------------------ BREADCRUMB ------------------ */}
-        <nav className="flex items-center gap-2 text-xs sm:text-sm font-medium text-gray-600 mb-8 overflow-x-auto no-scrollbar">
+        {/* BREADCRUMB */}
+        <nav className="flex items-center gap-2 text-sm text-gray-600 mb-8">
+          <Link href={`/${locale}/categories/${category}`}>
+            {getName(categoryData)}
+          </Link>
+          <ChevronRight className="w-4 h-4" />
+          <Link href={`/${locale}/categories/${category}/${subcategory}`}>
+            {getName(subcategoryData)}
+          </Link>
+          <ChevronRight className="w-4 h-4" />
+          <Link
+            href={`/${locale}/categories/${category}/${subcategory}/${subsubcategory}`}
+          >
+            {getName(subsubData)}
+          </Link>
+          <ChevronRight className="w-4 h-4" />
+          <span className="text-gray-900">{getName(prod)}</span>
+        </nav>
 
-        {/* Catégorie */}
-        <Link
-          href={`/${locale}/categories/${category}`}
-          className="hover:text-orange-600 transition whitespace-nowrap max-w-[90px] sm:max-w-[140px] truncate"
-        >
-          {getName(categoryData)}
-        </Link>
-
-        <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" />
-
-        {/* Sous-catégorie */}
-        <Link
-          href={`/${locale}/categories/${category}/${subcategory}`}
-          className="hover:text-orange-600 transition whitespace-nowrap max-w-[90px] sm:max-w-[140px] truncate"
-        >
-          {getName(subcategoryData)}
-        </Link>
-
-        <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" />
-
-        {/* Sous-sous-catégorie */}
-        <Link
-          href={`/${locale}/categories/${category}/${subcategory}/${subsubcategory}`}
-          className="hover:text-orange-600 transition whitespace-nowrap max-w-[90px] sm:max-w-[140px] truncate"
-        >
-          {getName(subsubData)}
-        </Link>
-
-        <ChevronRight className="w-4 h-4 flex-shrink-0 text-gray-400" />
-
-        {/* Produit */}
-        <span className="text-gray-900 whitespace-nowrap max-w-[110px] sm:max-w-[200px] truncate">
-          {getName(prod)}
-        </span>
-      </nav>
-
-        {/* ------------------ CONTENU PRODUIT ------------------ */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           <ProductGallery images={images} alt={getName(prod)} />
 
           <div>
-            <h1 className="text-3xl font-semibold text-gray-900 mb-4">
+            <h1 className="text-3xl font-semibold mb-4">
               {getName(prod)}
             </h1>
 
-            <p className="text-gray-600 mb-6 leading-relaxed">
+            <p className="text-gray-600 mb-6">
               {getDesc(prod)}
             </p>
 
+            {/* ---------------- PRIX ---------------- */}
             <div className="mb-6">
-              {isDiscounted ? (
+              {showProPrices ? (
                 <>
+                  <p className="text-lg text-gray-400 line-through">
+                    {priceBrutHTVA.toFixed(2)} € HTVA
+                  </p>
+
                   <p className="text-3xl font-bold text-orange-700">
-                    {priceTVAC.toFixed(2)} €{" "}
-                    <span className="text-base font-medium text-gray-500">
-                      TVAC
-                    </span>
+                    {priceNetHTVA.toFixed(2)} € HTVA
                   </p>
 
-                  <p className="text-lg line-through text-gray-400 mt-1">
-                    {(prod.price * 1.21).toFixed(2)} € TVAC
-                  </p>
-
-                  <p className="mt-1 text-green-600 font-semibold">
-                    -{discount}% de remise PRO
-                  </p>
-
-                  <p className="text-sm text-gray-500 mt-1">
-                    {priceHTVA.toFixed(2)} € HTVA (après remise PRO)
+                  <p className="text-green-600 font-semibold mt-1">
+                    Remise PRO −{discount}%
                   </p>
                 </>
               ) : (
                 <>
                   <p className="text-3xl font-bold text-orange-700">
-                    {priceTVAC.toFixed(2)} €{" "}
-                    <span className="text-base font-medium text-gray-500">
-                      TVAC
-                    </span>
-                  </p>
-                  <p className="text-sm text-gray-500 mt-1">
-                    {prod.price.toFixed(2)} € HTVA
+                    {priceBrutTVAC.toFixed(2)} €{" "}
+                    <span className="text-base text-gray-500">TVAC</span>
                   </p>
                 </>
               )}
@@ -224,7 +205,7 @@ export default async function ProductPage({
             <AddToCartButton
               id={prod.id}
               name={getName(prod)}
-              unit_price={priceHTVA}
+              unit_price={showProPrices ? priceNetHTVA : priceBrutHTVA}
               image_url={images[0]}
             />
           </div>

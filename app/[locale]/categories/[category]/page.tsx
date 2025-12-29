@@ -38,15 +38,17 @@ export default async function CategoryPage({
         name_nl,
         name_en,
         
-        products:products!products_subsub_id_fkey (
+        products:products_with_discount!products_subsub_id_fkey (
           id,
           slug,
           name_fr,
           name_nl,
           name_en,
           price,
+          price_after_discount,
+          applied_discount,
           product_images!product_images_product_id_fkey ( image_url )
-        )
+        )        
       )
     )
   `)
