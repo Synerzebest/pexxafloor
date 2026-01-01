@@ -126,7 +126,6 @@ export default async function ProductPage({
   // 5) PRIX – LOGIQUE OFFICIELLE
   // -------------------------------------------------------
   const TVA = 1.21;
-
   const priceBrutHTVA = prod.price ?? 0;
   const discount = prod.applied_discount ?? 0;
   const priceNetHTVA =
@@ -134,7 +133,14 @@ export default async function ProductPage({
 
   const priceBrutTVAC = priceBrutHTVA * TVA;
 
-  const showProPrices = isPro && user; // PRO connecté UNIQUEMENT
+  const showProPrices = isPro && user; 
+
+  const formatPrice = (value: number) =>
+  new Intl.NumberFormat("fr-BE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+
 
   // -------------------------------------------------------
   // 6) RENDU
@@ -181,11 +187,11 @@ export default async function ProductPage({
               {showProPrices ? (
                 <>
                   <p className="text-lg text-gray-400 line-through">
-                    {priceBrutHTVA.toFixed(2)} € HTVA
+                    {formatPrice(priceBrutHTVA)} € TVA excl.
                   </p>
 
                   <p className="text-3xl font-bold text-orange-700">
-                    {priceNetHTVA.toFixed(2)} € HTVA
+                    {formatPrice(priceNetHTVA)} € TVA excl.
                   </p>
 
                   <p className="text-green-600 font-semibold mt-1">
@@ -195,8 +201,8 @@ export default async function ProductPage({
               ) : (
                 <>
                   <p className="text-3xl font-bold text-orange-700">
-                    {priceBrutTVAC.toFixed(2)} €{" "}
-                    <span className="text-base text-gray-500">TVAC</span>
+                    {formatPrice(priceBrutTVAC)} €{" "}
+                    <span className="text-base text-gray-500">TVA incl.</span>
                   </p>
                 </>
               )}

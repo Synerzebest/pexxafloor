@@ -7,6 +7,12 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { Hammer, Zap, Euro, Ruler, Thermometer } from 'lucide-react'
 
+const formatPrice = (value: number) =>
+  new Intl.NumberFormat("fr-BE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+
 type SystemCardProps = {
   img: string
   title: string
@@ -136,7 +142,7 @@ export default function SystemCard({
             animate={{ opacity: 1, y: 0 }}
             className="text-right text-lg font-semibold text-orange-600"
           >
-            {calculatedPrice.toFixed(2).replace(".", ",")} €
+            {formatPrice(calculatedPrice)} €
           </motion.div>
         )}
       </div>

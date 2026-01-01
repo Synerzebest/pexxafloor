@@ -89,9 +89,6 @@ export default function ProductCard({
   const imageUrl =
     product.product_images?.[0]?.image_url ?? "/images/placeholder.png";
 
-  const formatPrice = (price: number) =>
-    price.toFixed(2).replace(".", ",");
-
   // ---------------- PRIX ----------------
   const TVA = 1.21;
 
@@ -105,9 +102,17 @@ export default function ProductCard({
   const discount = product.applied_discount ?? 0;
   const hasProDiscount =
     showProPrices && discount > 0 && priceNetHTVA < priceBrutHTVA;
+  
+  const formatPrice = (value: number) =>
+    new Intl.NumberFormat("fr-BE", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+  }).format(value);
+
 
 
   return (
+    <>
     <li className="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-shadow overflow-hidden group">
       <Link
         href={`/${locale}/categories/${categorySlug}/${subcategorySlug}/${subsubcategorySlug}/${product.slug}`}
@@ -134,11 +139,11 @@ export default function ProductCard({
               hasProDiscount ? (
                 <>
                   <div className="text-sm text-gray-400 line-through">
-                    € {formatPrice(priceBrutHTVA)} HTVA
+                    {formatPrice(priceBrutHTVA)} € TVA excl.
                   </div>
 
                   <div className="text-lg font-semibold text-orange-700">
-                    € {formatPrice(priceNetHTVA)} HTVA
+                    {formatPrice(priceNetHTVA)} € TVA excl.
                   </div>
 
                   <div className="text-xs font-medium text-green-600">
@@ -147,18 +152,19 @@ export default function ProductCard({
                 </>
               ) : (
                 <div className="text-lg font-semibold text-orange-700">
-                  € {formatPrice(priceBrutHTVA)} HTVA
+                  {formatPrice(priceBrutHTVA)} € TVA excl.
                 </div>
               )
             ) : (
               <div className="text-lg font-semibold text-gray-900">
-                € {formatPrice(priceBrutTVAC)}{" "}
-                <span className="text-xs text-gray-500">TVAC</span>
+                {formatPrice(priceBrutTVAC)}{" "} €
+                <span className="text-xs text-gray-500 pl-1">TVA incl.</span>
               </div>
             )}
           </div>
         </div>
       </Link>
     </li>
+    </>
   );
 }
