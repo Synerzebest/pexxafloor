@@ -243,5 +243,10 @@
       "title": "Oups! Page introuvable",
       "subtitle": "Nous n'avons pas pu trouver la page que vous cherchez.",
       "backHome": "Retour à l'accueil"
+    },
+    "Categories": {
+      "title": "Nos catégories",
+      "subtitle": "Découvrez l’ensemble de nos solutions de chauffage au sol et accessoires.",
+      "subcat": "Sous-Catégories"
     }
   }

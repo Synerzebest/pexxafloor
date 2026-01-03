@@ -247,5 +247,10 @@
       "title": "Whoops! Page not found",
       "subtitle": "We couldn't find the page you are looking for.",
       "backHome": "Get back home"
+    },
+    "Categories": {
+      "title": "Our categories",
+      "subtitle": "Discover all our underfloor heating solutions and accessories.",
+      "subcat": "Sub-Categories"
     }
   }
