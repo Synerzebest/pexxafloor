@@ -1,12 +1,11 @@
-import React from 'react';
-import { Navbar } from '@/components';
-import { Footer } from '@/components';
+import { Navbar, Footer, ProBadge } from '@/components';
 import { SurfaceWrapper } from '@/components';
 
 const page = () => {
     return (
         <>
           <Navbar />
+          <ProBadge />
           <SurfaceWrapper />
           <Footer />  
         </>

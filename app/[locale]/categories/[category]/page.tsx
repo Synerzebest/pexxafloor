@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { getLocale } from "next-intl/server";
-import { Navbar, Footer } from "@/components";
+import { Navbar, Footer, ProBadge } from "@/components";
 import CategoryContent from "./CategoryContent";
 import { Category } from "@/types/CategoryType";
 
@@ -64,6 +64,7 @@ export default async function CategoryPage({
   return (
     <>
       <Navbar />
+      <ProBadge />
       <CategoryContent category={categoryData} locale={locale} />
       <Footer />
     </>

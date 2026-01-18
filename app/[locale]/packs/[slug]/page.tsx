@@ -2,9 +2,9 @@
 
 import { useParams, useSearchParams } from "next/navigation";
 import { useEffect, useState, useMemo } from "react";
-import { Collapse, InputNumber, Button, Spin, message, Radio } from "antd";
+import { Collapse, InputNumber, Button, Spin, message } from "antd";
 import Image from "next/image";
-import { Navbar, Footer } from "@/components";
+import { Navbar, Footer, ProBadge } from "@/components";
 import { useCart } from "@/context/CartContext";
 import { PackItem } from "@/context/CartContext";
 import packs from "@/constants/packs.json";
@@ -252,6 +252,7 @@ export default function PackPage() {
   return (
     <>
       <Navbar />
+      <ProBadge />
       <section className="mx-auto max-w-7xl px-4 py-8 md:py-12 relative top-24">
         <h1 className="mb-6 text-3xl font-bold text-gray-900 md:text-4xl">
               Pack {slug?.[0]?.toUpperCase() + slug?.slice(1)}

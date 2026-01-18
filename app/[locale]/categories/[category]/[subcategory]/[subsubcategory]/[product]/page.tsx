@@ -1,6 +1,6 @@
 import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
 import { notFound } from "next/navigation";
-import { Navbar, Footer, ProductGallery, AddToCartButton } from "@/components";
+import { Navbar, Footer, ProductGallery, AddToCartButton, ProBadge } from "@/components";
 import { Product } from "@/types/ProductType";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -148,6 +148,8 @@ export default async function ProductPage({
   return (
     <>
       <Navbar />
+
+      <ProBadge />
 
       <div className="max-w-6xl mx-auto px-4 py-10 relative top-20 sm:top-36 pb-36">
 

@@ -4,15 +4,16 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu as LucideMenu, Sparkles, X, ShoppingCart } from 'lucide-react';
+import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
-import { createBrowserClient } from "@supabase/ssr";
 import { useCart } from "@/context/CartContext";
 import UserButton from './UserButton';
 import ProductSearch from './ProductSearch';
 import { PhoneCall } from 'lucide-react';
 import { Category } from "@/types/CategoryType";
+import { useUI } from "@/context/UIContext"
+import { supabase } from "@/lib/supabaseClient";
 
 const SUPPORTED_LOCALES = ['fr', 'nl', 'en'] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -38,15 +39,11 @@ export default function Navbar() {
   const locale = useLocale() as SupportedLocale;
   const pathname = usePathname() ?? '/';
   const router = useRouter();
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
   
   const t = useTranslations('Navbar');
   const { items, openCart } = useCart();
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const { drawerOpen, setDrawerOpen } = useUI()
   const [categories, setCategories] = useState<Category[]>([]);
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
 
@@ -72,7 +69,7 @@ export default function Navbar() {
       if (error) {
         console.error("Erreur fetch catégories:", error);
       } else {
-        setCategories(data as Category[]);
+        setCategories(data as unknown as Category[]);
       }
     }
   
@@ -177,73 +174,71 @@ export default function Navbar() {
       </div>
 
       {/* Bandeau catégories desktop */}
-      <div className="hidden md:block bg-gray-800 border-t border-gray-200">
+      <div className="hidden md:block bg-gray-800 border-t border-gray-200 relative">
+        {/* Ligne catégories */}
         <div className="flex justify-start gap-8 px-6">
-          {categories.length === 0 ? (
-            <>
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="py-2">
-                  <div className="h-4 w-20 bg-gray-600 rounded animate-pulse" />
-                </div>
-              ))}
-            </>
-          ) : (
-            categories.map((cat) => (
-              <div
-                key={cat.id}
-                className="relative py-1"
-                onMouseEnter={() => setHoveredCat(cat.id)}
-                onMouseLeave={() => setHoveredCat(null)}
+          {categories.map((cat) => (
+            <div
+              key={cat.id}
+              className="py-1"
+              onMouseEnter={() => setHoveredCat(cat.id)}
+              onMouseLeave={() => setHoveredCat(null)}
+            >
+              <Link
+                href={`/${locale}/categories/${cat.slug}`}
+                className="text-sm font-medium text-gray-100 hover:text-orange-600 flex items-center"
               >
-                <Link
-                  href={`/${locale}/categories/${cat.slug}`}
-                  className="text-sm font-medium text-gray-100 hover:text-orange-600"
-                >
-                  {getName(cat)}
-                </Link>
-
-                {/* Sous-catégories */}
-                <AnimatePresence>
-                  {hoveredCat === cat.id && cat.subcategories.length > 0 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -5 }}
-                      className="absolute left-0 top-full mt-1 bg-white shadow-md rounded-lg p-3 flex flex-col gap-1 z-50"
-                    >
-                      {cat.subcategories.map((sub) => (
-                        <div key={sub.id} className="flex flex-col">
-                          <Link
-                            href={`/${locale}/categories/${cat.slug}/${sub.slug}`}
-                            className="text-sm font-medium text-gray-700 hover:text-orange-600 whitespace-nowrap"
-                          >
-                            {getName(sub)}
-                          </Link>
-
-                          {/* Sous-sous-catégories */}
-                          {sub.subsubcategories?.length > 0 && (
-                            <div className="ml-3 mt-1 flex flex-col gap-0.5">
-                              {sub.subsubcategories.map((ss) => (
-                                <Link
-                                  key={ss.id}
-                                  href={`/${locale}/categories/${cat.slug}/${sub.slug}/${ss.slug}`}
-                                  className="text-xs text-gray-500 hover:text-orange-600 whitespace-nowrap"
-                                >
-                                  {getName(ss)}
-                                </Link>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            ))
-          )}
+                {getName(cat)}
+              </Link>
+            </div>
+          ))}
         </div>
+
+        {/* MEGA MENU */}
+        <AnimatePresence>
+          {(() => {
+            const hoveredCategory = categories.find(c => c.id === hoveredCat)
+
+            if (!hoveredCategory || hoveredCategory.subcategories.length === 0) {
+              return null
+            }
+
+            return (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onMouseEnter={() => setHoveredCat(hoveredCat)}
+                onMouseLeave={() => setHoveredCat(null)}
+                className="absolute left-0 top-full w-full bg-white shadow-xl z-50"
+              >
+                <div className="mx-auto max-w-7xl px-8 py-6 grid grid-cols-4 gap-8">
+                  {hoveredCategory.subcategories.map((sub) => (
+                    <div key={sub.id} className="flex flex-col gap-2">
+                      <Link
+                        href={`/${locale}/categories/${hoveredCategory.slug}/${sub.slug}`}
+                        className="text-md font-semibold text-gray-900 hover:text-orange-600"
+                      >
+                        {getName(sub)}
+                      </Link>
+
+                      {sub.subsubcategories?.map((ss) => (
+                        <Link
+                          key={ss.id}
+                          href={`/${locale}/categories/${hoveredCategory.slug}/${sub.slug}/${ss.slug}`}
+                          className="text-sm text-gray-600 hover:text-orange-600 flex items-center"
+                        >
+                          <ChevronRight size={14} /> {getName(ss)}
+                        </Link>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )
+          })()}
+        </AnimatePresence>
       </div>
 
       {/* --- Drawer mobile --- */}
@@ -251,14 +246,14 @@ export default function Navbar() {
         {drawerOpen && (
           <>
             <motion.div
-              className="fixed inset-0 bg-black/30 z-40"
+              className="fixed inset-0 bg-black/30 z-[100]"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setDrawerOpen(false)}
             />
             <motion.aside
-              className="fixed right-0 top-0 z-50 h-full w-80 max-w-[85%] bg-white shadow-xl p-4 flex flex-col"
+              className="fixed right-0 top-0 z-100 h-full w-80 max-w-[85%] bg-white shadow-xl p-4 flex flex-col"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}

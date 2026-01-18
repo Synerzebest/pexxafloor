@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { getLocale } from "next-intl/server";
-import { Navbar, Footer } from "@/components";
+import { Navbar, Footer, ProBadge } from "@/components";
 import SubSubCategoryContent from "./SubSubCategoryContent";
 import { SubSubCategory } from "@/types/SubSubCategoryType";
 
@@ -75,6 +75,7 @@ export default async function SubSubCategoryPage({
   return (
     <>
       <Navbar />
+      <ProBadge />
 
       <SubSubCategoryContent
         subsubcategory={subSubCategoryData}

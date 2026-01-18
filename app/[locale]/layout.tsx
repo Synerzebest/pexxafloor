@@ -4,6 +4,7 @@ import {routing} from '@/i18n/routing';
 import { CartProvider } from "@/context/CartContext"
 import CartDrawer from "@/components/CartDrawer";
 import { Toaster } from "sonner";
+import { UIProvider } from "@/context/UIContext"
 
 export default async function LocaleLayout({
   children,
@@ -23,7 +24,9 @@ export default async function LocaleLayout({
       <div id="locale-wrapper" lang={locale}>
         <NextIntlClientProvider>
           <CartProvider>
-            {children}
+            <UIProvider>
+              {children}
+            </UIProvider>
             <Toaster richColors position="top-center" duration={2500} />
             <CartDrawer />
           </CartProvider>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import type { User } from "@supabase/supabase-js";
 import Image from "next/image";
@@ -8,15 +8,11 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { LogOutIcon, User as UserIcon } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function UserButton() {
   const locale = useLocale();
   const t = useTranslations("UserButton");
-
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -81,7 +77,7 @@ export default function UserButton() {
   }
 
   /** === USER CONNECTÉ === */
-  const name = user.user_metadata?.full_name || "Me";
+  const name = user.user_metadata?.full_name || user.email || "Me";
   const initials = name
     .trim()
     .split(/\s+/)
