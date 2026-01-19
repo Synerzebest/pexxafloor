@@ -13,9 +13,9 @@ export function useFetchStoreData() {
   async function fetchAll() {
     setLoading(true);
     const [cats, subs, subsubs, prods] = await Promise.all([
-      supabase.from("categories").select("*").order("order"),
-      supabase.from("subcategories").select("*").order("order"),
-      supabase.from("subsubcategories").select("*").order("order"),
+      supabase.from("categories").select("*").order("name_fr", {ascending: true}),
+      supabase.from("subcategories").select("*").order("name_fr", {ascending: true}),
+      supabase.from("subsubcategories").select("*").order("name_fr", {ascending: true}),
       supabase.from("products").select("*").order("created_at", { ascending: false }),
     ]);
 
