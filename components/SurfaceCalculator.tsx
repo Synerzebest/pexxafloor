@@ -16,7 +16,7 @@ export default function SurfaceCalculator({surface, setSurface}: SurfaceCalculat
   };
 
   return (
-    <section className="relative top-28 overflow-hidden">
+    <section className="relative top-22 sm:top-28 overflow-hidden">
       {/* background gradient léger */}
       <div className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-b from-white via-white to-orange-50/40" />
       {/* glow subtil à droite */}
@@ -100,22 +100,30 @@ export default function SurfaceCalculator({surface, setSurface}: SurfaceCalculat
           initial="hidden"
           animate="visible"
           transition={{delay: 0.24}}
-          className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
+          className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:items-start"
         >
-          <label htmlFor="surface" className="sr-only">{t('surfaceLabel')}</label>
-          <div className="relative flex-1 max-w-[250px]">
-            <input
-              id="surface"
-              type="text"
-              inputMode="decimal"
-              placeholder={t('surfacePlaceholder')}
-              value={surface}
-              onChange={(e) => setSurface(e.target.value)}
-              className="w-full rounded-xl border border-gray-300 bg-white/95 px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 shadow-sm outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
-            />
-            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 select-none rounded-md bg-orange-50 px-2 py-1 text-xs font-medium text-orange-700">
-              m²
-            </span>
+          <div className="flex-1 max-w-[250px]">
+            <div className="relative">
+              <input
+                id="surface"
+                type="text"
+                inputMode="decimal"
+                placeholder={t("surfacePlaceholder")}
+                value={surface}
+                onChange={(e) => setSurface(e.target.value)}
+                className="w-full rounded-xl border border-gray-300 bg-white/95 px-4 py-3 text-base text-gray-900 placeholder:text-gray-400 shadow-sm outline-none focus:border-orange-600 focus:ring-2 focus:ring-orange-300/40"
+              />
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 select-none rounded-md bg-orange-50 px-2 py-1 text-xs font-medium text-orange-700">
+                m²
+              </span>
+            </div>
+
+            <label
+              htmlFor="surface"
+              className="mt-1 block text-xs text-gray-500"
+            >
+              {t("surfaceLabel")}
+            </label>
           </div>
 
           <button
