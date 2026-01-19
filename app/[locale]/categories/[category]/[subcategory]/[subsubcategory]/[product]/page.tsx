@@ -54,7 +54,6 @@ export default async function ProductPage({
 
   let isPro = false;
 
-  console.log(user)
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
@@ -63,7 +62,6 @@ export default async function ProductPage({
       .single();
 
     isPro = !!profile?.is_pro;
-    console.log("user data:", profile);
   }
 
   // -------------------------------------------------------

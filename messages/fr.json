@@ -94,6 +94,7 @@
         "title": "Créer un compte", 
         "subtitle": "Rejoignez PexxaFloor et profitez d’un confort optimal",
         "email": "Email",
+        "name":"Nom complet",
         "password": "Mot de passe",
         "confirm": "Confirmer mot de passe",
         "or": "Ou",
@@ -102,7 +103,12 @@
         "success": "Compte créé ! Vérifie tes emails pour confirmer ton adresse.",
         "alreadyAccount": "Déjà un compte ?",
         "login": "Se connecter",
-        "errors": { "required": "Email et mot de passe sont requis.", "tooShort": "Min. 8 caractères.", "mismatch": "Les mots de passe ne correspondent pas." }
+        "errors": { 
+          "required": "Email et mot de passe sont requis.", 
+          "tooShort": "Min. 8 caractères.", 
+          "mismatch": "Les mots de passe ne correspondent pas.",
+          "name_missing": "Nom requis"
+        }
     },
     "ProSignup": {
         "title": "Devenir client pro",

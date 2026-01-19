@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { createClient } from "@supabase/supabase-js";
-import type { CartItem, PackItem, ProductItem } from "@/context/CartContext";
+import type { CartItem, PackItem } from "@/context/CartContext";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-07-30.basil",

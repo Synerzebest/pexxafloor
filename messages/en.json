@@ -94,6 +94,7 @@
       "title": "Signup", 
       "subtitle": "Join PexxaFloor and enjoy optimal comfort",
       "email": "Email",
+      "name":"Full name",
       "password": "Password",
       "confirm": "Confirm password",
       "cta": "Create my account", 
@@ -105,7 +106,8 @@
       "errors": { 
         "required": "Email and password are required.", 
         "tooShort": "At least 8 caracters.", 
-        "mismatch": "Passwords do not match."
+        "mismatch": "Passwords do not match.",
+        "name_missing": "Name is required"
       }
     },
     "ProSignup": {

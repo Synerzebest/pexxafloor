@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { createBrowserClient } from "@supabase/ssr";
 import type { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,32 +9,76 @@ import { LogOutIcon, User as UserIcon } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { supabase } from "@/lib/supabaseClient";
 
+type Profile = {
+  id: string;
+  name: string | null;
+};
+
 export default function UserButton() {
   const locale = useLocale();
   const t = useTranslations("UserButton");
 
   const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
+  const [profileLoading, setProfileLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  /** 🔄 Charger l’utilisateur + écouter auth state */
+  /* Charger l’utilisateur + écouter auth state */
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
+    async function loadUserAndProfile() {
+      const { data } = await supabase.auth.getUser();
+      const user = data.user;
+  
+      setUser(user);
       setLoading(false);
-    });
+  
+      if (!user) {
+        setProfile(null);
+        setProfileLoading(false);
+        return;
+      }
 
+      setProfileLoading(true);
+  
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("id, name")
+        .eq("id", user.id)
+        .single();
+  
+      setProfile(profile);
+      setProfileLoading(false);
+    }
+  
+    loadUserAndProfile();
+  
     const { data: subscription } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
+      async (_event, session) => {
+        const user = session?.user ?? null;
+        setUser(user);
+  
+        if (!user) {
+          setProfile(null);
+          return;
+        }
+  
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("id, name")
+          .eq("id", user.id)
+          .single();
+  
+        setProfile(profile);
       }
     );
-
+  
     return () => subscription.subscription.unsubscribe();
   }, []);
+  
 
   /** 🔐 Logout */
   const handleSignOut = async () => {
@@ -61,8 +104,18 @@ export default function UserButton() {
     };
   }, []);
 
-  if (loading)
-    return <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />;
+  if (loading || profileLoading) {
+    return (
+      <div className="inline-flex items-center gap-2 px-2 py-1.5">
+        {/* Avatar skeleton */}
+        <span className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
+  
+        {/* Name skeleton (desktop) */}
+        <span className="hidden md:block h-4 w-24 rounded bg-gray-200 animate-pulse" />
+      </div>
+    );
+  }
+  
 
   /** === USER NON CONNECTÉ === */
   if (!user) {
@@ -77,8 +130,8 @@ export default function UserButton() {
   }
 
   /** === USER CONNECTÉ === */
-  const name = user.user_metadata?.full_name || user.email || "Me";
-  const initials = name
+  const displayName = user.user_metadata?.full_name || profile?.name || "Me";
+  const initials = displayName
     .trim()
     .split(/\s+/)
     .map((s: string) => s[0])
@@ -100,7 +153,7 @@ export default function UserButton() {
           {user.user_metadata?.avatar_url ? (
             <Image
               src={user.user_metadata.avatar_url}
-              alt={name}
+              alt={displayName}
               width={32}
               height={32}
               className="rounded-full object-cover"
@@ -116,7 +169,7 @@ export default function UserButton() {
         </span>
 
         <span className="hidden md:block text-sm font-medium text-gray-800 max-w-[10rem] truncate">
-          {name}
+          {displayName}
         </span>
       </button>
 
@@ -148,7 +201,7 @@ export default function UserButton() {
                   {user.user_metadata?.avatar_url ? (
                     <Image
                       src={user.user_metadata.avatar_url}
-                      alt={name}
+                      alt={displayName}
                       width={40}
                       height={40}
                       className="rounded-full object-cover"
@@ -162,7 +215,7 @@ export default function UserButton() {
 
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-gray-900 truncate">
-                    {name}
+                    {displayName}
                   </p>
                   <p className="text-xs text-gray-500 truncate">{user.email}</p>
                 </div>

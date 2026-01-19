@@ -4,8 +4,11 @@ import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 export async function signupWithEmail(formData: FormData) {
+  const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  console.log("FORM NAME =", name);
+
 
   const cookieStore = await cookies();
 
@@ -30,7 +33,16 @@ export async function signupWithEmail(formData: FormData) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
+    options: {
+      data: {
+        name,
+      }
+    }
   });
 
-  return { data, error };
+  if (error || !data.user) {
+    return { data: null, error };
+  }
+
+  return { data, error: null };
 }

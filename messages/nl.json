@@ -94,6 +94,7 @@
         "title": "Maak een account aan", 
         "subtitle": "Sluit u aan bij PexxaFloor en geniet van optimaal comfort",
         "email": "Email",
+        "name": "Volledige naam",
         "password": "Wachtwoord",
         "confirm": "Wachwoord bevestigen",
         "cta": "Mijn account aanmaken", 
@@ -102,7 +103,12 @@
         "alreadyAccount": "Al lid ?",
         "login": "Login",
         "success": "Account aangemaakt! Controleer je e-mail om je adres te bevestigen.",
-        "errors": { "required": "E-mailadres en wachtwoord zijn vereist.", "tooShort": "Min. 8 tekens.", "mismatch": "De wachtwoorden komen niet overeen." }
+        "errors": { 
+          "required": "E-mailadres en wachtwoord zijn vereist.", 
+          "tooShort": "Min. 8 tekens.", 
+          "mismatch": "De wachtwoorden komen niet overeen.",
+          "name_missing": "Naam is vereist"
+        }
     },
     "ProSignup": {
       "title": "Word professionele klant",

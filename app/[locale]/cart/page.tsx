@@ -5,7 +5,6 @@ import Image from "next/image";
 import { Button, InputNumber, Empty } from "antd";
 import { Navbar, Footer } from "@/components";
 import { motion, AnimatePresence } from "framer-motion";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import Link from "next/link";
@@ -14,6 +13,7 @@ import { getPackImage } from "@/utils/getPackImage";
 import { LoadScript } from "@react-google-maps/api";
 import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
 import type { User } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabaseClient"
 
 type AddressSelection = {
   address: string;
@@ -26,11 +26,11 @@ type AddressSelection = {
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart } = useCart();
   const [clientName, setClientName] = useState("");
+  const [clientNameInitialized, setClientNameInitialized] = useState(false);
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
-  const supabase = createClientComponentClient();
   const locale = useLocale();
 
   const [user, setUser] = useState<User | null>(null);
@@ -40,11 +40,44 @@ export default function CartPage() {
       const {
         data: { user },
       } = await supabase.auth.getUser();
+  
       setUser(user);
     };
+  
     loadUser();
+  
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+  
+    return () => subscription.unsubscribe();
   }, [supabase]);
 
+  useEffect(() => {
+    if (!user || clientNameInitialized) return;
+  
+    const loadProfile = async () => {
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("name")
+        .eq("id", user.id)
+        .single();
+  
+      if (error) {
+        console.error("Error fetching profile:", error);
+        return;
+      }
+      if (profile?.name) {
+        setClientName(profile.name);
+        setClientNameInitialized(true);
+      }
+    };
+  
+    loadProfile();
+  }, [user, clientNameInitialized, supabase]);
+  
   const total = items.reduce((acc, i) => {
     if (i.type === "product") return acc + (i.product?.price ?? 0) * i.quantity;
     if (i.type === "pack") return acc + i.total * i.quantity;
@@ -259,7 +292,6 @@ export default function CartPage() {
           transition={{ delay: 0.1 }}
           className="mt-10"
         >
-          <AnimatedDropdown title="Adresse de livraison" defaultOpen={true}>
             <div className="bg-white p-5 mt-3 rounded-xl border border-gray-100 shadow-sm space-y-4">
 
               {/* Autocomplétion Google */}
@@ -331,7 +363,6 @@ export default function CartPage() {
                 </div>
               </div>
             </div>
-          </AnimatedDropdown>
         </motion.div>
 
         {/* --- TOTAL + CHECKOUT --- */}
