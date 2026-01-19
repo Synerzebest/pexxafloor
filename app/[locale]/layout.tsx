@@ -3,8 +3,10 @@ import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
 import { CartProvider } from "@/context/CartContext"
 import CartDrawer from "@/components/CartDrawer";
+import { AuthProvider } from '@/context/AuthProvider';
 import { Toaster } from "sonner";
 import { UIProvider } from "@/context/UIContext"
+import { StoreDataProvider } from "@/context/StoreDataProvider";
 
 export default async function LocaleLayout({
   children,
@@ -23,13 +25,17 @@ export default async function LocaleLayout({
     <>
       <div id="locale-wrapper" lang={locale}>
         <NextIntlClientProvider>
-          <CartProvider>
-            <UIProvider>
-              {children}
-            </UIProvider>
-            <Toaster richColors position="top-center" duration={2500} />
-            <CartDrawer />
-          </CartProvider>
+          <AuthProvider>
+            <StoreDataProvider>
+              <CartProvider>
+                <UIProvider>
+                  {children}
+                </UIProvider>
+                <Toaster richColors position="top-center" duration={2500} />
+                <CartDrawer />
+              </CartProvider>
+            </StoreDataProvider>
+          </AuthProvider>
         </NextIntlClientProvider>
       </div>
     </>

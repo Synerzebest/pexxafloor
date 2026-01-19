@@ -8,6 +8,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { LogOutIcon, User as UserIcon } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/context/AuthProvider";
 
 type Profile = {
   id: string;
@@ -18,72 +19,53 @@ export default function UserButton() {
   const locale = useLocale();
   const t = useTranslations("UserButton");
 
-  const [user, setUser] = useState<User | null>(null);
+  const { user, loading } = useAuth();
+
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
-  const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLButtonElement>(null);
 
-  /* Charger l’utilisateur + écouter auth state */
+  /* 🔁 Charger le profile UNIQUEMENT quand user change */
   useEffect(() => {
-    async function loadUserAndProfile() {
-      const { data } = await supabase.auth.getUser();
-      const user = data.user;
-  
-      setUser(user);
-      setLoading(false);
-  
-      if (!user) {
-        setProfile(null);
-        setProfileLoading(false);
-        return;
-      }
+    if (loading) return;
 
+    if (!user) {
+      setProfile(null);
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadProfile() {
       setProfileLoading(true);
-  
-      const { data: profile } = await supabase
+      if(!user) return
+
+      const { data } = await supabase
         .from("profiles")
         .select("id, name")
         .eq("id", user.id)
         .single();
-  
-      setProfile(profile);
-      setProfileLoading(false);
-    }
-  
-    loadUserAndProfile();
-  
-    const { data: subscription } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
-        const user = session?.user ?? null;
-        setUser(user);
-  
-        if (!user) {
-          setProfile(null);
-          return;
-        }
-  
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("id, name")
-          .eq("id", user.id)
-          .single();
-  
-        setProfile(profile);
+
+      if (!cancelled) {
+        setProfile(data ?? null);
+        setProfileLoading(false);
       }
-    );
-  
-    return () => subscription.subscription.unsubscribe();
-  }, []);
-  
+    }
+
+    loadProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, loading]);
 
   /** 🔐 Logout */
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    window.location.reload();
+    // PAS de reload : l'AuthProvider gère tout
   };
 
   /** 🔒 Fermer menu sur clic extérieur + Escape */

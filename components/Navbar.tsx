@@ -11,7 +11,7 @@ import { useCart } from "@/context/CartContext";
 import UserButton from './UserButton';
 import ProductSearch from './ProductSearch';
 import { PhoneCall } from 'lucide-react';
-import { Category } from "@/types/CategoryType";
+import { useStoreData } from "@/context/StoreDataProvider";
 import { useUI } from "@/context/UIContext"
 import { supabase } from "@/lib/supabaseClient";
 
@@ -44,39 +44,10 @@ export default function Navbar() {
   const { items, openCart } = useCart();
 
   const { drawerOpen, setDrawerOpen } = useUI()
-  const [categories, setCategories] = useState<Category[]>([]);
+  const { categories, loading } = useStoreData();
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
 
   useEffect(() => setDrawerOpen(false), [pathname]);
-
-  // Charger catégories
-  useEffect(() => {
-    async function fetchCategories() {
-      const { data, error } = await supabase
-      .from("categories")
-      .select(`
-        id, slug, name_fr, name_nl, name_en,
-        subcategories:subcategories!category_id (
-          id, slug, name_fr, name_nl, name_en,
-          subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
-            id, slug, name_fr, name_nl, name_en
-          )
-        )
-      `)
-      .order("order");
-
-  
-      if (error) {
-        console.error("Erreur fetch catégories:", error);
-      } else {
-        setCategories(data as unknown as Category[]);
-      }
-    }
-  
-    fetchCategories();
-  }, []);
-  
-  
 
   const getName = (obj: Translatable) =>
     locale === 'fr' ? obj.name_fr : locale === 'nl' ? obj.name_nl : obj.name_en;
@@ -86,6 +57,8 @@ export default function Navbar() {
     router.push(swapLocaleInPath(pathname, nextLocale));
     setDrawerOpen(false);
   };
+
+  const hoveredCategory = categories.find((c) => c.id === hoveredCat);
 
   return (
     <header className="w-full border-b border-gray-200 fixed z-20">
@@ -173,73 +146,74 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Bandeau catégories desktop */}
-      <div className="hidden md:block bg-gray-800 border-t border-gray-200 relative">
-        {/* Ligne catégories */}
-        <div className="flex justify-start gap-8 px-6">
-          {categories.map((cat) => (
-            <div
-              key={cat.id}
-              className="py-1"
-              onMouseEnter={() => setHoveredCat(cat.id)}
-              onMouseLeave={() => setHoveredCat(null)}
-            >
-              <Link
-                href={`/${locale}/categories/${cat.slug}`}
-                className="text-sm font-medium text-gray-100 hover:text-orange-600 flex items-center"
+      {!loading && (
+        <div
+          className="hidden md:block bg-gray-800 relative"
+          onMouseLeave={() => setHoveredCat(null)}
+        >
+          {/* Ligne catégories */}
+          <div className="flex gap-8 px-6">
+            {categories.map((cat) => (
+              <div
+                key={cat.id}
+                className="py-1"
+                onMouseEnter={() => setHoveredCat(cat.id)}
               >
-                {getName(cat)}
-              </Link>
-            </div>
-          ))}
-        </div>
+                <Link
+                  href={`/${locale}/categories/${cat.slug}`}
+                  className={`text-sm font-medium transition-colors
+                    ${
+                      hoveredCat === cat.id
+                        ? 'text-orange-600'
+                        : 'text-gray-100 hover:text-orange-600'
+                    }
+                  `}
+                >
+                  {getName(cat)}
+                </Link>
+              </div>
+            ))}
+          </div>
 
-        {/* MEGA MENU */}
-        <AnimatePresence>
-          {(() => {
-            const hoveredCategory = categories.find(c => c.id === hoveredCat)
-
-            if (!hoveredCategory || hoveredCategory.subcategories.length === 0) {
-              return null
-            }
-
-            return (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
-                onMouseEnter={() => setHoveredCat(hoveredCat)}
-                onMouseLeave={() => setHoveredCat(null)}
-                className="absolute left-0 top-full w-full bg-white shadow-xl z-50"
-              >
-                <div className="mx-auto max-w-7xl px-8 py-6 grid grid-cols-4 gap-8">
-                  {hoveredCategory.subcategories.map((sub) => (
-                    <div key={sub.id} className="flex flex-col gap-2">
-                      <Link
-                        href={`/${locale}/categories/${hoveredCategory.slug}/${sub.slug}`}
-                        className="text-md font-semibold text-gray-900 hover:text-orange-600"
-                      >
-                        {getName(sub)}
-                      </Link>
-
-                      {sub.subsubcategories?.map((ss) => (
+          {/* Mega menu */}
+          <AnimatePresence>
+            {hoveredCategory &&
+              hoveredCategory.subcategories?.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute left-0 top-full w-full bg-white shadow-xl z-50"
+                >
+                  <div className="mx-auto max-w-7xl px-8 py-6 grid grid-cols-4 gap-8">
+                    {hoveredCategory.subcategories.map((sub) => (
+                      <div key={sub.id} className="flex flex-col gap-2">
                         <Link
-                          key={ss.id}
-                          href={`/${locale}/categories/${hoveredCategory.slug}/${sub.slug}/${ss.slug}`}
-                          className="text-sm text-gray-600 hover:text-orange-600 flex items-center"
+                          href={`/${locale}/categories/${hoveredCategory.slug}/${sub.slug}`}
+                          className="font-semibold text-gray-900 hover:text-orange-600"
                         >
-                          <ChevronRight size={14} /> {getName(ss)}
+                          {getName(sub)}
                         </Link>
-                      ))}
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )
-          })()}
-        </AnimatePresence>
-      </div>
+
+                        {sub.subsubcategories?.map((ss) => (
+                          <Link
+                            key={ss.id}
+                            href={`/${locale}/categories/${hoveredCategory.slug}/${sub.slug}/${ss.slug}`}
+                            className="text-sm text-gray-600 hover:text-orange-600 flex items-center gap-1"
+                          >
+                            <ChevronRight size={14} />
+                            {getName(ss)}
+                          </Link>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+          </AnimatePresence>
+        </div>
+      )}
 
       {/* --- Drawer mobile --- */}
       <AnimatePresence>
