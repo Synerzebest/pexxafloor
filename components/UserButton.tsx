@@ -34,6 +34,7 @@ export default function UserButton() {
 
     if (!user) {
       setProfile(null);
+      setProfileLoading(false);
       return;
     }
 
