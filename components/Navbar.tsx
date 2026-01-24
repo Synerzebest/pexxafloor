@@ -177,16 +177,30 @@ export default function Navbar() {
 
           {/* Mega menu */}
           <AnimatePresence>
-            {hoveredCategory &&
-              hoveredCategory.subcategories?.length > 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute left-0 top-full w-full bg-white shadow-xl z-50"
-                >
-                  <div className="mx-auto max-w-7xl px-8 py-6 grid grid-cols-4 gap-8">
+            {hoveredCategory && hoveredCategory.subcategories?.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="absolute left-0 top-full w-full bg-white shadow-xl z-50"
+              >
+                <div className="mx-auto max-w-8xl px-8 py-6 flex gap-8">
+                  {/* Image à gauche */}
+                  {hoveredCategory.image_url ? (
+                    <div className="shrink-0">
+                      <Image
+                        src={hoveredCategory.image_url}
+                        alt={getName(hoveredCategory)}
+                        width={140}
+                        height={140}
+                        className="object-contain"
+                      />
+                    </div>
+                  ) : null}
+
+                  {/* Liens à droite (ton design actuel, inchangé) */}
+                  <div className="grid grid-cols-4 gap-8 flex-1">
                     {hoveredCategory.subcategories.map((sub) => (
                       <div key={sub.id} className="flex flex-col gap-2">
                         <Link
@@ -209,8 +223,9 @@ export default function Navbar() {
                       </div>
                     ))}
                   </div>
-                </motion.div>
-              )}
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
         </div>
       )}

@@ -26,7 +26,7 @@ export function StoreDataProvider({ children }: { children: React.ReactNode }) {
     const { data, error } = await supabase
       .from("categories")
       .select(`
-        id, slug, name_fr, name_nl, name_en,
+        id, slug, name_fr, name_nl, name_en, image_url,
         subcategories:subcategories!category_id (
           id, slug, name_fr, name_nl, name_en,
           subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (

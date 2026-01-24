@@ -100,7 +100,7 @@ export default function ProductForm({
       description_nl: values.description_nl ?? "",
       description_en: values.description_en ?? "",
       subcategory_id: values.subcategory_id ?? null,
-      subsub_id: values.subsub_id,
+      subsub_id: values.subsub_id ?? null,
       reference: values.reference
     };
   }
@@ -242,7 +242,7 @@ export default function ProductForm({
                 disabled={!selectedCategory}
                 onChange={(val) => {
                   setSelectedSubcategory(val);
-                  form.setFieldValue("subsub_id", undefined);
+                  form.setFieldValue("subsub_id", null);
                 }}
                 options={subcategories
                   .filter((s) => s.category_id === selectedCategory)
@@ -250,8 +250,9 @@ export default function ProductForm({
               />
             </Form.Item>
 
-            <Form.Item name="subsub_id" label="Sous-sous-catégorie" rules={[{ required: true }]}>
+            <Form.Item name="subsub_id" label="Sous-sous-catégorie">
               <Select
+                allowClear
                 disabled={!selectedSubcategory}
                 options={subsubcategories
                   .filter((ss) => ss.subcategory_id === selectedSubcategory)

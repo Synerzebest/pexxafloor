@@ -92,17 +92,30 @@ export default function ProductSection({
     {
       title: "Catégories",
       render: (_: unknown, record: ProductWithSubSub) => {
-        const subsub = subsubcategories.find((ss) => ss.id === record.subsub_id);
-        if (!subsub) return "-";
+        // Sous-catégorie (obligatoire)
+        const sub = subcategories.find(
+          (s) => s.id === record.subcategory_id
+        );
     
-        const sub = subcategories.find((s) => s.id === subsub.subcategory_id);
-        const cat = categories.find((c) => c.id === sub?.category_id);
+        if (!sub) return "-";
+    
+        // Catégorie
+        const cat = categories.find(
+          (c) => c.id === sub.category_id
+        );
+    
+        // Sous-sous-catégorie (optionnelle)
+        const subsub = record.subsub_id
+          ? subsubcategories.find((ss) => ss.id === record.subsub_id)
+          : null;
     
         return [
           cat?.name_fr,
-          sub?.name_fr,
+          sub.name_fr,
           subsub?.name_fr,
-        ].filter(Boolean).join(" > ");
+        ]
+          .filter(Boolean)
+          .join(" > ");
       },
     },    
     { title: "Réf.", dataIndex: "reference" },

@@ -6,5 +6,6 @@ export type Category = {
   name_fr: string;
   name_nl: string;
   name_en: string;
+  image_url?: string;
   subcategories: SubCategory[];
 };
