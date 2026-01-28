@@ -25,6 +25,7 @@ type PackItem = {
   surface: number;
   pasDePose: number;
   tuyauType: "PERT" | "PERT-AL-PERT";
+  calepinage: boolean;
   quantities: Record<string, number>; 
   products: PackProduct[];
   total: number; 

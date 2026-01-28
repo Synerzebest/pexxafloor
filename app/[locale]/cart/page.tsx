@@ -238,7 +238,6 @@ export default function CartPage() {
                         </Button>
                       </div>
                     </div>
-
                     {/* --- Détails des produits inclus --- */}
                     <AnimatedDropdown title={`${item.products.length} produits inclus`} defaultOpen={false}>
                       <ul className="ml-2 mt-2 space-y-1 list-disc">
@@ -255,6 +254,24 @@ export default function CartPage() {
                         Modifier ce pack
                       </Link>
                     </AnimatedDropdown>
+                    {/* --- OPTION CALEPINAGE --- */}
+                    {item.calepinage && (
+                      <div className="bg-orange-50 border border-orange-200 rounded-lg px-4 py-3">
+                        <p className="text-sm font-medium text-gray-800">
+                          Plan de calepinage personnalisé
+                          <span className="ml-2 text-gray-400 line-through text-xs">
+                            125,00 €
+                          </span>
+                          <span className="ml-2 text-green-600 text-xs font-semibold">
+                            offert
+                          </span>
+                        </p>
+
+                        <p className="mt-1 text-xs text-gray-500">
+                          Optimisation du parcours des tuyaux par un expert.
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </motion.li>
