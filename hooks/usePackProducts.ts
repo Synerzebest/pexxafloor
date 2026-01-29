@@ -11,6 +11,7 @@ export function usePackProducts({
   pasDePose,
   tuyauType,
   typeAgrafe,
+  typeIsolation,
   existingPack,
 }: {
   packNumber: number | null;
@@ -18,6 +19,7 @@ export function usePackProducts({
   pasDePose: number;
   tuyauType: "PERT" | "PERT-AL-PERT";
   typeAgrafe: 40 | 60;
+  typeIsolation: 0 | 15 | 30;
   existingPack?: PackItem;
 }) {
   const [products, setProducts] = useState<any[]>([]);
@@ -65,6 +67,7 @@ export function usePackProducts({
       pasDePose,
       tuyauType,
       typeAgrafe,
+      typeIsolation
     });
 
     setProducts(result.products);
@@ -74,7 +77,7 @@ export function usePackProducts({
     setOptions(result.options);
     setSelectedOptions({});
     setLoading(false);
-  }, [packNumber, surface, pasDePose, tuyauType, typeAgrafe, existingPack]);
+  }, [packNumber, surface, pasDePose, tuyauType, typeAgrafe, typeIsolation, existingPack]);
 
   return {
     products,

@@ -25,6 +25,8 @@ type PackItem = {
   surface: number;
   pasDePose: number;
   tuyauType: "PERT" | "PERT-AL-PERT";
+  typeAgrafe: 40 | 60;
+  typeIsolation: 0 | 15 | 30;
   calepinage: boolean;
   quantities: Record<string, number>; 
   products: PackProduct[];

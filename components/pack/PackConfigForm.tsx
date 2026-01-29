@@ -8,10 +8,12 @@ type Props = {
   pasDePose: number;
   tuyauType: "PERT" | "PERT-AL-PERT";
   typeAgrafe: 40 | 60;
+  typeIsolation: 0 | 15 | 30;
   onSurfaceChange: (v: number) => void;
   onPasDePoseChange: (v: number) => void;
   onTuyauTypeChange: (v: "PERT" | "PERT-AL-PERT") => void;
   onTypeAgrafeChange: (v: 40 | 60) => void;
+  onTypeIsolationChange: (v: 0 | 15 | 30) => void;
 };
 
 export function PackConfigForm({
@@ -20,10 +22,12 @@ export function PackConfigForm({
   pasDePose,
   tuyauType,
   typeAgrafe,
+  typeIsolation,
   onSurfaceChange,
   onPasDePoseChange,
   onTuyauTypeChange,
   onTypeAgrafeChange,
+  onTypeIsolationChange
 }: Props) {
   const tuyauOptions = ["PERT", "PERT-AL-PERT"] as const;
 
@@ -152,26 +156,68 @@ export function PackConfigForm({
         </div>
       )}
 
-      {/* Surface */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Surface à chauffer
-        </label>
+      {/* Surface (+ Isolation pour le pack natte) */}
+      <div className="flex flex-col-reverse sm:flex-row gap-6">
+        {/* Surface (TOUJOURS visible) */}
+        <div className="flex-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Surface à chauffer
+          </label>
 
-        <div className="flex items-center gap-2">
-          <InputNumber
-            min={1}
-            value={surface}
-            onChange={(v) => onSurfaceChange(Number(v))}
-            size="large"
-            className="w-24"
-          />
-          <span className="text-gray-500">m²</span>
+          <div className="flex items-center gap-2">
+            <InputNumber
+              min={1}
+              value={surface}
+              onChange={(v) => onSurfaceChange(Number(v))}
+              size="large"
+              className="w-24"
+            />
+            <span className="text-gray-500">m²</span>
+          </div>
+
+          <p className="text-gray-500 text-sm mt-1">
+            Tuyau estimé : {Math.ceil(tubLength)} m – Circuits : {circuitsNumber}
+          </p>
         </div>
 
-        <p className="text-gray-500 text-sm mt-1">
-          Tuyau estimé : {Math.ceil(tubLength)} m - Nombre de circuits estimé : {circuitsNumber}
-        </p>
+        {/* Isolation (uniquement natte) */}
+        {slug === "natte" && (
+          <div className="flex-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Isolation
+            </label>
+
+            <div className="flex gap-2">
+              {[0, 15, 30].map((val) => {
+                const tooltips: Record<number, string> = {
+                  0: "Sans isolation intégrée",
+                  15: "Isolation thermique standard",
+                  30: "Isolation renforcée",
+                };
+
+                return (
+                  <div key={val} className="relative group">
+                    <button
+                      onClick={() => onTypeIsolationChange(val as 0 | 15 | 30)}
+                      className={`px-4 py-1.5 rounded-lg text-sm border transition
+                        ${
+                          typeIsolation === val
+                            ? "bg-orange-500 border-orange-500 text-white"
+                            : "bg-white border-gray-300 text-gray-700 hover:border-orange-400 hover:text-orange-500"
+                        }`}
+                    >
+                      {val} mm
+                    </button>
+
+                    <span className="absolute left-1/2 -translate-x-1/2 -top-10 opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap bg-gray-900 text-white text-xs py-1 px-2 rounded shadow-lg transition">
+                      {tooltips[val]}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -222,6 +222,7 @@
             "quantity": 2.52,
             "price": 17.50,
             "packs": [3],
+            "isolation": 0,
             "image": "/images/box.png"
         },
         {
@@ -230,6 +231,7 @@
             "quantity": 0.50,
             "price": 17.53,
             "packs": [3],
+            "isolation": 15,
             "image": "/images/box.png"
         },
         {
@@ -238,6 +240,7 @@
             "quantity": 0.50,
             "price": 19.31,
             "packs": [3],
+            "isolation": 30,
             "image": "/images/box.png"
         }
     ],

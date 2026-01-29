@@ -38,10 +38,12 @@ export default function PackPage() {
     pasDePose,
     tuyauType,
     typeAgrafe,
+    typeIsolation,
     setSurface,
     setPasDePose,
     setTuyauType,
     setTypeAgrafe,
+    setTypeIsolation
   } = usePackConfig(existingPack, searchParams.get("surface"));
 
   // Produits, options et quantités
@@ -61,6 +63,7 @@ export default function PackPage() {
     pasDePose,
     tuyauType,
     typeAgrafe,
+    typeIsolation,
     existingPack,
   });
 
@@ -81,6 +84,8 @@ export default function PackPage() {
       surface,
       pasDePose,
       tuyauType,
+      typeIsolation,
+      typeAgrafe,
       calepinage,
       quantities,
       products: [
@@ -142,10 +147,12 @@ export default function PackPage() {
               pasDePose={pasDePose}
               tuyauType={tuyauType}
               typeAgrafe={typeAgrafe}
+              typeIsolation={typeIsolation}
               onSurfaceChange={setSurface}
               onPasDePoseChange={setPasDePose}
               onTuyauTypeChange={setTuyauType}
               onTypeAgrafeChange={setTypeAgrafe}
+              onTypeIsolationChange={setTypeIsolation}
             />
 
             <PackProductsCollapse

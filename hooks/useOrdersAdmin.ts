@@ -45,7 +45,6 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
     orderId: string,
     newStatus: string,
     key: string,
-    // 👈 NOUVEAU PARAMÈTRE POUR LA LOCALE
     locale: Locale 
   ) {
     const order = orders.find((o) => o.id === orderId);

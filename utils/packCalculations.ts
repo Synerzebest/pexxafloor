@@ -6,6 +6,7 @@ import packs from "@/constants/packs.json";
 
 export type TuyauType = "PERT" | "PERT-AL-PERT";
 export type AgrafeType = 40 | 60;
+export type IsolationType = 0 | 15 | 30;
 
 export type Product = {
   id: string;
@@ -14,6 +15,7 @@ export type Product = {
   price: number;
   type?: string;
   height?: number;
+  isolation?: number;
   packs?: number[];
   selectedQuantity?: number;
   image?: string;
@@ -25,6 +27,7 @@ export type ComputePackInput = {
   pasDePose: number;
   tuyauType: TuyauType;
   typeAgrafe: AgrafeType;
+  typeIsolation: IsolationType;
 };
 
 export type ComputePackResult = {
@@ -46,6 +49,7 @@ export function computePackProducts({
   pasDePose,
   tuyauType,
   typeAgrafe,
+  typeIsolation
 }: ComputePackInput): ComputePackResult {
   const products: Product[] = [];
   const quantities: Record<string, number> = {};
@@ -202,12 +206,16 @@ export function computePackProducts({
   ========================= */
 
   if (packNumber === 3) {
-    packs.groupe10
-      .filter((p: Product) => p.packs?.includes(3))
-      .forEach((p) => {
-        products.push(p);
-        quantities[p.id] = Math.ceil(surface / p.quantity);
-      });
+    const natte = packs.groupe10.find(
+      (p: Product) =>
+        p.packs?.includes(3) &&
+        p.isolation === typeIsolation
+    );
+  
+    if (natte) {
+      products.push(natte);
+      quantities[natte.id] = Math.ceil(surface / natte.quantity);
+    }
   }
 
   /* =========================

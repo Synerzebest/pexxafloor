@@ -15,15 +15,18 @@ export function usePackConfig(
     existingPack?.tuyauType ?? "PERT"
   );
   const [typeAgrafe, setTypeAgrafe] = useState<40 | 60>(40);
+  const [typeIsolation, setTypeIsolation] = useState<0 | 15 | 30>(0);
 
   return {
     surface,
     pasDePose,
     tuyauType,
     typeAgrafe,
+    typeIsolation,
     setSurface,
     setPasDePose,
     setTuyauType,
     setTypeAgrafe,
+    setTypeIsolation
   };
 }
