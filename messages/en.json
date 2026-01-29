@@ -254,5 +254,29 @@
       "title": "Our categories",
       "subtitle": "Discover all our underfloor heating solutions and accessories.",
       "subcat": "Sub-Categories"
+    },
+    "Cart": {
+      "errors": {
+        "address": "Please fill in the complete delivery address before continuing.",
+        "clientName": "Please provide the name of the client or the company."
+      },
+      "included": "products included",
+      "emptyCart": "Your cart is empty",
+      "myCart":"My cart",
+      "step": "Step",
+      "remove": "Remove",
+      "editPack": "Edit this pack",
+      "layout": {
+        "title":"Custom layout plan",
+        "gift": "Offered with the purchase of this pack",
+        "subtitle": "Pipe routing optimization by an expert."
+      },
+      "clientName": "Client name / Company name",
+      "fullAddress": "Full address",
+      "zipCode": "Zip code",
+      "city": "City",
+      "country": "Country",
+      "total": "Total",
+      "payment": "Proceed to payment"
     }
   }

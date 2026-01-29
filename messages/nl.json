@@ -254,5 +254,29 @@
       "title": "Onze categorieën",
       "subtitle": "Ontdek al onze oplossingen en accessoires voor vloerverwarming.",
       "subcat": "Subcategorieën"
-    }
+    },
+    "Cart": {
+      "errors": {
+        "address": "Vul alstublieft het volledige leveringsadres in voordat u verdergaat.",
+        "clientName": "Geef alstublieft de naam van de klant of het bedrijf op."
+      },
+      "included": "producten inbegrepen",
+      "emptyCart": "Uw winkelwagen is leeg",
+      "myCart": "Mijn winkelwagen",
+      "step": "Stap",
+      "remove": "Verwijderen",
+      "editPack": "Dit pakket bewerken",
+      "layout": {
+        "title": "Gepersonaliseerd legplan",
+        "gift": "Gratis bij aankoop van dit pakket",
+        "subtitle": "Optimalisatie van het leidingtraject door een expert."
+      },
+      "clientName": "Naam klant / Bedrijfsnaam",
+      "fullAddress": "Volledig adres",
+      "zipCode": "Postcode",
+      "city": "Stad",
+      "country": "Land",
+      "total": "Totaal",
+      "payment": "Ga naar betaling"      
+    }    
   }

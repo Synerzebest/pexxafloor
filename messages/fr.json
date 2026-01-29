@@ -254,5 +254,29 @@
       "title": "Nos catégories",
       "subtitle": "Découvrez l’ensemble de nos solutions de chauffage au sol et accessoires.",
       "subcat": "Sous-Catégories"
+    },
+    "Cart": {
+      "errors": {
+        "address": "Please fill in the complete delivery address before continuing.",
+        "clientName": "Please provide the name of the client or the company."
+      },
+      "included": "produits inclus",
+      "emptyCart": "Votre panier est vide",
+      "myCart":"Mon panier",
+      "step": "Pas",
+      "remove": "Retirer",
+      "editPack": "Modifier ce pack",
+      "layout": {
+        "title":"Plan de calepinage personnalisé",
+        "gift": "Offert à l'achat de ce pack",
+        "subtitle": "Optimisation du parcours des tuyaux par un expert."
+      },
+      "clientName": "Nom du client / Nom de l'entreprise",
+      "fullAddress": "Adresse complète",
+      "zipCode": "Code postal",
+      "city": "Ville",
+      "country": "Pays",
+      "total": "Total",
+      "payment": "Procéder au paiement"
     }
   }

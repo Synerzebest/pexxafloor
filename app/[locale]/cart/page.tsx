@@ -14,6 +14,7 @@ import { LoadScript } from "@react-google-maps/api";
 import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabaseClient"
+import { useTranslations } from "next-intl";
 
 type AddressSelection = {
   address: string;
@@ -32,6 +33,7 @@ export default function CartPage() {
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const locale = useLocale();
+  const t = useTranslations('Cart');
 
   const [user, setUser] = useState<User | null>(null);
 
@@ -88,12 +90,12 @@ export default function CartPage() {
     if (!user) return;
 
     if (!isAddressValid) {
-      alert("Veuillez remplir l'adresse de livraison complète avant de continuer.");
+      alert(t("errors.address"));
       return;
     }
 
     if (!isClientNameValid) {
-      alert("Veuillez indiquer le nom du client ou de l'entreprise.");
+      alert(t("errors.clientName"));
       return;
     }    
     
@@ -118,7 +120,7 @@ export default function CartPage() {
       <>
         <Navbar />
         <div className="max-w-4xl mx-auto py-20 pb-44 relative top-24">
-          <Empty description="Votre panier est vide" />
+          <Empty description={t('emptyCart')} />
         </div>
         <Footer />
       </>
@@ -137,7 +139,7 @@ export default function CartPage() {
     <>
       <Navbar />
       <div className="max-w-4xl mx-auto py-12 px-4 relative top-24">
-        <h1 className="text-3xl font-bold mb-8">Mon panier</h1>
+        <h1 className="text-3xl font-bold mb-8">{t('myCart')}</h1>
 
         <ul className="space-y-5">
           <AnimatePresence>
@@ -183,14 +185,14 @@ export default function CartPage() {
                         {((item.product?.price ?? 0) * item.quantity).toFixed(
                           2
                         )}{" "}
-                        €
+                        EUR TVA Excl.
                       </span>
                       <Button
                         type="link"
                         danger
                         onClick={() => removeFromCart(item.product_id)}
                       >
-                        Supprimer
+                        {t('remove')}
                       </Button>
                     </div>
                   </div>
@@ -213,7 +215,7 @@ export default function CartPage() {
                             Pack {item.slug}
                           </p>
                           <p className="text-sm text-gray-500">
-                            {item.surface} m² · pas {item.pasDePose} cm ·{" "}
+                            {item.surface} m² · {t('step')} {item.pasDePose} cm ·{" "}
                             {item.tuyauType}
                           </p>
                         </div>
@@ -234,12 +236,12 @@ export default function CartPage() {
                           danger
                           onClick={() => removeFromCart(item.id)}
                         >
-                          Supprimer
+                          {t('remove')}
                         </Button>
                       </div>
                     </div>
                     {/* --- Détails des produits inclus --- */}
-                    <AnimatedDropdown title={`${item.products.length} produits inclus`} defaultOpen={false}>
+                    <AnimatedDropdown title={`${item.products.length} ${t('included')}`} defaultOpen={false}>
                       <ul className="ml-2 mt-2 space-y-1 list-disc">
                         {item.products.map((p) => (
                           <li key={p.id}>
@@ -251,24 +253,24 @@ export default function CartPage() {
                         href={`/packs/${item.slug}?packId=${item.id}`}
                         className="inline-block mt-2 text-blue-600 hover:underline"
                       >
-                        Modifier ce pack
+                        {t('editPack')}
                       </Link>
                     </AnimatedDropdown>
                     {/* --- OPTION CALEPINAGE --- */}
                     {item.calepinage && (
                       <div className="bg-orange-50 border border-orange-200 rounded-lg px-4 py-3">
                         <p className="text-sm font-medium text-gray-800">
-                          Plan de calepinage personnalisé
+                          {t('layout.title')}
                           <span className="ml-2 text-gray-400 line-through text-xs">
-                            125,00 €
+                            125,00 EUR
                           </span>
                           <span className="ml-2 text-green-600 text-xs font-semibold">
-                            offert
+                            {t('layout.gift')}
                           </span>
                         </p>
 
                         <p className="mt-1 text-xs text-gray-500">
-                          Optimisation du parcours des tuyaux par un expert.
+                          {t('layout.subtitle')}
                         </p>
                       </div>
                     )}
@@ -288,7 +290,7 @@ export default function CartPage() {
         >
           <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-3">
             <label className="block text-sm font-medium text-gray-700">
-              Nom du client / entreprise
+              {t('clientName')}
             </label>
             <input
               type="text"
@@ -314,7 +316,7 @@ export default function CartPage() {
               {/* Autocomplétion Google */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Adresse complète
+                  {t('fullAddress')}
                 </label>
                 <LoadScript
                   googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}
@@ -336,7 +338,7 @@ export default function CartPage() {
               <div className="grid grid-cols-3 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Code postal
+                    {t('zipCode')}
                   </label>
                   <input
                     type="text"
@@ -351,7 +353,7 @@ export default function CartPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Ville
+                    {t('city')}
                   </label>
                   <input
                     type="text"
@@ -366,7 +368,7 @@ export default function CartPage() {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Pays
+                    {t('country')}
                   </label>
                   <input
                     type="text"
@@ -390,7 +392,7 @@ export default function CartPage() {
           className="sticky bottom-0 bg-white mt-10 p-5 rounded-xl shadow-lg flex items-center justify-between border-t border-gray-100"
         >
           <div>
-            <span className="text-lg font-semibold">Total :</span>
+            <span className="text-lg font-semibold">{t('total')} :</span>
             <span className="ml-3 text-2xl font-bold">{total.toFixed(2)} €</span>
           </div>
           <Button
@@ -400,7 +402,7 @@ export default function CartPage() {
             onClick={handleCheckout}
             disabled={!user || !isClientNameValid || !isAddressValid}
           >
-            Passer au paiement
+            {t('payment')}
           </Button>
         </motion.div>
       </div>
