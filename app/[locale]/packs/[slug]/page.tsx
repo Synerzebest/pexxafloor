@@ -119,6 +119,13 @@ export default function PackPage() {
     );
   }
 
+  function getName(slug: string) {
+    if (slug === "natte") return "plaques à plots"
+    else if (slug === "treillis") return "treillis"
+    else if (slug === "agrafe") return "agrafe"
+    return ""
+  }
+
   return (
     <>
       <Navbar />
@@ -126,7 +133,7 @@ export default function PackPage() {
 
       <section className="mx-auto max-w-7xl px-4 py-8 md:py-12 relative top-24 space-y-4">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-          Pack {slug.charAt(0).toUpperCase() + slug.slice(1)}
+          Pack {getName(slug)}
         </h1>
 
         {existingPack && (

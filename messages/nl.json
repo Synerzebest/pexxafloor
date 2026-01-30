@@ -278,5 +278,50 @@
       "country": "Land",
       "total": "Totaal",
       "payment": "Ga naar betaling"      
-    }    
+    },
+    "PackConfig": {
+      "settings": "Pakketinstellingen",
+      "step": {
+        "title": "Buizenafstand (afstand tussen de buizen)",
+        "tooltip20": "Voor goed geïsoleerde gebouwen of bijverwarming",
+        "tooltip15": "Voor matig geïsoleerde gebouwen",
+        "tooltip10": "Voor oude of slecht geïsoleerde gebouwen"
+      },
+      "tuyauType": {
+        "title": "Type buis",
+        "tooltipPERT": "Flexibele buis met zuurstofbarrière, meest gebruikt voor vloerverwarming",
+        "tooltipPERTALPERT": "Aluminiumlaag tussen twee PERT-lagen, zeer buigzaam"
+      },
+      "agrafe": {
+        "title": "Hoogte van de nieten",
+        "tooltip40": "Voor isolatie van 40–60 mm",
+        "tooltip60": "Voor isolatie > 60 mm"
+      },
+      "surfaceToHeat": "Te verwarmen oppervlak",
+      "estimatedPipe": "Geschatte buislengte",
+      "circuits": "Kringen",
+      "insulation": {
+        "title": "Isolatie met noppenplaat",
+        "tooltip0": "Zonder geïntegreerde isolatie",
+        "tooltip15": "Standaard thermische isolatie",
+        "tooltip30": "Versterkte isolatie",
+        "availableInsulation": "Beschikbare isolatietypes"
+      }
+    },
+    "PackProductsCollapse": {
+      "title": "Alles wat je nodig hebt voor je oppervlak!",
+      "unitPrice": "Eenheidsprijs",
+      "reset": "Reset"
+    },
+    "PackIncluded": {
+      "title": "Inbegrepen in het pakket"
+    },
+    "PackOptions": {
+      "title": "Beschikbare opties (Toevoegen)"
+    },
+    "PackCalepinageOption": {
+      "title": "Gepersonaliseerd legplan",
+      "gift": "Gratis bij aankoop van dit pakket",
+      "description": "Optimalisatie van het leidingtraject door een expert."
+    }
   }

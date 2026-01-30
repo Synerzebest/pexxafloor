@@ -278,5 +278,50 @@
       "country": "Pays",
       "total": "Total",
       "payment": "Procéder au paiement"
+    },
+    "PackConfig": {
+      "settings": "Paramètres du pack",
+      "step": {
+        "title": "Pas de pose (distance entre les tuyaux)",
+        "tooltip20": "Pour des constructions bien isolées ou pour chauffage d’appoint",
+        "tooltip15": "Pour des constructions moyennement isolées",
+        "tooltip10": "Pour des constructions anciennes ou faiblement isolées"
+      },
+      "tuyauType": {
+        "title": "Type de tuyau",
+        "tooltipPERT": "Tuyau souple, barrière anti-oxygène, le plus utilisé pour le chauffage au sol",
+        "tooltipPERTALPERT": "Couche d’aluminium entre deux couches de PERT, très malléable"
+      },
+      "agrafe": {
+        "title": "Hauteur des agrafes",
+        "tooltip40": "Pour isolant 40-60 mm",
+        "tooltip60": "Pour isolant > 60 mm"
+      },
+      "surfaceToHeat": "Surface à chauffer",
+      "estimatedPipe": "Longueur de tuyau estimée",
+      "circuits": "Circuits",
+      "insulation": {
+        "title": "Isolation de la natte à plots",
+        "tooltip0": "Sans isolation intégrée",
+        "tooltip15": "Isolation thermique standard",
+        "tooltip30": "Isolation renforcée",
+        "availableInsulation": "Types d’isolation disponibles"
+      }
+    },
+    "PackProductsCollapse": {
+      "title": "Tout ce dont vous avez besoin pour votre surface !",
+      "unitPrice": "Prix unitaire",
+      "reset": "Réinitialiser"
+    },
+    "PackIncluded": {
+      "title": "Inclus dans le pack"
+    },
+    "PackOptions": {
+      "title": "Options disponibles (Ajouter)"
+    },
+    "PackCalepinageOption": {
+      "title": "Plan de calepinage personnalisé",
+      "gift": "Offert à l'achat de ce pack",
+      "description": "Optimise le parcours des tuyaux et facilite la pose. Un expert vous contactera pour valider votre plan (surface, collecteur, contraintes, etc.)."
     }
   }

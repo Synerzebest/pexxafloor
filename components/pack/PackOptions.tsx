@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 type Option = {
   id: string;
   description: string;
@@ -19,10 +21,11 @@ export function PackOptions({
   selectedOptions,
   setSelectedOptions,
 }: Props) {
+  const t = useTranslations('PackOptions');
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-100">
       <h2 className="font-semibold text-xl mb-4 text-gray-800 border-b pb-3">
-        Options disponibles (Ajouter)
+        {t('title')}
       </h2>
 
       <div className="flex flex-col gap-3">

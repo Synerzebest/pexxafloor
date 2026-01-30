@@ -17,8 +17,8 @@
     "SurfaceCalculator": {
       "eyebrow": "Instant quote",
       "title": { "line1": "Underfloor heating", "line2": "tailored" },
-      "subtitle": "Get an immediate estimate by simply entering the area to heat.",
-      "surfaceLabel": "Area to heat in square meters",
+      "subtitle": "Get an immediate estimate by simply entering the surface to heat.",
+      "surfaceLabel": "Surface to heat in square meters",
       "surfacePlaceholder": "e.g. 85",
       "cta": "Get my price",
       "points": {
@@ -278,5 +278,50 @@
       "country": "Country",
       "total": "Total",
       "payment": "Proceed to payment"
+    },
+    "PackConfig": {
+      "settings": "Pack settings",
+      "step": {
+        "title": "Pipes spacing (distance between pipes)",
+        "tooltip20": "For well-insulated buildings or for supplementary heating",
+        "tooltip15": "For moderately insulated buildings",
+        "tooltip10": "For old or poorly insulated buildings"
+      },
+      "tuyauType": {
+        "title": "Pipe type",
+        "tooltipPERT": "Flexible pipe, oxygen barrier, most commonly used for underfloor heating",
+        "tooltipPERTALPERT": "Aluminum layer sandwiched between two layers of PERT, very malleable"
+      },
+      "agrafe": {
+        "title": "Staple height",
+        "tooltip40": "For 40–60 mm insulation",
+        "tooltip60": "For > 60 mm insulation"
+      },
+      "surfaceToHeat": "Surface to heat",
+      "estimatedPipe": "Estimated pipe",
+      "circuits": "Circuits",
+      "insulation": {
+        "title": "Studded mat insulation",
+        "tooltip0": "Without integrated insulation",
+        "tooltip15": "Standard thermal insulation",
+        "tooltip30": "Reinforced insulation",
+        "availableInsulation": "Types of insulation available"
+      }
+    },
+    "PackProductsCollapse": {
+      "title": "Everything you need for your surface !",
+      "unitPrice": "Unit price",
+      "reset": "Reset"
+    },
+    "PackIncluded": {
+      "title": "Included in the pack"
+    },
+    "PackOptions": {
+      "title": "Available options (Add)"
+    },
+    "PackCalepinageOption": {
+      "title": "Custom layout plan",
+      "gift": "Offered with the purchase of this pack",
+      "description": "Pipe routing optimization by an expert."
     }
   }

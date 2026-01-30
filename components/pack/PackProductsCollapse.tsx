@@ -2,6 +2,7 @@
 
 import { Collapse, InputNumber, Button } from "antd";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 type Product = {
   id: string;
@@ -25,10 +26,12 @@ export function PackProductsCollapse({
   initialQuantities,
   setQuantities,
 }: Props) {
+  const t = useTranslations('PackProductsCollapse');
+
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-100">
       <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-3">
-        Tout ce dont vous avez besoin pour votre surface !
+        {t('title')}
       </h2>
 
       <Collapse
@@ -41,9 +44,7 @@ export function PackProductsCollapse({
           return {
             key: item.id,
 
-            /* =========================
-               HEADER (label)
-            ========================= */
+            // HEADER (label)
 
             label: (
               <div className="flex items-center justify-between py-1">
@@ -61,7 +62,7 @@ export function PackProductsCollapse({
                       {item.description}
                     </p>
                     <p className="text-xs text-gray-500">
-                      Prix unitaire : {item.price.toFixed(2)} €
+                      {t('unitPrice')} : {item.price.toFixed(2)} €
                     </p>
                   </div>
                 </div>
@@ -82,9 +83,7 @@ export function PackProductsCollapse({
               </div>
             ),
 
-            /* =========================
-               CONTENU
-            ========================= */
+            // CONTENU
 
             children: (
               <div className="space-y-3 p-3 bg-gray-50 rounded-md">
@@ -118,7 +117,7 @@ export function PackProductsCollapse({
                       }
                       className="border-orange-400 text-orange-600 hover:border-orange-500 hover:text-orange-700"
                     >
-                      Réinitialiser ({initialQuantities[item.id]})
+                      {t('reset')} ({initialQuantities[item.id]})
                     </Button>
                   )}
                 </div>

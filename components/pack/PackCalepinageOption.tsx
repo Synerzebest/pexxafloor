@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 type Props = {
   calepinage: boolean;
   setCalepinage: (v: boolean) => void;
@@ -9,6 +11,8 @@ export function PackCalepinageOption({
   calepinage,
   setCalepinage,
 }: Props) {
+  const t = useTranslations('PackCalepinageOption');
+
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-100">
       <div
@@ -31,19 +35,17 @@ export function PackCalepinageOption({
 
           <div className="flex-1">
             <p className="text-sm font-semibold text-gray-800">
-              Plan de calepinage personnalisé
+              {t('title')}
               <span className="ml-2 text-gray-400 line-through text-xs">
                 125,00 €
               </span>
               <span className="ml-2 text-green-600 text-xs font-medium">
-                offert
+                {t('gift')}
               </span>
             </p>
 
             <p className="mt-1 text-xs text-gray-500 leading-relaxed">
-              Optimise le parcours des tuyaux et facilite la pose.
-              Un expert vous contactera pour valider votre plan
-              (surface, collecteur, contraintes, etc.).
+              {t('description')}
             </p>
           </div>
         </label>
