@@ -7,6 +7,7 @@ import { ProductCard } from "@/components";
 import { SubCategory } from "@/types/SubCategoryType";
 import { Product } from "@/types/ProductType";
 import { Category } from "@/types/CategoryType";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -21,6 +22,7 @@ export default function SubCategoryContent({
   category,
   locale,
 }: SubCategoryContentProps) {
+  const {isPro, loading} = useUserProfile();
   const getName = (
     obj: { name_fr: string; name_nl: string; name_en: string }
   ) => (locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en);
@@ -117,6 +119,7 @@ export default function SubCategoryContent({
                     categorySlug={category.slug}
                     subcategorySlug={subcategory.slug}
                     subsubcategorySlug={ssc.slug}
+                    isPro={isPro}
                   />
                 ))}
               </ul>

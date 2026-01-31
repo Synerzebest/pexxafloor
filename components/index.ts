@@ -9,6 +9,7 @@ import UserOrders from "./UserOrders";
 import Hero from "./Hero";
 import FAQSection from "./FAQSection";
 import ProBadge from "./ProBadge";
+import BestSellerSection from "./BestSellerSection";
 
 export {
     Navbar,
@@ -21,5 +22,6 @@ export {
     UserOrders,
     Hero,
     FAQSection,
-    ProBadge
+    ProBadge,
+    BestSellerSection
 }

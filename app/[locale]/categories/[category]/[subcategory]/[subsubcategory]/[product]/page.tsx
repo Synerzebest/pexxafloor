@@ -7,12 +7,6 @@ import { ChevronRight } from "lucide-react";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
-type ProductImage = { image_url: string };
-
-export interface ProductWithImages extends Product {
-  product_images?: ProductImage[] | null;
-}
-
 type ProductRouteParams = Promise<{
   locale: string;
   category: string;
@@ -38,37 +32,32 @@ export default async function ProductPage({
       ? p.name_nl
       : p.name_en;
 
-  const getDesc = (p: ProductWithImages) =>
+  const getDesc = (p: Product) =>
     supportedLocale === "fr"
       ? p.description_fr
       : supportedLocale === "nl"
       ? p.description_nl
       : p.description_en;
 
-  // -------------------------------------------------------
-  // 1) USER + IS_PRO
-  // -------------------------------------------------------
   const {
     data: { user },
   } = await supabase.auth.getUser();
-
+  
   let isPro = false;
-
+  
   if (user) {
     const { data: profile } = await supabase
       .from("profiles")
       .select("is_pro")
       .eq("id", user.id)
-      .single();
-
+      .maybeSingle();
+  
     isPro = !!profile?.is_pro;
   }
 
-  // -------------------------------------------------------
-  // 2) PRODUIT
-  // -------------------------------------------------------
+  // PRODUIT
   const { data, error } = await supabase
-    .from("products_with_discount")
+    .from("products")
     .select(`
       id,
       slug,
@@ -79,59 +68,69 @@ export default async function ProductPage({
       description_nl,
       description_en,
       price,
-      price_after_discount,
-      applied_discount,
-      product_images!fk_product ( image_url )
+      reference,
+
+      product_images!fk_product (
+        image_url
+      ),
+
+      subcategory:subcategories (
+        id,
+        slug,
+        name_fr,
+        name_nl,
+        name_en,
+
+        category:categories (
+          id,
+          slug,
+          name_fr,
+          name_nl,
+          name_en,
+          discount
+        )
+      ),
+
+      subsubcategory:subsubcategories!left (
+        id,
+        slug,
+        name_fr,
+        name_nl,
+        name_en
+      )
     `)
     .eq("slug", product)
     .single();
 
   if (!data || error) return notFound();
-  const prod = data as unknown as ProductWithImages;
+  const prod = data as unknown as Product;
 
-  // -------------------------------------------------------
-  // 3) CATEGORIES
-  // -------------------------------------------------------
-  const { data: categoryData } = await supabase
-    .from("categories")
-    .select("name_fr, name_nl, name_en")
-    .eq("slug", category)
-    .single();
+  // CATEGORIES
+  const categoryData = prod.subcategory.category;
+  const subcategoryData = prod.subcategory;
+  const subsubData = prod.subsubcategory;
 
-  const { data: subcategoryData } = await supabase
-    .from("subcategories")
-    .select("name_fr, name_nl, name_en")
-    .eq("slug", subcategory)
-    .single();
-
-  const { data: subsubData } = await supabase
-    .from("subsubcategories")
-    .select("name_fr, name_nl, name_en")
-    .eq("slug", subsubcategory)
-    .single();
-
-  if (!categoryData || !subcategoryData || !subsubData) return notFound();
-
-  // -------------------------------------------------------
-  // 4) IMAGES
-  // -------------------------------------------------------
+  // IMAGES
   const images =
     prod.product_images?.map((img) => img.image_url) ?? [
       "/images/placeholder.png",
     ];
 
-  // -------------------------------------------------------
-  // 5) PRIX – LOGIQUE OFFICIELLE
-  // -------------------------------------------------------
+  // PRIX
   const TVA = 1.21;
-  const priceBrutHTVA = prod.price ?? 0;
-  const discount = prod.applied_discount ?? 0;
+  const categoryDiscount =
+    prod.subcategory.category.discount ?? 0;
+
+  const priceBrutHTVA = prod.price;
+  const discount = isPro ? categoryDiscount : 0;
+
   const priceNetHTVA =
-    prod.price_after_discount ?? priceBrutHTVA;
+    discount > 0
+      ? priceBrutHTVA * (1 - discount / 100)
+      : priceBrutHTVA;
 
   const priceBrutTVAC = priceBrutHTVA * TVA;
-
-  const showProPrices = isPro && user; 
+  const showProPrices = isPro; 
 
   const formatPrice = (value: number) =>
   new Intl.NumberFormat("fr-BE", {
@@ -140,9 +139,6 @@ export default async function ProductPage({
   }).format(value);
 
 
-  // -------------------------------------------------------
-  // 6) RENDU
-  // -------------------------------------------------------
   return (
     <>
       <Navbar />
@@ -153,21 +149,43 @@ export default async function ProductPage({
 
         {/* BREADCRUMB */}
         <nav className="flex items-center gap-2 text-sm text-gray-600 mb-8">
-          <Link href={`/${locale}/categories/${category}`}>
+          {/* CATÉGORIE */}
+          <Link
+            href={`/${locale}/categories/${categoryData.slug}`}
+            className="hover:text-orange-600"
+          >
             {getName(categoryData)}
           </Link>
+
           <ChevronRight className="w-4 h-4" />
-          <Link href={`/${locale}/categories/${category}/${subcategory}`}>
+
+          {/* SOUS-CATÉGORIE */}
+          <Link
+            href={`/${locale}/categories/${categoryData.slug}/${subcategoryData.slug}`}
+            className="hover:text-orange-600"
+          >
             {getName(subcategoryData)}
           </Link>
+
+          {/* SOUS-SOUS-CATÉGORIE (OPTIONNELLE) */}
+          {subsubData && (
+            <>
+              <ChevronRight className="w-4 h-4" />
+              <Link
+                href={`/${locale}/categories/${categoryData.slug}/${subcategoryData.slug}/${subsubData.slug}`}
+                className="hover:text-orange-600"
+              >
+                {getName(subsubData)}
+              </Link>
+            </>
+          )}
+
           <ChevronRight className="w-4 h-4" />
-          <Link
-            href={`/${locale}/categories/${category}/${subcategory}/${subsubcategory}`}
-          >
-            {getName(subsubData)}
-          </Link>
-          <ChevronRight className="w-4 h-4" />
-          <span className="text-gray-900">{getName(prod)}</span>
+
+          {/* PRODUIT */}
+          <span className="text-gray-900 font-medium">
+            {getName(prod)}
+          </span>
         </nav>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -184,28 +202,30 @@ export default async function ProductPage({
 
             {/* ---------------- PRIX ---------------- */}
             <div className="mb-6">
-              {showProPrices ? (
-                <>
+            {isPro ? (
+              <>
+                {discount > 0 && (
                   <p className="text-lg text-gray-400 line-through">
                     {formatPrice(priceBrutHTVA)} € TVA excl.
                   </p>
+                )}
 
-                  <p className="text-3xl font-bold text-orange-700">
-                    {formatPrice(priceNetHTVA)} € TVA excl.
-                  </p>
+                <p className="text-3xl font-bold text-orange-700">
+                  {formatPrice(priceNetHTVA)} € TVA excl.
+                </p>
 
+                {discount > 0 && (
                   <p className="text-green-600 font-semibold mt-1">
                     Remise PRO −{discount}%
                   </p>
-                </>
-              ) : (
-                <>
-                  <p className="text-3xl font-bold text-orange-700">
-                    {formatPrice(priceBrutTVAC)} €{" "}
-                    <span className="text-base text-gray-500">TVA incl.</span>
-                  </p>
-                </>
-              )}
+                )}
+              </>
+            ) : (
+              <p className="text-3xl font-bold text-orange-700">
+                {formatPrice(priceBrutTVAC)} €{" "}
+                <span className="text-base text-gray-500">TVA incl.</span>
+              </p>
+            )}
             </div>
 
             <AddToCartButton

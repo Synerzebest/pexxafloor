@@ -20,7 +20,7 @@ import type { Category } from "@/types/CategoryType";
 import type { SubCategory } from "@/types/SubCategoryType";
 import type { SubSubCategory } from "@/types/SubSubCategoryType";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { ProductWithSubSub } from "@/types/ProductWithSubSubType";
+import type { Product } from "@/types/ProductType";
 
 const orange = "#f97316"; 
 
@@ -36,15 +36,15 @@ export default function ProductSection({
   categories: Category[];
   subcategories: SubCategory[];
   subsubcategories: SubSubCategory[];
-  products: ProductWithSubSub[];
+  products: Product[];
   fetchAll: () => void;
   supabase: SupabaseClient;
   loading: boolean;
 }) {
   const [open, setOpen] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [deleting, setDeleting] = useState<ProductWithSubSub | null>(null);
-  const [editing, setEditing] = useState<ProductWithSubSub | null>(null);
+  const [deleting, setDeleting] = useState<Product | null>(null);
+  const [editing, setEditing] = useState<Product | null>(null);
 
   // --- SUPPRESSION ---
   async function confirmDelete() {
@@ -69,13 +69,13 @@ export default function ProductSection({
   // --- COLONNES ---
   const columns: {
     title: string;
-    dataIndex?: keyof ProductWithSubSub;
-    render?: (_: unknown, record: ProductWithSubSub) => React.ReactNode;
+    dataIndex?: keyof Product;
+    render?: (_: unknown, record: Product) => React.ReactNode;
   }[] = [
     {
       title: "Image",
       dataIndex: "product_images",
-      render: (_: unknown, record: ProductWithSubSub) =>
+      render: (_: unknown, record: Product) =>
         record.product_images?.length ? (
           <img
             src={record.product_images[0].image_url}
@@ -91,39 +91,26 @@ export default function ProductSection({
     },
     {
       title: "Catégories",
-      render: (_: unknown, record: ProductWithSubSub) => {
-        // Sous-catégorie (obligatoire)
-        const sub = subcategories.find(
-          (s) => s.id === record.subcategory_id
-        );
-    
-        if (!sub) return "-";
-    
-        // Catégorie
-        const cat = categories.find(
-          (c) => c.id === sub.category_id
-        );
-    
-        // Sous-sous-catégorie (optionnelle)
-        const subsub = record.subsub_id
-          ? subsubcategories.find((ss) => ss.id === record.subsub_id)
-          : null;
+      render: (_: unknown, record: Product) => {
+        const category = record.subcategory.category;
+        const subcategory = record.subcategory;
+        const subsub = record.subsubcategory;
     
         return [
-          cat?.name_fr,
-          sub.name_fr,
+          category.name_fr,
+          subcategory.name_fr,
           subsub?.name_fr,
         ]
           .filter(Boolean)
           .join(" > ");
       },
-    },    
+    },        
     { title: "Réf.", dataIndex: "reference" },
     { title: "FR", dataIndex: "name_fr" },
     { title: "Prix Brut (€)", dataIndex: "price" },
     {
       title: "Actions",
-      render: (_: unknown, record: ProductWithSubSub) => (
+      render: (_: unknown, record: Product) => (
         <Space direction="horizontal">
           <Button
             size="small"
@@ -215,7 +202,7 @@ export default function ProductSection({
               setEditing(null);
             }}
             footer={null}
-            destroyOnClose
+            destroyOnHidden
             centered
             width="80%"
             styles={{

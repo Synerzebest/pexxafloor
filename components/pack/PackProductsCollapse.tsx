@@ -1,6 +1,7 @@
 "use client";
 
-import { Collapse, InputNumber, Button } from "antd";
+import { Collapse, InputNumber, Button, Modal } from "antd";
+import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
@@ -27,8 +28,10 @@ export function PackProductsCollapse({
   setQuantities,
 }: Props) {
   const t = useTranslations('PackProductsCollapse');
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   return (
+    <>
     <div className="bg-white p-6 rounded-xl border border-gray-100">
       <h2 className="text-xl font-semibold text-gray-800 mb-4 border-b pb-3">
         {t('title')}
@@ -49,14 +52,17 @@ export function PackProductsCollapse({
             label: (
               <div className="flex items-center justify-between py-1">
                 <div className="flex items-center gap-3">
-                  <Image
-                    src={item.image || "/images/box.png"}
-                    alt={item.description}
-                    width={30}
-                    height={30}
-                    className="rounded-md border border-gray-200"
-                  />
-
+                <Image
+                  src={item.image || "/images/box.png"}
+                  alt={item.description}
+                  width={30}
+                  height={30}
+                  className="rounded-md border border-gray-200 cursor-pointer hover:scale-105 transition"
+                  onClick={(e) => {
+                    e.stopPropagation(); 
+                    setPreviewImage(item.image || "/images/box.png");
+                  }}
+                />
                   <div>
                     <p className="font-medium text-gray-700 leading-tight">
                       {item.description}
@@ -127,5 +133,23 @@ export function PackProductsCollapse({
         })}
       />
     </div>
+    <Modal
+      open={!!previewImage}
+      footer={null}
+      onCancel={() => setPreviewImage(null)}
+      centered
+      width={500}
+    >
+      {previewImage && (
+        <Image
+          src={previewImage}
+          alt="Aperçu produit"
+          width={450}
+          height={450}
+          className="rounded-lg object-contain mx-auto"
+        />
+      )}
+    </Modal>
+  </>
   );
 }

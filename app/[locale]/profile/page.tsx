@@ -10,10 +10,8 @@ import LogoutButton from "@/components/auth/LogoutButton";
 export default async function ProfilePage() {
   const locale = await getLocale();
 
-  // Next.js 15 → cookies() est ASYNC
   const cookieStore = await cookies();
 
-  // Nouvelle API Supabase SSR (100% compatible)
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

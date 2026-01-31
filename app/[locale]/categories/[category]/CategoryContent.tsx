@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components";
 import { Category } from "@/types/CategoryType";
 import { SubSubCategory } from "@/types/SubSubCategoryType";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -16,6 +17,7 @@ export default function CategoryContent({
   category: Category;
   locale: SupportedLocale;
 }) {
+  const { isPro, loading: loadingProfile } = useUserProfile();
   const getName = (
     obj: { name_fr: string; name_nl: string; name_en: string }
   ) => (locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en);
@@ -106,6 +108,7 @@ export default function CategoryContent({
                       categorySlug={category.slug}
                       subcategorySlug={sub.slug}
                       subsubcategorySlug={ssc.slug}
+                      isPro={isPro}
                     />
                   ))}
                 </div>
@@ -123,6 +126,7 @@ export default function CategoryContent({
                           categorySlug={category.slug}
                           subcategorySlug={sub.slug}
                           subsubcategorySlug={ssc.slug}
+                          isPro={isPro}
                         />
                       </li>
                     ))}

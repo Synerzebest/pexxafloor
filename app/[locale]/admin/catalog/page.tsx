@@ -8,6 +8,7 @@ import CategorySection from "@/components/admin/catalog/CategorySection";
 import SubCategorySection from "@/components/admin/catalog/SubCategorySection";
 import SubSubcategorySection from "@/components/admin/catalog/SubSubCategorySection";
 import ProductSection from "@/components/admin/catalog/ProductSection";
+import AdminBestSellerSection from "@/components/admin/catalog/AdminBestSellerSection";
 import Link from "next/link";
 import { useLocale } from "next-intl";
 
@@ -16,6 +17,7 @@ const tabs = [
   { key: "subcategories", label: "Sous-catégories" },
   { key: "subsubcategories", label: "Sous-sous-catégories" },
   { key: "products", label: "Produits"},
+  { key: "bestsellers", label: "Best sellers" },
 ];
 
 export default function CatalogPage() {
@@ -159,6 +161,22 @@ export default function CatalogPage() {
                   fetchAll={fetchAll}
                   supabase={supabase}
                   loading={loading}
+                />
+              </motion.div>
+            )}
+
+            {activeTab === "bestsellers" && (
+              <motion.div
+                key="bestsellers"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <AdminBestSellerSection
+                  products={products}
+                  supabase={supabase}
+                  fetchAll={fetchAll}
                 />
               </motion.div>
             )}

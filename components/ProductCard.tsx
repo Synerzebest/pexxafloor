@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/types/ProductType";
-import { supabase } from "@/lib/supabaseClient";
 
 type Props = {
   product: Product;
@@ -12,6 +10,7 @@ type Props = {
   categorySlug: string;
   subcategorySlug: string;
   subsubcategorySlug: string;
+  isPro: boolean | null;
 };
 
 type Translatable = {
@@ -26,58 +25,8 @@ export default function ProductCard({
   categorySlug,
   subcategorySlug,
   subsubcategorySlug,
+  isPro
 }: Props) {
-  const [isPro, setIsPro] = useState(false);
-  const [loadingAuth, setLoadingAuth] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-
-    async function initAuth() {
-      // 1️⃣ lire la session existante
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (session?.user && mounted) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("is_pro")
-          .eq("id", session.user.id)
-          .maybeSingle();
-
-        setIsPro(!!profile?.is_pro);
-      }
-
-      setLoadingAuth(false);
-    }
-
-    initAuth();
-
-    // 2️⃣ écouter les changements d’auth
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!mounted) return;
-      if (session?.user) {
-        supabase
-          .from("profiles")
-          .select("is_pro")
-          .eq("id", session.user.id)
-          .maybeSingle()
-          .then(({ data }) => {
-            setIsPro(!!data?.is_pro);
-          });
-      } else {
-        setIsPro(false);
-      }
-    });
-
-    return () => {
-      mounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
 
   const getName = (obj: Translatable) =>
     locale === "fr"
@@ -92,30 +41,39 @@ export default function ProductCard({
   // ---------------- PRIX ----------------
   const TVA = 1.21;
 
-  const priceBrutHTVA = product.price;
+  const priceBrutHTVA = Number(product.price) || 0;
+
+  const categoryDiscount = Number(product.subcategory?.category?.discount ?? 0) || 0;
+
+  const showProPrices = isPro === true;
+
+  const discount = showProPrices ? categoryDiscount : 0;
+
   const priceNetHTVA =
-    product.price_after_discount ?? product.price;
+    discount > 0
+      ? priceBrutHTVA * (1 - discount / 100)
+      : priceBrutHTVA;
 
   const priceBrutTVAC = priceBrutHTVA * TVA;
 
-  const showProPrices = !loadingAuth && isPro;
-  const discount = product.applied_discount ?? 0;
-  const hasProDiscount =
-    showProPrices && discount > 0 && priceNetHTVA < priceBrutHTVA;
-  
+  const hasProDiscount = showProPrices && discount > 0;
+
   const formatPrice = (value: number) =>
     new Intl.NumberFormat("fr-BE", {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
   }).format(value);
 
+  const productUrl = subsubcategorySlug
+  ? `/${locale}/categories/${categorySlug}/${subcategorySlug}/${subsubcategorySlug}/${product.slug}`
+  : `/${locale}/categories/${categorySlug}/${subcategorySlug}/${product.slug}`;
 
 
   return (
     <>
     <li className="rounded-xl border border-gray-200 bg-white shadow-sm hover:shadow-lg transition-shadow overflow-hidden group">
       <Link
-        href={`/${locale}/categories/${categorySlug}/${subcategorySlug}/${subsubcategorySlug}/${product.slug}`}
+        href={productUrl}
       >
         <div className="relative w-full h-40 bg-white flex items-center justify-center p-4">
           <Image

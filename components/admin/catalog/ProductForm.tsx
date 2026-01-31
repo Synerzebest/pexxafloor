@@ -18,7 +18,7 @@ import type { Category } from "@/types/CategoryType";
 import type { SubCategory } from "@/types/SubCategoryType";
 import type { SubSubCategory } from "@/types/SubSubCategoryType";
 import type { ProductFormValues } from "@/types/ProductFormValues";
-import type { ProductWithSubSub } from "@/types/ProductWithSubSubType";
+import type { Product } from "@/types/ProductType";
 
 interface ProductFormProps {
   categories: Category[];
@@ -27,7 +27,7 @@ interface ProductFormProps {
   supabase: SupabaseClient;
   fetchAll: () => void;
   closeModal: () => void;
-  editing?: ProductWithSubSub | null;
+  editing?: Product | null;
 }
 
 interface CustomUploadFile extends UploadFile {
@@ -51,25 +51,31 @@ export default function ProductForm({
 
   useEffect(() => {
     if (editing) {
-      const sub = subcategories.find((s) => s.id === editing.subcategory_id);
-      const cat = categories.find((c) => c.id === sub?.category_id);
+      const cat = editing.subcategory.category;
+      const sub = editing.subcategory;
+      const subsub = editing.subsubcategory;
 
-      if (cat) setSelectedCategory(cat.id);
-      if (sub) setSelectedSubcategory(sub.id);
+
+      setSelectedCategory(cat.id);
+      setSelectedSubcategory(sub.id);
 
       form.setFieldsValue({
-        category_id: cat?.id ?? undefined,
-        subcategory_id: editing.subcategory_id,
-        subsub_id: editing.subsub_id,
-        name_fr: editing.name_fr,
-        name_nl: editing.name_nl,
-        name_en: editing.name_en,
+        category_id: cat.id,
+        subcategory_id: sub.id,
+        subsub_id: subsub?.id ?? undefined,
+      
+        name_fr: editing.name_fr ?? undefined,
+        name_nl: editing.name_nl ?? undefined,
+        name_en: editing.name_en ?? undefined,
+      
+        description_fr: editing.description_fr ?? undefined,
+        description_nl: editing.description_nl ?? undefined,
+        description_en: editing.description_en ?? undefined,
+      
         price: Number(editing.price),
-        description_fr: editing.description_fr,
-        description_nl: editing.description_nl,
-        description_en: editing.description_en,
-        reference: editing.reference
-      });
+        reference: editing.reference ?? undefined,
+      });      
+      
 
       if (editing.product_images?.length) {
         setFileList(
@@ -81,7 +87,7 @@ export default function ProductForm({
             url: img.image_url,
           }))
         );
-      }
+      }      
     } else {
       form.resetFields();
       setFileList([]);

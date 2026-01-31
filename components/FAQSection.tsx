@@ -30,7 +30,7 @@ export default function FAQSection() {
   };
 
   return (
-    <section className="py-24" id="faq">
+    <section className="relative top-24 py-24" id="faq">
       <div className="max-w-4xl mx-auto px-6 flex flex-col items-center">
         {/* Titre */}
         <h2 className="text-4xl font-extrabold text-gray-900 mb-12 relative">

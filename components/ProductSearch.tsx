@@ -5,7 +5,7 @@ import { Input, Dropdown } from "antd";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import type { ProductSearchResult } from "@/types/ProductType";
+import type { Product } from "@/types/ProductType";
 import Image from "next/image";
 
 export default function ProductSearch() {
@@ -15,7 +15,7 @@ export default function ProductSearch() {
 
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [results, setResults] = useState<ProductSearchResult[]>([]);
+  const [results, setResults] = useState<Product[]>([]);
 
   useEffect(() => {
     if (!query || query.length < 2) {
@@ -28,21 +28,45 @@ export default function ProductSearch() {
 
       const { data, error } = await supabase
         .from("products")
-        .select(
-            `
-            id, slug, name_fr, name_nl, name_en, price,
-            subcategory:subcategories(
-            id, name_fr, name_nl, name_en,
-            category:categories(id, slug, name_fr, name_nl, name_en)
-            ),
-            product_images!fk_product ( image_url )
-            `
-        )
-        .ilike(`name_${locale}`, `%${query}%`)
-        .limit(8);
+        .select(`
+          id,
+          slug,
+          name_fr,
+          name_nl,
+          name_en,
+          price,
 
-      console.log(data)
-      if (!error) setResults(data as unknown as ProductSearchResult[]);
+          subcategory:subcategories(
+            id,
+            slug,
+            name_fr,
+            name_nl,
+            name_en,
+            category:categories(
+              id,
+              slug,
+              name_fr,
+              name_nl,
+              name_en
+            )
+          ),
+
+          subsubcategory:subsubcategories!left(
+            id,
+            slug,
+            name_fr,
+            name_nl,
+            name_en
+          ),
+
+          product_images!fk_product (
+            image_url
+          )
+        `)
+        .ilike(`name_${locale}`, `%${query}%`)
+        .limit(4);
+
+      if (!error) setResults(data as unknown as Product[]);
       setLoading(false);
     };
 
@@ -69,7 +93,9 @@ export default function ProductSearch() {
         : p.subcategory?.category?.name_en;
   
     const img = p.product_images?.[0]?.image_url;
-    const url = `/categories/${p.subcategory?.category?.slug}/${p.subcategory?.slug}/${p.slug}`;
+    const url = p.subsubcategory
+      ? `/categories/${p.subcategory.category.slug}/${p.subcategory.slug}/${p.subsubcategory.slug}/${p.slug}`
+      : `/categories/${p.subcategory.category.slug}/${p.subcategory.slug}/${p.slug}`;
   
     return {
       key: p.id,
@@ -82,6 +108,8 @@ export default function ProductSearch() {
             <Image
               src={img}
               alt={name}
+              width={100}
+              height={100}
               className="w-12 h-12 object-cover rounded"
             />
           )}

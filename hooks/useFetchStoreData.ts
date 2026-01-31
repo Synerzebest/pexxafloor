@@ -12,30 +12,84 @@ export function useFetchStoreData() {
 
   async function fetchAll() {
     setLoading(true);
-    const [cats, subs, subsubs, prods] = await Promise.all([
-      supabase.from("categories").select("*").order("name_fr", {ascending: true}),
-      supabase.from("subcategories").select("*").order("name_fr", {ascending: true}),
-      supabase.from("subsubcategories").select("*").order("name_fr", {ascending: true}),
-      supabase.from("products").select("*").order("created_at", { ascending: false }),
+  
+    const [
+      cats,
+      subs,
+      subsubs,
+      prods,
+    ] = await Promise.all([
+      supabase
+        .from("categories")
+        .select("*")
+        .order("name_fr", { ascending: true }),
+  
+      supabase
+        .from("subcategories")
+        .select("*")
+        .order("name_fr", { ascending: true }),
+  
+      supabase
+        .from("subsubcategories")
+        .select("*")
+        .order("name_fr", { ascending: true }),
+  
+      supabase
+        .from("products")
+        .select(`
+          id,
+          slug,
+          name_fr,
+          name_nl,
+          name_en,
+          description_fr,
+          description_nl,
+          description_en,
+          price,
+          reference,
+          is_best_seller,
+          created_at,
+  
+          product_images!fk_product (
+            id,
+            image_url,
+            order
+          ),
+  
+          subcategory:subcategories (
+            id,
+            slug,
+            name_fr,
+            name_nl,
+            name_en,
+  
+            category:categories (
+              id,
+              slug,
+              name_fr,
+              name_nl,
+              name_en,
+              discount
+            )
+          ),
+  
+          subsubcategory:subsubcategories!left (
+            id,
+            slug,
+            name_fr,
+            name_nl,
+            name_en
+          )
+        `)
+        .order("created_at", { ascending: false }),
     ]);
-
-    const prodsWithImages = await Promise.all(
-      (prods.data || []).map(async (p) => {
-        const { data: imgs } = await supabase
-          .from("product_images")
-          .select("id, image_url, order")
-          .eq("product_id", p.id)
-          .order("order");
-        return { ...p, product_images: imgs || [] };
-      })
-    );
-
+  
     setCategories(cats.data || []);
     setSubcategories(subs.data || []);
     setSubsubcategories(subsubs.data || []);
-    setProducts(prodsWithImages);
+    setProducts(prods.data || []);
     setLoading(false);
-  }
+  }  
 
   useEffect(() => {
     fetchAll();
