@@ -8,12 +8,6 @@ import SubCategoryContent from "./SubCategoryContent";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
-type Translatable = {
-  name_fr: string;
-  name_nl: string;
-  name_en: string;
-};
-
 export default async function SubcategoryPage({
   params,
 }: {
@@ -31,23 +25,35 @@ export default async function SubcategoryPage({
       name_fr,
       name_nl,
       name_en,
-      subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
+
+      products:products (
         id,
         slug,
         name_fr,
         name_nl,
         name_en,
-        products:products_with_discount!products_subsub_id_fkey (
+        price,
+        reference,
+        product_images!fk_product ( image_url )
+      ),
+
+      subsubcategories:subsubcategories (
+        id,
+        slug,
+        name_fr,
+        name_nl,
+        name_en,
+
+        products:products (
           id,
           slug,
           name_fr,
           name_nl,
           name_en,
           price,
-          price_after_discount,
-          applied_discount,
+          reference,
           product_images!fk_product ( image_url )
-        )        
+        )
       )
     `)
     .eq("slug", subcategory)

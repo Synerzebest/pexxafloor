@@ -1,3 +1,4 @@
+import { Product } from "./ProductType";
 import { SubSubCategory } from "./SubSubCategoryType";
 
 export type SubCategory = {
@@ -7,5 +8,6 @@ export type SubCategory = {
   name_nl: string;
   name_en: string;
   category_id: string;
+  products: Product[];
   subsubcategories: SubSubCategory[];
 };

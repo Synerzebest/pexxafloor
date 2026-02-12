@@ -46,6 +46,8 @@ export default function Navbar() {
   const { drawerOpen, setDrawerOpen } = useUI()
   const { categories, loading } = useStoreData();
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
+  const [openMobileCat, setOpenMobileCat] = useState<string | null>(null);
+  const [openMobileSub, setOpenMobileSub] = useState<string | null>(null);
 
   useEffect(() => setDrawerOpen(false), [pathname]);
 
@@ -199,16 +201,25 @@ export default function Navbar() {
                     </div>
                   ) : null}
 
-                  {/* Liens à droite (ton design actuel, inchangé) */}
+                  {/* Liens à droite */}
                   <div className="grid grid-cols-4 gap-8 flex-1">
                     {hoveredCategory.subcategories.map((sub) => (
                       <div key={sub.id} className="flex flex-col gap-2">
-                        <Link
-                          href={`/${locale}/categories/${hoveredCategory.slug}/${sub.slug}`}
-                          className="font-semibold text-gray-900 hover:text-orange-600"
-                        >
-                          {getName(sub)}
-                        </Link>
+                        {sub.subsubcategories?.length ? (
+                          <Link 
+                            href={`/${locale}/categories/${hoveredCategory.slug}`} 
+                            className="font-semibold text-gray-900 hover:text-orange-600 cursor-pointer"
+                          >
+                            {getName(sub)}
+                          </Link>
+                        ) : (
+                          <Link
+                            href={`/${locale}/categories/${hoveredCategory.slug}/${sub.slug}`}
+                            className="font-semibold text-gray-900 hover:text-orange-600"
+                          >
+                            {getName(sub)}
+                          </Link>
+                        )}
 
                         {sub.subsubcategories?.map((ss) => (
                           <Link
@@ -266,39 +277,99 @@ export default function Navbar() {
                   </Link>
                 </li>
                 <li><ProductSearch /></li>
-                {categories.map(cat => (
-                  <li key={cat.id} className="border-b border-gray-200">
-                    <details>
-                      <summary className="cursor-pointer px-1 py-2 text-gray-800">{getName(cat)}</summary>
-                      <ul className="pl-4">
-                      {cat.subcategories.map((sub) => (
-                        <li key={sub.id}>
-                          <details>
-                            <summary className="cursor-pointer px-1 py-2 text-sm text-gray-700">
-                              {getName(sub)}
-                            </summary>
-                            <ul className="pl-4">
-                              {sub.subsubcategories?.map((ss) => (
-                                <li key={ss.id}>
+                {categories.map((cat) => (
+                  <li key={cat.id} className="border-b border-gray-100">
+                    {/* CATÉGORIE */}
+                    <button
+                      onClick={() =>
+                        setOpenMobileCat(openMobileCat === cat.id ? null : cat.id)
+                      }
+                      className="flex w-full items-center justify-between px-2 py-3 text-base font-medium text-gray-900"
+                    >
+                      {getName(cat)}
+                      <ChevronRight
+                        size={18}
+                        className={`transition-transform ${
+                          openMobileCat === cat.id ? "rotate-90" : ""
+                        }`}
+                      />
+                    </button>
+
+                    {/* SOUS-CATÉGORIES */}
+                    <AnimatePresence>
+                      {openMobileCat === cat.id && (
+                        <motion.ul
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="pl-4 overflow-hidden"
+                        >
+                          {cat.subcategories.map((sub) => {
+                            const hasSubSub = sub.subsubcategories?.length > 0;
+
+                            return (
+                              <li key={sub.id}>
+                                {hasSubSub ? (
+                                  <>
+                                    {/* Sous-cat accordéon */}
+                                    <button
+                                      onClick={() =>
+                                        setOpenMobileSub(
+                                          openMobileSub === sub.id ? null : sub.id
+                                        )
+                                      }
+                                      className="flex w-full items-center justify-between px-2 py-2 text-sm text-gray-700"
+                                    >
+                                      {getName(sub)}
+                                      <ChevronRight
+                                        size={14}
+                                        className={`transition-transform ${
+                                          openMobileSub === sub.id ? "rotate-90" : ""
+                                        }`}
+                                      />
+                                    </button>
+
+                                    <AnimatePresence>
+                                      {openMobileSub === sub.id && (
+                                        <motion.ul
+                                          initial={{ height: 0, opacity: 0 }}
+                                          animate={{ height: "auto", opacity: 1 }}
+                                          exit={{ height: 0, opacity: 0 }}
+                                          className="pl-4"
+                                        >
+                                          {sub.subsubcategories!.map((ss) => (
+                                            <li key={ss.id}>
+                                              <Link
+                                                href={`/${locale}/categories/${cat.slug}/${sub.slug}/${ss.slug}`}
+                                                onClick={() => setDrawerOpen(false)}
+                                                className="block px-2 py-2 text-sm text-gray-500 hover:text-orange-600"
+                                              >
+                                                {getName(ss)}
+                                              </Link>
+                                            </li>
+                                          ))}
+                                        </motion.ul>
+                                      )}
+                                    </AnimatePresence>
+                                  </>
+                                ) : (
+                                  /* Sous-cat lien direct */
                                   <Link
+                                    href={`/${locale}/categories/${cat.slug}/${sub.slug}`}
                                     onClick={() => setDrawerOpen(false)}
-                                    href={`/${locale}/categories/${cat.slug}/${sub.slug}/${ss.slug}`}
-                                    className="block px-1 py-1 text-sm text-gray-600 hover:text-orange-600"
+                                    className="block px-2 py-2 text-sm text-gray-700 hover:text-orange-600"
                                   >
-                                    {getName(ss)}
+                                    {getName(sub)}
                                   </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          </details>
-                        </li>
-                      ))}
-                      </ul>
-                    </details>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </motion.ul>
+                      )}
+                    </AnimatePresence>
                   </li>
                 ))}
-                <li><Link onClick={() => setDrawerOpen(false)} href={`/${locale}/benefits`} className="block px-1 py-2 text-gray-800">{t('benefits')}</Link></li>
-                <li><Link onClick={() => setDrawerOpen(false)} href={`/${locale}/contact`} className="block px-1 py-2 text-gray-800">{t('contact')}</Link></li>
               </ul>
 
               {/* --- Bloc Profil / Panier / Langue --- */}

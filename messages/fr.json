@@ -118,7 +118,7 @@
         "address": "Addresse",
         "firstName": "Prénom",
         "lastName": "Nom",
-        "phone": "Téléphone",
+        "phone": "Téléphone / Gsm",
         "companyDetails": "Informations société",
         "company": "Nom de la société",
         "businessType": "Type d'activité",
@@ -160,6 +160,9 @@
       "empty": "Aucune demande trouvée.",
       "reviewDecision": "Revoir la décision",
       "searchPlaceholder": "Chercher une société",
+      "edit": "Modifier",
+      "save": "Enregistrer",
+      "cancel": "Annuler",
       "th": {
         "company": "Entreprise",
         "contact": "Contact",
@@ -177,7 +180,12 @@
         "created": "Date de création",
         "status": "Statut",
         "vat": "Numéro TVA",
-        "whatsapp": "Numéro Whatsapp"
+        "whatsapp": "Numéro Whatsapp",
+        "address_line1": "Adresse (ligne 1)",
+        "address_line2": "Adresse (ligne 2) (optionnel)",
+        "postcode": "Code postal",
+        "town":"Ville",
+        "county": "Région / Province"
       },
       "status": {
         "pending": "En attente",

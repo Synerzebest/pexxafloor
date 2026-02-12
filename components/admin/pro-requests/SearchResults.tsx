@@ -1,7 +1,7 @@
 'use client';
 
 import { Fragment, ReactNode } from "react";
-import type { AppRow } from "./ProRequestsTable";
+import type { AppRow } from "@/types/AppRowType";
 
 export default function SearchResults({
   results,

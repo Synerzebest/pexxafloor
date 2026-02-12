@@ -6,6 +6,7 @@ import { createBrowserClient } from '@supabase/ssr';
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
+import { supabase } from "@/lib/supabaseClient";
 
 type Props = { locale: string };
 
@@ -14,12 +15,6 @@ type BusinessType = typeof BUSINESS_TYPES[number];
 
 export default function ProSignupForm({ locale }: Props) {
   const t = useTranslations('ProSignup');
-
-  // NEW: client Supabase compatible Next.js 14+
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  );
 
   // States
   const [firstName, setFirstName] = useState('');
@@ -34,7 +29,6 @@ export default function ProSignupForm({ locale }: Props) {
   const [addr1, setAddr1]         = useState('');
   const [addr2, setAddr2]         = useState('');
   const [town, setTown]           = useState('');
-  const [county, setCounty]       = useState('');
   const [postcode, setPostcode]   = useState('');
   const [acceptedTerms, setAcceptedTerms] = useState(false);
 
@@ -98,9 +92,9 @@ export default function ProSignupForm({ locale }: Props) {
       address_line1: addr1,
       address_line2: addr2 || null,
       town,
-      county: county || null,
       postcode,
-      status: "PENDING"
+      status: "PENDING",
+      pro_signup_credit: true
     });
 
     setLoading(false);
@@ -193,6 +187,17 @@ export default function ProSignupForm({ locale }: Props) {
                     />
                   </div>
                 </div>
+                <div>
+                  <label className={`${labelBase} flex items-center gap-2`}>
+                    <FaWhatsapp className="text-green-500 text-sm" />
+                    WhatsApp
+                  </label>
+                  <input
+                    className={inputBase}
+                    value={whatsapp}
+                    onChange={e => setWhatsapp(e.target.value)}
+                  />
+                </div>
               </section>
     
               {/* RIGHT – Company */}
@@ -211,27 +216,13 @@ export default function ProSignupForm({ locale }: Props) {
                     />
                   </div>
     
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    <div>
-                      <label className={labelBase}>{t("vat")}</label>
-                      <input
-                        className={inputBase}
-                        value={vat}
-                        onChange={e => setVat(e.target.value)}
-                      />
-                    </div>
-    
-                    <div>
-                      <label className={`${labelBase} flex items-center gap-2`}>
-                        <FaWhatsapp className="text-green-500 text-sm" />
-                        WhatsApp
-                      </label>
-                      <input
-                        className={inputBase}
-                        value={whatsapp}
-                        onChange={e => setWhatsapp(e.target.value)}
-                      />
-                    </div>
+                  <div>
+                    <label className={labelBase}>{t("vat")}</label>
+                    <input
+                      className={inputBase}
+                      value={vat}
+                      onChange={e => setVat(e.target.value)}
+                    />
                   </div>
     
                   <div>
@@ -291,24 +282,13 @@ export default function ProSignupForm({ locale }: Props) {
                   />
                 </div>
     
-                <div className="grid grid-cols-2 gap-5">
-                  <div>
-                    <label className={labelBase}>{t("county")}</label>
-                    <input
-                      className={inputBase}
-                      value={county}
-                      onChange={e => setCounty(e.target.value)}
-                    />
-                  </div>
-    
-                  <div>
-                    <label className={labelBase}>{t("postcode")}</label>
-                    <input
-                      className={inputBase}
-                      value={postcode}
-                      onChange={e => setPostcode(e.target.value)}
-                    />
-                  </div>
+                <div>
+                  <label className={labelBase}>{t("postcode")}</label>
+                  <input
+                    className={inputBase}
+                    value={postcode}
+                    onChange={e => setPostcode(e.target.value)}
+                  />
                 </div>
               </div>
             </section>
@@ -374,8 +354,8 @@ export default function ProSignupForm({ locale }: Props) {
                     shadow-lg shadow-orange-600/25
                     hover:bg-orange-700 hover:shadow-xl
                     active:scale-[0.98]
-                    transition
-                    disabled:opacity-50
+                    transition mt-4
+                    disabled:opacity-50 cursor-pointer w-full
                   "
                 >
                   {loading ? t("sending") : t("cta")}

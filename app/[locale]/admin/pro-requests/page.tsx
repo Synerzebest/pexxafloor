@@ -1,42 +1,11 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
-import { createServerClient } from '@supabase/ssr';
-import ProRequestsTable from '@/components/admin/ProRequestsTable';
+import ProRequestsTable from '@/components/admin/pro-requests/ProRequestsTable';
 import { Navbar, Footer } from "@/components";
 import Link from "next/link";
+import { supabaseServer } from "@/lib/supabaseServer"
 
 export default async function ProRequestsAdminPage() {
-
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
-        },
-      },
-    }
-  );
-
-  const {
-    data: { user },
-    error: userErr
-  } = await supabase.auth.getUser();
-
   const locale = await getLocale();
-
-  if (userErr || !user) {
-    redirect(`/${locale}/login`);
-  }
 
   const columns = `
     id, user_id, created_at, status,
@@ -47,14 +16,14 @@ export default async function ProRequestsAdminPage() {
 
 
   // PENDING + IN_REVIEW
-  const { data: pending } = await supabase
+  const { data: pending } = await supabaseServer
     .from('pro_applications')
     .select(columns)
     .in('status', ['PENDING', 'IN_REVIEW'])
 
 
   // Historique récent
-  const { data: recent } = await supabase
+  const { data: recent } = await supabaseServer
     .from('pro_applications')
     .select(columns)
     .in('status', ['VERIFIED', 'REJECTED', 'SUSPENDED', 'REVISION'])
@@ -86,7 +55,6 @@ export default async function ProRequestsAdminPage() {
         <ProRequestsTable
           pending={pending ?? []}
           recent={recent ?? []}
-          locale={locale}
         />
       </div>
 

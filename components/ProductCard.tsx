@@ -9,7 +9,7 @@ type Props = {
   locale: "fr" | "nl" | "en";
   categorySlug: string;
   subcategorySlug: string;
-  subsubcategorySlug: string;
+  subsubcategorySlug?: string | null;
   isPro: boolean | null;
 };
 

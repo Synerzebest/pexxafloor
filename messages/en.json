@@ -160,6 +160,9 @@
       "empty": "No applications found.",
       "reviewDecision": "Review Decision",
       "searchPlaceholder": "Search a company",
+      "edit": "Edit",
+      "save": "Save",
+      "cancel": "Cancel",
       "th": {
         "company": "Company",
         "contact": "Contact",
@@ -177,7 +180,12 @@
         "created": "Created at",
         "status": "Status",
         "vat": "VAT Number",
-        "whatsapp": "Whatsapp Number"
+        "whatsapp": "Whatsapp number",
+        "address_line1": "Address (line 1)",
+        "address_line2": "Address (line 2) (optional)",
+        "postcode": "Post Code",
+        "town":"City",
+        "county": "County"
       },
       "status": {
         "pending": "Pending",

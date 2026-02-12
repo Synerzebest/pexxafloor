@@ -160,6 +160,9 @@
       "empty": "Geen aanvragen gevonden.",
       "reviewDecision": "Besluit Herzien",
       "searchPlaceholder": "Bedrijf opzoeken",
+      "edit": "Bewerken",
+      "save": "Redden", 
+      "cancel": "Annuleren",
       "th": {
         "company": "Bedrijf",
         "contact": "Contactpersoon",
@@ -177,7 +180,12 @@
         "created": "Aangemaakt op",
         "status": "Status",
         "vat": "BTW Number",
-        "whatsapp": "Whatsapp Nummer"
+        "whatsapp": "Whatsapp Nummer",
+        "address_line1": "Adres (regel 1)",
+        "address_line2": "Adres (regel 2) (optioneel)",
+        "postcode": "Postcode",
+        "town":"Stad",
+        "county": "Gemeente / Regio"
       },
       "status": {
         "pending": "In afwachting",

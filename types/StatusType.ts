@@ -1,0 +1,1 @@
+export type Status = 'PENDING' | 'IN_REVIEW' | 'VERIFIED' | 'REJECTED' | 'SUSPENDED' | 'REVISION';
