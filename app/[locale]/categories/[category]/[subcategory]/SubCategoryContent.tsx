@@ -22,7 +22,15 @@ export default function SubCategoryContent({
   category,
   locale,
 }: SubCategoryContentProps) {
-  const { isPro } = useUserProfile();
+  const { isPro, loading: loadingProfile } = useUserProfile();
+
+  if (loadingProfile) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-12 relative top-28">
+        <p className="text-gray-500">Chargement...</p>
+      </div>
+    );
+  }
   console.log("is pro", isPro)
 
   const getName = (obj: {

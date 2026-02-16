@@ -5,7 +5,9 @@ import Image from "next/image";
 import { Product } from "@/types/ProductType";
 
 type Props = {
-  product: Product;
+  product: Product & {
+    subsub?: { slug?: string | null } | null;
+  };
   locale: "fr" | "nl" | "en";
   categorySlug: string;
   subcategorySlug: string;
@@ -64,9 +66,11 @@ export default function ProductCard({
       maximumFractionDigits: 2,
   }).format(value);
 
-  const productUrl = subsubcategorySlug
-  ? `/${locale}/categories/${categorySlug}/${subcategorySlug}/${subsubcategorySlug}/${product.slug}`
-  : `/${locale}/categories/${categorySlug}/${subcategorySlug}/${product.slug}`;
+  const subsubSlug = product.subsub?.slug ?? null;
+
+  const productUrl = subsubSlug
+    ? `/${locale}/categories/${categorySlug}/${subcategorySlug}/${subsubSlug}/${product.slug}`
+    : `/${locale}/categories/${categorySlug}/${subcategorySlug}/${product.slug}`;
 
 
   return (

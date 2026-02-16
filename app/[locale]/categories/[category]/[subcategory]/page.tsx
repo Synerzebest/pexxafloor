@@ -14,7 +14,6 @@ export default async function SubcategoryPage({
   params: Promise<{ locale: string; category: string; subcategory: string }>;
 }) {
   const { category, subcategory } = await params;
-
   const locale = (await getLocale()) as SupportedLocale;
 
   const { data, error } = await supabase
@@ -26,7 +25,12 @@ export default async function SubcategoryPage({
       name_nl,
       name_en,
 
-      products:products (
+      category:category_id (
+        id,
+        discount
+      ),
+
+      products:products!products_subcategory_id_fkey (
         id,
         slug,
         name_fr,
@@ -34,17 +38,22 @@ export default async function SubcategoryPage({
         name_en,
         price,
         reference,
-        product_images!fk_product ( image_url )
+        subsub_id,
+        subsub:subsub_id ( slug ),
+        product_images!fk_product ( image_url ),
+        subcategory:subcategory_id (
+          category:category_id ( discount )
+        )
       ),
 
-      subsubcategories:subsubcategories (
+      subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
         id,
         slug,
         name_fr,
         name_nl,
         name_en,
 
-        products:products (
+        products:products!products_subsub_id_fkey (
           id,
           slug,
           name_fr,
@@ -52,28 +61,32 @@ export default async function SubcategoryPage({
           name_en,
           price,
           reference,
-          product_images!fk_product ( image_url )
+          subsub_id,
+          subsub:subsub_id ( slug ),
+          product_images!fk_product ( image_url ),
+          subcategory:subcategory_id (
+            category:category_id ( discount )
+          )
         )
       )
     `)
     .eq("slug", subcategory)
     .single();
 
-  if (error) {
+  if (error || !data) {
     console.error("Supabase error:", error);
+    return notFound();
   }
 
-  const subcat = data as SubCategory | null;
-  if (!subcat) return notFound();
+  const subcat = data as unknown as SubCategory;
 
-  const { data: categoryData } = await supabase
+  const { data: categoryData, error: catErr } = await supabase
     .from("categories")
     .select("id, slug, name_fr, name_nl, name_en")
     .eq("slug", category)
     .single();
 
-  const parentCategory = categoryData as Category | null;
-  if (!parentCategory) return notFound();
+  if (catErr || !categoryData) return notFound();
 
   return (
     <>
@@ -82,7 +95,7 @@ export default async function SubcategoryPage({
 
       <SubCategoryContent
         subcategory={subcat}
-        category={parentCategory}
+        category={categoryData as Category}
         locale={locale}
       />
 
