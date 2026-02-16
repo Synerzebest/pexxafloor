@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { createRouteHandlerClient } from "@supabase/auth-helpers-nextjs";
-import { cookies } from "next/headers";
+import { supabaseServer } from "@/lib/supabaseServer";
 import { Resend } from "resend";
 import { generateOrderEmailHtml } from "@/utils/EmailTemplate";
 
@@ -32,7 +31,7 @@ const translations = {
 
 export async function POST(req: Request) {
   try {
-    const supabase = createRouteHandlerClient({ cookies });
+    const supabase = supabaseServer;
     const body = await req.json();
 
     const { order_id } = body;

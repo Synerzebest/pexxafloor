@@ -65,7 +65,7 @@ export default function StorekeeperOrderPage() {
       return toast.warning("Certaines quantités ne correspondent pas");
 
     const { error } = await updateOrder({
-      status: "validated",
+      status: "packed",
       internal_note: internalNote,
       internal_comment: internalComment,
     });
