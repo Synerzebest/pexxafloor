@@ -20,6 +20,26 @@ export default async function SubSubCategoryPage({
   const { category, subcategory, subsubcategory } = await params;
   const locale = (await getLocale()) as SupportedLocale;
 
+
+  const { data: catData, error: catError } = await supabase
+    .from("categories")
+    .select("id, name_fr, name_nl, name_en")
+    .eq("slug", category)
+    .single();
+
+  if (catError || !catData) return notFound();
+
+
+  const { data: subcatData, error: subcatError } = await supabase
+    .from("subcategories")
+    .select("id, name_fr, name_nl, name_en")
+    .eq("slug", subcategory)
+    .eq("category_id", catData.id)   // 🔥 sécurisation
+    .single();
+
+  if (subcatError || !subcatData) return notFound();
+
+
   const { data: subsubData, error: subsubError } = await supabase
     .from("subsubcategories")
     .select(`
@@ -37,6 +57,8 @@ export default async function SubSubCategoryPage({
         name_en,
         price,
         reference,
+        subsub_id,
+        subsub:subsub_id ( slug ),
         product_images!fk_product (image_url),
         subcategory:subcategory_id (
           category:category_id (
@@ -46,35 +68,11 @@ export default async function SubSubCategoryPage({
       )
     `)
     .eq("slug", subsubcategory)
+    .eq("subcategory_id", subcatData.id)
     .single();
-
 
   if (subsubError || !subsubData) {
     console.error(subsubError);
-    return notFound();
-  }
-
-  const subSubCategoryData = subsubData as unknown as SubSubCategory;
-
-  const { data: subcatData, error: subcatError } = await supabase
-    .from("subcategories")
-    .select("name_fr, name_nl, name_en")
-    .eq("slug", subcategory)
-    .single();
-
-  if (subcatError || !subcatData) {
-    console.error(subcatError);
-    return notFound();
-  }
-
-  const { data: catData, error: catError } = await supabase
-    .from("categories")
-    .select("name_fr, name_nl, name_en")
-    .eq("slug", category)
-    .single();
-
-  if (catError || !catData) {
-    console.error(catError);
     return notFound();
   }
 
@@ -84,7 +82,7 @@ export default async function SubSubCategoryPage({
       <ProBadge />
 
       <SubSubCategoryContent
-        subsubcategory={subSubCategoryData}
+        subsubcategory={subsubData as unknown as SubSubCategory}
         locale={locale}
         categorySlug={category}
         subcategorySlug={subcategory}

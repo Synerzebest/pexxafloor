@@ -47,6 +47,10 @@ export default async function CategoryPage({
           name_en,
           price,
           reference,
+          subsub_id,
+          subsub:subsub_id (
+            slug
+          ),
           product_images!fk_product ( image_url ),
           subcategory:subcategory_id (
             category:category_id (
@@ -54,12 +58,12 @@ export default async function CategoryPage({
             )
           )
         )
-            
       )
     )
   `)
   .eq("slug", category)
   .single();
+
 
 
   if (error || !data) return notFound();
