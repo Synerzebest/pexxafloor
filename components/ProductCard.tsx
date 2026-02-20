@@ -70,7 +70,7 @@ export default function ProductCard({
 
   const productUrl = subsubSlug
     ? `/${locale}/categories/${categorySlug}/${subcategorySlug}/${subsubSlug}/${product.slug}`
-    : `/${locale}/categories/${categorySlug}/${subcategorySlug}/${product.slug}`;
+    : `/${locale}/categories/${categorySlug}/${subcategorySlug}/default/${product.slug}`;
 
 
   return (

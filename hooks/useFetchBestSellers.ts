@@ -55,13 +55,13 @@ export function useFetchBestSellers(limit = 6) {
               )
             ),
 
-            subsubcategory:subsubcategories!left (
+            subsub:subsubcategories!products_subsub_id_fkey (
               id,
               slug,
               name_fr,
               name_nl,
               name_en
-            )
+            )            
           `)
           .eq("is_best_seller", true)
           .order("created_at", { ascending: false })

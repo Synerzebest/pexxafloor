@@ -105,6 +105,32 @@ export default async function ProductPage({
   if (!data || error) return notFound();
   const prod = data as unknown as Product;
 
+  // 🔥 Vérification cohérence URL
+
+// Vérifier catégorie
+if (prod.subcategory.category.slug !== category) {
+    return notFound();
+  }
+  
+  // Vérifier sous-catégorie
+  if (prod.subcategory.slug !== subcategory) {
+    return notFound();
+  }
+  
+  // Vérifier sous-sous-catégorie
+  if (subsubcategory === "default") {
+    // Si URL = default, le produit ne doit PAS avoir de subsubcategory en DB
+    if (prod.subsubcategory) {
+      return notFound();
+    }
+  } else {
+    // Si URL != default, le produit DOIT avoir une subsubcategory correspondante
+    if (!prod.subsubcategory || prod.subsubcategory.slug !== subsubcategory) {
+      return notFound();
+    }
+  }
+  
+
   // CATEGORIES
   const categoryData = prod.subcategory.category;
   const subcategoryData = prod.subcategory;

@@ -8,6 +8,7 @@ import { SubCategory } from "@/types/SubCategoryType";
 import { Product } from "@/types/ProductType";
 import { Category } from "@/types/CategoryType";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import ProductCardSkeleton from "@/components/ui/Skeleton";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -23,15 +24,6 @@ export default function SubCategoryContent({
   locale,
 }: SubCategoryContentProps) {
   const { isPro, loading: loadingProfile } = useUserProfile();
-
-  if (loadingProfile) {
-    return (
-      <div className="max-w-6xl mx-auto px-4 py-12 relative top-28">
-        <p className="text-gray-500">Chargement...</p>
-      </div>
-    );
-  }
-  console.log("is pro", isPro)
 
   const getName = (obj: {
     name_fr: string;
@@ -117,17 +109,21 @@ export default function SubCategoryContent({
           </h2>
 
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {subcategory.products.map((prod: Product) => (
-              <ProductCard
-                key={prod.id}
-                product={prod}
-                locale={locale}
-                categorySlug={category.slug}
-                subcategorySlug={subcategory.slug}
-                subsubcategorySlug={null}
-                isPro={isPro}
-              />
-            ))}
+            {loadingProfile
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <ProductCardSkeleton key={i} />
+                ))
+              : subcategory.products.map((prod: Product) => (
+                  <ProductCard
+                    key={prod.id}
+                    product={prod}
+                    locale={locale}
+                    categorySlug={category.slug}
+                    subcategorySlug={subcategory.slug}
+                    subsubcategorySlug={null}
+                    isPro={isPro}
+                  />
+                ))}
           </ul>
         </motion.section>
       )}
@@ -155,7 +151,13 @@ export default function SubCategoryContent({
             </Link>
           </div>
 
-          {ssc.products.length > 0 ? (
+          {loadingProfile ? (
+            <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </ul>
+          ) : ssc.products.length > 0 ? (
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {ssc.products.map((prod: Product) => (
                 <ProductCard
