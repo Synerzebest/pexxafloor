@@ -186,6 +186,13 @@ export default function CategorySection({
         dataSource={categories}
         loading={loading}
         columns={[
+          { title: "Nom", dataIndex: "name_fr" },          
+          { title: "Ordre", dataIndex: "order" },
+          { 
+            title: "Remise", 
+            dataIndex: "discount",
+            render: d => d ? `${d}%` : "-"
+          }, 
           {
             title: "Image",
             render: (_, record) =>
@@ -203,14 +210,7 @@ export default function CategorySection({
               ) : (
                 "-"
               ),
-          },          
-          { title: "FR", dataIndex: "name_fr" },
-          { title: "Ordre", dataIndex: "order" },
-          { 
-            title: "Remise", 
-            dataIndex: "discount",
-            render: d => d ? `${d}%` : "-"
-          },          
+          },         
           {
             title: "Actions",
             render: (_, record) => (

@@ -115,8 +115,9 @@ export default function SubSubcategorySection({
 
   // COLONNES
   const columns: ColumnsType<SubSubCategory> = [
+    { title: "Nom", dataIndex: "name_fr" },
     {
-      title: "Sous-catégorie",
+      title: "Sous-catégorie parente",
       dataIndex: "subcategory_id",
       render: (id: string) => {
         const sub = subcategories.find((s) => s.id === id);
@@ -127,7 +128,6 @@ export default function SubSubcategorySection({
         return sub && cat ? `${cat.name_fr} > ${sub.name_fr}` : sub?.name_fr || id;
       },
     },
-    { title: "FR", dataIndex: "name_fr" },
     { title: "NL", dataIndex: "name_nl" },
     { title: "EN", dataIndex: "name_en" },
     { title: "Ordre", dataIndex: "order" },

@@ -72,6 +72,24 @@ export default function ProductSection({
     dataIndex?: keyof Product;
     render?: (_: unknown, record: Product) => React.ReactNode;
   }[] = [
+    { title: "Nom", dataIndex: "name_fr" },
+    {
+      title: "Chemin catalogue",
+      render: (_: unknown, record: Product) => {
+        const category = record.subcategory.category;
+        const subcategory = record.subcategory;
+        const subsub = record.subsubcategory;
+    
+        return [
+          category.name_fr,
+          subcategory.name_fr,
+          subsub?.name_fr,
+        ]
+          .filter(Boolean)
+          .join(" > ");
+      },
+    },        
+    { title: "Prix Brut (€)", dataIndex: "price" },
     {
       title: "Image",
       dataIndex: "product_images",
@@ -89,25 +107,7 @@ export default function ProductSection({
           />
         ) : null,
     },
-    {
-      title: "Catégories",
-      render: (_: unknown, record: Product) => {
-        const category = record.subcategory.category;
-        const subcategory = record.subcategory;
-        const subsub = record.subsubcategory;
-    
-        return [
-          category.name_fr,
-          subcategory.name_fr,
-          subsub?.name_fr,
-        ]
-          .filter(Boolean)
-          .join(" > ");
-      },
-    },        
     { title: "Réf.", dataIndex: "reference" },
-    { title: "FR", dataIndex: "name_fr" },
-    { title: "Prix Brut (€)", dataIndex: "price" },
     {
       title: "Actions",
       render: (_: unknown, record: Product) => (

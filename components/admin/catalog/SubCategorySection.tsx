@@ -142,15 +142,15 @@ export default function SubcategorySection({
         dataSource={subcategories}
         loading={loading}
         columns={[
+          { title: "Nom", dataIndex: "name_fr" },
           {
-            title: "Catégorie",
+            title: "Catégorie parente",
             dataIndex: "category_id",
             render: (id: string) => {
               const cat = categories.find((c) => c.id === id);
               return cat ? cat.name_fr : id;
             },
           },
-          { title: "FR", dataIndex: "name_fr" },
           { title: "NL", dataIndex: "name_nl" },
           { title: "EN", dataIndex: "name_en" },
           { title: "Ordre", dataIndex: "order" },
