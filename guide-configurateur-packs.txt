@@ -1,0 +1,688 @@
+GUIDE CLIENT - CONFIGURATEUR DE PACKS
+=====================================
+
+Objectif
+--------
+Le configurateur de packs permet de modifier le contenu des packs depuis la page admin, sans toucher au code.
+
+Chaque pack est compose de lignes. Une ligne correspond a un produit du catalogue ajoute au pack avec une regle :
+
+- produit calcule automatiquement ;
+- produit inclus ou offert ;
+- option que le client peut selectionner.
+
+Les produits utilises dans les packs sont toujours des produits du catalogue. Il faut donc d'abord creer le produit dans le catalogue avant de pouvoir l'ajouter a un pack.
+
+
+1. Acceder a la configuration des packs
+--------------------------------------
+1. Aller dans Admin > Catalogue.
+2. Ouvrir l'onglet Packs.
+3. Choisir un pack existant.
+4. Cliquer sur Modifier pack.
+
+Dans la fenetre Modifier pack, on peut :
+
+- modifier les informations principales du pack : nom, slug, ordre, actif/inactif ;
+- voir les lignes du pack ;
+- ajouter une ligne ;
+- modifier une ligne ;
+- supprimer une ligne.
+
+Une ligne = un produit + une regle de calcul.
+
+
+2. Modifier les informations generales d'un pack
+------------------------------------------------
+Champs principaux :
+
+Slug
+  Identifiant technique utilise dans l'URL.
+  Exemples :
+  - treillis
+  - agrafe
+  - natte
+
+Nom FR / NL / EN
+  Noms affichables selon la langue.
+
+Ordre
+  Position du pack dans l'admin ou dans les listes.
+
+Actif
+  Si le pack est inactif, il ne doit plus etre visible ou calculable cote client.
+
+
+3. Ajouter ou modifier une ligne de pack
+----------------------------------------
+Dans Modifier pack > Lignes du pack :
+
+1. Cliquer sur Ajouter une ligne ou Modifier sur une ligne existante.
+2. Choisir le produit du catalogue.
+3. Choisir le role dans le pack.
+4. Choisir la methode de calcul.
+5. Ajouter les conditions si necessaire.
+6. Sauvegarder.
+
+
+4. Les roles disponibles
+------------------------
+
+4.1 Produit calcule
+-------------------
+Le produit est ajoute automatiquement selon la surface, le nombre de circuits, le type de tuyau, le pas de pose, etc.
+
+Exemples :
+- tuyaux ;
+- collecteurs ;
+- agrafes ;
+- treillis ;
+- plaques ;
+- bande peripherique ;
+- raccords.
+
+
+4.2 Inclus / offert
+-------------------
+Le produit est toujours ajoute au pack.
+
+Exemples :
+- accessoire offert ;
+- petit consommable inclus ;
+- service inclus.
+
+Important :
+Un produit inclus est ajoute automatiquement. Le client ne doit pas le selectionner.
+
+
+4.3 Option client
+-----------------
+Le produit apparait comme option que le client peut cocher.
+
+Exemples :
+- calepinage ;
+- accessoire supplementaire ;
+- outil optionnel ;
+- produit premium non obligatoire.
+
+
+5. Les methodes de calcul
+-------------------------
+
+5.1 Quantite fixe
+-----------------
+Utilisation :
+Ajouter toujours la meme quantite.
+
+Exemples :
+- toujours 1 unite ;
+- toujours 2 accessoires ;
+- toujours 1 kit de base.
+
+Champs a remplir :
+- Methode de calcul : Quantite fixe
+- Valeur ou capacite : quantite voulue
+- Multiplicateur : 1
+
+Exemple :
+Produit : Kit de demarrage
+Valeur ou capacite : 1
+Resultat : 1 kit dans le pack.
+
+
+5.2 Selon la surface
+--------------------
+Utilisation :
+Calculer une quantite selon la surface en m2.
+
+Formule :
+Quantite = surface / valeur
+
+Le resultat est generalement arrondi au-dessus.
+
+Exemples :
+- plaques couvrant 10 m2 par piece ;
+- treillis couvrant 8 m2 par piece ;
+- isolant couvrant 12 m2 par paquet.
+
+Champs a remplir :
+- Methode de calcul : Selon la surface
+- Valeur ou capacite : surface couverte par 1 unite
+- Multiplicateur : 1, ou 1.1 si on veut ajouter 10% de marge
+
+Exemple :
+Surface client : 85 m2
+Produit : plaque couvrant 10 m2
+Valeur ou capacite : 10
+Multiplicateur : 1
+Resultat : ceil(85 / 10) = 9 plaques
+
+Exemple avec marge :
+Surface client : 85 m2
+Produit : treillis couvrant 10 m2
+Valeur ou capacite : 10
+Multiplicateur : 1.1
+Resultat : ceil((85 x 1.1) / 10) = 10 unites
+
+
+5.3 Selon la longueur de tuyau
+------------------------------
+Utilisation :
+Calculer une quantite selon la longueur totale de tuyau calculee.
+
+Longueur de tuyau calculee :
+tuyau = surface / pas_de_pose x 100
+
+Exemple :
+Surface : 100 m2
+Pas de pose : 20 cm
+Longueur tuyau : 100 / 20 x 100 = 500 m
+
+Cette methode est utile pour des produits proportionnels a la longueur de tuyau.
+
+Exemples :
+- clips ;
+- rails ;
+- accessoires au metre ;
+- produit lie a la longueur totale.
+
+Champs a remplir :
+- Methode de calcul : Selon la longueur de tuyau
+- Valeur ou capacite : longueur couverte par 1 unite
+- Multiplicateur : selon le besoin
+
+Exemple :
+Longueur tuyau : 500 m
+Produit : 1 paquet pour 100 m
+Valeur ou capacite : 100
+Resultat : ceil(500 / 100) = 5 paquets
+
+
+5.4 Selon le nombre de circuits
+-------------------------------
+Utilisation :
+Calculer une quantite selon le nombre de circuits.
+
+Nombre de circuits calcule :
+circuits = ceil(longueur_tuyau / 100)
+
+Exemple :
+Longueur tuyau : 500 m
+circuits = ceil(500 / 100) = 5 circuits
+
+Exemples :
+- raccords par circuit ;
+- tetes ;
+- sorties collecteur ;
+- accessoires par boucle.
+
+Champs a remplir :
+- Methode de calcul : Selon le nombre de circuits
+- Multiplicateur : nombre d'unites par circuit
+
+Exemple :
+Produit : raccord
+Multiplicateur : 2
+Nombre de circuits : 5
+Resultat : 10 raccords
+
+
+5.5 Selon le perimetre estime
+-----------------------------
+Utilisation :
+Calculer une quantite selon un perimetre estime.
+
+Le systeme estime le perimetre moyen a partir de la surface.
+
+Exemples :
+- bande peripherique ;
+- isolant peripherique ;
+- accessoires autour de la piece.
+
+Champs a remplir :
+- Methode de calcul : Selon le perimetre estime
+- Valeur ou capacite : longueur couverte par 1 unite
+
+Exemple :
+Perimetre estime : 75 m
+Produit : rouleau de bande de 25 m
+Valeur ou capacite : 25
+Resultat : ceil(75 / 25) = 3 rouleaux
+
+
+5.6 Choisir la bonne capacite
+-----------------------------
+Utilisation :
+Choisir un produit parmi plusieurs produits alternatifs selon une capacite calculee.
+
+Exemple typique :
+Choisir le bon collecteur selon le nombre de circuits.
+
+Pour que cela fonctionne, tous les produits alternatifs doivent avoir la meme Famille de choix.
+
+Exemple :
+
+Produit                  Famille de choix    Valeur ou capacite
+Collecteur 2 circuits    collecteur          2
+Collecteur 3 circuits    collecteur          3
+Collecteur 4 circuits    collecteur          4
+Collecteur 5 circuits    collecteur          5
+Collecteur 6 circuits    collecteur          6
+
+Si le calcul donne 5 circuits :
+=> le systeme prend Collecteur 5 circuits.
+
+Si le calcul donne 4 circuits mais que seuls 3 et 5 existent :
+=> le systeme prend Collecteur 5 circuits, car c'est la premiere capacite suffisante.
+
+Champs a remplir pour chaque ligne :
+- Role : Produit calcule
+- Methode de calcul : Choisir la bonne capacite
+- Famille de choix : collecteur
+- Valeur ou capacite : nombre de circuits supportes
+
+Tres important :
+La Famille de choix doit etre exactement identique pour toutes les alternatives.
+
+Exemples de familles :
+- collecteur
+- armoire
+- regulation
+- module
+
+
+5.7 Optimiser les rouleaux
+--------------------------
+Utilisation :
+Choisir la meilleure combinaison de rouleaux pour couvrir la longueur de tuyau calculee.
+
+Exemple :
+Vous avez :
+- rouleau de 240 m ;
+- rouleau de 600 m.
+
+Il faut ajouter les deux produits comme lignes separees, avec la meme Famille de choix.
+
+Produit          Methode              Famille de choix    Valeur ou capacite
+Tuyau 240 m      Optimiser rouleaux    tuyaux-pert         240
+Tuyau 600 m      Optimiser rouleaux    tuyaux-pert         600
+
+Le systeme teste les combinaisons et choisit :
+1. la combinaison avec le moins de metres en trop ;
+2. si egalite, la moins chere ;
+3. si egalite, celle avec le moins de rouleaux.
+
+Exemples :
+Besoin 500 m :
+=> 1 x 600 m
+
+Besoin 480 m :
+=> 2 x 240 m
+
+Besoin 700 m :
+=> 3 x 240 m, car 720 m est plus proche que 840 m
+
+Besoin 1200 m :
+=> 2 x 600 m
+
+Champs a remplir :
+- Role : Produit calcule
+- Methode de calcul : Optimiser les rouleaux
+- Famille de choix : par exemple tuyaux-pert
+- Valeur ou capacite : longueur du rouleau en metres
+- Multiplicateur : 1
+
+Si vous avez plusieurs types de tuyaux :
+
+Pour les tuyaux PERT :
+Famille de choix : tuyaux-pert
+Condition : Type de tuyau = PERT
+
+Pour les tuyaux PERT-AL-PERT :
+Famille de choix : tuyaux-pert-al-pert
+Condition : Type de tuyau = PERT-AL-PERT
+
+Cela evite que le systeme melange des rouleaux de types differents.
+
+
+6. Les conditions
+-----------------
+Les conditions servent a dire :
+"Ce produit ne doit etre utilise que dans certains cas."
+
+Si aucune condition n'est remplie, le produit est valable tout le temps.
+
+Conditions disponibles :
+
+Type de tuyau
+  - PERT
+  - PERT-AL-PERT
+
+Hauteur d'agrafe
+  - 40 mm
+  - 60 mm
+
+Isolation
+  - 0 mm
+  - 15 mm
+  - 30 mm
+
+Pas de pose
+  - 10 cm
+  - 15 cm
+  - 20 cm
+
+Type de treillis
+  - 10x10
+  - 15x15
+
+Exemple :
+Un produit ne doit apparaitre que pour le tuyau PERT :
+Condition : Type de tuyau = PERT
+
+Exemple :
+Un produit ne doit apparaitre que pour les agrafes 40 mm :
+Condition : Hauteur d'agrafe = 40 mm
+
+Exemple :
+Un rouleau PERT 600 m :
+Condition : Type de tuyau = PERT
+
+Exemple :
+Un rouleau PERT-AL-PERT 600 m :
+Condition : Type de tuyau = PERT-AL-PERT
+
+
+7. Les familles de choix
+------------------------
+La Famille de choix est tres importante pour les methodes :
+
+- Choisir la bonne capacite
+- Optimiser les rouleaux
+
+Elle permet de dire :
+"Ces produits font partie du meme choix."
+
+Exemple collecteurs :
+Tous les collecteurs doivent avoir :
+Famille de choix : collecteur
+
+Exemple tuyaux PERT :
+Tous les rouleaux PERT doivent avoir :
+Famille de choix : tuyaux-pert
+
+Exemple tuyaux PERT-AL-PERT :
+Tous les rouleaux PERT-AL-PERT doivent avoir :
+Famille de choix : tuyaux-pert-al-pert
+
+Attention :
+"collecteur" et "collecteurs" sont deux familles differentes.
+"tuyaux-pert" et "tuyau-pert" sont deux familles differentes.
+
+Il faut donc garder exactement la meme orthographe.
+
+
+8. Exemples complets
+--------------------
+
+8.1 Ajouter des collecteurs selon le nombre de circuits
+------------------------------------------------------
+Objectif :
+Si le pack calcule 5 circuits, il faut un collecteur 5 circuits.
+
+Lignes a creer :
+
+Produit : Collecteur 2 circuits
+Role : Produit calcule
+Methode : Choisir la bonne capacite
+Famille de choix : collecteur
+Valeur ou capacite : 2
+
+Produit : Collecteur 3 circuits
+Role : Produit calcule
+Methode : Choisir la bonne capacite
+Famille de choix : collecteur
+Valeur ou capacite : 3
+
+Produit : Collecteur 4 circuits
+Role : Produit calcule
+Methode : Choisir la bonne capacite
+Famille de choix : collecteur
+Valeur ou capacite : 4
+
+Produit : Collecteur 5 circuits
+Role : Produit calcule
+Methode : Choisir la bonne capacite
+Famille de choix : collecteur
+Valeur ou capacite : 5
+
+Et ainsi de suite.
+
+
+8.2 Ajouter des tuyaux 240 m et 600 m
+-------------------------------------
+Objectif :
+Choisir automatiquement les meilleurs rouleaux selon la longueur calculee.
+
+Lignes a creer :
+
+Produit : Tuyau PERT 240 m
+Role : Produit calcule
+Methode : Optimiser les rouleaux
+Famille de choix : tuyaux-pert
+Valeur ou capacite : 240
+Condition : Type de tuyau = PERT
+
+Produit : Tuyau PERT 600 m
+Role : Produit calcule
+Methode : Optimiser les rouleaux
+Famille de choix : tuyaux-pert
+Valeur ou capacite : 600
+Condition : Type de tuyau = PERT
+
+Si vous avez aussi du PERT-AL-PERT :
+
+Produit : Tuyau PERT-AL-PERT 240 m
+Role : Produit calcule
+Methode : Optimiser les rouleaux
+Famille de choix : tuyaux-pert-al-pert
+Valeur ou capacite : 240
+Condition : Type de tuyau = PERT-AL-PERT
+
+Produit : Tuyau PERT-AL-PERT 600 m
+Role : Produit calcule
+Methode : Optimiser les rouleaux
+Famille de choix : tuyaux-pert-al-pert
+Valeur ou capacite : 600
+Condition : Type de tuyau = PERT-AL-PERT
+
+
+8.3 Ajouter de la bande peripherique
+------------------------------------
+Objectif :
+Calculer automatiquement le nombre de rouleaux de bande peripherique.
+
+Exemple :
+Un rouleau couvre 25 m.
+
+Produit : Bande peripherique 25 m
+Role : Produit calcule
+Methode : Selon le perimetre estime
+Valeur ou capacite : 25
+Multiplicateur : 1
+
+
+8.4 Ajouter des raccords par circuit
+------------------------------------
+Objectif :
+Ajouter 2 raccords par circuit.
+
+Produit : Raccord
+Role : Produit calcule
+Methode : Selon le nombre de circuits
+Valeur ou capacite : peut rester vide ou 1
+Multiplicateur : 2
+
+Si le pack calcule 5 circuits :
+=> 10 raccords
+
+
+8.5 Ajouter une option client
+-----------------------------
+Objectif :
+Permettre au client de cocher une option.
+
+Produit : Calepinage
+Role : Option client
+Methode : Option manuelle
+Valeur ou capacite : 1
+Multiplicateur : 1
+
+Le client verra l'option et pourra l'ajouter au pack.
+
+
+9. Bonnes pratiques
+-------------------
+
+1. Toujours creer le produit dans le catalogue avant de l'ajouter a un pack.
+
+2. Utiliser des familles de choix simples et constantes.
+   Exemples :
+   - collecteur
+   - tuyaux-pert
+   - tuyaux-pert-al-pert
+   - armoire
+
+3. Ne pas melanger des produits differents dans une meme famille.
+   Exemple a eviter :
+   Famille : accessoires
+   avec collecteurs, tuyaux et raccords melanges.
+
+4. Pour les alternatives, utiliser la meme famille.
+   Exemple :
+   Tous les collecteurs : collecteur
+
+5. Pour les tuyaux de types differents, utiliser des familles differentes et des conditions.
+
+6. Tester chaque pack avec plusieurs surfaces.
+   Exemples :
+   - 50 m2
+   - 85 m2
+   - 100 m2
+   - 150 m2
+
+7. Verifier le resultat dans la page pack cote client.
+
+8. Si une quantite semble etrange, verifier :
+   - la methode de calcul ;
+   - la valeur ou capacite ;
+   - la famille de choix ;
+   - les conditions ;
+   - le multiplicateur.
+
+
+10. Que faire si le resultat n'est pas celui attendu ?
+-----------------------------------------------------
+
+Cas : le mauvais produit est choisi
+Verifier :
+- la Famille de choix ;
+- la Valeur ou capacite ;
+- les conditions.
+
+Cas : plusieurs produits alternatifs sont ajoutes au lieu d'un seul
+Verifier :
+- ils doivent avoir exactement la meme Famille de choix ;
+- ils doivent utiliser la meme methode : Choisir la bonne capacite ou Optimiser les rouleaux.
+
+Cas : aucun produit n'apparait
+Verifier :
+- le produit est actif dans le catalogue ;
+- la ligne du pack est active ;
+- les conditions ne bloquent pas le produit ;
+- le produit est bien dans le bon pack.
+
+Cas : la quantite est trop grande
+Verifier :
+- Valeur ou capacite ;
+- Multiplicateur ;
+- Arrondi ;
+- methode de calcul.
+
+Cas : les rouleaux ne sont pas optimises
+Verifier :
+- tous les rouleaux ont la meme Famille de choix ;
+- chaque rouleau a sa longueur en Valeur ou capacite ;
+- les rouleaux de types differents ont des conditions distinctes.
+
+
+11. Resume rapide
+-----------------
+
+Produit toujours present :
+=> Role : Produit calcule ou Inclus / offert
+=> Methode : Quantite fixe
+
+Produit selon surface :
+=> Methode : Selon la surface
+=> Valeur : surface couverte par unite
+
+Produit selon circuits :
+=> Methode : Selon le nombre de circuits
+=> Multiplicateur : quantite par circuit
+
+Collecteur selon circuits :
+=> Methode : Choisir la bonne capacite
+=> Meme Famille de choix pour tous les collecteurs
+=> Valeur : nombre de circuits supportes
+
+Tuyaux 240 m / 600 m :
+=> Methode : Optimiser les rouleaux
+=> Meme Famille de choix pour les rouleaux du meme type
+=> Valeur : longueur du rouleau
+=> Condition : type de tuyau
+
+Option cochable :
+=> Role : Option client
+=> Methode : Option manuelle
+
+
+12. Exemple de configuration recommandee pour les tuyaux
+--------------------------------------------------------
+
+PERT :
+
+Ligne 1
+Produit : Tuyau PERT 240 m
+Role : Produit calcule
+Methode : Optimiser les rouleaux
+Famille : tuyaux-pert
+Valeur : 240
+Condition : Type de tuyau = PERT
+
+Ligne 2
+Produit : Tuyau PERT 600 m
+Role : Produit calcule
+Methode : Optimiser les rouleaux
+Famille : tuyaux-pert
+Valeur : 600
+Condition : Type de tuyau = PERT
+
+PERT-AL-PERT :
+
+Ligne 3
+Produit : Tuyau PERT-AL-PERT 240 m
+Role : Produit calcule
+Methode : Optimiser les rouleaux
+Famille : tuyaux-pert-al-pert
+Valeur : 240
+Condition : Type de tuyau = PERT-AL-PERT
+
+Ligne 4
+Produit : Tuyau PERT-AL-PERT 600 m
+Role : Produit calcule
+Methode : Optimiser les rouleaux
+Famille : tuyaux-pert-al-pert
+Valeur : 600
+Condition : Type de tuyau = PERT-AL-PERT
+

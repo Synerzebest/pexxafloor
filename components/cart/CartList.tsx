@@ -8,6 +8,7 @@ export default function CartList({
   updateQuantity,
   removeFromCart,
   t,
+  isPro
 }: any) {
   return (
     <ul className="space-y-5">

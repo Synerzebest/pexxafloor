@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import AnimatedDropdown from "@/components/ui/AnimatedDropdown";
 import { getPackImage } from "@/utils/getPackImage";
 import Link from "next/link";
+import { Edit3, Trash2 } from "lucide-react";
+import { useLocale } from "next-intl";
 
 export default function CartItem({
   item,
@@ -13,20 +15,28 @@ export default function CartItem({
   removeFromCart,
   t,
 }: any) {
+  const locale = useLocale();
   const isProduct = item.type === "product";
 
-  const price = isProduct
-    ? (item.product?.price ?? 0)
+  const unitPrice = isProduct
+    ? (item.unit_price ?? item.product?.price ?? 0)
     : item.total;
-
+  
+  const basePrice = isProduct
+    ? (item.base_price ?? item.product?.price ?? 0)
+    : item.total;
+  
+  const hasDiscount = isProduct && basePrice > unitPrice;
+  
   const key = isProduct ? item.product_id : item.id;
+  const packProducts = !isProduct && Array.isArray(item.products) ? item.products : [];
 
   return (
     <motion.li
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
-      className="bg-white shadow-md rounded-xl p-4 sm:p-5 border border-gray-100"
+      className="bg-white shadow-sm rounded-xl p-4 sm:p-5 border border-gray-100 hover:border-orange-100 transition-colors"
     >
       {/* ---- CONTAINER ---- */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -51,9 +61,22 @@ export default function CartItem({
             </p>
 
             {!isProduct && (
-              <p className="text-xs sm:text-sm text-gray-500 mt-1">
-                {item.surface} m² · {item.tuyauType}
-              </p>
+              <div className="mt-2 flex flex-wrap gap-2 text-xs text-gray-600">
+                <span className="rounded-md bg-orange-50 px-2 py-1 text-orange-700">
+                  {item.surface} m²
+                </span>
+                <span className="rounded-md bg-gray-50 px-2 py-1">
+                  Pas {item.pasDePose} cm
+                </span>
+                <span className="rounded-md bg-gray-50 px-2 py-1">
+                  {item.tuyauType}
+                </span>
+                {item.calepinage && (
+                  <span className="rounded-md bg-gray-50 px-2 py-1">
+                    Calepinage
+                  </span>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -71,18 +94,27 @@ export default function CartItem({
                 updateQuantity(key, val ? Number(val) : 1)
               }
             />
+            <div className="text-right min-w-[100px]">
+              {/* Prix final */}
+              <div className="font-semibold text-lg text-orange-600">
+                {(unitPrice * item.quantity).toFixed(2)} €
+              </div>
 
-            <span className="font-semibold text-right min-w-[80px]">
-              {(price * item.quantity).toFixed(2)} €
-            </span>
+              {/* Prix de base barré */}
+              {hasDiscount && (
+                <div className="text-xs text-gray-400 line-through">
+                  {(basePrice * item.quantity).toFixed(2)} €
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Remove */}
           <Button
-            type="link"
             danger
             size="small"
-            className="self-start sm:self-auto px-0"
+            icon={<Trash2 className="h-4 w-4" />}
+            className="self-start sm:self-auto"
             onClick={() => removeFromCart(key)}
           >
             {t("remove")}
@@ -91,23 +123,50 @@ export default function CartItem({
       </div>
 
       {/* ---- PACK DETAILS ---- */}
-      {!isProduct && item.products && (
-        <div className="mt-4">
+      {!isProduct && packProducts.length > 0 && (
+        <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50/60 px-4 py-3">
           <AnimatedDropdown
-            title={`${item.products.length} ${t("included")}`}
+            title={`${packProducts.length} ${t("included")}`}
           >
-            <ul className="mt-2 space-y-1 list-disc ml-4 text-sm">
-              {item.products.map((p: any) => (
-                <li key={p.id}>
-                  {p.description} — {p.unit_price.toFixed(2)} €
-                </li>
+            <div className="mt-3 space-y-2">
+              {packProducts.map((p: any) => (
+                <div
+                  key={p.id}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-gray-100 bg-white p-2"
+                >
+                  <div className="flex min-w-0 items-center gap-3">
+                    <img
+                      src={p.image || "/images/box.png"}
+                      alt={p.description}
+                      className="h-12 w-12 rounded-md border border-gray-200 bg-white object-cover"
+                    />
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-gray-800">
+                        {p.description}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        {p.reference || "Sans référence"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="shrink-0 text-right text-xs text-gray-600">
+                    <div>
+                      x{item.quantities?.[p.id] ?? 1} · {Number(p.unit_price || 0).toFixed(2)} €
+                    </div>
+                    <div className="font-semibold text-gray-900">
+                      {Number(p.total_price || 0).toFixed(2)} €
+                    </div>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
 
             <Link
-              href={`/packs/${item.slug}?packId=${item.id}`}
-              className="text-blue-600 hover:underline text-sm mt-2 inline-block"
+              href={`/${locale}/packs/${item.slug}?packId=${item.id}`}
+              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-orange-200 bg-white px-3 py-2 text-sm font-medium text-orange-700 transition hover:border-orange-300 hover:bg-orange-50"
             >
+              <Edit3 className="h-4 w-4" />
               {t("editPack")}
             </Link>
           </AnimatedDropdown>

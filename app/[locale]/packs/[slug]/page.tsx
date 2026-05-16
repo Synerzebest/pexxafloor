@@ -23,13 +23,14 @@ export default function PackPage() {
   const { slug } = useParams<{ slug: string }>();
   const searchParams = useSearchParams();
   const packId = searchParams.get("packId");
-  const [calepinage, setCalepinage] = useState<boolean>(false);
 
-  const packNumber = slug === "treillis" ? 1 : slug === "agrafe" ? 2 : slug === "natte" ? 3 : null;
   const { items, addToCart } = useCart();
 
   const existingPack = items.find(
     (i): i is PackItem => i.type === "pack" && i.id === packId
+  );
+  const [calepinage, setCalepinage] = useState<boolean>(
+    existingPack?.calepinage ?? false
   );
 
   // Configuration 
@@ -48,6 +49,7 @@ export default function PackPage() {
 
   // Produits, options et quantités
   const {
+    packId: dbPackId,
     products,
     included,
     options,
@@ -56,9 +58,11 @@ export default function PackPage() {
     initialQuantities,
     selectedOptions,
     setSelectedOptions,
-    loading,
+    isInitialLoading,
+    isRecalculating,
+    error,
   } = usePackProducts({
-    packNumber,
+    slug,
     surface,
     pasDePose,
     tuyauType,
@@ -80,6 +84,7 @@ export default function PackPage() {
     addToCart({
       type: "pack",
       id: existingPack?.id || `pack-${Date.now()}`,
+      pack_id: dbPackId || existingPack?.pack_id,
       slug,
       surface,
       pasDePose,
@@ -88,30 +93,35 @@ export default function PackPage() {
       typeAgrafe,
       calepinage,
       quantities,
+      selectedOptions,
       products: [
         ...products,
         ...included,
         ...options.filter((o) => selectedOptions[o.id]),
       ].map((p) => ({
         id: p.id,
+        pack_item_id: p.pack_item_id,
+        product_id: p.product_id,
         description: p.description,
         unit_price: p.price,
+        image: p.image,
+        reference: p.reference,
         total_price: p.price * (quantities[p.id] ?? 1),
       })),
       total,
-      quantity: 1,
+      quantity: existingPack?.quantity || 1,
     });
   };
 
-  if (!packNumber) {
+  if (error && products.length === 0) {
     return (
       <div className="p-10 text-center text-red-600">
-        Pack introuvable
+        {error}
       </div>
     );
   }
 
-  if (loading) {
+  if (isInitialLoading) {
     return (
       <div className="p-10 text-center">
         <Spin size="large" />
@@ -139,6 +149,14 @@ export default function PackPage() {
         {existingPack && (
           <div className="text-sm text-orange-700 bg-orange-100 p-3 rounded-lg border border-orange-200">
             Vous modifiez un pack déjà présent dans votre panier.
+          </div>
+        )}
+
+        {error && (
+          <div
+            className="text-sm p-3 rounded-lg border text-red-700 bg-red-50 border-red-200"
+          >
+            {error}
           </div>
         )}
 
@@ -186,6 +204,7 @@ export default function PackPage() {
               total={total}
               onAddToCart={handleAddToCart}
               isEditing={!!existingPack}
+              disabled={isRecalculating}
             />
           </div>
         </div>
@@ -195,6 +214,7 @@ export default function PackPage() {
         total={total}
         onAddToCart={handleAddToCart}
         isEditing={!!existingPack}
+        disabled={isRecalculating}
       />
 
       <Footer />

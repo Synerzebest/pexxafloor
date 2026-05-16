@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "antd";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { LoadScript } from "@react-google-maps/api";
@@ -23,6 +22,7 @@ type CartItem =
 
 type Props = {
   items: CartItem[];
+  isPro: boolean;
 };
 
 type AddressSelection = {
@@ -32,7 +32,7 @@ type AddressSelection = {
   country: string;
 };
 
-export default function CheckoutSection({ items }: Props) {
+export default function CheckoutSection({ items, isPro }: Props) {
   const locale = useLocale();
   const t = useTranslations("Cart");
 
@@ -52,11 +52,28 @@ export default function CheckoutSection({ items }: Props) {
     isAddressValid,
   } = useCartCheckout();
 
-  const total = items.reduce((acc, i) => {
-    if (i.type === "product") return acc + (i.product?.price ?? 0) * i.quantity;
-    if (i.type === "pack") return acc + i.total * i.quantity;
-    return acc;
-  }, 0);
+  const { baseTotal, finalTotal } = items.reduce(
+    (acc, i: any) => {
+      if (i.type === "product") {
+        const base = (i.base_price ?? i.product?.price ?? 0) * i.quantity;
+        const final = (i.unit_price ?? i.product?.price ?? 0) * i.quantity;
+  
+        acc.baseTotal += base;
+        acc.finalTotal += final;
+      }
+  
+      if (i.type === "pack") {
+        const total = i.total * i.quantity;
+        acc.baseTotal += total;
+        acc.finalTotal += total;
+      }
+  
+      return acc;
+    },
+    { baseTotal: 0, finalTotal: 0 }
+  );
+  
+  const hasDiscount = isPro && baseTotal > finalTotal;
 
   async function handleCheckout() {
     if (!user) return;
@@ -183,26 +200,39 @@ export default function CheckoutSection({ items }: Props) {
             <div className="w-full flex flex-col items-start justify-center gap-4">
 
             {/* Total */}
-            <div className="w-full flex flex-row sm:justify-start justify-between items-center sm:gap-3">
-                <span className="text-sm sm:text-lg font-medium text-gray-600">
-                    {t("total")}:
-                </span>
-                <span className="text-2xl sm:text-2xl font-bold text-orange-600">
-                    {total.toFixed(2)} €
-                </span>
-            </div>
+            <div className="w-full flex flex-row justify-between items-start">
+              <span className="text-sm sm:text-lg font-medium text-gray-600">
+                {t("total")}:
+              </span>
 
-            {/* Button */}
-            <Button
-                type="primary"
-                size="large"
-                block
-                className="sm:block sm:w-auto bg-orange-600 hover:bg-orange-700 h-12 sm:h-auto text-base font-medium"
-                onClick={handleCheckout}
-                disabled={!user || !isClientNameValid || !isAddressValid}
+              <div className="text-right flex flex-col items-end leading-none">
+                {/* Prix final */}
+                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-orange-600">
+                  {finalTotal.toFixed(2)} €
+                </div>
+
+                {/* Ancien prix + remise */}
+                {hasDiscount && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <span className="text-sm text-gray-400 line-through">
+                      {baseTotal.toFixed(2)} €
+                    </span>
+                    <span className="text-xs font-medium text-green-600">
+                      remise PRO
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Checkout Button */}
+            <button
+              className="sm:block sm:w-auto bg-orange-600 hover:bg-orange-700 h-12 sm:h-auto text-base font-medium text-white py-2 px-4 rounded-lg cursor-pointer duration-300"
+              onClick={handleCheckout} 
+              disabled={!user || !isClientNameValid || !isAddressValid}
             >
                 {t("payment")}
-            </Button>
+            </button>
 
             </div>
         </div>

@@ -46,6 +46,9 @@
       "ease-installation": "Ease of installation",
       "speed-installation": "Speed of installation",
       "price": "Price",
+      "priceLoading": "Calculating...",
+      "priceUnavailable": "Price unavailable",
+      "genericPriceNote": "Price calculated with a standard configuration: 20 cm spacing, PERT pipe and default options. The final price may change in the configurator.",
       "height-installation": "Installation height",
       "insulation": "Insulation",
       "view-package": "View package"
@@ -245,7 +248,7 @@
     "Admin": {
       "adminPanel": "Admin panel",
       "catalogManagement": "Catalog Management",
-      "catalogManagementDetails": "Categories, subcategories and products",
+      "catalogManagementDetails": "Categories, subcategories, products and packs",
       "professionalRequests": "Professional Requests",
       "professionalRequestsDetails": "Manage registration requests sent by installers / pros",
       "orderManagement": "Order Management",

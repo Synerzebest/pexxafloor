@@ -15,7 +15,7 @@ export function usePackTotal({
     });
 
     included.forEach((p: any) => {
-      total += p.price;
+      total += (quantities[p.id] || 1) * p.price;
     });
 
     Object.keys(selectedOptions).forEach(id => {

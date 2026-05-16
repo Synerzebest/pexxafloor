@@ -46,6 +46,9 @@
         "ease-installation": "Leg gemak",
         "speed-installation": "Leg snelheid",
         "price": "Prijs",
+        "priceLoading": "Berekenen...",
+        "priceUnavailable": "Prijs niet beschikbaar",
+        "genericPriceNote": "Prijs berekend met een standaardconfiguratie: legafstand 20 cm, PERT-buis en standaardopties. De eindprijs kan wijzigen in de configurator.",
         "height-installation": "Inbouwhoogte",
         "insulation": "Isolatie",
         "view-package": "Bekijk pakket"
@@ -245,7 +248,7 @@
     "Admin": {
       "adminPanel": "Beheerderspaneel",
       "catalogManagement": "Catalogusbeheer",
-      "catalogManagementDetails": "Categorieën, subcategorieën en producten",
+      "catalogManagementDetails": "Categorieën, subcategorieën, producten en packs",
       "professionalRequests": "Professionele verzoeken",
       "professionalRequestsDetails": "Beheer registratie verzoeken die door installateurs / professionals zijn verzonden",
       "orderManagement": "Orderbeheer",

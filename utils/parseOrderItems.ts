@@ -10,7 +10,7 @@ export function parseOrderItems(items: any): StorekeeperProduct[] {
       const quantities = item.quantities || {};
       item.products.forEach((p: any) =>
         list.push({
-          id: p.id || p.name,
+          id: p.product_id || p.id || p.name,
           description: p.description || p.name,
           total_price: p.total_price || p.price,
           quantity_ordered: quantities[p.id] ?? p.quantity ?? 1,

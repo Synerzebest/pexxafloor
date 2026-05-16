@@ -1,9 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { supabase } from "@/lib/supabaseClient";
 
 export function useFetchStoreData() {
-  const supabase = createClientComponentClient();
   const [categories, setCategories] = useState<any[]>([]);
   const [subcategories, setSubcategories] = useState<any[]>([]);
   const [subsubcategories, setSubsubcategories] = useState<any[]>([]);

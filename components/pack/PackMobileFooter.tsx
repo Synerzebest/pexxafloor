@@ -8,16 +8,19 @@ type Props = {
   total: number;
   onAddToCart: () => void;
   isEditing: boolean;
+  disabled?: boolean;
 };
 
 export function PackMobileFooter({
   total,
   onAddToCart,
   isEditing,
+  disabled = false,
 }: Props) {
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
+    if (disabled) return;
     onAddToCart();
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
@@ -35,11 +38,11 @@ export function PackMobileFooter({
 
         <button
           onClick={handleAdd}
-          disabled={added}
+          disabled={added || disabled}
           className={`cursor-pointer relative overflow-hidden px-4 py-2 rounded-lg text-white font-medium flex items-center justify-center transition
             ${
-              added
-                ? "cursor-not-allowed"
+              added || disabled
+                ? "cursor-not-allowed bg-gray-300"
                 : "bg-orange-600 hover:bg-orange-700"
             }`}
         >
@@ -54,7 +57,7 @@ export function PackMobileFooter({
                 className="flex items-center gap-2"
               >
                 <CheckCircle2 className="w-4 h-4" />
-                Ajouté
+                {isEditing ? "Modifié" : "Ajouté"}
               </motion.div>
             ) : (
               <motion.div

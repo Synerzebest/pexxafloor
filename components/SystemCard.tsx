@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import Link from 'next/link'
-import { Hammer, Zap, Euro, Ruler, Thermometer } from 'lucide-react'
+import { Hammer, Zap, Euro, Ruler, Thermometer, HelpCircle } from 'lucide-react'
 
 const formatPrice = (value: number) =>
   new Intl.NumberFormat("fr-BE", {
@@ -25,6 +25,8 @@ type SystemCardProps = {
   surface: string
   setSurface: (val: string) => void
   locale: string
+  calculatedTotal?: number | null
+  priceLoading?: boolean
 }
 
 export default function SystemCard({
@@ -39,12 +41,14 @@ export default function SystemCard({
   surface,
   setSurface,
   locale,
+  calculatedTotal = null,
+  priceLoading = false,
 }: SystemCardProps) {
   const t = useTranslations('Systems')
   const [hover, setHover] = useState(false)
 
   const s = parseFloat(surface)
-  const calculatedPrice = !isNaN(s) && s > 0 ? s * price : null
+  const hasValidSurface = !isNaN(s) && s > 0
 
   // Convertit 0–100 en 1–5 niveaux visuels
   const level = (val: number) => Math.round((val / 100) * 5)
@@ -131,18 +135,34 @@ export default function SystemCard({
           </span>
           <span className="flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1">
             <Thermometer className="h-3.5 w-3.5 text-orange-500" />
-            {t('insulation')} {insulation}
+            {insulation}
           </span>
         </div>
 
         {/* Calculated price */}
-        {calculatedPrice !== null && (
+        {hasValidSurface && (
           <motion.div
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-right text-lg font-semibold text-orange-600"
+            className="flex items-center justify-end gap-1 text-lg font-semibold text-orange-600"
           >
-            {formatPrice(calculatedPrice)} €
+            {priceLoading && calculatedTotal === null
+              ? t('priceLoading')
+              : calculatedTotal !== null
+                ? `${formatPrice(calculatedTotal)} €`
+                : t('priceUnavailable')}
+            {calculatedTotal !== null && (
+              <span
+                className="group/priceTip relative inline-flex"
+                tabIndex={0}
+                aria-label={t('genericPriceNote')}
+              >
+                <HelpCircle className="h-4 w-4 cursor-help text-orange-400" />
+                <span className="pointer-events-none absolute bottom-full right-0 z-20 mb-2 hidden w-64 rounded-lg border border-gray-100 bg-white p-3 text-left text-xs font-normal leading-5 text-gray-600 shadow-lg group-hover/priceTip:block group-focus/priceTip:block">
+                  {t('genericPriceNote')}
+                </span>
+              </span>
+            )}
           </motion.div>
         )}
       </div>
@@ -162,7 +182,7 @@ export default function SystemCard({
           <span className="text-xs text-gray-500 select-none">m²</span>
         </div>
 
-        {calculatedPrice === null ? (
+        {!hasValidSurface ? (
           <button
             disabled
             className="rounded-lg bg-gray-300 px-4 py-2 text-sm font-semibold text-white cursor-not-allowed"

@@ -6,9 +6,13 @@ import { Empty } from "antd";
 import { useTranslations } from "next-intl";
 import CartList from "@/components/cart/CartList";
 import CheckoutSection from "@/components/cart/CheckoutSection";
+import { useCartCheckout } from "@/hooks/useCartCheckout";
+import { useCartPricing } from "@/hooks/useCartPricing";
 
 export default function CartPage() {
   const { items, updateQuantity, removeFromCart } = useCart();
+  const { user } = useCartCheckout();
+  const { pricedItems, isPro } = useCartPricing(items, user);
   const t = useTranslations("Cart");
 
   if (!items.length) {
@@ -33,13 +37,14 @@ export default function CartPage() {
         </h1>
 
         <CartList
-          items={items}
+          items={pricedItems}
+          isPro={isPro}
           updateQuantity={updateQuantity}
           removeFromCart={removeFromCart}
           t={t}
         />
 
-        <CheckoutSection items={items} />
+        <CheckoutSection items={pricedItems} isPro={isPro} />
       </div>
 
       <Footer />

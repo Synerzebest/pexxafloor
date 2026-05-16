@@ -1,11 +1,10 @@
 'use client';
 
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { LogOutIcon } from 'lucide-react';
 
 export default function LogoutButton() {
-  const supabase = createClientComponentClient();
   const router = useRouter();
 
   const handleLogout = async () => {

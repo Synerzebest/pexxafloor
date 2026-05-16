@@ -21,6 +21,7 @@ type ProductItem = {
 type PackItem = {
   type: "pack";
   id: string;
+  pack_id?: string;
   slug: string;
   surface: number;
   pasDePose: number;
@@ -29,6 +30,7 @@ type PackItem = {
   typeIsolation: 0 | 15 | 30;
   calepinage: boolean;
   quantities: Record<string, number>; 
+  selectedOptions?: Record<string, boolean>;
   products: PackProduct[];
   total: number; 
   quantity: number;
@@ -95,6 +97,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   
       // Pack
       if (item.type === "pack") {
+        const samePack = prev.find((i) => i.type === "pack" && i.id === item.id);
+
+        if (samePack) {
+          return prev.map((i) =>
+            i.type === "pack" && i.id === item.id
+              ? { ...item, quantity: item.quantity || i.quantity || 1 }
+              : i
+          );
+        }
+
         const existing = prev.find(
           (i) =>
             i.type === "pack" &&
@@ -109,7 +121,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             i.slug === item.slug &&
             i.surface === item.surface &&
             i.pasDePose === item.pasDePose
-              ? { ...i, quantity: i.quantity + 1 }
+              ? { ...i, quantity: i.quantity + (item.quantity || 1) }
               : i
           );
         }

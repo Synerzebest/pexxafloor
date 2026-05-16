@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import packs from "@/constants/packs.json";
-import { computePackProducts } from "@/utils/packCalculations";
+import { useEffect, useRef, useState } from "react";
 import { PackItem } from "@/context/CartContext";
+import type { PackLineProduct } from "@/types/PackConfigType";
 
 export function usePackProducts({
-  packNumber,
+  slug,
   surface,
   pasDePose,
   tuyauType,
@@ -14,7 +13,7 @@ export function usePackProducts({
   typeIsolation,
   existingPack,
 }: {
-  packNumber: number | null;
+  slug: string;
   surface: number;
   pasDePose: number;
   tuyauType: "PERT" | "PERT-AL-PERT";
@@ -22,64 +21,105 @@ export function usePackProducts({
   typeIsolation: 0 | 15 | 30;
   existingPack?: PackItem;
 }) {
-  const [products, setProducts] = useState<any[]>([]);
-  const [included, setIncluded] = useState<any[]>([]);
-  const [options, setOptions] = useState<any[]>([]);
+  const [packId, setPackId] = useState<string | null>(existingPack?.pack_id || null);
+  const [products, setProducts] = useState<PackLineProduct[]>([]);
+  const [included, setIncluded] = useState<PackLineProduct[]>([]);
+  const [options, setOptions] = useState<PackLineProduct[]>([]);
   const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [initialQuantities, setInitialQuantities] = useState<Record<string, number>>({});
   const [selectedOptions, setSelectedOptions] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
+  const [hasLoaded, setHasLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const hasLoadedRef = useRef(false);
+  const restoredExistingRef = useRef(false);
 
   useEffect(() => {
-    if (!packNumber) return;
+    let cancelled = false;
 
-    setLoading(true);
+    async function loadPackProducts() {
+      setLoading(true);
+      setError(null);
 
-    if (existingPack) {
-      setProducts(existingPack.products.map(p => ({
-        id: p.id,
-        description: p.description,
-        price: p.unit_price,
-      })));
+      try {
+        const res = await fetch(`/api/packs/${slug}/calculate`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            surface,
+            pasDePose,
+            tuyauType,
+            typeAgrafe,
+            typeIsolation,
+          }),
+        });
 
-      setQuantities(existingPack.quantities);
-      setInitialQuantities(existingPack.quantities);
+        if (!res.ok) {
+          throw new Error(await res.text());
+        }
 
-      const inc = packs.included.filter(p => p.packs?.includes(packNumber));
-      const opt = packs.options.filter(p => p.packs?.includes(packNumber));
+        const result = await res.json();
+        if (cancelled) return;
 
-      setIncluded(inc);
-      setOptions(opt);
+        const restoredOptions: Record<string, boolean> = {};
+        const optionLines = result.options || [];
 
-      const restored: Record<string, boolean> = {};
-      opt.forEach(o => {
-        if (existingPack.products.some(p => p.id === o.id)) restored[o.id] = true;
-      });
+        optionLines.forEach((option: PackLineProduct) => {
+          if (existingPack?.selectedOptions?.[option.id]) {
+            restoredOptions[option.id] = true;
+          }
+        });
 
-      setSelectedOptions(restored);
-      setLoading(false);
-      return;
+        const shouldRestoreExisting = !!existingPack && !restoredExistingRef.current;
+        const nextQuantities = shouldRestoreExisting
+          ? { ...result.quantities, ...existingPack.quantities }
+          : result.quantities;
+
+        setPackId(result.pack?.id || existingPack?.pack_id || null);
+        setProducts(result.products || []);
+        setQuantities(nextQuantities);
+        setInitialQuantities(result.quantities || {});
+        setIncluded(result.included || []);
+        setOptions(optionLines);
+        setSelectedOptions((prev) => {
+          if (shouldRestoreExisting) return restoredOptions;
+
+          return optionLines.reduce((acc: Record<string, boolean>, option: PackLineProduct) => {
+            if (prev[option.id]) acc[option.id] = true;
+            return acc;
+          }, {});
+        });
+        if (shouldRestoreExisting) {
+          restoredExistingRef.current = true;
+        }
+        hasLoadedRef.current = true;
+        setHasLoaded(true);
+      } catch (err) {
+        if (!cancelled) {
+          setError(err instanceof Error ? err.message : "Erreur de calcul du pack");
+          if (!hasLoadedRef.current) {
+            setProducts([]);
+            setIncluded([]);
+            setOptions([]);
+            setQuantities({});
+            setInitialQuantities({});
+            setSelectedOptions({});
+          }
+        }
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
 
-    const result = computePackProducts({
-      packNumber,
-      surface,
-      pasDePose,
-      tuyauType,
-      typeAgrafe,
-      typeIsolation
-    });
+    loadPackProducts();
 
-    setProducts(result.products);
-    setQuantities(result.quantities);
-    setInitialQuantities(result.quantities);
-    setIncluded(result.included);
-    setOptions(result.options);
-    setSelectedOptions({});
-    setLoading(false);
-  }, [packNumber, surface, pasDePose, tuyauType, typeAgrafe, typeIsolation, existingPack]);
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, surface, pasDePose, tuyauType, typeAgrafe, typeIsolation, existingPack?.id]);
 
   return {
+    packId,
     products,
     included,
     options,
@@ -89,5 +129,8 @@ export function usePackProducts({
     selectedOptions,
     setSelectedOptions,
     loading,
+    isInitialLoading: loading && !hasLoaded,
+    isRecalculating: loading && hasLoaded,
+    error,
   };
 }

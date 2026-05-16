@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import SystemCard from "./SystemCard"
 import { useLocale } from "next-intl"
+import { useEffect, useState } from 'react';
 
 type SystemsSectionProps = {
   surface: string;
@@ -13,6 +14,8 @@ type SystemsSectionProps = {
 export default function SystemsSection({ surface, setSurface }: SystemsSectionProps) {
   const t = useTranslations('Systems');
   const locale = useLocale()
+  const [packPrices, setPackPrices] = useState<Record<string, number | null>>({});
+  const [pricesLoading, setPricesLoading] = useState(false);
 
   const systems = [
     {
@@ -47,6 +50,57 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
     },
   ];
 
+  useEffect(() => {
+    const parsedSurface = Number(surface);
+
+    if (!parsedSurface || parsedSurface <= 0) {
+      setPackPrices({});
+      setPricesLoading(false);
+      return;
+    }
+
+    const controller = new AbortController();
+
+    async function fetchPackPrices() {
+      setPricesLoading(true);
+
+      const results = await Promise.all(
+        systems.map(async (system) => {
+          try {
+            const res = await fetch(`/api/packs/${system.slug}/calculate`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              signal: controller.signal,
+              body: JSON.stringify({
+                surface: parsedSurface,
+                pasDePose: 20,
+                tuyauType: "PERT",
+                typeAgrafe: 40,
+                typeIsolation: 0,
+              }),
+            });
+
+            if (!res.ok) return [system.slug, null] as const;
+
+            const data = await res.json();
+            return [system.slug, Number(data.total)] as const;
+          } catch {
+            return [system.slug, null] as const;
+          }
+        })
+      );
+
+      if (!controller.signal.aborted) {
+        setPackPrices(Object.fromEntries(results));
+        setPricesLoading(false);
+      }
+    }
+
+    fetchPackPrices();
+
+    return () => controller.abort();
+  }, [surface]);
+
   return (
     <motion.section
       className="mx-auto py-16 max-w-7xl relative top-28 pb-36"
@@ -69,6 +123,8 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
               setSurface={setSurface}
               slug={sys.slug}
               locale={locale}
+              calculatedTotal={packPrices[sys.slug] ?? null}
+              priceLoading={pricesLoading}
             />
           ))}
         </div>

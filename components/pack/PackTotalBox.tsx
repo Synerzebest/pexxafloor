@@ -8,16 +8,19 @@ type Props = {
   total: number;
   onAddToCart: () => void;
   isEditing: boolean;
+  disabled?: boolean;
 };
 
 export function PackTotalBox({
   total,
   onAddToCart,
   isEditing,
+  disabled = false,
 }: Props) {
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
+    if (disabled) return;
     onAddToCart();
     setAdded(true);
     setTimeout(() => setAdded(false), 1500);
@@ -39,10 +42,10 @@ export function PackTotalBox({
         {/* CTA */}
         <button
           onClick={handleAdd}
-          disabled={added}
+          disabled={added || disabled}
           className={`cursor-pointer bg-orange-600 hover:bg-orange-700 relative overflow-hidden h-12 w-full rounded-xl font-medium text-white flex items-center justify-center transition
             ${
-              added
+              added || disabled
                 ? "cursor-not-allowed"
                 : "cursor-allowed"
             }`}
@@ -58,7 +61,7 @@ export function PackTotalBox({
                 className="flex items-center gap-2"
               >
                 <CheckCircle2 className="w-5 h-5" />
-                Ajouté au panier
+                {isEditing ? "Modifié avec succès" : "Ajouté au panier"}
               </motion.div>
             ) : (
               <motion.div
