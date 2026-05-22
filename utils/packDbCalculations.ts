@@ -255,7 +255,10 @@ export function computeDbPackProducts({
         rule.rounding
       );
       quantities[line.id] = quantity || 1;
-      return line;
+      return {
+        ...line,
+        price: 0,
+      };
     });
 
   const options = activeRules.filter((rule) => rule.role === "option").map(makeLine);
@@ -264,10 +267,6 @@ export function computeDbPackProducts({
 
   products.forEach((product) => {
     total += (quantities[product.id] || 0) * product.price;
-  });
-
-  included.forEach((product) => {
-    total += (quantities[product.id] || 1) * product.price;
   });
 
   options.forEach((option) => {
@@ -315,10 +314,6 @@ export function applyPackQuantityOverrides(
 
   products.forEach((product) => {
     total += (quantities[product.id] || 0) * product.price;
-  });
-
-  result.included.forEach((product) => {
-    total += (quantities[product.id] || 1) * product.price;
   });
 
   result.options.forEach((option) => {

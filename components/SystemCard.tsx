@@ -128,16 +128,22 @@ export default function SystemCard({
         </div>
 
         {/* Technical details as badges */}
-        <div className="flex flex-wrap gap-2 text-xs text-gray-600">
-          <span className="flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1">
-            <Ruler className="h-3.5 w-3.5 text-orange-500" />
-            {t('height-installation')} {height}
-          </span>
-          <span className="flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1">
-            <Thermometer className="h-3.5 w-3.5 text-orange-500" />
-            {insulation}
-          </span>
-        </div>
+        {(height || insulation) && (
+          <div className="flex flex-wrap gap-2 text-xs text-gray-600">
+            {height && (
+              <span className="flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1">
+                <Ruler className="h-3.5 w-3.5 text-orange-500" />
+                {t('height-installation')} {height}
+              </span>
+            )}
+            {insulation && (
+              <span className="flex items-center gap-1 rounded-full bg-orange-50 px-3 py-1">
+                <Thermometer className="h-3.5 w-3.5 text-orange-500" />
+                {insulation}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Calculated price */}
         {hasValidSurface && (

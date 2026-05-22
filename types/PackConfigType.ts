@@ -36,6 +36,16 @@ export type PackDefinition = {
   name_fr: string;
   name_nl: string;
   name_en: string;
+  image_url?: string | null;
+  installation_ease?: number | null;
+  installation_speed?: number | null;
+  price_level?: number | null;
+  installation_height_fr?: string | null;
+  installation_height_nl?: string | null;
+  installation_height_en?: string | null;
+  insulation_fr?: string | null;
+  insulation_nl?: string | null;
+  insulation_en?: string | null;
   active: boolean;
   sort_order: number;
   pack_items: PackRule[];

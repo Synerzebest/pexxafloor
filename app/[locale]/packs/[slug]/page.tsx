@@ -75,7 +75,6 @@ export default function PackPage() {
   const total = usePackTotal({
     products,
     quantities,
-    included,
     options,
     selectedOptions,
   });

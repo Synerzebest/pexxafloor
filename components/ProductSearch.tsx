@@ -94,8 +94,8 @@ export default function ProductSearch() {
   
     const img = p.product_images?.[0]?.image_url;
     const url = p.subsubcategory
-      ? `/categories/${p.subcategory.category.slug}/${p.subcategory.slug}/${p.subsubcategory.slug}/${p.slug}`
-      : `/categories/${p.subcategory.category.slug}/${p.subcategory.slug}/${p.slug}`;
+      ? `/${locale}/categories/${p.subcategory.category.slug}/${p.subcategory.slug}/${p.subsubcategory.slug}/${p.slug}`
+      : `/${locale}/categories/${p.subcategory.category.slug}/${p.subcategory.slug}/default/${p.slug}`;
   
     return {
       key: p.id,

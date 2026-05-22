@@ -11,44 +11,48 @@ type SystemsSectionProps = {
   setSurface: (val: string) => void;
 };
 
+type SystemPack = {
+  id: string;
+  slug: string;
+  name_fr: string;
+  name_nl: string;
+  name_en: string;
+  image_url?: string | null;
+  installation_ease?: number | null;
+  installation_speed?: number | null;
+  price_level?: number | null;
+  installation_height_fr?: string | null;
+  installation_height_nl?: string | null;
+  installation_height_en?: string | null;
+  insulation_fr?: string | null;
+  insulation_nl?: string | null;
+  insulation_en?: string | null;
+};
+
 export default function SystemsSection({ surface, setSurface }: SystemsSectionProps) {
   const t = useTranslations('Systems');
   const locale = useLocale()
+  const [packs, setPacks] = useState<SystemPack[]>([]);
   const [packPrices, setPackPrices] = useState<Record<string, number | null>>({});
   const [pricesLoading, setPricesLoading] = useState(false);
 
-  const systems = [
-    {
-      img: '/images/treillis-system.jpg',
-      title: t('set1.title'),
-      ease: 30,
-      speed: 40,
-      price: 90,
-      height: '22mm',
-      insulation: t('set1.insulation'),
-      slug: "treillis"
-    },
-    {
-      img: '/images/tacker-system.jpg',
-      title: t('set2.title'),
-      ease: 70,
-      speed: 90,
-      price: 70,
-      height: '38mm',
-      insulation: t('set2.insulation'),
-      slug: "agrafe"
-    },
-    {
-      img: '/images/plots-system.jpg',
-      title: t('set3.title'),
-      ease: 90,
-      speed: 95,
-      price: 80,
-      height: t('set3.height'),
-      insulation: t('set3.insulation'),
-      slug: "natte"
-    },
-  ];
+  useEffect(() => {
+    let cancelled = false;
+
+    async function fetchPacks() {
+      const res = await fetch("/api/packs");
+      if (!res.ok) return;
+
+      const data = await res.json();
+      if (!cancelled) setPacks(data || []);
+    }
+
+    fetchPacks();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   useEffect(() => {
     const parsedSurface = Number(surface);
@@ -65,9 +69,9 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
       setPricesLoading(true);
 
       const results = await Promise.all(
-        systems.map(async (system) => {
+        packs.map(async (pack) => {
           try {
-            const res = await fetch(`/api/packs/${system.slug}/calculate`, {
+            const res = await fetch(`/api/packs/${pack.slug}/calculate`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               signal: controller.signal,
@@ -80,12 +84,12 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
               }),
             });
 
-            if (!res.ok) return [system.slug, null] as const;
+            if (!res.ok) return [pack.slug, null] as const;
 
             const data = await res.json();
-            return [system.slug, Number(data.total)] as const;
+            return [pack.slug, Number(data.total)] as const;
           } catch {
-            return [system.slug, null] as const;
+            return [pack.slug, null] as const;
           }
         })
       );
@@ -99,7 +103,13 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
     fetchPackPrices();
 
     return () => controller.abort();
-  }, [surface]);
+  }, [surface, packs]);
+
+  function localized(pack: SystemPack, field: "name" | "installation_height" | "insulation") {
+    const localizedValue = pack[`${field}_${locale}` as keyof SystemPack];
+    const frenchValue = pack[`${field}_fr` as keyof SystemPack];
+    return String(localizedValue || frenchValue || "");
+  }
 
   return (
     <motion.section
@@ -115,15 +125,21 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
         </h2>
 
         <div className="grid w-full gap-6 sm:grid-cols-2 xl:grid-cols-3">
-          {systems.map((sys, i) => (
+          {packs.map((pack) => (
             <SystemCard
-              key={i}
-              {...sys}
+              key={pack.id}
+              img={pack.image_url || "/images/box.png"}
+              title={localized(pack, "name")}
+              ease={Number(pack.installation_ease ?? 50)}
+              speed={Number(pack.installation_speed ?? 50)}
+              price={Number(pack.price_level ?? 50)}
+              height={localized(pack, "installation_height")}
+              insulation={localized(pack, "insulation")}
               surface={surface}
               setSurface={setSurface}
-              slug={sys.slug}
+              slug={pack.slug}
               locale={locale}
-              calculatedTotal={packPrices[sys.slug] ?? null}
+              calculatedTotal={packPrices[pack.slug] ?? null}
               priceLoading={pricesLoading}
             />
           ))}

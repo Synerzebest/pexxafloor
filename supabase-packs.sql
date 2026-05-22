@@ -7,11 +7,33 @@ create table if not exists public.packs (
   name_fr text not null,
   name_nl text not null,
   name_en text not null,
+  image_url text,
+  installation_ease numeric not null default 50 check (installation_ease between 0 and 100),
+  installation_speed numeric not null default 50 check (installation_speed between 0 and 100),
+  price_level numeric not null default 50 check (price_level between 0 and 100),
+  installation_height_fr text,
+  installation_height_nl text,
+  installation_height_en text,
+  insulation_fr text,
+  insulation_nl text,
+  insulation_en text,
   active boolean not null default true,
   sort_order integer not null default 0,
   created_at timestamp with time zone not null default now(),
   updated_at timestamp with time zone not null default now()
 );
+
+alter table public.packs
+  add column if not exists image_url text,
+  add column if not exists installation_ease numeric not null default 50,
+  add column if not exists installation_speed numeric not null default 50,
+  add column if not exists price_level numeric not null default 50,
+  add column if not exists installation_height_fr text,
+  add column if not exists installation_height_nl text,
+  add column if not exists installation_height_en text,
+  add column if not exists insulation_fr text,
+  add column if not exists insulation_nl text,
+  add column if not exists insulation_en text;
 
 do $$
 begin
@@ -103,16 +125,94 @@ create trigger set_pack_items_updated_at
 before update on public.pack_items
 for each row execute function public.set_updated_at();
 
-insert into public.packs (slug, name_fr, name_nl, name_en, sort_order, active)
+insert into public.packs (
+  slug,
+  name_fr,
+  name_nl,
+  name_en,
+  image_url,
+  installation_ease,
+  installation_speed,
+  price_level,
+  installation_height_fr,
+  installation_height_nl,
+  installation_height_en,
+  insulation_fr,
+  insulation_nl,
+  insulation_en,
+  sort_order,
+  active
+)
 values
-  ('treillis', 'Pack treillis', 'Nettenpakket', 'Mesh pack', 1, true),
-  ('agrafe', 'Pack agrafe', 'Tackerpakket', 'Tacker pack', 2, true),
-  ('natte', 'Pack plaques a plots', 'Noppenplatenpakket', 'Studded panel pack', 3, true)
+  (
+    'treillis',
+    'Pack treillis',
+    'Nettenpakket',
+    'Mesh pack',
+    '/images/treillis-system.jpg',
+    30,
+    40,
+    90,
+    '22mm',
+    '22mm',
+    '22mm',
+    'Pas d''isolation standard',
+    'Geen standaardisolatie',
+    'No standard insulation',
+    1,
+    true
+  ),
+  (
+    'agrafe',
+    'Pack agrafe',
+    'Tackerpakket',
+    'Tacker pack',
+    '/images/tacker-system.jpg',
+    70,
+    90,
+    70,
+    '38mm',
+    '38mm',
+    '38mm',
+    'Isolation 20-30mm',
+    'Isolatie 20-30mm',
+    'Insulation 20-30mm',
+    2,
+    true
+  ),
+  (
+    'natte',
+    'Pack plaques a plots',
+    'Noppenplatenpakket',
+    'Studded panel pack',
+    '/images/plots-system.jpg',
+    90,
+    95,
+    80,
+    'A partir de 20mm',
+    'Vanaf 20mm',
+    'From 20mm',
+    'Isolation 0-30mm',
+    'Isolatie 0-30mm',
+    'Insulation 0-30mm',
+    3,
+    true
+  )
 on conflict (slug) do update
 set
   name_fr = excluded.name_fr,
   name_nl = excluded.name_nl,
   name_en = excluded.name_en,
+  image_url = excluded.image_url,
+  installation_ease = excluded.installation_ease,
+  installation_speed = excluded.installation_speed,
+  price_level = excluded.price_level,
+  installation_height_fr = excluded.installation_height_fr,
+  installation_height_nl = excluded.installation_height_nl,
+  installation_height_en = excluded.installation_height_en,
+  insulation_fr = excluded.insulation_fr,
+  insulation_nl = excluded.insulation_nl,
+  insulation_en = excluded.insulation_en,
   sort_order = excluded.sort_order,
   active = excluded.active;
 

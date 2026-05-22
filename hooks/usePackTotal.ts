@@ -3,7 +3,6 @@ import { useMemo } from "react";
 export function usePackTotal({
   products,
   quantities,
-  included,
   options,
   selectedOptions,
 }: any) {
@@ -14,10 +13,6 @@ export function usePackTotal({
       total += (quantities[p.id] || 0) * p.price;
     });
 
-    included.forEach((p: any) => {
-      total += (quantities[p.id] || 1) * p.price;
-    });
-
     Object.keys(selectedOptions).forEach(id => {
       if (selectedOptions[id]) {
         const opt = options.find((o: any) => o.id === id);
@@ -26,5 +21,5 @@ export function usePackTotal({
     });
 
     return total;
-  }, [products, quantities, included, options, selectedOptions]);
+  }, [products, quantities, options, selectedOptions]);
 }

@@ -7,6 +7,16 @@ const PACK_SELECT = `
   name_fr,
   name_nl,
   name_en,
+  image_url,
+  installation_ease,
+  installation_speed,
+  price_level,
+  installation_height_fr,
+  installation_height_nl,
+  installation_height_en,
+  insulation_fr,
+  insulation_nl,
+  insulation_en,
   active,
   sort_order,
   pack_items (
@@ -42,6 +52,9 @@ function normalizePack(pack: any): PackDefinition {
   return {
     ...pack,
     sort_order: Number(pack.sort_order || 0),
+    installation_ease: Number(pack.installation_ease ?? 50),
+    installation_speed: Number(pack.installation_speed ?? 50),
+    price_level: Number(pack.price_level ?? 50),
     pack_items: (pack.pack_items || [])
       .filter((item: any) => item.product)
       .map((item: any): PackRule => ({

@@ -38,6 +38,16 @@ type PackFormValues = {
   name_fr: string;
   name_nl: string;
   name_en: string;
+  image_url?: string | null;
+  installation_ease?: number | null;
+  installation_speed?: number | null;
+  price_level?: number | null;
+  installation_height_fr?: string | null;
+  installation_height_nl?: string | null;
+  installation_height_en?: string | null;
+  insulation_fr?: string | null;
+  insulation_nl?: string | null;
+  insulation_en?: string | null;
   sort_order?: number;
   active?: boolean;
 };
@@ -221,6 +231,16 @@ export default function PackSection({
         name_fr,
         name_nl,
         name_en,
+        image_url,
+        installation_ease,
+        installation_speed,
+        price_level,
+        installation_height_fr,
+        installation_height_nl,
+        installation_height_en,
+        insulation_fr,
+        insulation_nl,
+        insulation_en,
         active,
         sort_order,
         pack_items (
@@ -286,6 +306,9 @@ export default function PackSection({
         ? pack
         : {
             active: true,
+            installation_ease: 50,
+            installation_speed: 50,
+            price_level: 50,
             sort_order: packs.length + 1,
           }
     );
@@ -297,6 +320,16 @@ export default function PackSection({
       name_fr: values.name_fr.trim(),
       name_nl: values.name_nl.trim(),
       name_en: values.name_en.trim(),
+      image_url: values.image_url?.trim() || null,
+      installation_ease: values.installation_ease ?? 50,
+      installation_speed: values.installation_speed ?? 50,
+      price_level: values.price_level ?? 50,
+      installation_height_fr: values.installation_height_fr?.trim() || null,
+      installation_height_nl: values.installation_height_nl?.trim() || null,
+      installation_height_en: values.installation_height_en?.trim() || null,
+      insulation_fr: values.insulation_fr?.trim() || null,
+      insulation_nl: values.insulation_nl?.trim() || null,
+      insulation_en: values.insulation_en?.trim() || null,
       sort_order: values.sort_order || 0,
       active: values.active ?? true,
     };
@@ -641,6 +674,46 @@ export default function PackSection({
           <Form.Item name="name_en" label="Nom EN" rules={[{ required: true }]}>
             <Input />
           </Form.Item>
+          <Form.Item
+            name="image_url"
+            label="Image de la carte"
+            extra='Chemin public ou URL. Exemple : /images/treillis-system.jpg'
+          >
+            <Input placeholder="/images/treillis-system.jpg" />
+          </Form.Item>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <Form.Item name="installation_ease" label="Facilité de pose">
+              <InputNumber min={0} max={100} className="w-full" />
+            </Form.Item>
+            <Form.Item name="installation_speed" label="Vitesse de pose">
+              <InputNumber min={0} max={100} className="w-full" />
+            </Form.Item>
+            <Form.Item name="price_level" label="Niveau prix">
+              <InputNumber min={0} max={100} className="w-full" />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <Form.Item name="installation_height_fr" label="Hauteur FR">
+              <Input placeholder="22mm" />
+            </Form.Item>
+            <Form.Item name="installation_height_nl" label="Hauteur NL">
+              <Input />
+            </Form.Item>
+            <Form.Item name="installation_height_en" label="Hauteur EN">
+              <Input />
+            </Form.Item>
+          </div>
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <Form.Item name="insulation_fr" label="Isolation FR">
+              <Input />
+            </Form.Item>
+            <Form.Item name="insulation_nl" label="Isolation NL">
+              <Input />
+            </Form.Item>
+            <Form.Item name="insulation_en" label="Isolation EN">
+              <Input />
+            </Form.Item>
+          </div>
           <Form.Item name="sort_order" label="Ordre">
             <InputNumber min={0} className="w-full" />
           </Form.Item>
