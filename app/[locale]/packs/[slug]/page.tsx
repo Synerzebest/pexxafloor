@@ -1,7 +1,6 @@
 "use client";
 
 import { useParams, useSearchParams } from "next/navigation";
-import { Spin } from "antd";
 import { Navbar, Footer, ProBadge } from "@/components";
 import { useCart, PackItem } from "@/context/CartContext";
 import { useState } from "react";
@@ -18,6 +17,86 @@ import { PackOptions } from "@/components/pack/PackOptions";
 import { PackTotalBox } from "@/components/pack/PackTotalBox";
 import { PackMobileFooter } from "@/components/pack/PackMobileFooter";
 import { PackCalepinageOption } from "@/components/pack/PackCalepinageOption";
+
+function SkeletonBlock({ className }: { className?: string }) {
+  return (
+    <div className={`animate-pulse rounded-md bg-gray-200 ${className || ""}`} />
+  );
+}
+
+function PackPageSkeleton() {
+  return (
+    <section className="mx-auto max-w-7xl px-4 py-8 md:py-12 relative top-24 space-y-4 pb-36">
+      <SkeletonBlock className="h-10 w-52 md:w-64" />
+
+      <div className="grid gap-10 lg:grid-cols-3">
+        <div className="space-y-4">
+          <SkeletonBlock className="aspect-square w-full rounded-xl" />
+          <div className="grid grid-cols-4 gap-3">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <SkeletonBlock key={index} className="aspect-square rounded-lg" />
+            ))}
+          </div>
+        </div>
+
+        <div className="lg:col-span-2 space-y-8">
+          <div className="rounded-xl border border-gray-100 bg-white p-6 space-y-5">
+            <SkeletonBlock className="h-7 w-44" />
+            <div className="grid gap-4 md:grid-cols-2">
+              {Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="space-y-2">
+                  <SkeletonBlock className="h-4 w-24" />
+                  <SkeletonBlock className="h-10 w-full rounded-lg" />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-gray-100 bg-white p-6 space-y-4">
+            <SkeletonBlock className="h-7 w-56" />
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div
+                key={index}
+                className="flex items-center justify-between rounded-lg border border-gray-100 bg-gray-50 px-4 py-3"
+              >
+                <div className="flex items-center gap-3">
+                  <SkeletonBlock className="h-8 w-8 rounded-md" />
+                  <div className="space-y-2">
+                    <SkeletonBlock className="h-4 w-48 max-w-[55vw]" />
+                    <SkeletonBlock className="h-3 w-24" />
+                  </div>
+                </div>
+                <SkeletonBlock className="h-5 w-20" />
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-xl border border-gray-100 bg-white p-6 space-y-4">
+            <SkeletonBlock className="h-7 w-40" />
+            {Array.from({ length: 2 }).map((_, index) => (
+              <SkeletonBlock key={index} className="h-12 w-full rounded-lg" />
+            ))}
+          </div>
+
+          <div className="rounded-xl border border-gray-100 bg-white p-6 space-y-4">
+            <SkeletonBlock className="h-7 w-32" />
+            <SkeletonBlock className="h-12 w-full rounded-lg" />
+          </div>
+
+          <div className="rounded-xl border border-gray-100 bg-white p-6">
+            <div className="flex items-center justify-between gap-4">
+              <div className="space-y-2">
+                <SkeletonBlock className="h-4 w-24" />
+                <SkeletonBlock className="h-8 w-36" />
+              </div>
+              <SkeletonBlock className="h-11 w-40 rounded-lg" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
 
 export default function PackPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -79,6 +158,12 @@ export default function PackPage() {
     selectedOptions,
   });
 
+  const galleryProducts = [
+    ...products,
+    ...included,
+    ...options.filter((option) => selectedOptions[option.id]),
+  ];
+
   const handleAddToCart = () => {
     addToCart({
       type: "pack",
@@ -122,9 +207,12 @@ export default function PackPage() {
 
   if (isInitialLoading) {
     return (
-      <div className="p-10 text-center">
-        <Spin size="large" />
-      </div>
+      <>
+        <Navbar />
+        <ProBadge />
+        <PackPageSkeleton />
+        <Footer />
+      </>
     );
   }
 
@@ -161,7 +249,7 @@ export default function PackPage() {
 
         <div className="grid gap-10 lg:grid-cols-3">
           {/* COLONNE GAUCHE */}
-          <PackGallery products={products} />
+          <PackGallery products={galleryProducts} />
 
           {/* COLONNE DROITE */}
           <div className="lg:col-span-2 space-y-8">

@@ -1,11 +1,13 @@
 "use client";
 
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 type Option = {
   id: string;
   description: string;
   price: number;
+  image?: string;
 };
 
 type Props = {
@@ -35,33 +37,44 @@ export function PackOptions({
           return (
             <label
               key={opt.id}
-              className={`flex items-center justify-between border rounded-xl px-4 py-3 cursor-pointer transition duration-300 ${
+              className={`flex items-center justify-between gap-4 border rounded-xl px-4 py-3 cursor-pointer transition duration-300 ${
                 checked
                   ? "border-orange-500 bg-orange-50"
                   : "border-gray-200 hover:border-orange-400 hover:bg-gray-50"
               }`}
             >
-              <div className="flex items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={checked}
-                  onChange={(e) =>
-                    setSelectedOptions((prev) => ({
-                      ...prev,
-                      [opt.id]: e.target.checked,
-                    }))
-                  }
-                  className="w-5 h-5 accent-orange-600 rounded"
-                />
-
-                <span className="text-sm font-medium text-gray-800">
-                  {opt.description}
-                </span>
+              <div className="flex min-w-0 items-center gap-3">
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white">
+                  <Image
+                    src={opt.image || "/images/box.png"}
+                    alt={opt.description}
+                    fill
+                    sizes="48px"
+                    className="object-contain p-1"
+                  />
+                </div>
+  
+                <div className="min-w-0">
+                  <span className="block min-w-0 text-sm font-medium text-gray-800">
+                    {opt.description}
+                  </span>
+                  <span className="block text-sm font-bold text-gray-700">
+                    + {opt.price.toFixed(2)} €
+                  </span>
+                </div>
               </div>
 
-              <span className="font-bold text-gray-700 whitespace-nowrap text-sm">
-                + {opt.price.toFixed(2)} €
-              </span>
+              <input
+                type="checkbox"
+                checked={checked}
+                onChange={(e) =>
+                  setSelectedOptions((prev) => ({
+                    ...prev,
+                    [opt.id]: e.target.checked,
+                  }))
+                }
+                className="h-5 w-5 shrink-0 accent-orange-600"
+              />
             </label>
           );
         })}

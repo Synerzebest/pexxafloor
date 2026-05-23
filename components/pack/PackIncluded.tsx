@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 
 type Item = {
   id: string;
   description: string;
+  image?: string;
 };
 
 type Props = {
@@ -23,15 +25,30 @@ export function PackIncluded({ included }: Props) {
         {included.map((item) => (
           <li
             key={item.id}
-            className="flex items-center justify-between bg-gray-50 rounded-lg px-4 py-3 border border-gray-200"
+            className="flex items-center justify-between gap-4 bg-gray-50 rounded-lg px-4 py-3 border border-gray-200"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-gray-200 bg-white">
+                <Image
+                  src={item.image || "/images/box.png"}
+                  alt={item.description}
+                  fill
+                  sizes="48px"
+                  className="object-contain p-1"
+                />
+              </div>
+
+              <span className="min-w-0 text-sm font-medium text-gray-800">
+                {item.description}
+              </span>
+            </div>
+
               {/* Icône check verte */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 viewBox="0 0 20 20"
                 fill="currentColor"
-                className="w-5 h-5 text-green-600"
+                className="w-5 h-5 shrink-0 text-green-600"
               >
                 <path
                   fillRule="evenodd"
@@ -39,11 +56,6 @@ export function PackIncluded({ included }: Props) {
                   clipRule="evenodd"
                 />
               </svg>
-
-              <span className="text-gray-800 text-sm font-medium">
-                {item.description}
-              </span>
-            </div>
           </li>
         ))}
       </ul>
