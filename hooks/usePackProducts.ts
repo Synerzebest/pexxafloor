@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { PackItem } from "@/context/CartContext";
 import type { PackLineProduct } from "@/types/PackConfigType";
+import type { SavedPackQuote } from "@/context/QuoteContext";
 
 export function usePackProducts({
   slug,
@@ -12,6 +13,7 @@ export function usePackProducts({
   typeAgrafe,
   typeIsolation,
   existingPack,
+  savedQuote,
 }: {
   slug: string;
   surface: number;
@@ -20,8 +22,9 @@ export function usePackProducts({
   typeAgrafe: 40 | 60;
   typeIsolation: 0 | 15 | 30;
   existingPack?: PackItem;
+  savedQuote?: SavedPackQuote;
 }) {
-  const [packId, setPackId] = useState<string | null>(existingPack?.pack_id || null);
+  const [packId, setPackId] = useState<string | null>(existingPack?.pack_id || savedQuote?.pack_id || null);
   const [products, setProducts] = useState<PackLineProduct[]>([]);
   const [included, setIncluded] = useState<PackLineProduct[]>([]);
   const [options, setOptions] = useState<PackLineProduct[]>([]);
@@ -33,6 +36,7 @@ export function usePackProducts({
   const [error, setError] = useState<string | null>(null);
   const hasLoadedRef = useRef(false);
   const restoredExistingRef = useRef(false);
+  const restoredQuoteRef = useRef<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,24 +69,30 @@ export function usePackProducts({
         const optionLines = result.options || [];
 
         optionLines.forEach((option: PackLineProduct) => {
-          if (existingPack?.selectedOptions?.[option.id]) {
+          if (
+            existingPack?.selectedOptions?.[option.id] ||
+            savedQuote?.selectedOptions?.[option.id]
+          ) {
             restoredOptions[option.id] = true;
           }
         });
 
         const shouldRestoreExisting = !!existingPack && !restoredExistingRef.current;
-        const nextQuantities = shouldRestoreExisting
+        const shouldRestoreQuote = !!savedQuote && restoredQuoteRef.current !== savedQuote.id;
+        const nextQuantities = shouldRestoreQuote
+          ? { ...result.quantities, ...savedQuote.quantities }
+          : shouldRestoreExisting
           ? { ...result.quantities, ...existingPack.quantities }
           : result.quantities;
 
-        setPackId(result.pack?.id || existingPack?.pack_id || null);
+        setPackId(result.pack?.id || existingPack?.pack_id || savedQuote?.pack_id || null);
         setProducts(result.products || []);
         setQuantities(nextQuantities);
         setInitialQuantities(result.quantities || {});
         setIncluded(result.included || []);
         setOptions(optionLines);
         setSelectedOptions((prev) => {
-          if (shouldRestoreExisting) return restoredOptions;
+          if (shouldRestoreExisting || shouldRestoreQuote) return restoredOptions;
 
           return optionLines.reduce((acc: Record<string, boolean>, option: PackLineProduct) => {
             if (prev[option.id]) acc[option.id] = true;
@@ -91,6 +101,9 @@ export function usePackProducts({
         });
         if (shouldRestoreExisting) {
           restoredExistingRef.current = true;
+        }
+        if (shouldRestoreQuote) {
+          restoredQuoteRef.current = savedQuote.id;
         }
         hasLoadedRef.current = true;
         setHasLoaded(true);
@@ -116,7 +129,7 @@ export function usePackProducts({
     return () => {
       cancelled = true;
     };
-  }, [slug, surface, pasDePose, tuyauType, typeAgrafe, typeIsolation, existingPack?.id]);
+  }, [slug, surface, pasDePose, tuyauType, typeAgrafe, typeIsolation, existingPack?.id, savedQuote?.id]);
 
   return {
     packId,

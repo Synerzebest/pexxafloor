@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Save, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
   total: number;
   onAddToCart: () => void;
+  onSaveQuote: () => void;
+  onShareQuote: () => void;
   isEditing: boolean;
   disabled?: boolean;
 };
@@ -14,6 +16,8 @@ type Props = {
 export function PackMobileFooter({
   total,
   onAddToCart,
+  onSaveQuote,
+  onShareQuote,
   isEditing,
   disabled = false,
 }: Props) {
@@ -28,7 +32,8 @@ export function PackMobileFooter({
 
   return (
     <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 lg:hidden z-40">
-      <div className="flex justify-between items-center max-w-lg mx-auto">
+      <div className="max-w-lg mx-auto space-y-3">
+        <div className="flex justify-between items-center">
         <div className="text-base font-bold text-gray-900">
           Total :{" "}
           <span className="text-orange-600 text-xl">
@@ -72,6 +77,28 @@ export function PackMobileFooter({
             )}
           </AnimatePresence>
         </button>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={onShareQuote}
+            disabled={disabled}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 disabled:opacity-60"
+          >
+            <Share2 className="h-4 w-4" />
+            Partager
+          </button>
+          <button
+            type="button"
+            onClick={onSaveQuote}
+            disabled={disabled}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 disabled:opacity-60"
+          >
+            <Save className="h-4 w-4" />
+            Enregistrer
+          </button>
+        </div>
       </div>
     </div>
   );

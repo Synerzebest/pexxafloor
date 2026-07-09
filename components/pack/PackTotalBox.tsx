@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, Save, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 type Props = {
   total: number;
   onAddToCart: () => void;
+  onSaveQuote: () => void;
+  onShareQuote: () => void;
   isEditing: boolean;
   disabled?: boolean;
 };
@@ -14,6 +16,8 @@ type Props = {
 export function PackTotalBox({
   total,
   onAddToCart,
+  onSaveQuote,
+  onShareQuote,
   isEditing,
   disabled = false,
 }: Props) {
@@ -44,11 +48,7 @@ export function PackTotalBox({
           onClick={handleAdd}
           disabled={added || disabled}
           className={`cursor-pointer bg-orange-600 hover:bg-orange-700 relative overflow-hidden h-12 w-full rounded-xl font-medium text-white flex items-center justify-center transition
-            ${
-              added || disabled
-                ? "cursor-not-allowed"
-                : "cursor-allowed"
-            }`}
+            ${added || disabled ? "cursor-not-allowed opacity-70" : "cursor-allowed"}`}
         >
           <AnimatePresence mode="wait" initial={false}>
             {added ? (
@@ -76,6 +76,28 @@ export function PackTotalBox({
             )}
           </AnimatePresence>
         </button>
+
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            type="button"
+            onClick={onShareQuote}
+            disabled={disabled}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Share2 className="h-4 w-4" />
+            Partager ce devis
+          </button>
+
+          <button
+            type="button"
+            onClick={onSaveQuote}
+            disabled={disabled}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-4 text-sm font-semibold text-orange-700 transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <Save className="h-4 w-4" />
+            Enregistrer le devis
+          </button>
+        </div>
 
         {/* INFOS */}
         <div className="text-center text-xs text-gray-500 space-y-1">

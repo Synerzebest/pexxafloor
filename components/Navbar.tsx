@@ -14,6 +14,7 @@ import { PhoneCall } from 'lucide-react';
 import { useStoreData } from "@/context/StoreDataProvider";
 import { useUI } from "@/context/UIContext"
 import { supabase } from "@/lib/supabaseClient";
+import { useQuotes } from '@/context/QuoteContext';
 
 const SUPPORTED_LOCALES = ['fr', 'nl', 'en'] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -42,6 +43,13 @@ export default function Navbar() {
   
   const t = useTranslations('Navbar');
   const { items, openCart } = useCart();
+  const {
+    quotes,
+    isQuoteListOpen,
+    openQuoteList,
+    closeQuoteList,
+    loadQuote,
+  } = useQuotes();
 
   const { drawerOpen, setDrawerOpen } = useUI()
   const { categories, loading } = useStoreData();
@@ -61,6 +69,11 @@ export default function Navbar() {
   };
 
   const hoveredCategory = categories.find((c) => c.id === hoveredCat);
+
+  const openQuotesAndCloseDrawer = () => {
+    openQuoteList();
+    setDrawerOpen(false);
+  };
 
   return (
     <header className="w-full border-b border-gray-200 fixed z-20">
@@ -115,6 +128,19 @@ export default function Navbar() {
               </span>
             )}
           </motion.button>
+
+          <button
+            type="button"
+            onClick={openQuoteList}
+            className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700"
+          >
+            Mes devis
+            {quotes.length > 0 && (
+              <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-semibold text-orange-700">
+                {quotes.length}
+              </span>
+            )}
+          </button>
 
           <motion.div
             whileHover={{scale: 1.05}}
@@ -395,6 +421,13 @@ export default function Navbar() {
                       </span>
                     )}
                   </button>
+                  <button
+                    type="button"
+                    onClick={openQuotesAndCloseDrawer}
+                    className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700"
+                  >
+                    Mes devis
+                  </button>
                 </div>
 
                 {/* Ligne 2 : Bouton + Sélecteur de langue */}
@@ -423,6 +456,76 @@ export default function Navbar() {
                 </a>
               </div>
             </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {isQuoteListOpen && (
+          <>
+            <motion.div
+              className="fixed inset-0 z-[110] bg-black/40"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={closeQuoteList}
+            />
+            <motion.div
+              className="fixed left-1/2 top-1/2 z-[111] w-[92vw] max-w-2xl -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-5 shadow-xl"
+              initial={{ opacity: 0, y: 16, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 16, scale: 0.98 }}
+              transition={{ duration: 0.18 }}
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Mes devis
+                  </h2>
+                  <p className="mt-1 text-sm text-gray-500">
+                    Sélectionnez un devis enregistré pour continuer à travailler dessus.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={closeQuoteList}
+                  className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-800"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="mt-5 max-h-[60vh] space-y-3 overflow-y-auto">
+                {quotes.length === 0 ? (
+                  <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500">
+                    Aucun devis enregistré pour le moment.
+                  </div>
+                ) : (
+                  quotes.map((quote) => (
+                    <button
+                      key={quote.id}
+                      type="button"
+                      onClick={() => loadQuote(quote)}
+                      className="w-full rounded-lg border border-gray-200 bg-white p-4 text-left transition hover:border-orange-200 hover:bg-orange-50"
+                    >
+                      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                          <p className="font-semibold text-gray-900">
+                            {quote.projectReference}
+                          </p>
+                          <p className="mt-1 text-sm text-gray-500">
+                            Pack {quote.slug} · {quote.surface} m² · {quote.total.toFixed(2)} €
+                          </p>
+                        </div>
+                        <span className="text-xs text-gray-400">
+                          {new Date(quote.savedAt).toLocaleDateString("fr-BE")}
+                        </span>
+                      </div>
+                    </button>
+                  ))
+                )}
+              </div>
+            </motion.div>
           </>
         )}
       </AnimatePresence>

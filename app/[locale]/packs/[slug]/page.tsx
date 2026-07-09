@@ -3,11 +3,13 @@
 import { useParams, useSearchParams } from "next/navigation";
 import { Navbar, Footer, ProBadge } from "@/components";
 import { useCart, PackItem } from "@/context/CartContext";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useQuotes, type PackQuoteDraft } from "@/context/QuoteContext";
 
 import { usePackConfig } from "@/hooks/usePackConfig";
 import { usePackProducts } from "@/hooks/usePackProducts";
 import { usePackTotal } from "@/hooks/usePackTotal";
+import { useUserProfile } from "@/hooks/useUserProfile";
 
 import { PackGallery } from "@/components/pack/PackGallery";
 import { PackConfigForm } from "@/components/pack/PackConfigForm";
@@ -17,6 +19,7 @@ import { PackOptions } from "@/components/pack/PackOptions";
 import { PackTotalBox } from "@/components/pack/PackTotalBox";
 import { PackMobileFooter } from "@/components/pack/PackMobileFooter";
 import { PackCalepinageOption } from "@/components/pack/PackCalepinageOption";
+import { PackShareQuoteModal } from "@/components/pack/PackShareQuoteModal";
 
 function SkeletonBlock({ className }: { className?: string }) {
   return (
@@ -102,14 +105,26 @@ export default function PackPage() {
   const { slug } = useParams<{ slug: string }>();
   const searchParams = useSearchParams();
   const packId = searchParams.get("packId");
+  const quoteId = searchParams.get("quoteId");
 
   const { items, addToCart } = useCart();
+  const { getQuote, saveQuote, setCurrentDraft } = useQuotes();
+  const { isPro } = useUserProfile();
+  const savedQuote = quoteId ? getQuote(quoteId) : undefined;
 
   const existingPack = items.find(
     (i): i is PackItem => i.type === "pack" && i.id === packId
   );
+  const [activeQuoteId, setActiveQuoteId] = useState<string | undefined>(
+    savedQuote?.id
+  );
+  const [activeProjectReference, setActiveProjectReference] = useState<
+    string | undefined
+  >(savedQuote?.projectReference);
+  const [isSavingQuote, setIsSavingQuote] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [calepinage, setCalepinage] = useState<boolean>(
-    existingPack?.calepinage ?? false
+    savedQuote?.calepinage ?? existingPack?.calepinage ?? false
   );
 
   // Configuration 
@@ -148,6 +163,7 @@ export default function PackPage() {
     typeAgrafe,
     typeIsolation,
     existingPack,
+    savedQuote,
   });
 
   // Total
@@ -163,6 +179,84 @@ export default function PackPage() {
     ...included,
     ...options.filter((option) => selectedOptions[option.id]),
   ];
+
+  useEffect(() => {
+    if (quoteId) return;
+    setActiveQuoteId(undefined);
+    setActiveProjectReference(undefined);
+  }, [quoteId, slug]);
+
+  const currentDraft: PackQuoteDraft = useMemo(
+    () => ({
+      quoteId: activeQuoteId || savedQuote?.id,
+      projectReference: activeProjectReference || savedQuote?.projectReference,
+      pack_id: dbPackId || savedQuote?.pack_id || existingPack?.pack_id,
+      slug,
+      surface,
+      pasDePose,
+      tuyauType,
+      typeIsolation,
+      typeAgrafe,
+      calepinage,
+      quantities,
+      selectedOptions,
+      products: [
+        ...products,
+        ...included,
+        ...options.filter((o) => selectedOptions[o.id]),
+      ].map((p) => ({
+        id: p.id,
+        pack_item_id: p.pack_item_id,
+        product_id: p.product_id,
+        description: p.description,
+        unit_price: p.price,
+        image: p.image,
+        reference: p.reference,
+        total_price: p.price * (quantities[p.id] ?? 1),
+      })),
+      total,
+    }),
+    [
+      activeQuoteId,
+      activeProjectReference,
+      savedQuote?.id,
+      savedQuote?.projectReference,
+      savedQuote?.pack_id,
+      dbPackId,
+      existingPack?.pack_id,
+      slug,
+      surface,
+      pasDePose,
+      tuyauType,
+      typeIsolation,
+      typeAgrafe,
+      calepinage,
+      quantities,
+      selectedOptions,
+      products,
+      included,
+      options,
+      total,
+    ]
+  );
+
+  useEffect(() => {
+    setCurrentDraft(currentDraft);
+    return () => setCurrentDraft(null);
+  }, [currentDraft, setCurrentDraft]);
+
+  useEffect(() => {
+    if (!savedQuote) return;
+
+    setActiveQuoteId(savedQuote.id);
+    setActiveProjectReference(savedQuote.projectReference);
+    setSurface(savedQuote.surface);
+    setPasDePose(savedQuote.pasDePose);
+    setTuyauType(savedQuote.tuyauType);
+    setTypeAgrafe(savedQuote.typeAgrafe);
+    setTypeIsolation(savedQuote.typeIsolation);
+    setCalepinage(savedQuote.calepinage);
+  }, [savedQuote?.id]);
 
   const handleAddToCart = () => {
     addToCart({
@@ -195,6 +289,69 @@ export default function PackPage() {
       total,
       quantity: existingPack?.quantity || 1,
     });
+  };
+
+  const handleSaveQuote = async () => {
+    const projectReference = window.prompt(
+      "Référence de projet",
+      activeProjectReference || savedQuote?.projectReference || ""
+    );
+
+    if (!projectReference?.trim()) return;
+
+    try {
+      setIsSavingQuote(true);
+      const updatesLoadedQuote = Boolean(quoteId && savedQuote);
+      const saved = await saveQuote(currentDraft, projectReference.trim(), {
+        updateExisting: updatesLoadedQuote,
+      });
+
+      if (updatesLoadedQuote) {
+        setActiveQuoteId(saved.id);
+        setActiveProjectReference(saved.projectReference);
+      } else {
+        setActiveQuoteId(undefined);
+        setActiveProjectReference(undefined);
+      }
+    } catch (error) {
+      console.error(error);
+      window.alert("Impossible d’enregistrer le devis.");
+    } finally {
+      setIsSavingQuote(false);
+    }
+  };
+
+  const handleShareQuote = async () => {
+    if (isPro) {
+      setIsShareModalOpen(true);
+      return;
+    }
+
+    const shareText = [
+      `Devis Pack ${getName(slug)}`,
+      `Surface : ${surface} m²`,
+      `Pas de pose : ${pasDePose} cm`,
+      `Tuyau : ${tuyauType}`,
+      `Total : ${total.toFixed(2)} €`,
+      typeof window !== "undefined" ? window.location.href : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Devis Pack ${getName(slug)}`,
+          text: shareText,
+        });
+        return;
+      } catch (error) {
+        console.error("Partage natif indisponible :", error);
+      }
+    }
+
+    await navigator.clipboard.writeText(shareText);
+    window.alert("Le devis a été copié dans le presse-papiers.");
   };
 
   if (error && products.length === 0) {
@@ -290,8 +447,10 @@ export default function PackPage() {
             <PackTotalBox
               total={total}
               onAddToCart={handleAddToCart}
+              onSaveQuote={handleSaveQuote}
+              onShareQuote={handleShareQuote}
               isEditing={!!existingPack}
-              disabled={isRecalculating}
+              disabled={isRecalculating || isSavingQuote}
             />
           </div>
         </div>
@@ -300,8 +459,16 @@ export default function PackPage() {
       <PackMobileFooter
         total={total}
         onAddToCart={handleAddToCart}
+        onSaveQuote={handleSaveQuote}
+        onShareQuote={handleShareQuote}
         isEditing={!!existingPack}
-        disabled={isRecalculating}
+        disabled={isRecalculating || isSavingQuote}
+      />
+
+      <PackShareQuoteModal
+        open={isShareModalOpen}
+        draft={currentDraft}
+        onClose={() => setIsShareModalOpen(false)}
       />
 
       <Footer />

@@ -28,6 +28,13 @@ export type PackCatalogProduct = {
   price: number;
   reference?: string | null;
   product_images?: { id: string; image_url: string; order?: number | null }[];
+  subcategory?: {
+    id: string;
+    category?: {
+      id: string;
+      discount?: number | null;
+    } | null;
+  } | null;
 };
 
 export type PackDefinition = {

@@ -39,6 +39,13 @@ const PACK_SELECT = `
       name_en,
       price,
       reference,
+      subcategory:subcategory_id (
+        id,
+        category:category_id (
+          id,
+          discount
+        )
+      ),
       product_images!fk_product (
         id,
         image_url,
