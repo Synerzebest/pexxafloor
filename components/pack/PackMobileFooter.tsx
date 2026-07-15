@@ -11,6 +11,7 @@ type Props = {
   onShareQuote: () => void;
   isEditing: boolean;
   disabled?: boolean;
+  canSaveQuote?: boolean;
 };
 
 export function PackMobileFooter({
@@ -20,6 +21,7 @@ export function PackMobileFooter({
   onShareQuote,
   isEditing,
   disabled = false,
+  canSaveQuote = false,
 }: Props) {
   const [added, setAdded] = useState(false);
 
@@ -79,7 +81,7 @@ export function PackMobileFooter({
         </button>
         </div>
 
-        <div className="grid grid-cols-2 gap-2">
+        <div className={canSaveQuote ? "grid grid-cols-2 gap-2" : "grid grid-cols-1 gap-2"}>
           <button
             type="button"
             onClick={onShareQuote}
@@ -89,15 +91,17 @@ export function PackMobileFooter({
             <Share2 className="h-4 w-4" />
             Partager
           </button>
-          <button
-            type="button"
-            onClick={onSaveQuote}
-            disabled={disabled}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 disabled:opacity-60"
-          >
-            <Save className="h-4 w-4" />
-            Enregistrer
-          </button>
+          {canSaveQuote && (
+            <button
+              type="button"
+              onClick={onSaveQuote}
+              disabled={disabled}
+              className="inline-flex items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 disabled:opacity-60"
+            >
+              <Save className="h-4 w-4" />
+              Enregistrer
+            </button>
+          )}
         </div>
       </div>
     </div>

@@ -5,14 +5,16 @@ import type { User } from "@supabase/supabase-js";
 import Image from "next/image";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { LogOutIcon, User as UserIcon } from "lucide-react";
+import { FileText, LogOutIcon, User as UserIcon } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { supabase } from "@/lib/supabaseClient";
 import { useAuth } from "@/context/AuthProvider";
+import { useQuotes } from "@/context/QuoteContext";
 
 type Profile = {
   id: string;
   name: string | null;
+  is_pro: boolean | null;
 };
 
 export default function UserButton() {
@@ -20,6 +22,7 @@ export default function UserButton() {
   const t = useTranslations("UserButton");
 
   const { user, loading } = useAuth();
+  const { quotes, openQuoteList } = useQuotes();
 
   const [profile, setProfile] = useState<Profile | null>(null);
   const [profileLoading, setProfileLoading] = useState(true);
@@ -46,7 +49,7 @@ export default function UserButton() {
 
       const { data } = await supabase
         .from("profiles")
-        .select("id, name")
+        .select("id, name, is_pro")
         .eq("id", user.id)
         .single();
 
@@ -114,6 +117,7 @@ export default function UserButton() {
 
   /** === USER CONNECTÉ === */
   const displayName = user.user_metadata?.full_name || profile?.name || "Me";
+  const isPro = profile?.is_pro === true;
   const initials = displayName
     .trim()
     .split(/\s+/)
@@ -218,6 +222,29 @@ export default function UserButton() {
                     {t("profilePage")}
                   </Link>
                 </li>
+
+                {isPro && (
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        openQuoteList();
+                        setOpen(false);
+                      }}
+                      className="w-full flex items-center justify-between gap-3 px-3 py-2.5 rounded-xl text-left text-sm text-gray-800 hover:bg-gray-50"
+                    >
+                      <span className="inline-flex items-center gap-3">
+                        <FileText size={16} />
+                        Mes devis
+                      </span>
+                      {quotes.length > 0 && (
+                        <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700">
+                          {quotes.length}
+                        </span>
+                      )}
+                    </button>
+                  </li>
+                )}
 
                 <li>
                   <button

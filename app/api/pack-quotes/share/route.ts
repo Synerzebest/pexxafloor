@@ -37,7 +37,7 @@ async function requireProUser() {
 
   const { data: profile, error: profileError } = await supabaseServer
     .from("profiles")
-    .select("is_pro")
+    .select("is_pro, name")
     .eq("id", user.id)
     .single();
 
@@ -48,7 +48,25 @@ async function requireProUser() {
     };
   }
 
-  return { userId: user.id, response: null };
+  const { data: proApplication } = await supabaseServer
+    .from("pro_applications")
+    .select("company_name")
+    .eq("user_id", user.id)
+    .eq("status", "VERIFIED")
+    .order("verified_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  return {
+    userId: user.id,
+    proName:
+      proApplication?.company_name ||
+      profile?.name ||
+      user.user_metadata?.full_name ||
+      user.email ||
+      "Installateur",
+    response: null,
+  };
 }
 
 export async function POST(req: Request) {
@@ -114,6 +132,7 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     isPro: true,
+    proName: auth.proName,
     packName: pack.name_fr,
     projectReference: quote.projectReference || null,
     lines,

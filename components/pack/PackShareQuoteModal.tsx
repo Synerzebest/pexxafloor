@@ -20,6 +20,7 @@ type ShareLine = {
 };
 
 type SharePricing = {
+  proName: string;
   packName: string;
   projectReference?: string | null;
   lines: ShareLine[];
@@ -54,7 +55,7 @@ function buildQuotePdf({
 }) {
   const doc = new jsPDF();
   const isCustomer = mode === "customer";
-  const title = isCustomer ? "DEVIS PARTICULIER" : "DEVIS PRO";
+  const title = isCustomer ? "Devis particulier" : "Devis PRO";
   const discountRate = isCustomer ? customerDiscount / 100 : 0;
   const lines = pricing.lines.map((line) => {
     const unitPrice = isCustomer ? line.customerUnitPrice * (1 - discountRate) : line.proUnitPrice;
@@ -74,32 +75,60 @@ function buildQuotePdf({
     : pricing.proTotal;
   const totalTVAC = totalHTVA * 1.21;
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(20);
-  doc.text(s("PexxaFloor"), 14, 18);
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
 
-  doc.setFontSize(14);
-  doc.text(s(title), 14, 32);
+  doc.setFillColor(248, 250, 252);
+  doc.rect(0, 0, pageWidth, 48, "F");
+
+  doc.setTextColor(17, 24, 39);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(19);
+  doc.text(s(pricing.proName), 14, 18);
+
+  doc.setFontSize(12);
+  doc.setTextColor(245, 126, 32);
+  doc.text(s(title), 14, 29);
 
   doc.setFont("helvetica", "normal");
-  doc.setFontSize(10);
-  doc.text(s(`Pack : ${pricing.packName}`), 14, 42);
-  doc.text(s(`Reference projet : ${pricing.projectReference || "-"}`), 14, 48);
-  doc.text(s(`Date : ${new Date().toLocaleDateString("fr-BE")}`), 14, 54);
+  doc.setFontSize(9);
+  doc.setTextColor(75, 85, 99);
+  doc.text(s(`Date : ${new Date().toLocaleDateString("fr-BE")}`), pageWidth - 14, 18, {
+    align: "right",
+  });
+  doc.text(s(`Reference projet : ${pricing.projectReference || "-"}`), pageWidth - 14, 25, {
+    align: "right",
+  });
+
+  doc.setTextColor(17, 24, 39);
+  doc.setFontSize(11);
+  doc.text(s(`Pack : ${pricing.packName}`), 14, 58);
 
   if (isCustomer && customerDiscount > 0) {
-    doc.text(s(`Remise appliquee : ${customerDiscount}%`), 14, 60);
+    doc.setTextColor(75, 85, 99);
+    doc.setFontSize(9);
+    doc.text(s(`Remise appliquee : ${customerDiscount}%`), 14, 65);
   }
 
   autoTable(doc, {
-    startY: isCustomer && customerDiscount > 0 ? 70 : 64,
-    head: [[s("Ref."), s("Produit"), s("Qte"), s("PU HTVA"), s("Total HTVA")]],
+    startY: isCustomer && customerDiscount > 0 ? 74 : 68,
+    head: [[s("Reference"), s("Produit"), s("Qte"), s("PU HTVA"), s("Total HTVA")]],
     body: lines,
-    styles: { fontSize: 9, cellPadding: 2.5, font: "helvetica" },
+    margin: { left: 14, right: 14, bottom: 34 },
+    styles: {
+      fontSize: 8.5,
+      cellPadding: 3,
+      font: "helvetica",
+      lineColor: [229, 231, 235],
+      lineWidth: 0.2,
+    },
     headStyles: {
-      fillColor: [245, 126, 32],
+      fillColor: [17, 24, 39],
       textColor: [255, 255, 255],
       fontStyle: "bold",
+    },
+    alternateRowStyles: {
+      fillColor: [249, 250, 251],
     },
     columnStyles: {
       0: { cellWidth: 26 },
@@ -111,16 +140,40 @@ function buildQuotePdf({
   });
 
   const finalY = (doc as any).lastAutoTable.finalY + 12;
-  const rightX = doc.internal.pageSize.getWidth() - 14;
+  const rightX = pageWidth - 14;
 
+  doc.setFillColor(249, 250, 251);
+  doc.roundedRect(pageWidth - 80, finalY - 7, 66, 26, 3, 3, "F");
+  doc.setTextColor(17, 24, 39);
   doc.setFont("helvetica", "bold");
-  doc.setFontSize(12);
+  doc.setFontSize(11);
   doc.text(s(`Total HTVA : ${formatPrice(totalHTVA)} EUR`), rightX, finalY, {
     align: "right",
   });
   doc.text(s(`Total TVAC : ${formatPrice(totalTVAC)} EUR`), rightX, finalY + 8, {
     align: "right",
   });
+
+  const footerLines = [
+    "UNISIS BELGIUM SPRL Brusselstraat 107 D 1702 Groot Bijgaarden",
+    "TEL: +32 2 343 92 00 - Fax: +32 2 343 92 02 info@discoveryshop.be - www.discoveryshop.be",
+    "BNP PARIBAS FORTIS BE51 0014 4682 9162 - TVA/BTW BE 0871.407.121",
+  ];
+
+  const pageCount = doc.getNumberOfPages();
+  for (let page = 1; page <= pageCount; page += 1) {
+    doc.setPage(page);
+    doc.setDrawColor(229, 231, 235);
+    doc.line(14, pageHeight - 25, pageWidth - 14, pageHeight - 25);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(6.5);
+    doc.setTextColor(107, 114, 128);
+    footerLines.forEach((line, index) => {
+      doc.text(s(line), pageWidth / 2, pageHeight - 19 + index * 5, {
+        align: "center",
+      });
+    });
+  }
 
   return doc;
 }
@@ -135,7 +188,7 @@ async function sharePdf(doc: jsPDF, filename: string) {
   if (navigator.share && (!nav.canShare || nav.canShare({ files: [file] }))) {
     await navigator.share({
       title: filename,
-      text: "Voici le devis PexxaFloor.",
+      text: "Voici le devis.",
       files: [file],
     });
     return;
@@ -208,7 +261,7 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
       setSharingMode(mode);
       const doc = buildQuotePdf({ pricing, mode, customerDiscount });
       const suffix = mode === "customer" ? "particulier" : "pro";
-      await sharePdf(doc, `devis-pexxafloor-${suffix}.pdf`);
+      await sharePdf(doc, `devis-${suffix}.pdf`);
     } catch (err) {
       console.error(err);
       window.alert("Impossible de partager le PDF.");

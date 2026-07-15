@@ -292,6 +292,11 @@ export default function PackPage() {
   };
 
   const handleSaveQuote = async () => {
+    if (!isPro) {
+      window.alert("L’enregistrement des devis est réservé aux comptes PRO.");
+      return;
+    }
+
     const projectReference = window.prompt(
       "Référence de projet",
       activeProjectReference || savedQuote?.projectReference || ""
@@ -451,6 +456,7 @@ export default function PackPage() {
               onShareQuote={handleShareQuote}
               isEditing={!!existingPack}
               disabled={isRecalculating || isSavingQuote}
+              canSaveQuote={isPro === true}
             />
           </div>
         </div>
@@ -463,6 +469,7 @@ export default function PackPage() {
         onShareQuote={handleShareQuote}
         isEditing={!!existingPack}
         disabled={isRecalculating || isSavingQuote}
+        canSaveQuote={isPro === true}
       />
 
       <PackShareQuoteModal

@@ -11,6 +11,7 @@ type Props = {
   onShareQuote: () => void;
   isEditing: boolean;
   disabled?: boolean;
+  canSaveQuote?: boolean;
 };
 
 export function PackTotalBox({
@@ -20,6 +21,7 @@ export function PackTotalBox({
   onShareQuote,
   isEditing,
   disabled = false,
+  canSaveQuote = false,
 }: Props) {
   const [added, setAdded] = useState(false);
 
@@ -77,7 +79,7 @@ export function PackTotalBox({
           </AnimatePresence>
         </button>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className={canSaveQuote ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 gap-3"}>
           <button
             type="button"
             onClick={onShareQuote}
@@ -88,15 +90,17 @@ export function PackTotalBox({
             Partager ce devis
           </button>
 
-          <button
-            type="button"
-            onClick={onSaveQuote}
-            disabled={disabled}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-4 text-sm font-semibold text-orange-700 transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60"
-          >
-            <Save className="h-4 w-4" />
-            Enregistrer le devis
-          </button>
+          {canSaveQuote && (
+            <button
+              type="button"
+              onClick={onSaveQuote}
+              disabled={disabled}
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-4 text-sm font-semibold text-orange-700 transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <Save className="h-4 w-4" />
+              Enregistrer le devis
+            </button>
+          )}
         </div>
 
         {/* INFOS */}

@@ -42,7 +42,7 @@ function mapRow(row: PackQuoteRow): SavedPackQuote {
   };
 }
 
-async function requireUser() {
+async function requireProUser() {
   const supabaseAuth = await createSupabaseServerAuthClient();
   const {
     data: { user },
@@ -53,11 +53,21 @@ async function requireUser() {
     return { userId: null, response: NextResponse.json({ error: "Unauthorized" }, { status: 401 }) };
   }
 
+  const { data: profile, error: profileError } = await supabaseServer
+    .from("profiles")
+    .select("is_pro")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || profile?.is_pro !== true) {
+    return { userId: user.id, response: NextResponse.json({ error: "Forbidden" }, { status: 403 }) };
+  }
+
   return { userId: user.id, response: null };
 }
 
 export async function GET() {
-  const auth = await requireUser();
+  const auth = await requireProUser();
   if (auth.response) return auth.response;
 
   const { data, error } = await supabaseServer
@@ -74,7 +84,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const auth = await requireUser();
+  const auth = await requireProUser();
   if (auth.response) return auth.response;
 
   const body = (await req.json()) as PackQuoteDraft & {

@@ -46,7 +46,6 @@ export default function Navbar() {
   const {
     quotes,
     isQuoteListOpen,
-    openQuoteList,
     closeQuoteList,
     loadQuote,
   } = useQuotes();
@@ -69,11 +68,6 @@ export default function Navbar() {
   };
 
   const hoveredCategory = categories.find((c) => c.id === hoveredCat);
-
-  const openQuotesAndCloseDrawer = () => {
-    openQuoteList();
-    setDrawerOpen(false);
-  };
 
   return (
     <header className="w-full border-b border-gray-200 fixed z-20">
@@ -128,19 +122,6 @@ export default function Navbar() {
               </span>
             )}
           </motion.button>
-
-          <button
-            type="button"
-            onClick={openQuoteList}
-            className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700"
-          >
-            Mes devis
-            {quotes.length > 0 && (
-              <span className="rounded-full bg-orange-100 px-1.5 py-0.5 text-[10px] font-semibold text-orange-700">
-                {quotes.length}
-              </span>
-            )}
-          </button>
 
           <motion.div
             whileHover={{scale: 1.05}}
@@ -420,13 +401,6 @@ export default function Navbar() {
                         {items.length}
                       </span>
                     )}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={openQuotesAndCloseDrawer}
-                    className="rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700"
-                  >
-                    Mes devis
                   </button>
                 </div>
 
