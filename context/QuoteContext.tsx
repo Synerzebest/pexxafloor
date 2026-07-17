@@ -7,6 +7,10 @@ import type { PackProduct } from "@/types/PackProductType";
 export type PackQuoteDraft = {
   quoteId?: string;
   projectReference?: string;
+  customerName?: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  projectType?: string;
   slug: string;
   pack_id?: string;
   surface: number;
@@ -27,6 +31,14 @@ export type SavedPackQuote = PackQuoteDraft & {
   savedAt: string;
 };
 
+export type PackQuoteDetails = {
+  projectReference: string;
+  customerName?: string;
+  customerPhone?: string;
+  customerEmail?: string;
+  projectType?: string;
+};
+
 type QuoteContextType = {
   quotes: SavedPackQuote[];
   currentDraft: PackQuoteDraft | null;
@@ -34,9 +46,10 @@ type QuoteContextType = {
   setCurrentDraft: (draft: PackQuoteDraft | null) => void;
   saveQuote: (
     draft: PackQuoteDraft,
-    projectReference: string,
+    details: PackQuoteDetails,
     options?: { updateExisting?: boolean }
   ) => Promise<SavedPackQuote>;
+  deleteQuote: (id: string) => Promise<void>;
   getQuote: (id: string) => SavedPackQuote | undefined;
   openQuoteList: () => void;
   closeQuoteList: () => void;
@@ -88,7 +101,7 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
 
   const saveQuote = async (
     draft: PackQuoteDraft,
-    projectReference: string,
+    details: PackQuoteDetails,
     options?: { updateExisting?: boolean }
   ) => {
     const quoteId = options?.updateExisting ? draft.quoteId : undefined;
@@ -96,7 +109,7 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      body: JSON.stringify({ ...draft, quoteId, projectReference }),
+      body: JSON.stringify({ ...draft, ...details, quoteId }),
     });
 
     if (response.status === 401) {
@@ -120,9 +133,31 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
     setCurrentDraft({
       ...draft,
       quoteId: options?.updateExisting ? quote.id : undefined,
-      projectReference: options?.updateExisting ? projectReference : undefined,
+      projectReference: options?.updateExisting ? quote.projectReference : undefined,
+      customerName: options?.updateExisting ? quote.customerName : undefined,
+      customerPhone: options?.updateExisting ? quote.customerPhone : undefined,
+      customerEmail: options?.updateExisting ? quote.customerEmail : undefined,
+      projectType: options?.updateExisting ? quote.projectType : undefined,
     });
     return quote;
+  };
+
+  const deleteQuote = async (id: string) => {
+    const response = await fetch(`/api/pack-quotes/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    });
+
+    if (response.status === 401) {
+      router.push(`/${getLocaleFromPath(pathname)}/login`);
+      throw new Error("Connexion requise pour supprimer un devis.");
+    }
+
+    if (!response.ok) {
+      throw new Error(await response.text());
+    }
+
+    setQuotes((prev) => prev.filter((quote) => quote.id !== id));
   };
 
   const openSavedQuote = (quote: SavedPackQuote) => {
@@ -152,6 +187,7 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
       isQuoteListOpen,
       setCurrentDraft,
       saveQuote,
+      deleteQuote,
       getQuote: (id: string) => quotes.find((quote) => quote.id === id),
       openQuoteList: () => {
         setIsQuoteListOpen(true);
@@ -166,19 +202,26 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
   const handleSaveThenOpen = async () => {
     if (!currentDraft || !pendingQuote) return;
 
-    const defaultReference = currentDraft.projectReference || "";
     const projectReference = window.prompt(
       "Référence de projet",
-      defaultReference
+      currentDraft.projectReference || ""
     );
 
     if (!projectReference?.trim()) return;
 
     try {
       setIsSavingBeforeOpen(true);
-      await saveQuote(currentDraft, projectReference.trim(), {
-        updateExisting: Boolean(currentDraft.quoteId),
-      });
+      await saveQuote(
+        currentDraft,
+        {
+          projectReference: projectReference.trim(),
+          customerName: currentDraft.customerName,
+          customerPhone: currentDraft.customerPhone,
+          customerEmail: currentDraft.customerEmail,
+          projectType: currentDraft.projectType,
+        },
+        { updateExisting: Boolean(currentDraft.quoteId) }
+      );
       openSavedQuote(pendingQuote);
     } catch (error) {
       console.error(error);

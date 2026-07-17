@@ -4,7 +4,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { Navbar, Footer, ProBadge } from "@/components";
 import { useCart, PackItem } from "@/context/CartContext";
 import { useEffect, useMemo, useState } from "react";
-import { useQuotes, type PackQuoteDraft } from "@/context/QuoteContext";
+import { useQuotes, type PackQuoteDetails, type PackQuoteDraft } from "@/context/QuoteContext";
 
 import { usePackConfig } from "@/hooks/usePackConfig";
 import { usePackProducts } from "@/hooks/usePackProducts";
@@ -20,6 +20,7 @@ import { PackTotalBox } from "@/components/pack/PackTotalBox";
 import { PackMobileFooter } from "@/components/pack/PackMobileFooter";
 import { PackCalepinageOption } from "@/components/pack/PackCalepinageOption";
 import { PackShareQuoteModal } from "@/components/pack/PackShareQuoteModal";
+import { PackSaveQuoteModal } from "@/components/pack/PackSaveQuoteModal";
 
 function SkeletonBlock({ className }: { className?: string }) {
   return (
@@ -121,8 +122,21 @@ export default function PackPage() {
   const [activeProjectReference, setActiveProjectReference] = useState<
     string | undefined
   >(savedQuote?.projectReference);
+  const [activeCustomerName, setActiveCustomerName] = useState<string | undefined>(
+    savedQuote?.customerName
+  );
+  const [activeCustomerPhone, setActiveCustomerPhone] = useState<string | undefined>(
+    savedQuote?.customerPhone
+  );
+  const [activeCustomerEmail, setActiveCustomerEmail] = useState<string | undefined>(
+    savedQuote?.customerEmail
+  );
+  const [activeProjectType, setActiveProjectType] = useState<string | undefined>(
+    savedQuote?.projectType
+  );
   const [isSavingQuote, setIsSavingQuote] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
   const [calepinage, setCalepinage] = useState<boolean>(
     savedQuote?.calepinage ?? existingPack?.calepinage ?? false
   );
@@ -184,12 +198,20 @@ export default function PackPage() {
     if (quoteId) return;
     setActiveQuoteId(undefined);
     setActiveProjectReference(undefined);
+    setActiveCustomerName(undefined);
+    setActiveCustomerPhone(undefined);
+    setActiveCustomerEmail(undefined);
+    setActiveProjectType(undefined);
   }, [quoteId, slug]);
 
   const currentDraft: PackQuoteDraft = useMemo(
     () => ({
       quoteId: activeQuoteId || savedQuote?.id,
       projectReference: activeProjectReference || savedQuote?.projectReference,
+      customerName: activeCustomerName || savedQuote?.customerName,
+      customerPhone: activeCustomerPhone || savedQuote?.customerPhone,
+      customerEmail: activeCustomerEmail || savedQuote?.customerEmail,
+      projectType: activeProjectType || savedQuote?.projectType,
       pack_id: dbPackId || savedQuote?.pack_id || existingPack?.pack_id,
       slug,
       surface,
@@ -219,8 +241,16 @@ export default function PackPage() {
     [
       activeQuoteId,
       activeProjectReference,
+      activeCustomerName,
+      activeCustomerPhone,
+      activeCustomerEmail,
+      activeProjectType,
       savedQuote?.id,
       savedQuote?.projectReference,
+      savedQuote?.customerName,
+      savedQuote?.customerPhone,
+      savedQuote?.customerEmail,
+      savedQuote?.projectType,
       savedQuote?.pack_id,
       dbPackId,
       existingPack?.pack_id,
@@ -250,6 +280,10 @@ export default function PackPage() {
 
     setActiveQuoteId(savedQuote.id);
     setActiveProjectReference(savedQuote.projectReference);
+    setActiveCustomerName(savedQuote.customerName);
+    setActiveCustomerPhone(savedQuote.customerPhone);
+    setActiveCustomerEmail(savedQuote.customerEmail);
+    setActiveProjectType(savedQuote.projectType);
     setSurface(savedQuote.surface);
     setPasDePose(savedQuote.pasDePose);
     setTuyauType(savedQuote.tuyauType);
@@ -297,27 +331,33 @@ export default function PackPage() {
       return;
     }
 
-    const projectReference = window.prompt(
-      "Référence de projet",
-      activeProjectReference || savedQuote?.projectReference || ""
-    );
+    setIsSaveModalOpen(true);
+  };
 
-    if (!projectReference?.trim()) return;
-
+  const handleSaveQuoteDetails = async (details: PackQuoteDetails) => {
     try {
       setIsSavingQuote(true);
       const updatesLoadedQuote = Boolean(quoteId && savedQuote);
-      const saved = await saveQuote(currentDraft, projectReference.trim(), {
+      const saved = await saveQuote(currentDraft, details, {
         updateExisting: updatesLoadedQuote,
       });
 
       if (updatesLoadedQuote) {
         setActiveQuoteId(saved.id);
         setActiveProjectReference(saved.projectReference);
+        setActiveCustomerName(saved.customerName);
+        setActiveCustomerPhone(saved.customerPhone);
+        setActiveCustomerEmail(saved.customerEmail);
+        setActiveProjectType(saved.projectType);
       } else {
         setActiveQuoteId(undefined);
         setActiveProjectReference(undefined);
+        setActiveCustomerName(undefined);
+        setActiveCustomerPhone(undefined);
+        setActiveCustomerEmail(undefined);
+        setActiveProjectType(undefined);
       }
+      setIsSaveModalOpen(false);
     } catch (error) {
       console.error(error);
       window.alert("Impossible d’enregistrer le devis.");
@@ -422,6 +462,7 @@ export default function PackPage() {
               tuyauType={tuyauType}
               typeAgrafe={typeAgrafe}
               typeIsolation={typeIsolation}
+              projectReference={activeProjectReference || savedQuote?.projectReference}
               onSurfaceChange={setSurface}
               onPasDePoseChange={setPasDePose}
               onTuyauTypeChange={setTuyauType}
@@ -476,6 +517,20 @@ export default function PackPage() {
         open={isShareModalOpen}
         draft={currentDraft}
         onClose={() => setIsShareModalOpen(false)}
+      />
+
+      <PackSaveQuoteModal
+        open={isSaveModalOpen}
+        saving={isSavingQuote}
+        initialDetails={{
+          projectReference: activeProjectReference || savedQuote?.projectReference,
+          customerName: activeCustomerName || savedQuote?.customerName,
+          customerPhone: activeCustomerPhone || savedQuote?.customerPhone,
+          customerEmail: activeCustomerEmail || savedQuote?.customerEmail,
+          projectType: activeProjectType || savedQuote?.projectType,
+        }}
+        onClose={() => setIsSaveModalOpen(false)}
+        onSave={handleSaveQuoteDetails}
       />
 
       <Footer />

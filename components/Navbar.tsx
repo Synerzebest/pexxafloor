@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight } from 'lucide-react';
+import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
@@ -48,6 +48,7 @@ export default function Navbar() {
     isQuoteListOpen,
     closeQuoteList,
     loadQuote,
+    deleteQuote,
   } = useQuotes();
 
   const { drawerOpen, setDrawerOpen } = useUI()
@@ -476,13 +477,16 @@ export default function Navbar() {
                   </div>
                 ) : (
                   quotes.map((quote) => (
-                    <button
+                    <div
                       key={quote.id}
-                      type="button"
-                      onClick={() => loadQuote(quote)}
-                      className="w-full rounded-lg border border-gray-200 bg-white p-4 text-left transition hover:border-orange-200 hover:bg-orange-50"
+                      className="flex items-start gap-3 rounded-lg border border-gray-200 bg-white p-4 transition hover:border-orange-200 hover:bg-orange-50"
                     >
-                      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                      <button
+                        type="button"
+                        onClick={() => loadQuote(quote)}
+                        className="min-w-0 flex-1 text-left"
+                      >
+                        <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                         <div>
                           <p className="font-semibold text-gray-900">
                             {quote.projectReference}
@@ -490,12 +494,34 @@ export default function Navbar() {
                           <p className="mt-1 text-sm text-gray-500">
                             Pack {quote.slug} · {quote.surface} m² · {quote.total.toFixed(2)} €
                           </p>
+                          {(quote.customerName || quote.projectType) && (
+                            <p className="mt-1 text-xs text-gray-400">
+                              {[quote.customerName, quote.projectType].filter(Boolean).join(" · ")}
+                            </p>
+                          )}
                         </div>
                         <span className="text-xs text-gray-400">
                           {new Date(quote.savedAt).toLocaleDateString("fr-BE")}
                         </span>
-                      </div>
-                    </button>
+                        </div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={async () => {
+                          if (!window.confirm(`Supprimer le devis « ${quote.projectReference} » ?`)) return;
+                          try {
+                            await deleteQuote(quote.id);
+                          } catch (error) {
+                            console.error(error);
+                            window.alert("Impossible de supprimer ce devis.");
+                          }
+                        }}
+                        className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
+                        aria-label="Supprimer le devis"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
                   ))
                 )}
               </div>

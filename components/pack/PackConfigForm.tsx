@@ -14,6 +14,7 @@ type Props = {
   tuyauType: "PERT" | "PERT-AL-PERT";
   typeAgrafe: 40 | 60;
   typeIsolation: 0 | 15 | 30;
+  projectReference?: string;
   onSurfaceChange: (v: number) => void;
   onPasDePoseChange: (v: number) => void;
   onTuyauTypeChange: (v: "PERT" | "PERT-AL-PERT") => void;
@@ -28,6 +29,7 @@ export function PackConfigForm({
   tuyauType,
   typeAgrafe,
   typeIsolation,
+  projectReference,
   onSurfaceChange,
   onPasDePoseChange,
   onTuyauTypeChange,
@@ -95,9 +97,16 @@ export function PackConfigForm({
 
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-100 space-y-6">
-      <h2 className="text-xl font-semibold text-gray-800 border-b pb-3">
-        {t('settings')}
-      </h2>
+      <div className="flex flex-col gap-2 border-b pb-3 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="text-xl font-semibold text-gray-800">
+          {t('settings')}
+        </h2>
+        {projectReference && (
+          <span className="inline-flex w-fit rounded-full bg-orange-50 px-3 py-1 text-xs font-semibold text-orange-700 ring-1 ring-orange-100">
+            {projectReference}
+          </span>
+        )}
+      </div>
 
       {/* Pas de pose + Type de tuyau */}
       <div className="md:flex md:gap-6 space-y-6 md:space-y-0">

@@ -23,6 +23,10 @@ type SharePricing = {
   proName: string;
   packName: string;
   projectReference?: string | null;
+  customerName?: string | null;
+  customerPhone?: string | null;
+  customerEmail?: string | null;
+  projectType?: string | null;
   lines: ShareLine[];
   proTotal: number;
   customerTotal: number;
@@ -104,14 +108,32 @@ function buildQuotePdf({
   doc.setFontSize(11);
   doc.text(s(`Pack : ${pricing.packName}`), 14, 58);
 
+  const customerDetails = [
+    pricing.customerName ? `Client : ${pricing.customerName}` : null,
+    pricing.customerPhone ? `GSM : ${pricing.customerPhone}` : null,
+    pricing.customerEmail ? `Email : ${pricing.customerEmail}` : null,
+    pricing.projectType ? `Type de projet : ${pricing.projectType}` : null,
+  ].filter(Boolean) as string[];
+
+  customerDetails.forEach((detail, index) => {
+    doc.setFontSize(9);
+    doc.setTextColor(75, 85, 99);
+    doc.text(s(detail), 14, 65 + index * 6);
+  });
+
   if (isCustomer && customerDiscount > 0) {
     doc.setTextColor(75, 85, 99);
     doc.setFontSize(9);
-    doc.text(s(`Remise appliquee : ${customerDiscount}%`), 14, 65);
+    doc.text(s(`Remise appliquee : ${customerDiscount}%`), 14, 65 + customerDetails.length * 6);
   }
 
+  const tableStartY =
+    68 +
+    customerDetails.length * 6 +
+    (isCustomer && customerDiscount > 0 ? 10 : 0);
+
   autoTable(doc, {
-    startY: isCustomer && customerDiscount > 0 ? 74 : 68,
+    startY: tableStartY,
     head: [[s("Reference"), s("Produit"), s("Qte"), s("PU HTVA"), s("Total HTVA")]],
     body: lines,
     margin: { left: 14, right: 14, bottom: 34 },

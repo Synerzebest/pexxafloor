@@ -6,6 +6,10 @@ import type { PackQuoteDraft, SavedPackQuote } from "@/context/QuoteContext";
 type PackQuoteRow = {
   id: string;
   project_reference: string;
+  customer_name?: string | null;
+  customer_phone?: string | null;
+  customer_email?: string | null;
+  project_type?: string | null;
   slug: string;
   pack_id?: string | null;
   surface: number;
@@ -26,6 +30,10 @@ function mapRow(row: PackQuoteRow): SavedPackQuote {
     id: row.id,
     quoteId: row.id,
     projectReference: row.project_reference,
+    customerName: row.customer_name || undefined,
+    customerPhone: row.customer_phone || undefined,
+    customerEmail: row.customer_email || undefined,
+    projectType: row.project_type || undefined,
     slug: row.slug,
     pack_id: row.pack_id || undefined,
     surface: Number(row.surface),
@@ -89,6 +97,10 @@ export async function POST(req: Request) {
 
   const body = (await req.json()) as PackQuoteDraft & {
     projectReference?: string;
+    customerName?: string;
+    customerPhone?: string;
+    customerEmail?: string;
+    projectType?: string;
   };
 
   if (!body.projectReference?.trim()) {
@@ -105,6 +117,10 @@ export async function POST(req: Request) {
   const payload = {
     user_id: auth.userId,
     project_reference: body.projectReference.trim(),
+    customer_name: body.customerName?.trim() || null,
+    customer_phone: body.customerPhone?.trim() || null,
+    customer_email: body.customerEmail?.trim() || null,
+    project_type: body.projectType?.trim() || null,
     slug: body.slug,
     pack_id: body.pack_id || null,
     surface: body.surface,
