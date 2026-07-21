@@ -20,7 +20,7 @@ type ShareLine = {
 };
 
 type SharePricing = {
-  proName: string;
+  proIssuer: QuoteIssuer;
   packName: string;
   projectReference?: string | null;
   customerName?: string | null;
@@ -31,6 +31,28 @@ type SharePricing = {
   proTotal: number;
   customerTotal: number;
   margin: number;
+};
+
+type QuoteIssuer = {
+  name: string;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  postcode?: string | null;
+  town?: string | null;
+  country?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  vat?: string | null;
+};
+
+const UNISIS_ISSUER: QuoteIssuer = {
+  name: "Unisis Development SRL",
+  addressLine1: "Brusselstraat 107 D",
+  postcode: "1702",
+  town: "Groot-Bijgaarden",
+  phone: "+32 2 343 92 00",
+  email: "info@discoveryshop.be",
+  vat: "BE 0871.407.121",
 };
 
 type ShareMode = "pro" | "customer";
@@ -59,10 +81,17 @@ function buildQuotePdf({
 }) {
   const doc = new jsPDF();
   const isCustomer = mode === "customer";
-  const title = isCustomer ? "Devis particulier" : "Devis PRO";
+  const issuer = isCustomer ? pricing.proIssuer : UNISIS_ISSUER;
+  const title = "Devis";
   const discountRate = isCustomer ? customerDiscount / 100 : 0;
-  const lines = pricing.lines.map((line) => {
-    const unitPrice = isCustomer ? line.customerUnitPrice * (1 - discountRate) : line.proUnitPrice;
+  const visibleLines = isCustomer
+    ? pricing.lines
+    : pricing.lines.filter((line) => !line.id.startsWith("additional-item:"));
+  const lines = visibleLines.map((line) => {
+    const isAdditionalItem = line.id.startsWith("additional-item:");
+    const unitPrice = isCustomer
+      ? line.customerUnitPrice * (isAdditionalItem ? 1 : 1 - discountRate)
+      : line.proUnitPrice;
     const total = unitPrice * line.quantity;
 
     return [
@@ -74,8 +103,12 @@ function buildQuotePdf({
     ];
   });
 
+  const additionalItemsTotal = pricing.lines
+    .filter((line) => line.id.startsWith("additional-item:"))
+    .reduce((sum, line) => sum + line.customerTotal, 0);
+  const supplyCustomerTotal = pricing.customerTotal - additionalItemsTotal;
   const totalHTVA = isCustomer
-    ? pricing.customerTotal * (1 - discountRate)
+    ? supplyCustomerTotal * (1 - discountRate) + additionalItemsTotal
     : pricing.proTotal;
   const totalTVAC = totalHTVA * 1.21;
 
@@ -88,11 +121,23 @@ function buildQuotePdf({
   doc.setTextColor(17, 24, 39);
   doc.setFont("helvetica", "bold");
   doc.setFontSize(19);
-  doc.text(s(pricing.proName), 14, 18);
+  doc.text(s(issuer.name), 14, 16);
 
+  doc.setFont("helvetica", "normal");
+  doc.setFontSize(8);
+  doc.setTextColor(75, 85, 99);
+  const headerAddress = [issuer.addressLine1, issuer.addressLine2].filter(Boolean).join(", ");
+  const headerTown = [issuer.postcode, issuer.town].filter(Boolean).join(" ");
+  if (headerAddress) doc.text(s(headerAddress), 14, 22);
+  if (headerTown) doc.text(s(headerTown), 14, 27);
+
+  doc.setFont("helvetica", "bold");
   doc.setFontSize(12);
   doc.setTextColor(245, 126, 32);
-  doc.text(s(title), 14, 29);
+  doc.text(s(title), 14, 38);
+
+  doc.setFontSize(9);
+  doc.text("PexxaFloor", pageWidth - 14, 38, { align: "right" });
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
@@ -176,11 +221,22 @@ function buildQuotePdf({
     align: "right",
   });
 
+  const footerAddress = [
+    issuer.addressLine1,
+    issuer.addressLine2,
+    [issuer.postcode, issuer.town].filter(Boolean).join(" "),
+    issuer.country,
+  ]
+    .filter(Boolean)
+    .join(" - ");
+  const footerContact = [issuer.phone && `TEL: ${issuer.phone}`, issuer.email]
+    .filter(Boolean)
+    .join(" - ");
   const footerLines = [
-    "UNISIS BELGIUM SPRL Brusselstraat 107 D 1702 Groot Bijgaarden",
-    "TEL: +32 2 343 92 00 - Fax: +32 2 343 92 02 info@discoveryshop.be - www.discoveryshop.be",
-    "BNP PARIBAS FORTIS BE51 0014 4682 9162 - TVA/BTW BE 0871.407.121",
-  ];
+    [issuer.name, footerAddress].filter(Boolean).join(" - "),
+    footerContact,
+    issuer.vat ? `TVA/BTW ${issuer.vat}` : null,
+  ].filter(Boolean) as string[];
 
   const pageCount = doc.getNumberOfPages();
   for (let page = 1; page <= pageCount; page += 1) {
@@ -269,7 +325,14 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
 
   const customerTotalAfterDiscount = useMemo(() => {
     if (!pricing) return 0;
-    return pricing.customerTotal * (1 - customerDiscount / 100);
+    const additionalItemsTotal = pricing.lines
+      .filter((line) => line.id.startsWith("additional-item:"))
+      .reduce((sum, line) => sum + line.customerTotal, 0);
+    return (
+      (pricing.customerTotal - additionalItemsTotal) *
+        (1 - customerDiscount / 100) +
+      additionalItemsTotal
+    );
   }, [pricing, customerDiscount]);
 
   const marginAfterDiscount = pricing

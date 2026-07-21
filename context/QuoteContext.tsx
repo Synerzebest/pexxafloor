@@ -4,6 +4,12 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import type { PackProduct } from "@/types/PackProductType";
 
+export type PackQuoteAdditionalItem = {
+  id: string;
+  label: string;
+  amount: number;
+};
+
 export type PackQuoteDraft = {
   quoteId?: string;
   projectReference?: string;
@@ -11,6 +17,7 @@ export type PackQuoteDraft = {
   customerPhone?: string;
   customerEmail?: string;
   projectType?: string;
+  additionalItems?: PackQuoteAdditionalItem[];
   slug: string;
   pack_id?: string;
   surface: number;
@@ -37,6 +44,7 @@ export type PackQuoteDetails = {
   customerPhone?: string;
   customerEmail?: string;
   projectType?: string;
+  additionalItems?: PackQuoteAdditionalItem[];
 };
 
 type QuoteContextType = {
@@ -138,6 +146,7 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
       customerPhone: options?.updateExisting ? quote.customerPhone : undefined,
       customerEmail: options?.updateExisting ? quote.customerEmail : undefined,
       projectType: options?.updateExisting ? quote.projectType : undefined,
+      additionalItems: options?.updateExisting ? quote.additionalItems : undefined,
     });
     return quote;
   };
@@ -219,6 +228,7 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
           customerPhone: currentDraft.customerPhone,
           customerEmail: currentDraft.customerEmail,
           projectType: currentDraft.projectType,
+          additionalItems: currentDraft.additionalItems,
         },
         { updateExisting: Boolean(currentDraft.quoteId) }
       );

@@ -17,6 +17,18 @@ type ShareLine = {
   discountPercent: number;
 };
 
+type QuoteIssuer = {
+  name: string;
+  addressLine1?: string | null;
+  addressLine2?: string | null;
+  postcode?: string | null;
+  town?: string | null;
+  country?: string | null;
+  phone?: string | null;
+  email?: string | null;
+  vat?: string | null;
+};
+
 function roundMoney(value: number) {
   return Number(value.toFixed(2));
 }
@@ -50,7 +62,9 @@ async function requireProUser() {
 
   const { data: proApplication } = await supabaseServer
     .from("pro_applications")
-    .select("company_name")
+    .select(
+      "company_name, address_line1, address_line2, postcode, town, county, phone, email, vat"
+    )
     .eq("user_id", user.id)
     .eq("status", "VERIFIED")
     .order("verified_at", { ascending: false })
@@ -59,12 +73,22 @@ async function requireProUser() {
 
   return {
     userId: user.id,
-    proName:
-      proApplication?.company_name ||
-      profile?.name ||
-      user.user_metadata?.full_name ||
-      user.email ||
-      "Installateur",
+    proIssuer: {
+      name:
+        proApplication?.company_name ||
+        profile?.name ||
+        user.user_metadata?.full_name ||
+        user.email ||
+        "Installateur",
+      addressLine1: proApplication?.address_line1,
+      addressLine2: proApplication?.address_line2,
+      postcode: proApplication?.postcode,
+      town: proApplication?.town,
+      country: proApplication?.county,
+      phone: proApplication?.phone,
+      email: proApplication?.email || user.email,
+      vat: proApplication?.vat,
+    } satisfies QuoteIssuer,
     response: null,
   };
 }
@@ -127,12 +151,28 @@ export async function POST(req: Request) {
     };
   });
 
+  lines.push(
+    ...(quote.additionalItems || [])
+      .filter((item) => item.label?.trim() && Number(item.amount) > 0)
+      .map((item) => ({
+        id: `additional-item:${item.id}`,
+        description: item.label.trim(),
+        reference: null,
+        quantity: 1,
+        proUnitPrice: 0,
+        customerUnitPrice: roundMoney(Number(item.amount)),
+        proTotal: 0,
+        customerTotal: roundMoney(Number(item.amount)),
+        discountPercent: 0,
+      }))
+  );
+
   const proTotal = roundMoney(lines.reduce((sum, line) => sum + line.proTotal, 0));
   const customerTotal = roundMoney(lines.reduce((sum, line) => sum + line.customerTotal, 0));
 
   return NextResponse.json({
     isPro: true,
-    proName: auth.proName,
+    proIssuer: auth.proIssuer,
     packName: pack.name_fr,
     projectReference: quote.projectReference || null,
     customerName: quote.customerName || null,

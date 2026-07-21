@@ -134,6 +134,9 @@ export default function PackPage() {
   const [activeProjectType, setActiveProjectType] = useState<string | undefined>(
     savedQuote?.projectType
   );
+  const [activeAdditionalItems, setActiveAdditionalItems] = useState(
+    savedQuote?.additionalItems || []
+  );
   const [isSavingQuote, setIsSavingQuote] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -202,6 +205,7 @@ export default function PackPage() {
     setActiveCustomerPhone(undefined);
     setActiveCustomerEmail(undefined);
     setActiveProjectType(undefined);
+    setActiveAdditionalItems([]);
   }, [quoteId, slug]);
 
   const currentDraft: PackQuoteDraft = useMemo(
@@ -212,6 +216,9 @@ export default function PackPage() {
       customerPhone: activeCustomerPhone || savedQuote?.customerPhone,
       customerEmail: activeCustomerEmail || savedQuote?.customerEmail,
       projectType: activeProjectType || savedQuote?.projectType,
+      additionalItems: activeAdditionalItems.length
+        ? activeAdditionalItems
+        : savedQuote?.additionalItems,
       pack_id: dbPackId || savedQuote?.pack_id || existingPack?.pack_id,
       slug,
       surface,
@@ -245,12 +252,14 @@ export default function PackPage() {
       activeCustomerPhone,
       activeCustomerEmail,
       activeProjectType,
+      activeAdditionalItems,
       savedQuote?.id,
       savedQuote?.projectReference,
       savedQuote?.customerName,
       savedQuote?.customerPhone,
       savedQuote?.customerEmail,
       savedQuote?.projectType,
+      savedQuote?.additionalItems,
       savedQuote?.pack_id,
       dbPackId,
       existingPack?.pack_id,
@@ -284,6 +293,7 @@ export default function PackPage() {
     setActiveCustomerPhone(savedQuote.customerPhone);
     setActiveCustomerEmail(savedQuote.customerEmail);
     setActiveProjectType(savedQuote.projectType);
+    setActiveAdditionalItems(savedQuote.additionalItems || []);
     setSurface(savedQuote.surface);
     setPasDePose(savedQuote.pasDePose);
     setTuyauType(savedQuote.tuyauType);
@@ -341,6 +351,8 @@ export default function PackPage() {
       const saved = await saveQuote(currentDraft, details, {
         updateExisting: updatesLoadedQuote,
       });
+
+      setActiveAdditionalItems(saved.additionalItems || []);
 
       if (updatesLoadedQuote) {
         setActiveQuoteId(saved.id);
@@ -528,6 +540,9 @@ export default function PackPage() {
           customerPhone: activeCustomerPhone || savedQuote?.customerPhone,
           customerEmail: activeCustomerEmail || savedQuote?.customerEmail,
           projectType: activeProjectType || savedQuote?.projectType,
+          additionalItems: activeAdditionalItems.length
+            ? activeAdditionalItems
+            : savedQuote?.additionalItems,
         }}
         onClose={() => setIsSaveModalOpen(false)}
         onSave={handleSaveQuoteDetails}

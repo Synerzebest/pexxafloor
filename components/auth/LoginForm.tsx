@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { Loader2, Mail, Lock, LogInIcon } from "lucide-react";
 import { loginWithEmail } from "@/app/actions/loginEmail";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function LoginForm({ locale }: { locale: string }) {
   const t = useTranslations("Login");
   const router = useRouter();
+  const { refreshUser } = useAuth();
 
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
@@ -26,7 +28,15 @@ export default function LoginForm({ locale }: { locale: string }) {
     if (result.error) {
       setErr(result.error.message);
     } else {
-      router.push(`/${locale}/profile`);
+      const user = await refreshUser();
+
+      if (!user) {
+        setErr("La session a été créée, mais n’a pas pu être synchronisée.");
+        return;
+      }
+
+      router.replace(`/${locale}/profile`);
+      router.refresh();
     }
   }
 

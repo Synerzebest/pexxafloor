@@ -1,7 +1,13 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
 import { supabaseServer } from "@/lib/supabaseServer";
-import type { PackQuoteDraft, SavedPackQuote } from "@/context/QuoteContext";
+import type {
+  PackQuoteAdditionalItem,
+  PackQuoteDraft,
+  SavedPackQuote,
+} from "@/context/QuoteContext";
+
+const ADDITIONAL_ITEM_PREFIX = "additional-item:";
 
 type PackQuoteRow = {
   id: string;
@@ -26,6 +32,15 @@ type PackQuoteRow = {
 };
 
 function mapRow(row: PackQuoteRow): SavedPackQuote {
+  const storedProducts = row.products || [];
+  const additionalItems: PackQuoteAdditionalItem[] = storedProducts
+    .filter((product) => product.id.startsWith(ADDITIONAL_ITEM_PREFIX))
+    .map((product) => ({
+      id: product.id.slice(ADDITIONAL_ITEM_PREFIX.length),
+      label: product.description,
+      amount: Number(product.unit_price || 0),
+    }));
+
   return {
     id: row.id,
     quoteId: row.id,
@@ -44,7 +59,10 @@ function mapRow(row: PackQuoteRow): SavedPackQuote {
     calepinage: row.calepinage,
     quantities: row.quantities || {},
     selectedOptions: row.selected_options || {},
-    products: row.products || [],
+    additionalItems,
+    products: storedProducts.filter(
+      (product) => !product.id.startsWith(ADDITIONAL_ITEM_PREFIX)
+    ),
     total: Number(row.total),
     savedAt: row.updated_at,
   };
@@ -131,8 +149,21 @@ export async function POST(req: Request) {
     calepinage: body.calepinage,
     quantities: body.quantities || {},
     selected_options: body.selectedOptions || {},
-    products: body.products || [],
-    total: body.total || 0,
+    products: [
+      ...(body.products || []),
+      ...(body.additionalItems || []).map((item) => ({
+        id: `${ADDITIONAL_ITEM_PREFIX}${item.id}`,
+        description: item.label.trim(),
+        unit_price: Math.max(0, Number(item.amount) || 0),
+        total_price: Math.max(0, Number(item.amount) || 0),
+      })),
+    ],
+    total:
+      (body.total || 0) +
+      (body.additionalItems || []).reduce(
+        (sum, item) => sum + Math.max(0, Number(item.amount) || 0),
+        0
+      ),
   };
 
   const query = body.quoteId
