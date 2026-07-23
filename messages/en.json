@@ -202,8 +202,9 @@
       "reject": "Reject",
       "view": "View details",
       "hide": "Hide details",
-      "startReview": "Start Review",
-      "suspend": "Suspend"
+      "start_review": "Start review",
+      "suspend": "Suspend",
+      "revision": "Start revision"
     },
     "Packs": {
       "loading": "Loading products...",

@@ -202,8 +202,9 @@
       "reject": "Rejeter",
       "view": "Voir détails",
       "hide": "Masquer détails",
-      "startReview": "Commencer la vérification",
-      "suspend": "Suspendre"
+      "start_review": "Commencer la vérification",
+      "suspend": "Suspendre",
+      "revision": "Mettre en révision"
     },
     "Packs": {
       "loading": "Chargement des produits...",

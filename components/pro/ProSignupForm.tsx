@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { createBrowserClient } from '@supabase/ssr';
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
 import { supabase } from "@/lib/supabaseClient";
+import { useAuth } from "@/context/AuthProvider";
 
 type Props = { locale: string };
 
@@ -15,6 +16,7 @@ type BusinessType = typeof BUSINESS_TYPES[number];
 
 export default function ProSignupForm({ locale }: Props) {
   const t = useTranslations('ProSignup');
+  const { user } = useAuth();
 
   // States
   const [firstName, setFirstName] = useState('');
@@ -36,6 +38,46 @@ export default function ProSignupForm({ locale }: Props) {
   const [ok, setOk] = useState<string|null>(null);
   const [err, setErr] = useState<string|null>(null);
 
+  useEffect(() => {
+    if (!user) return;
+
+    const currentUser = user;
+    let cancelled = false;
+
+    async function prefillKnownCustomerData() {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("email, name, company_name, vat")
+        .eq("id", currentUser.id)
+        .maybeSingle();
+
+      if (cancelled) return;
+
+      const metadata = currentUser.user_metadata || {};
+      const fullName = String(
+        profile?.name || metadata.full_name || metadata.name || ""
+      ).trim();
+      const [knownFirstName = "", ...lastNameParts] = fullName.split(/\s+/);
+      const knownLastName = lastNameParts.join(" ");
+
+      setEmail((current) => current || profile?.email || currentUser.email || "");
+      setFirstName((current) => current || knownFirstName);
+      setLastName((current) => current || knownLastName);
+      setPhone((current) => current || String(metadata.phone || ""));
+      setCompany(
+        (current) =>
+          current || profile?.company_name || String(metadata.company_name || "")
+      );
+      setVat((current) => current || profile?.vat || String(metadata.vat || ""));
+    }
+
+    prefillKnownCustomerData();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user]);
+
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
 
@@ -47,7 +89,17 @@ export default function ProSignupForm({ locale }: Props) {
       return;
     }    
 
-    if (!firstName || !lastName || !phone || !email || !companyName || !vat || !addr1 || !town || !postcode) {
+    if (
+      !firstName.trim() ||
+      !lastName.trim() ||
+      !phone.trim() ||
+      !email.trim() ||
+      !companyName.trim() ||
+      !vat.trim() ||
+      !addr1.trim() ||
+      !town.trim() ||
+      !postcode.trim()
+    ) {
       setErr(t('errors.required'));
       return;
     }
@@ -81,20 +133,18 @@ export default function ProSignupForm({ locale }: Props) {
 
     const { error } = await supabase.from("pro_applications").insert({
       user_id: user.id,
-      first_name: firstName,
-      last_name: lastName,
-      phone,
-      whatsapp: whatsapp || null,
-      email,
-      company_name: companyName,
-      vat,
+      first_name: firstName.trim(),
+      last_name: lastName.trim(),
+      phone: phone.trim(),
+      whatsapp: whatsapp.trim() || null,
+      email: email.trim(),
+      company_name: companyName.trim(),
+      vat: vat.trim() || null,
       business_type: businessType,
-      address_line1: addr1,
-      address_line2: addr2 || null,
-      town,
-      postcode,
-      status: "PENDING",
-      pro_signup_credit: true
+      address_line1: addr1.trim(),
+      address_line2: addr2.trim() || null,
+      town: town.trim(),
+      postcode: postcode.trim(),
     });
 
     setLoading(false);

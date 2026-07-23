@@ -202,8 +202,9 @@
       "reject": "Weigeren",
       "view": "Details bekijken",
       "hide": "Details verbergen",
-      "startReview": "Start Review",
-      "suspend": "Opschorten"
+      "start_review": "Beoordeling starten",
+      "suspend": "Opschorten",
+      "revision": "Herziening starten"
     },
     "Packs": {
       "loading": "Producten worden geladen...",
