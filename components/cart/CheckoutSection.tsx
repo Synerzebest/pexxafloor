@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
 import { LoadScript } from "@react-google-maps/api";
@@ -35,6 +36,8 @@ type AddressSelection = {
 export default function CheckoutSection({ items, isPro }: Props) {
   const locale = useLocale();
   const t = useTranslations("Cart");
+  const [creditBalanceCents, setCreditBalanceCents] = useState(0);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
 
   const {
     user,
@@ -74,9 +77,39 @@ export default function CheckoutSection({ items, isPro }: Props) {
   );
   
   const hasDiscount = isPro && baseTotal > finalTotal;
+  const creditAppliedCents =
+    isPro && creditBalanceCents > 0
+      ? Math.min(creditBalanceCents, Math.max(0, Math.round(finalTotal * 100) - 50))
+      : 0;
+  const displayedTotal = Math.max(0, finalTotal - creditAppliedCents / 100);
+
+  useEffect(() => {
+    if (!user || !isPro) {
+      setCreditBalanceCents(0);
+      return;
+    }
+
+    let cancelled = false;
+
+    fetch("/api/pro-credit", { credentials: "include", cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(await response.text());
+        return response.json() as Promise<{ balanceCents: number }>;
+      })
+      .then((data) => {
+        if (!cancelled) setCreditBalanceCents(Number(data.balanceCents || 0));
+      })
+      .catch((error) => {
+        console.error("Impossible de charger le crédit PRO:", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [user, isPro]);
 
   async function handleCheckout() {
-    if (!user) return;
+    if (!user || checkoutLoading) return;
 
     if (!isAddressValid) {
       alert(t("errors.address"));
@@ -88,21 +121,32 @@ export default function CheckoutSection({ items, isPro }: Props) {
       return;
     }
 
-    const res = await fetch("/api/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        locale,
-        email: user.email,
-        user_id: user.id,
-        items,
-        clientName,
-        shipping: { address, postalCode, city, country, locale },
-      }),
-    });
+    try {
+      setCheckoutLoading(true);
 
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          locale,
+          items,
+          clientName,
+          shipping: { address, postalCode, city, country, locale },
+        }),
+      });
+
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || "Checkout failed");
+      }
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error(error);
+      alert(t("errors.checkout"));
+      setCheckoutLoading(false);
+    }
   }
 
   return (
@@ -208,7 +252,7 @@ export default function CheckoutSection({ items, isPro }: Props) {
               <div className="text-right flex flex-col items-end leading-none">
                 {/* Prix final */}
                 <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-orange-600">
-                  {finalTotal.toFixed(2)} €
+                  {displayedTotal.toFixed(2)} €
                 </div>
 
                 {/* Ancien prix + remise */}
@@ -222,6 +266,13 @@ export default function CheckoutSection({ items, isPro }: Props) {
                     </span>
                   </div>
                 )}
+                {creditAppliedCents > 0 && (
+                  <div className="mt-2 text-sm font-medium text-emerald-600">
+                    {t("creditApplied", {
+                      amount: (creditAppliedCents / 100).toFixed(2),
+                    })}
+                  </div>
+                )}
               </div>
             </div>
             
@@ -229,9 +280,14 @@ export default function CheckoutSection({ items, isPro }: Props) {
             <button
               className="sm:block sm:w-auto bg-orange-600 hover:bg-orange-700 h-12 sm:h-auto text-base font-medium text-white py-2 px-4 rounded-lg cursor-pointer duration-300"
               onClick={handleCheckout} 
-              disabled={!user || !isClientNameValid || !isAddressValid}
+              disabled={
+                !user ||
+                !isClientNameValid ||
+                !isAddressValid ||
+                checkoutLoading
+              }
             >
-                {t("payment")}
+                {checkoutLoading ? t("paymentLoading") : t("payment")}
             </button>
 
             </div>

@@ -269,8 +269,9 @@
     },
     "Cart": {
       "errors": {
-        "address": "Please fill in the complete delivery address before continuing.",
-        "clientName": "Please provide the name of the client or the company."
+        "address": "Veuillez compléter l’adresse de livraison avant de continuer.",
+        "clientName": "Veuillez indiquer le nom du client ou de l’entreprise.",
+        "checkout": "Impossible de préparer le paiement. Veuillez réessayer."
       },
       "included": "produits inclus",
       "emptyCart": "Votre panier est vide",
@@ -289,7 +290,9 @@
       "city": "Ville",
       "country": "Pays",
       "total": "Total",
-      "payment": "Procéder au paiement"
+      "payment": "Procéder au paiement",
+      "paymentLoading": "Préparation du paiement…",
+      "creditApplied": "Crédit PRO appliqué : −{amount} €"
     },
     "PackConfig": {
       "settings": "Paramètres du pack",

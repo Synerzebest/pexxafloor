@@ -269,8 +269,9 @@
     },
     "Cart": {
       "errors": {
-        "address": "Vul alstublieft het volledige leveringsadres in voordat u verdergaat.",
-        "clientName": "Geef alstublieft de naam van de klant of het bedrijf op."
+        "address": "Vul het volledige leveringsadres in voordat u verdergaat.",
+        "clientName": "Vul de naam van de klant of het bedrijf in.",
+        "checkout": "De betaling kan niet worden voorbereid. Probeer het opnieuw."
       },
       "included": "producten inbegrepen",
       "emptyCart": "Uw winkelwagen is leeg",
@@ -289,7 +290,9 @@
       "city": "Stad",
       "country": "Land",
       "total": "Totaal",
-      "payment": "Ga naar betaling"      
+      "payment": "Ga naar betaling",
+      "paymentLoading": "Betaling voorbereiden…",
+      "creditApplied": "PRO-tegoed toegepast: −€ {amount}"
     },
     "PackConfig": {
       "settings": "Pakketinstellingen",

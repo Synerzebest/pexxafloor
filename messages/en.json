@@ -270,7 +270,8 @@
     "Cart": {
       "errors": {
         "address": "Please fill in the complete delivery address before continuing.",
-        "clientName": "Please provide the name of the client or the company."
+        "clientName": "Please provide the name of the client or company.",
+        "checkout": "Unable to prepare the payment. Please try again."
       },
       "included": "products included",
       "emptyCart": "Your cart is empty",
@@ -289,7 +290,9 @@
       "city": "City",
       "country": "Country",
       "total": "Total",
-      "payment": "Proceed to payment"
+      "payment": "Proceed to payment",
+      "paymentLoading": "Preparing payment…",
+      "creditApplied": "PRO credit applied: −€{amount}"
     },
     "PackConfig": {
       "settings": "Pack settings",
