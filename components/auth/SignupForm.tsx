@@ -4,8 +4,9 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Loader2, UserPlus, Mail, Lock } from "lucide-react";
+import { Loader2, UserPlus, Mail } from "lucide-react";
 import { signupWithEmail } from "@/app/actions/signupEmail";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function SignupForm({ locale }: { locale: string }) {
   const t = useTranslations("Signup");
@@ -126,28 +127,26 @@ export default function SignupForm({ locale }: { locale: string }) {
               <label className="text-sm font-medium text-gray-700">
                 {t("password")}
               </label>
-              <div className="relative mt-2">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-                <input
+              <div className="mt-2">
+                <PasswordInput
                   name="password"
-                  type="password"
+                  autoComplete="new-password"
                   placeholder="••••••••"
                   value={pwd}
                   onChange={(e) => setPwd(e.target.value)}
-                  className="w-full rounded-xl border border-gray-300 py-3 pl-11 pr-4
+                  className="w-full rounded-xl border border-gray-300 py-3
                     focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
                 />
               </div>
             </div>
 
-            <div className="relative">
-              <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                type="password"
+            <div>
+              <PasswordInput
+                autoComplete="new-password"
                 placeholder={t("confirm")}
                 value={pwd2}
                 onChange={(e) => setPwd2(e.target.value)}
-                className="w-full rounded-xl border border-gray-300 py-3 pl-11 pr-4
+                className="w-full rounded-xl border border-gray-300 py-3
                   focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
               />
             </div>

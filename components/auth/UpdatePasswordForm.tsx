@@ -5,8 +5,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Loader2, Lock } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function UpdatePasswordForm({ locale }: { locale: string }) {
   const t = useTranslations("PasswordRecovery");
@@ -138,16 +139,14 @@ function PasswordField({
   return (
     <label className="block">
       <span className="text-sm font-medium text-gray-700">{label}</span>
-      <div className="relative mt-2">
-        <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
-        <input
-          type="password"
+      <div className="mt-2">
+        <PasswordInput
           required
           minLength={8}
           autoComplete="new-password"
           value={value}
           onChange={(event) => onChange(event.target.value)}
-          className="w-full rounded-xl border border-gray-300 bg-white py-3 pl-11 pr-3 text-gray-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
+          className="w-full rounded-xl border border-gray-300 bg-white py-3 text-gray-900 outline-none transition focus:border-orange-500 focus:ring-2 focus:ring-orange-200"
         />
       </div>
     </label>

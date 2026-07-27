@@ -100,6 +100,10 @@
         "generic": "Inloggen is momenteel niet mogelijk. Probeer het opnieuw."
       }
     },
+    "PasswordField": {
+      "show": "Wachtwoord tonen",
+      "hide": "Wachtwoord verbergen"
+    },
     "PasswordRecovery": {
       "requestTitle": "Wachtwoord vergeten",
       "requestDescription": "Vul uw e-mailadres in om een beveiligde link te ontvangen waarmee u een nieuw wachtwoord kunt kiezen.",

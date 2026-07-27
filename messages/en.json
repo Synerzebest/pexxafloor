@@ -100,6 +100,10 @@
         "generic": "Unable to sign in right now. Please try again."
       }
     },
+    "PasswordField": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
     "PasswordRecovery": {
       "requestTitle": "Forgot your password",
       "requestDescription": "Enter your email address to receive a secure link for choosing a new password.",

@@ -4,9 +4,10 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { Loader2, Mail, Lock, LogInIcon } from "lucide-react";
+import { Loader2, Mail, LogInIcon } from "lucide-react";
 import { loginWithEmail } from "@/app/actions/loginEmail";
 import { useAuth } from "@/context/AuthProvider";
+import PasswordInput from "@/components/ui/PasswordInput";
 
 export default function LoginForm({
   locale,
@@ -101,17 +102,14 @@ export default function LoginForm({
         {/* Password */}
         <label className="flex flex-col gap-1">
           <span className="text-sm font-medium text-gray-700">{t("password")}</span>
-          <div className="relative">
-            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input
-              type="password"
-              name="passwordField"
-              placeholder="••••••••"
-              value={pwd}
-              onChange={(e) => setPwd(e.target.value)}
-              className="w-full rounded-lg border border-gray-300 bg-white py-2.5 pl-11 pr-3 text-gray-900 transition focus:border-orange-500 focus:ring-2 focus:ring-orange-300"
-            />
-          </div>
+          <PasswordInput
+            name="passwordField"
+            autoComplete="current-password"
+            placeholder="••••••••"
+            value={pwd}
+            onChange={(e) => setPwd(e.target.value)}
+            className="w-full rounded-lg border border-gray-300 bg-white py-2.5 text-gray-900 transition focus:border-orange-500 focus:ring-2 focus:ring-orange-300"
+          />
         </label>
 
         <div className="text-right">
