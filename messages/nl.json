@@ -93,7 +93,12 @@
       "noAccount": "Nog geen lid ?",
       "createAccount": "Account aanmaken",
       "forgotPassword": "Wachtwoord vergeten?",
-      "passwordUpdated": "Uw wachtwoord is gewijzigd. U kunt nu inloggen."
+      "passwordUpdated": "Uw wachtwoord is gewijzigd. U kunt nu inloggen.",
+      "errors": {
+        "invalidCredentials": "Onjuist e-mailadres of wachtwoord.",
+        "sessionSync": "De sessie is aangemaakt, maar kon niet worden gesynchroniseerd.",
+        "generic": "Inloggen is momenteel niet mogelijk. Probeer het opnieuw."
+      }
     },
     "PasswordRecovery": {
       "requestTitle": "Wachtwoord vergeten",

@@ -1,34 +1,14 @@
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getLocale } from "next-intl/server";
-import { createServerClient } from "@supabase/ssr";
 
 import { Navbar, Footer, UserOrders } from "@/components";
 import ProButton from "@/components/profile/ProButton";
 import LogoutButton from "@/components/auth/LogoutButton";
+import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
 
 export default async function ProfilePage() {
   const locale = await getLocale();
-
-  const cookieStore = await cookies();
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
-        },
-        set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options });
-        },
-        remove(name: string, options: any) {
-          cookieStore.delete({ name, ...options });
-        }
-      }
-    }
-  );
+  const supabase = await createSupabaseServerAuthClient();
 
   const {
     data: { user }

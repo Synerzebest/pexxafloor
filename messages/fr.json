@@ -93,7 +93,12 @@
       "noAccount": "Pas encore de compte ?",
       "createAccount": "Créer un compte",
       "forgotPassword": "Mot de passe oublié ?",
-      "passwordUpdated": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter."
+      "passwordUpdated": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter.",
+      "errors": {
+        "invalidCredentials": "Adresse e-mail ou mot de passe incorrect.",
+        "sessionSync": "La session a été créée, mais n’a pas pu être synchronisée.",
+        "generic": "Impossible de vous connecter pour le moment. Veuillez réessayer."
+      }
     },
     "PasswordRecovery": {
       "requestTitle": "Mot de passe oublié",

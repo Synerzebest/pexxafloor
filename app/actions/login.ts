@@ -39,5 +39,11 @@ export async function login(formData: FormData) {
     password,
   });
 
-  return { error };
+  return {
+    error: error
+      ? {
+          code: error.code || "auth_error",
+        }
+      : null,
+  };
 }

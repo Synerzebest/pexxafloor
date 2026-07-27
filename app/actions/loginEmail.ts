@@ -39,5 +39,11 @@ export async function loginWithEmail(formData: FormData) {
     password,
   });
 
-  return { error };
+  return {
+    error: error
+      ? {
+          code: error.code || "auth_error",
+        }
+      : null,
+  };
 }

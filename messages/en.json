@@ -93,7 +93,12 @@
       "noAccount": "No account yet ?",
       "createAccount": "Create an account",
       "forgotPassword": "Forgot your password?",
-      "passwordUpdated": "Your password has been updated. You can now sign in."
+      "passwordUpdated": "Your password has been updated. You can now sign in.",
+      "errors": {
+        "invalidCredentials": "Incorrect email address or password.",
+        "sessionSync": "The session was created but could not be synchronized.",
+        "generic": "Unable to sign in right now. Please try again."
+      }
     },
     "PasswordRecovery": {
       "requestTitle": "Forgot your password",

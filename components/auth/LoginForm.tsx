@@ -28,21 +28,32 @@ export default function LoginForm({
     setLoading(true);
     setErr(null);
 
-    const result = await loginWithEmail(formData);
-    setLoading(false);
+    try {
+      const result = await loginWithEmail(formData);
 
-    if (result.error) {
-      setErr(result.error.message);
-    } else {
+      if (result.error) {
+        setErr(
+          result.error.code === "invalid_credentials"
+            ? t("errors.invalidCredentials")
+            : t("errors.generic")
+        );
+        return;
+      }
+
       const user = await refreshUser();
 
       if (!user) {
-        setErr("La session a été créée, mais n’a pas pu être synchronisée.");
+        setErr(t("errors.sessionSync"));
         return;
       }
 
       router.replace(`/${locale}/profile`);
       router.refresh();
+    } catch (error) {
+      console.error("Login failed:", error);
+      setErr(t("errors.generic"));
+    } finally {
+      setLoading(false);
     }
   }
 
