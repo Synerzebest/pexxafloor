@@ -5,7 +5,11 @@ import { createServerClient } from "@supabase/ssr";
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const code = url.searchParams.get("code");
-  const next = url.searchParams.get("next") || "/";
+  const requestedNext = url.searchParams.get("next") || "/";
+  const next =
+    requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+      ? requestedNext
+      : "/";
 
   const cookieStore = await cookies();
 
@@ -28,7 +32,12 @@ export async function GET(request: Request) {
   );
 
   if (code) {
-    await supabase.auth.exchangeCodeForSession(code);
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      const errorUrl = new URL(next, url.origin);
+      errorUrl.searchParams.set("recoveryError", "1");
+      return NextResponse.redirect(errorUrl);
+    }
   }
 
   return NextResponse.redirect(new URL(next, url.origin));

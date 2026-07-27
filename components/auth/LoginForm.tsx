@@ -8,7 +8,13 @@ import { Loader2, Mail, Lock, LogInIcon } from "lucide-react";
 import { loginWithEmail } from "@/app/actions/loginEmail";
 import { useAuth } from "@/context/AuthProvider";
 
-export default function LoginForm({ locale }: { locale: string }) {
+export default function LoginForm({
+  locale,
+  passwordUpdated = false,
+}: {
+  locale: string;
+  passwordUpdated?: boolean;
+}) {
   const t = useTranslations("Login");
   const router = useRouter();
   const { refreshUser } = useAuth();
@@ -96,6 +102,21 @@ export default function LoginForm({ locale }: { locale: string }) {
             />
           </div>
         </label>
+
+        <div className="text-right">
+          <a
+            href={`/${locale}/forgot-password`}
+            className="text-sm font-medium text-orange-600 transition hover:text-orange-700"
+          >
+            {t("forgotPassword")}
+          </a>
+        </div>
+
+        {passwordUpdated && (
+          <p className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">
+            {t("passwordUpdated")}
+          </p>
+        )}
 
         {err && <p className="text-sm text-red-600">{err}</p>}
 

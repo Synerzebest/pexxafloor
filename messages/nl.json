@@ -91,7 +91,30 @@
       "google": "Verder met Google", 
       "or": "Of",
       "noAccount": "Nog geen lid ?",
-      "createAccount": "Signup"
+      "createAccount": "Account aanmaken",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "passwordUpdated": "Uw wachtwoord is gewijzigd. U kunt nu inloggen."
+    },
+    "PasswordRecovery": {
+      "requestTitle": "Wachtwoord vergeten",
+      "requestDescription": "Vul uw e-mailadres in om een beveiligde link te ontvangen waarmee u een nieuw wachtwoord kunt kiezen.",
+      "email": "E-mailadres",
+      "sendLink": "Link versturen",
+      "sending": "Bezig met versturen…",
+      "requestSuccess": "Als er een account met dit adres bestaat, is er een herstelmail verzonden.",
+      "requestError": "De e-mail kan momenteel niet worden verzonden. Probeer het opnieuw.",
+      "backToLogin": "Terug naar inloggen",
+      "updateTitle": "Nieuw wachtwoord",
+      "updateDescription": "Kies een nieuw wachtwoord van minstens 8 tekens.",
+      "newPassword": "Nieuw wachtwoord",
+      "confirmPassword": "Wachtwoord bevestigen",
+      "updatePassword": "Wachtwoord wijzigen",
+      "updating": "Wachtwoord wijzigen…",
+      "passwordTooShort": "Het wachtwoord moet minstens 8 tekens bevatten.",
+      "passwordMismatch": "De wachtwoorden komen niet overeen.",
+      "updateError": "Het wachtwoord kan niet worden gewijzigd. Vraag een nieuwe link aan.",
+      "invalidLink": "Deze link is ongeldig of verlopen.",
+      "requestAnotherLink": "Nieuwe link aanvragen"
     },
     "Signup": {
         "title": "Maak een account aan", 

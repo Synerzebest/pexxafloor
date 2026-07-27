@@ -91,7 +91,30 @@
       "google": "Continue with Google", 
       "or": "Or",
       "noAccount": "No account yet ?",
-      "createAccount": "Create an account"
+      "createAccount": "Create an account",
+      "forgotPassword": "Forgot your password?",
+      "passwordUpdated": "Your password has been updated. You can now sign in."
+    },
+    "PasswordRecovery": {
+      "requestTitle": "Forgot your password",
+      "requestDescription": "Enter your email address to receive a secure link for choosing a new password.",
+      "email": "Email address",
+      "sendLink": "Send reset link",
+      "sending": "Sending…",
+      "requestSuccess": "If an account matches this address, a recovery email has been sent.",
+      "requestError": "Unable to send the email right now. Please try again.",
+      "backToLogin": "Back to sign in",
+      "updateTitle": "New password",
+      "updateDescription": "Choose a new password containing at least 8 characters.",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "updatePassword": "Update password",
+      "updating": "Updating…",
+      "passwordTooShort": "The password must contain at least 8 characters.",
+      "passwordMismatch": "The passwords do not match.",
+      "updateError": "Unable to update the password. Request a new link.",
+      "invalidLink": "This link is invalid or has expired.",
+      "requestAnotherLink": "Request another link"
     },
     "Signup": {
       "title": "Signup", 

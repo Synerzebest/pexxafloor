@@ -91,7 +91,30 @@
       "google": "Continuer avec Google", 
       "or": "Ou",
       "noAccount": "Pas encore de compte ?",
-      "createAccount": "Créer un compte"
+      "createAccount": "Créer un compte",
+      "forgotPassword": "Mot de passe oublié ?",
+      "passwordUpdated": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter."
+    },
+    "PasswordRecovery": {
+      "requestTitle": "Mot de passe oublié",
+      "requestDescription": "Indiquez votre adresse e-mail pour recevoir un lien sécurisé permettant de choisir un nouveau mot de passe.",
+      "email": "Adresse e-mail",
+      "sendLink": "Envoyer le lien",
+      "sending": "Envoi en cours…",
+      "requestSuccess": "Si un compte correspond à cette adresse, un e-mail de récupération vient d’être envoyé.",
+      "requestError": "Impossible d’envoyer l’e-mail pour le moment. Veuillez réessayer.",
+      "backToLogin": "Retour à la connexion",
+      "updateTitle": "Nouveau mot de passe",
+      "updateDescription": "Choisissez un nouveau mot de passe d’au moins 8 caractères.",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "updatePassword": "Modifier le mot de passe",
+      "updating": "Modification en cours…",
+      "passwordTooShort": "Le mot de passe doit contenir au moins 8 caractères.",
+      "passwordMismatch": "Les mots de passe ne correspondent pas.",
+      "updateError": "Impossible de modifier le mot de passe. Demandez un nouveau lien.",
+      "invalidLink": "Ce lien est invalide ou a expiré.",
+      "requestAnotherLink": "Demander un nouveau lien"
     },
     "Signup": {
         "title": "Créer un compte", 
