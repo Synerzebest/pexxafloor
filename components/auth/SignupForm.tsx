@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
-import { Loader2, UserPlus, Mail } from "lucide-react";
+import { Loader2, UserPlus, Mail, MailCheck } from "lucide-react";
 import { signupWithEmail } from "@/app/actions/signupEmail";
 import PasswordInput from "@/components/ui/PasswordInput";
 
@@ -18,21 +19,48 @@ export default function SignupForm({ locale }: { locale: string }) {
   const [pwd2, setPwd2] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [confirmationSent, setConfirmationSent] = useState(false);
 
   async function handleSubmit(formData: FormData) {
     setErr(null);
 
+    if (!email.trim() || !pwd) return setErr(t("errors.required"));
+    if (pwd.length < 8) return setErr(t("errors.tooShort"));
     if (pwd !== pwd2) return setErr(t("errors.mismatch"));
-    if (name.length == 0) return setErr(t("errors.name_missing"))
+    if (!name.trim()) return setErr(t("errors.name_missing"));
 
-    setLoading(true);
-    const result = await signupWithEmail(formData);
-    setLoading(false);
+    try {
+      setLoading(true);
+      const result = await signupWithEmail(formData);
 
-    if (result.error) {
-      setErr(result.error.message);
-    } else {
-      router.push(`/${locale}/profile`);
+      if (result.error) {
+        const errorKeyByCode: Record<string, string> = {
+          email_exists: "errors.emailAlreadyUsed",
+          user_already_exists: "errors.emailAlreadyUsed",
+          weak_password: "errors.weakPassword",
+          over_email_send_rate_limit: "errors.emailRateLimit",
+          over_request_rate_limit: "errors.requestRateLimit",
+          email_address_not_authorized: "errors.emailNotAuthorized",
+          signup_disabled: "errors.signupDisabled",
+          email_provider_disabled: "errors.signupDisabled",
+        };
+
+        setErr(t(errorKeyByCode[result.error.code] || "errors.generic"));
+        return;
+      }
+
+      if (result.requiresEmailConfirmation) {
+        setConfirmationSent(true);
+        return;
+      }
+
+      router.replace(`/${locale}/profile`);
+      router.refresh();
+    } catch (error) {
+      console.error("Signup failed:", error);
+      setErr(t("errors.generic"));
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -64,6 +92,30 @@ export default function SignupForm({ locale }: { locale: string }) {
     <div className="flex justify-center">
       <div className="w-full max-w-md rounded-2xl bg-white px-8 py-10 shadow-sm">
 
+        {confirmationSent ? (
+          <div className="py-6 text-center">
+            <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-orange-50 text-orange-600">
+              <MailCheck className="h-8 w-8" aria-hidden="true" />
+            </span>
+            <h1 className="mt-6 text-2xl font-semibold tracking-tight text-gray-900">
+              {t("confirmation.title")}
+            </h1>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              {t("confirmation.description")}
+            </p>
+            <p className="mt-3 break-all font-medium text-gray-900">{email}</p>
+            <div className="mt-6 rounded-xl border border-orange-100 bg-orange-50 p-4 text-left text-sm leading-6 text-orange-900">
+              {t("confirmation.instructions")}
+            </div>
+            <Link
+              href={`/${locale}/login`}
+              className="mt-7 inline-flex rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+            >
+              {t("confirmation.login")}
+            </Link>
+          </div>
+        ) : (
+          <>
         {/* Mobile header */}
         <div className="lg:hidden flex flex-col items-center text-center mb-8">
           <Image
@@ -193,6 +245,8 @@ export default function SignupForm({ locale }: { locale: string }) {
             {t("google")}
           </a>
         </form>
+          </>
+        )}
       </div>
     </div>
   </div>

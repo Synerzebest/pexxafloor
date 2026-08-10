@@ -19,7 +19,10 @@ export default async function CategoriesPage() {
       name_nl,
       name_en,
       subcategories:subcategories!subcategories_category_id_fkey (
-        id
+        id,
+        products:products!products_subcategory_id_fkey (
+          id
+        )
       )
     `)
     .order("id");

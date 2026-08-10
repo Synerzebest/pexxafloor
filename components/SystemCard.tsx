@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { Hammer, Zap, Euro, Ruler, Thermometer, HelpCircle } from 'lucide-react'
 
 const formatPrice = (value: number) =>
@@ -45,10 +46,21 @@ export default function SystemCard({
   priceLoading = false,
 }: SystemCardProps) {
   const t = useTranslations('Systems')
+  const router = useRouter()
   const [hover, setHover] = useState(false)
 
   const s = parseFloat(surface)
   const hasValidSurface = !isNaN(s) && s > 0
+  const packHref = `/${locale}/packs/${slug}?surface=${surface}`
+
+  const openPackFromCard = (event: React.MouseEvent<HTMLElement>) => {
+    if (!hasValidSurface) return
+
+    const target = event.target as HTMLElement
+    if (target.closest('a, button, input, select, textarea, [data-card-control]')) return
+
+    router.push(packHref)
+  }
 
   // Convertit 0–100 en 1–5 niveaux visuels
   const level = (val: number) => Math.round((val / 100) * 5)
@@ -75,7 +87,19 @@ export default function SystemCard({
       transition={{ type: 'spring', stiffness: 180, damping: 16 }}
       onHoverStart={() => setHover(true)}
       onHoverEnd={() => setHover(false)}
-      className="group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 hover:shadow-xl"
+      onClick={openPackFromCard}
+      onKeyDown={(event) => {
+        if (hasValidSurface && event.target === event.currentTarget && (event.key === 'Enter' || event.key === ' ')) {
+          event.preventDefault()
+          router.push(packHref)
+        }
+      }}
+      role={hasValidSurface ? 'link' : undefined}
+      tabIndex={hasValidSurface ? 0 : undefined}
+      aria-label={hasValidSurface ? `${title} — ${t('view-package')}` : undefined}
+      className={`group relative flex flex-col overflow-hidden rounded-2xl bg-white shadow-md border border-gray-100 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2 ${
+        hasValidSurface ? 'cursor-pointer' : ''
+      }`}
     >
       {/* Image */}
       <div className="relative h-52 w-full overflow-hidden rounded-t-2xl">
@@ -161,6 +185,7 @@ export default function SystemCard({
               <span
                 className="group/priceTip relative inline-flex"
                 tabIndex={0}
+                data-card-control
                 aria-label={t('genericPriceNote')}
               >
                 <HelpCircle className="h-4 w-4 cursor-help text-orange-400" />
@@ -197,7 +222,7 @@ export default function SystemCard({
           </button>
         ) : (
           <Link
-            href={`/${locale}/packs/${slug}?surface=${surface}`}
+            href={packHref}
             className="rounded-lg bg-gradient-to-r from-orange-500 to-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:from-orange-600 hover:to-orange-700 transition"
           >
             {t('view-package')}

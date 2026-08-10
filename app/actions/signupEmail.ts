@@ -7,9 +7,6 @@ export async function signupWithEmail(formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
-  console.log("FORM NAME =", name);
-
-
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -41,8 +38,22 @@ export async function signupWithEmail(formData: FormData) {
   });
 
   if (error || !data.user) {
-    return { data: null, error };
+    console.error("Supabase signup failed:", {
+      code: error?.code || "signup_error",
+      status: error?.status,
+      message: error?.message,
+    });
+
+    return {
+      error: {
+        code: error?.code || "signup_error",
+      },
+      requiresEmailConfirmation: false,
+    };
   }
 
-  return { data, error: null };
+  return {
+    error: null,
+    requiresEmailConfirmation: !data.session,
+  };
 }

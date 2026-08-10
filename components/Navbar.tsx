@@ -4,21 +4,21 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight, Trash2 } from 'lucide-react';
+import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight, Trash2, PhoneCall, Mail } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
 import UserButton from './UserButton';
 import ProductSearch from './ProductSearch';
-import { PhoneCall } from 'lucide-react';
 import { useStoreData } from "@/context/StoreDataProvider";
 import { useUI } from "@/context/UIContext"
-import { supabase } from "@/lib/supabaseClient";
 import { useQuotes } from '@/context/QuoteContext';
+import { FaWhatsapp } from 'react-icons/fa';
 
 const SUPPORTED_LOCALES = ['fr', 'nl', 'en'] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 const logoImage = "/images/logo.png";
+const whatsappUrl = "https://wa.me/3223439200";
 type Translatable = {
   name_fr: string;
   name_nl: string;
@@ -40,6 +40,10 @@ export default function Navbar() {
   const locale = useLocale() as SupportedLocale;
   const pathname = usePathname() ?? '/';
   const router = useRouter();
+  const routeWithoutLocale = pathname.replace(/^\/(fr|nl|en)(?=\/|$)/, '') || '/';
+  const showWhatsappBanner = !['/admin', '/storekeeper', '/delivery'].some(
+    (route) => routeWithoutLocale === route || routeWithoutLocale.startsWith(`${route}/`)
+  );
   
   const t = useTranslations('Navbar');
   const { items, openCart } = useCart();
@@ -71,7 +75,26 @@ export default function Navbar() {
   const hoveredCategory = categories.find((c) => c.id === hoveredCat);
 
   return (
-    <header className="w-full border-b border-gray-200 fixed z-20">
+    <>
+    <header className="w-full border-b border-gray-200 fixed z-20 bg-white">
+      {showWhatsappBanner && (
+        <a
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group flex h-9 items-center justify-center gap-2 border-b border-emerald-700/15 bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 px-4 text-sm font-medium text-white transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/80"
+          aria-label={`${t('whatsapp_banner')} — +32 2 343 92 00`}
+        >
+          <FaWhatsapp className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
+          <span>{t('whatsapp_banner')}</span>
+          <span className="hidden text-white/75 sm:inline">·</span>
+          <span className="hidden text-white/90 sm:inline">+32 2 343 92 00</span>
+          <ChevronRight
+            className="h-4 w-4 text-white/70 transition-transform group-hover:translate-x-0.5"
+            aria-hidden="true"
+          />
+        </a>
+      )}
       {/* --- Bandeau principal --- */}
       <div className="flex items-center justify-between gap-4 px-4 bg-white">
         {/* Logo */}
@@ -91,14 +114,21 @@ export default function Navbar() {
           <ProductSearch />
         </div>
 
-        {/* Numéro de téléphone affiché dans la navbar */}
-        <div className="hidden lg:flex items-center gap-2 text-gray-700 font-medium">
-          <PhoneCall className="text-orange-500" size={20} />
+        {/* Coordonnées de contact */}
+        <div className="hidden lg:flex shrink-0 flex-col gap-1.5 border-l border-gray-200 pl-4 text-sm font-medium text-gray-700">
           <a
             href="tel:+3223439200"
-            className="hover:text-orange-600 transition-colors"
+            className="group flex items-center gap-2 transition-colors hover:text-orange-600"
           >
-            +32.2.343.92.00
+            <PhoneCall className="text-orange-500" size={16} aria-hidden="true" />
+            <span>+32 2 343 92 00</span>
+          </a>
+          <a
+            href="mailto:info@pexxafloor.be"
+            className="group flex items-center gap-2 transition-colors hover:text-orange-600"
+          >
+            <Mail className="text-orange-500" size={16} aria-hidden="true" />
+            <span>info@pexxafloor.be</span>
           </a>
         </div>
 
@@ -109,12 +139,9 @@ export default function Navbar() {
           
           <motion.button
             whileHover={{scale: 1.1}}
-            onClick={async () => {
-              const { data: { session } } = await supabase.auth.getSession();
-              if (!session) router.push(`/${locale}/login`);
-              else openCart();
-            }}
+            onClick={openCart}
             className="relative cursor-pointer"
+            aria-label={t('cart')}
           >
             <ShoppingCart />
             {items.length > 0 && (
@@ -386,15 +413,12 @@ export default function Navbar() {
                 <div className="flex items-center gap-3">
                   <UserButton />
                   <button
-                    onClick={async () => {
-                      const { data: { session } } = await supabase.auth.getSession();
-                      if (!session) router.push(`/${locale}/login`);
-                      else {
-                        openCart();
-                        setDrawerOpen(false);
-                      }
+                    onClick={() => {
+                      openCart();
+                      setDrawerOpen(false);
                     }}
                     className="relative cursor-pointer"
+                    aria-label={t('cart')}
                   >
                     <ShoppingCart />
                     {items.length > 0 && (
@@ -424,10 +448,25 @@ export default function Navbar() {
                   </select>
                 </div>
               </div>
-              <div className="mt-4 flex items-center gap-2 text-center text-gray-800 font-medium">
-                <PhoneCall className="text-orange-500" size={15} />
-                <a href="tel:+3223439200" className="hover:underline">
+              <div className="mt-4 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                <a
+                  href="tel:+3223439200"
+                  className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-800 transition-colors hover:bg-orange-50 hover:text-orange-700"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-orange-500 shadow-sm">
+                    <PhoneCall size={16} aria-hidden="true" />
+                  </span>
                   +32 2 343 92 00
+                </a>
+                <div className="mx-4 border-t border-gray-200" />
+                <a
+                  href="mailto:info@pexxafloor.be"
+                  className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-800 transition-colors hover:bg-orange-50 hover:text-orange-700"
+                >
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-orange-500 shadow-sm">
+                    <Mail size={16} aria-hidden="true" />
+                  </span>
+                  info@pexxafloor.be
                 </a>
               </div>
             </motion.aside>
@@ -530,5 +569,7 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </header>
+    {showWhatsappBanner && <div className="h-9" aria-hidden="true" />}
+    </>
   );
 }

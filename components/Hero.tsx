@@ -13,7 +13,7 @@ export default function Hero() {
   return (
     <section
       className="
-        relative w-full top-20 md:top-28
+        relative mt-20 w-full md:mt-28
         h-[82vh] md:h-[82vh] 
         flex items-center justify-start 
         overflow-hidden

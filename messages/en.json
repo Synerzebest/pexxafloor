@@ -4,7 +4,9 @@
       "how-it-works": "How it works",
       "benefits": "Benefits",
       "contact": "Contact",
-      "quote_btn": "Get a Quote"
+      "quote_btn": "Get a Quote",
+      "whatsapp_banner": "Start a WhatsApp conversation",
+      "cart": "Open cart"
     },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
@@ -72,6 +74,29 @@
       },
       "cta": "Try Calculator Now"
     },
+    "HomeInfoSidebar": {
+      "ariaLabel": "Useful information",
+      "eyebrow": "Good to know",
+      "delivery": {
+        "title": "Delivery of your order",
+        "description": "Your underfloor heating products are carefully prepared and delivered directly to your project address."
+      },
+      "quote": {
+        "title": "Your quote in a few clicks",
+        "description": "Configure your installation and instantly receive an estimate tailored to your surface area.",
+        "cta": "Create my quote"
+      },
+      "installation": {
+        "title": "Which installation system should you choose?",
+        "description": "Explore the different systems and find the right solution for your project.",
+        "cta": "View the systems"
+      },
+      "pro": {
+        "title": "Become a PRO customer",
+        "description": "Benefit from professional terms and support tailored to your business.",
+        "cta": "Submit a request"
+      }
+    },
     "Footer": {
       "tagline": "Your fast and transparent underfloor heating solution.",
       "home": "Home",
@@ -96,6 +121,7 @@
       "passwordUpdated": "Your password has been updated. You can now sign in.",
       "errors": {
         "invalidCredentials": "Incorrect email address or password.",
+        "emailNotConfirmed": "Your email address has not been confirmed yet. Open the confirmation email sent when you registered and click the link before signing in.",
         "sessionSync": "The session was created but could not be synchronized.",
         "generic": "Unable to sign in right now. Please try again."
       }
@@ -138,11 +164,24 @@
       "alreadyAccount": "Already an account ?",
       "login": "Login",
       "success": "Account created ! Check your emails to confirm your address.",
+      "confirmation": {
+        "title": "Check your inbox",
+        "description": "Your account has been created. We sent a confirmation email to:",
+        "instructions": "Click the link in the email before trying to sign in. Remember to check your spam or junk folder.",
+        "login": "Go to sign in"
+      },
       "errors": { 
         "required": "Email and password are required.", 
         "tooShort": "At least 8 caracters.", 
         "mismatch": "Passwords do not match.",
-        "name_missing": "Name is required"
+        "name_missing": "Name is required",
+        "emailAlreadyUsed": "An account already uses this email address. Try signing in or use “Forgot your password?”.",
+        "weakPassword": "This password does not meet the security requirements.",
+        "emailRateLimit": "Too many emails were sent recently. Wait a few minutes before trying again.",
+        "requestRateLimit": "Too many attempts were made. Wait a few minutes before trying again.",
+        "emailNotAuthorized": "Sending emails to this address is not allowed by the current configuration. Configure custom SMTP in Supabase.",
+        "signupDisabled": "Email registration is currently disabled.",
+        "generic": "Unable to create the account right now. Please try again."
       }
     },
     "ProSignup": {
@@ -297,7 +336,8 @@
     "Categories": {
       "title": "Our categories",
       "subtitle": "Discover all our underfloor heating solutions and accessories.",
-      "subcat": "Sub-Categories"
+      "subcat": "Sub-Categories",
+      "productCount": "{count, plural, =0 {No products} one {# product} other {# products}}"
     },
     "Cart": {
       "errors": {
@@ -324,6 +364,8 @@
       "total": "Total",
       "payment": "Proceed to payment",
       "paymentLoading": "Preparing payment…",
+      "loginRequired": "Sign in to confirm your cart and proceed to payment.",
+      "loginToCheckout": "Sign in to continue",
       "creditApplied": "PRO credit applied: −€{amount}"
     },
     "PackConfig": {

@@ -4,7 +4,9 @@
       "how-it-works": "Comment ça marche",
       "benefits": "Avantages",
       "contact": "Contact",
-      "quote_btn": "Devis instantané"
+      "quote_btn": "Devis instantané",
+      "whatsapp_banner": "Lancer une discussion WhatsApp",
+      "cart": "Afficher le panier"
     },
     "Hero": {
       "badge": "Solutions professionnelles de chauffage au sol",
@@ -72,6 +74,29 @@
       },
       "cta": "Vers le calculateur"
     },
+    "HomeInfoSidebar": {
+      "ariaLabel": "Informations utiles",
+      "eyebrow": "À savoir",
+      "delivery": {
+        "title": "Livraison de votre commande",
+        "description": "Vos produits de chauffage au sol sont préparés avec soin et livrés directement à l’adresse de votre projet."
+      },
+      "quote": {
+        "title": "Votre devis en quelques clics",
+        "description": "Configurez votre installation et obtenez immédiatement une estimation adaptée à votre surface.",
+        "cta": "Créer mon devis"
+      },
+      "installation": {
+        "title": "Quel type de pose choisir ?",
+        "description": "Découvrez les différents systèmes et trouvez la solution adaptée à votre chantier.",
+        "cta": "Voir les systèmes"
+      },
+      "pro": {
+        "title": "Devenez client PRO",
+        "description": "Profitez de conditions professionnelles et d’un accompagnement adapté à votre activité.",
+        "cta": "Faire une demande"
+      }
+    },
     "Footer": {
         "tagline": "Votre solution chauffage au sol rapide et transparente.",
         "home": "Accueil",
@@ -96,6 +121,7 @@
       "passwordUpdated": "Votre mot de passe a été modifié. Vous pouvez maintenant vous connecter.",
       "errors": {
         "invalidCredentials": "Adresse e-mail ou mot de passe incorrect.",
+        "emailNotConfirmed": "Votre adresse e-mail n’a pas encore été confirmée. Ouvrez l’e-mail de confirmation reçu lors de votre inscription et cliquez sur le lien avant de vous connecter.",
         "sessionSync": "La session a été créée, mais n’a pas pu être synchronisée.",
         "generic": "Impossible de vous connecter pour le moment. Veuillez réessayer."
       }
@@ -138,11 +164,24 @@
         "success": "Compte créé ! Vérifie tes emails pour confirmer ton adresse.",
         "alreadyAccount": "Déjà un compte ?",
         "login": "Se connecter",
+        "confirmation": {
+          "title": "Vérifiez votre boîte mail",
+          "description": "Votre compte a bien été créé. Nous avons envoyé un e-mail de confirmation à l’adresse suivante :",
+          "instructions": "Cliquez sur le lien contenu dans l’e-mail avant d’essayer de vous connecter. Pensez à vérifier votre dossier de courriers indésirables.",
+          "login": "Aller à la connexion"
+        },
         "errors": { 
           "required": "Email et mot de passe sont requis.", 
           "tooShort": "Min. 8 caractères.", 
           "mismatch": "Les mots de passe ne correspondent pas.",
-          "name_missing": "Nom requis"
+          "name_missing": "Nom requis",
+          "emailAlreadyUsed": "Un compte utilise déjà cette adresse e-mail. Essayez de vous connecter ou utilisez « Mot de passe oublié ».",
+          "weakPassword": "Ce mot de passe ne respecte pas les exigences de sécurité.",
+          "emailRateLimit": "Trop d’e-mails ont été envoyés récemment. Patientez quelques minutes avant de réessayer.",
+          "requestRateLimit": "Trop de tentatives ont été effectuées. Patientez quelques minutes avant de réessayer.",
+          "emailNotAuthorized": "L’envoi d’e-mails à cette adresse n’est pas autorisé par la configuration actuelle. Un SMTP personnalisé doit être configuré dans Supabase.",
+          "signupDisabled": "La création de comptes par e-mail est actuellement désactivée.",
+          "generic": "Impossible de créer le compte pour le moment. Veuillez réessayer."
         }
     },
     "ProSignup": {
@@ -297,7 +336,8 @@
     "Categories": {
       "title": "Nos catégories",
       "subtitle": "Découvrez l’ensemble de nos solutions de chauffage au sol et accessoires.",
-      "subcat": "Sous-Catégories"
+      "subcat": "Sous-Catégories",
+      "productCount": "{count, plural, =0 {Aucun produit} one {# produit} other {# produits}}"
     },
     "Cart": {
       "errors": {
@@ -324,6 +364,8 @@
       "total": "Total",
       "payment": "Procéder au paiement",
       "paymentLoading": "Préparation du paiement…",
+      "loginRequired": "Connectez-vous pour valider votre panier et procéder au paiement.",
+      "loginToCheckout": "Se connecter pour continuer",
       "creditApplied": "Crédit PRO appliqué : −{amount} €"
     },
     "PackConfig": {

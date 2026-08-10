@@ -12,9 +12,11 @@ import PasswordInput from "@/components/ui/PasswordInput";
 export default function LoginForm({
   locale,
   passwordUpdated = false,
+  nextPath,
 }: {
   locale: string;
   passwordUpdated?: boolean;
+  nextPath?: string;
 }) {
   const t = useTranslations("Login");
   const router = useRouter();
@@ -33,11 +35,13 @@ export default function LoginForm({
       const result = await loginWithEmail(formData);
 
       if (result.error) {
-        setErr(
-          result.error.code === "invalid_credentials"
-            ? t("errors.invalidCredentials")
-            : t("errors.generic")
-        );
+        if (result.error.code === "email_not_confirmed") {
+          setErr(t("errors.emailNotConfirmed"));
+        } else if (result.error.code === "invalid_credentials") {
+          setErr(t("errors.invalidCredentials"));
+        } else {
+          setErr(t("errors.generic"));
+        }
         return;
       }
 
@@ -48,7 +52,11 @@ export default function LoginForm({
         return;
       }
 
-      router.replace(`/${locale}/profile`);
+      const safeNextPath =
+        nextPath?.startsWith(`/${locale}/`) && !nextPath.startsWith(`//`)
+          ? nextPath
+          : `/${locale}/profile`;
+      router.replace(safeNextPath);
       router.refresh();
     } catch (error) {
       console.error("Login failed:", error);

@@ -4,7 +4,9 @@
       "how-it-works": "Hoe het werkt",
       "benefits": "Voordelen",
       "contact": "Contact",
-      "quote_btn": "Directe offerte"
+      "quote_btn": "Directe offerte",
+      "whatsapp_banner": "Een WhatsApp-gesprek starten",
+      "cart": "Winkelwagen openen"
     },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
@@ -72,6 +74,29 @@
       },
       "cta": "Calculator proberen"
     },
+    "HomeInfoSidebar": {
+      "ariaLabel": "Nuttige informatie",
+      "eyebrow": "Goed om te weten",
+      "delivery": {
+        "title": "Levering van uw bestelling",
+        "description": "Uw vloerverwarmingsproducten worden zorgvuldig voorbereid en rechtstreeks op uw projectadres geleverd."
+      },
+      "quote": {
+        "title": "Uw offerte in enkele klikken",
+        "description": "Configureer uw installatie en ontvang meteen een raming op maat van uw oppervlakte.",
+        "cta": "Mijn offerte maken"
+      },
+      "installation": {
+        "title": "Welk legsysteem kiest u?",
+        "description": "Ontdek de verschillende systemen en vind de oplossing die bij uw project past.",
+        "cta": "Bekijk de systemen"
+      },
+      "pro": {
+        "title": "Word PRO-klant",
+        "description": "Profiteer van professionele voorwaarden en begeleiding op maat van uw activiteit.",
+        "cta": "Een aanvraag indienen"
+      }
+    },
     "Footer": {
         "tagline": "Uw snelle en transparante vloerverwarmingsoplossing.",
         "home": "Home",
@@ -96,6 +121,7 @@
       "passwordUpdated": "Uw wachtwoord is gewijzigd. U kunt nu inloggen.",
       "errors": {
         "invalidCredentials": "Onjuist e-mailadres of wachtwoord.",
+        "emailNotConfirmed": "Uw e-mailadres is nog niet bevestigd. Open de bevestigingsmail die u bij uw registratie hebt ontvangen en klik op de link voordat u inlogt.",
         "sessionSync": "De sessie is aangemaakt, maar kon niet worden gesynchroniseerd.",
         "generic": "Inloggen is momenteel niet mogelijk. Probeer het opnieuw."
       }
@@ -138,11 +164,24 @@
         "alreadyAccount": "Al lid ?",
         "login": "Login",
         "success": "Account aangemaakt! Controleer je e-mail om je adres te bevestigen.",
+        "confirmation": {
+          "title": "Controleer uw mailbox",
+          "description": "Uw account is aangemaakt. We hebben een bevestigingsmail gestuurd naar:",
+          "instructions": "Klik op de link in de e-mail voordat u probeert in te loggen. Controleer ook uw map met ongewenste e-mail.",
+          "login": "Naar inloggen"
+        },
         "errors": { 
           "required": "E-mailadres en wachtwoord zijn vereist.", 
           "tooShort": "Min. 8 tekens.", 
           "mismatch": "De wachtwoorden komen niet overeen.",
-          "name_missing": "Naam is vereist"
+          "name_missing": "Naam is vereist",
+          "emailAlreadyUsed": "Er bestaat al een account met dit e-mailadres. Probeer in te loggen of gebruik « Wachtwoord vergeten ».",
+          "weakPassword": "Dit wachtwoord voldoet niet aan de beveiligingsvereisten.",
+          "emailRateLimit": "Er zijn onlangs te veel e-mails verzonden. Wacht enkele minuten en probeer opnieuw.",
+          "requestRateLimit": "Er zijn te veel pogingen gedaan. Wacht enkele minuten en probeer opnieuw.",
+          "emailNotAuthorized": "Het verzenden van e-mails naar dit adres is niet toegestaan door de huidige configuratie. Configureer een aangepaste SMTP-server in Supabase.",
+          "signupDisabled": "Registratie met e-mail is momenteel uitgeschakeld.",
+          "generic": "Het account kan momenteel niet worden aangemaakt. Probeer het opnieuw."
         }
     },
     "ProSignup": {
@@ -297,7 +336,8 @@
     "Categories": {
       "title": "Onze categorieën",
       "subtitle": "Ontdek al onze oplossingen en accessoires voor vloerverwarming.",
-      "subcat": "Subcategorieën"
+      "subcat": "Subcategorieën",
+      "productCount": "{count, plural, =0 {Geen producten} one {# product} other {# producten}}"
     },
     "Cart": {
       "errors": {
@@ -324,6 +364,8 @@
       "total": "Totaal",
       "payment": "Ga naar betaling",
       "paymentLoading": "Betaling voorbereiden…",
+      "loginRequired": "Log in om uw winkelwagen te bevestigen en door te gaan naar de betaling.",
+      "loginToCheckout": "Inloggen om verder te gaan",
       "creditApplied": "PRO-tegoed toegepast: −€ {amount}"
     },
     "PackConfig": {

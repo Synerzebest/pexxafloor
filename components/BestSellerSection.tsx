@@ -14,7 +14,7 @@ export default function BestSellersSection() {
   if (loading || products.length === 0) return null;
 
   return (
-    <section className="relative top-24 py-20 bg-gray-50">
+    <section className="relative bg-gray-50 py-20">
       <div className="mx-auto max-w-7xl px-4 flex flex-col items-center">
         <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-12 relative">
           Nos <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Best Sellers</span>

@@ -59,7 +59,12 @@ export default function CategoriesContent({
                 {getName(cat)}
               </h2>
               <p className="text-sm text-gray-500">
-                {cat.subcategories?.length ?? 0} {t('subcat')}
+                {t("productCount", {
+                  count: cat.subcategories?.reduce(
+                    (total, subcategory) => total + (subcategory.products?.length ?? 0),
+                    0
+                  ) ?? 0,
+                })}
               </p>
             </div>
 

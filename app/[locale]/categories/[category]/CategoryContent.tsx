@@ -7,6 +7,7 @@ import { ProductCard } from "@/components";
 import { Category } from "@/types/CategoryType";
 import { SubSubCategory } from "@/types/SubSubCategoryType";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useTranslations } from "next-intl";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -18,6 +19,7 @@ export default function CategoryContent({
   locale: SupportedLocale;
 }) {
   const { isPro, loading: loadingProfile } = useUserProfile();
+  const t = useTranslations("Categories");
   const getName = (
     obj: { name_fr: string; name_nl: string; name_en: string }
   ) => (locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en);
@@ -52,7 +54,7 @@ export default function CategoryContent({
                   {getName(sub)}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {sub.subsubcategories?.length ?? 0} sous-catégories
+                  {t("productCount", { count: sub.products?.length ?? 0 })}
                 </p>
               </div>
 

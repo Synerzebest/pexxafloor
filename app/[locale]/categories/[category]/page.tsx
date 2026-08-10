@@ -32,6 +32,10 @@ export default async function CategoryPage({
       name_nl,
       name_en,
 
+      products:products!products_subcategory_id_fkey (
+        id
+      ),
+
       subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
         id,
         slug,

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { LoadScript } from "@react-google-maps/api";
 import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
 import { useCartCheckout } from "@/hooks/useCartCheckout";
+import Link from "next/link";
 
 type CartItem =
   | {
@@ -277,18 +278,27 @@ export default function CheckoutSection({ items, isPro }: Props) {
             </div>
             
             {/* Checkout Button */}
-            <button
-              className="sm:block sm:w-auto bg-orange-600 hover:bg-orange-700 h-12 sm:h-auto text-base font-medium text-white py-2 px-4 rounded-lg cursor-pointer duration-300"
-              onClick={handleCheckout} 
-              disabled={
-                !user ||
-                !isClientNameValid ||
-                !isAddressValid ||
-                checkoutLoading
-              }
-            >
+            {!user ? (
+              <div className="w-full sm:w-auto">
+                <p className="mb-2 text-sm text-gray-500">
+                  {t("loginRequired")}
+                </p>
+                <Link
+                  href={`/${locale}/login?next=${encodeURIComponent(`/${locale}/cart`)}`}
+                  className="inline-flex h-12 w-full items-center justify-center rounded-lg bg-orange-600 px-5 text-base font-medium text-white transition hover:bg-orange-700 sm:w-auto"
+                >
+                  {t("loginToCheckout")}
+                </Link>
+              </div>
+            ) : (
+              <button
+                className="h-12 cursor-pointer rounded-lg bg-orange-600 px-4 py-2 text-base font-medium text-white duration-300 hover:bg-orange-700 disabled:cursor-not-allowed disabled:bg-gray-300 sm:h-auto sm:w-auto"
+                onClick={handleCheckout}
+                disabled={!isClientNameValid || !isAddressValid || checkoutLoading}
+              >
                 {checkoutLoading ? t("paymentLoading") : t("payment")}
-            </button>
+              </button>
+            )}
 
             </div>
         </div>
