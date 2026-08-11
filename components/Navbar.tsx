@@ -18,7 +18,7 @@ import { FaWhatsapp } from 'react-icons/fa';
 const SUPPORTED_LOCALES = ['fr', 'nl', 'en'] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 const logoImage = "/images/logo.png";
-const whatsappUrl = "https://wa.me/3223439200";
+const whatsappUrl = "https://wa.me/322494042932";
 type Translatable = {
   name_fr: string;
   name_nl: string;
