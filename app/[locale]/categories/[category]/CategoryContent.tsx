@@ -20,6 +20,7 @@ export default function CategoryContent({
 }) {
   const { isPro, loading: loadingProfile } = useUserProfile();
   const t = useTranslations("Categories");
+  const tc = useTranslations("Common");
   const getName = (
     obj: { name_fr: string; name_nl: string; name_en: string }
   ) => (locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en);
@@ -88,7 +89,7 @@ export default function CategoryContent({
               href={`/${locale}/categories/${category.slug}/${sub.slug}`}
               className="text-orange-600 hover:underline text-sm"
             >
-              Voir tout →
+              {tc("viewAll")} →
             </Link>
           </div>
 

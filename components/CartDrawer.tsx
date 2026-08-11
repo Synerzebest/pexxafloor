@@ -76,13 +76,13 @@ export default function CartDrawer() {
                           <div className="flex items-center gap-3">
                             <Image
                               src={item.product?.image || "/images/box.png"}
-                              alt={item.product?.name || "Produit"}
+                              alt={item.product?.name || t("product")}
                               width={60}
                               height={60}
                               className="rounded-md"
                             />
                             <p className="font-medium text-gray-800 leading-tight">
-                              {item.product?.name ?? "Produit"}
+                              {item.product?.name ?? t("product")}
                             </p>
                           </div>
 
@@ -124,7 +124,7 @@ export default function CartDrawer() {
                             <button
                               onClick={() => removeFromCart(item.product_id)}
                               className="ml-auto p-1.5 bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
-                              title="Supprimer"
+                              title={t("remove")}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -150,7 +150,7 @@ export default function CartDrawer() {
                             <button
                               onClick={() => removeFromCart(item.id)}
                               className="p-1.5 bg-red-100 text-red-700 rounded hover:bg-red-200 transition"
-                              title="Supprimer"
+                              title={t("remove")}
                             >
                               <Trash2 size={16} />
                             </button>
@@ -166,7 +166,7 @@ export default function CartDrawer() {
                           </div>
 
                           <AnimatedDropdown
-                            title={`${item.products.length} produits inclus`}
+                            title={t("includedCount", { count: item.products.length })}
                             defaultOpen={false}
                           >
                             <ul className="ml-2 mt-2 space-y-1 list-disc">
@@ -180,7 +180,7 @@ export default function CartDrawer() {
                               href={`/packs/${item.slug}?packId=${item.id}`}
                               className="inline-block mt-2 text-blue-600 hover:underline"
                             >
-                              Modifier ce pack
+                              {t("editPack")}
                             </Link>
                           </AnimatedDropdown>
 
@@ -213,7 +213,7 @@ export default function CartDrawer() {
                               href={`/packs/${item.slug}?packId=${item.id}`}
                               className="text-blue-600 text-sm hover:underline"
                             >
-                              Modifier
+                              {t("edit")}
                             </Link>
                           </div>
                         </li>

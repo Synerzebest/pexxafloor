@@ -263,7 +263,7 @@ export default function CheckoutSection({ items, isPro }: Props) {
                       {baseTotal.toFixed(2)} €
                     </span>
                     <span className="text-xs font-medium text-green-600">
-                      remise PRO
+                      {t("proDiscount")}
                     </span>
                   </div>
                 )}

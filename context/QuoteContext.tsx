@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import type { PackProduct } from "@/types/PackProductType";
+import { useTranslations } from "next-intl";
 
 export type PackQuoteAdditionalItem = {
   id: string;
@@ -72,6 +73,7 @@ function getLocaleFromPath(pathname: string | null) {
 }
 
 export function QuoteProvider({ children }: { children: React.ReactNode }) {
+  const tc = useTranslations("Common");
   const router = useRouter();
   const pathname = usePathname();
   const [quotes, setQuotes] = useState<SavedPackQuote[]>([]);
@@ -212,7 +214,7 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
     if (!currentDraft || !pendingQuote) return;
 
     const projectReference = window.prompt(
-      "Référence de projet",
+      tc("projectReference"),
       currentDraft.projectReference || ""
     );
 
@@ -235,7 +237,7 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
       openSavedQuote(pendingQuote);
     } catch (error) {
       console.error(error);
-      window.alert("Impossible d’enregistrer le devis avant ouverture.");
+      window.alert(tc("saveBeforeOpenError"));
     } finally {
       setIsSavingBeforeOpen(false);
     }
@@ -249,11 +251,10 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
         <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/40 px-4">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl">
             <h2 className="text-lg font-semibold text-gray-900">
-              Ouvrir ce devis ?
+              {tc("openQuoteQuestion")}
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Vous travaillez déjà sur un devis. Voulez-vous l’abandonner ou
-              l’enregistrer avant d’ouvrir « {pendingQuote.projectReference} » ?
+              {tc("openQuoteDescription", { reference: pendingQuote.projectReference })}
             </p>
 
             <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-end">
@@ -262,14 +263,14 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
                 onClick={() => setPendingQuote(null)}
                 className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
-                Annuler
+                {tc("cancel")}
               </button>
               <button
                 type="button"
                 onClick={() => openSavedQuote(pendingQuote)}
                 className="rounded-lg border border-orange-200 px-4 py-2 text-sm font-medium text-orange-700 hover:bg-orange-50"
               >
-                Abandonner
+                {tc("discard")}
               </button>
               <button
                 type="button"
@@ -277,7 +278,7 @@ export function QuoteProvider({ children }: { children: React.ReactNode }) {
                 disabled={isSavingBeforeOpen}
                 className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isSavingBeforeOpen ? "Enregistrement..." : "Enregistrer puis ouvrir"}
+                {isSavingBeforeOpen ? tc("saving") : tc("saveAndOpen")}
               </button>
             </div>
           </div>

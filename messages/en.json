@@ -8,8 +8,95 @@
       "expert_contact": "Call an expert",
       "contact_phone": "Phone",
       "contact_email": "Email",
-      "cart": "Open cart"
+      "cart": "Open cart",
+      "my_quotes": "My quotes",
+      "quotes_description": "Select a saved quote to continue working on it.",
+      "no_quotes": "There are no saved quotes yet.",
+      "delete_quote_confirm": "Delete quote “{reference}”?",
+      "delete_quote_error": "Unable to delete this quote.",
+      "delete_quote": "Delete quote"
     },
+    "Common": {
+      "our": "Our",
+      "bestSellers": "Best sellers",
+      "proArea": "PRO area",
+      "exclusiveDiscounts": "Exclusive discounts",
+      "vatExcluded": "excl. VAT",
+      "vatIncluded": "incl. VAT",
+      "proDiscount": "PRO discount −{discount}%",
+      "total": "Total",
+      "totalToPay": "Total to pay",
+      "add": "Add",
+      "added": "Added",
+      "update": "Update",
+      "updated": "Updated",
+      "addToCart": "Add to cart",
+      "addedToCart": "Added to cart",
+      "updateCart": "Update cart",
+      "updatedSuccessfully": "Updated successfully",
+      "share": "Share",
+      "shareQuote": "Share this quote",
+      "save": "Save",
+      "saveQuote": "Save quote",
+      "logout": "Sign out",
+      "projectReference": "Project reference",
+      "saveBeforeOpenError": "Unable to save the quote before opening it.",
+      "openQuoteQuestion": "Open this quote?",
+      "openQuoteDescription": "You are already working on a quote. Would you like to discard it or save it before opening “{reference}”?",
+      "cancel": "Cancel",
+      "discard": "Discard",
+      "saving": "Saving…",
+      "saveAndOpen": "Save and open",
+      "fastDelivery": "Fast delivery",
+      "freeDelivery": "Free delivery from €99",
+      "twoYearWarranty": "2-year warranty",
+      "viewAll": "View all",
+      "products": "Products",
+      "product": "Product",
+      "productCount": "{count, plural, one {# product} other {# products}}",
+      "includedCount": "{count, plural, one {# product included} other {# products included}}",
+      "noProductIn": "No products in {name}.",
+      "noProductsFound": "No products found in this sub-subcategory.",
+      "myOrders": "My orders",
+      "noOrders": "No orders yet",
+      "orderFrom": "Order from {date}",
+      "viewItems": "View items",
+      "orderStatus": { "paid": "Paid", "preparing": "Preparing", "packed": "Packed", "ready": "Ready", "cancelled": "Cancelled" }
+    },
+    "FAQ": {
+      "title": { "first": "Frequently asked", "second": "questions" },
+      "items": {
+        "1": { "question": "Is underfloor heating compatible with every type of flooring?", "answer": "Yes. Our systems are compatible with tiles, parquet, vinyl, laminate and PVC, for both renovation and new-build projects." },
+        "2": { "question": "Can I install the heating system myself?", "answer": "Yes. Our kits are designed for easy installation and detailed instructions guide you step by step. Our technical support remains available if needed." },
+        "3": { "question": "How much electricity does underfloor heating use?", "answer": "Consumption generally ranges from 70 to 150 W/m² depending on use and insulation. A thermostat lets you schedule and precisely adjust the temperature to control consumption." }
+      }
+    },
+    "ProLanding": {
+      "badge": "Professional area",
+      "title": { "first": "Join our network of", "second": "professionals" },
+      "description": "Installers, plumbers and heating specialists: access preferential terms and grow your business with PexxaFloor Pro.",
+      "benefitsTitle": "Your exclusive benefits",
+      "benefits": {
+        "discounts": { "title": "Exclusive discounts", "description": "Benefit from attractive discounts across our catalogue, defined by product category." },
+        "delivery": { "title": "On-site delivery", "description": "Have your orders delivered directly to your job sites and simplify your logistics." },
+        "priority": { "title": "Priority processing", "description": "Your orders are processed first to provide the best possible delivery times." },
+        "support": { "title": "Dedicated support", "description": "A dedicated contact answers your technical and commercial questions." }
+      },
+      "cta": "Become a PRO"
+    },
+    "QuoteSave": {
+      "title": "Save quote", "description": "Only the project reference is required.",
+      "projectReference": "Project reference", "customerName": "Customer name", "phone": "Mobile number", "email": "Email address", "projectType": "Project type", "select": "Select",
+      "projectTypes": { "maison": "House", "appartement": "Apartment", "bureaux": "Offices", "commerce": "Retail", "autre": "Other" },
+      "additionalItems": "Additional items", "additionalItemsNote": "The supply discount does not apply to these amounts.", "addItem": "Add item", "other": "Other", "itemName": "Item name", "priceExclVat": "Price excl. VAT", "removeItem": "Remove item", "cancel": "Cancel", "saving": "Saving…", "save": "Save",
+      "itemTypes": { "Installation": "Installation", "Étude de projet": "Project study", "Préparation de chantier": "Site preparation", "Déblayage des déchets de travaux": "Construction waste removal", "Mise en service": "Commissioning" }
+    },
+    "ProApplicationCard": {
+      "noApplication": "You have not submitted a professional application yet.", "createdAt": "Created on", "verifiedAt": "Verified on", "name": "Name", "email": "Email", "phone": "Phone", "businessType": "Business type", "address": "Address",
+      "statuses": { "pending": "Pending", "inReview": "Under review", "verified": "Verified", "rejected": "Rejected", "suspended": "Suspended", "revision": "Needs revision" },
+      "messages": { "active": "Your professional account is active 🎉", "pending": "Your application is awaiting approval.", "rejected": "Your application was rejected." }
+    },
+    "QuoteShare": { "title": "Share this quote", "description": "Choose which price type to send.", "preparing": "Preparing amounts…", "prepareError": "Unable to prepare the quote for sharing.", "shareError": "Unable to share the PDF.", "customerDiscount": "Discount for the customer quote", "sharePro": "Share quote with PRO prices", "shareCustomer": "Share quote with customer prices", "totalExclVat": "Total excl. VAT", "estimatedProfit": "Estimated profit excl. VAT" },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
       "title": "Floor heating",
@@ -312,12 +399,17 @@
       "productsIncluded": "products included",
       "edit": "Edit",
       "checkCart": "Check my cart",
-      "products_included": "Products included"
+      "products_included": "Products included",
+      "product": "Product",
+      "remove": "Remove",
+      "editPack": "Edit this pack",
+      "includedCount": "{count, plural, one {# product included} other {# products included}}"
     },
     "UserButton": {
       "login": "Login",
       "profilePage": "My profile",
-      "signOut": "Sign out"
+      "signOut": "Sign out",
+      "myQuotes": "My quotes"
     },
     "Admin": {
       "adminPanel": "Admin panel",
@@ -366,6 +458,7 @@
       "total": "Total",
       "payment": "Proceed to payment",
       "paymentLoading": "Preparing payment…",
+      "proDiscount": "PRO discount",
       "loginRequired": "Sign in to confirm your cart and proceed to payment.",
       "loginToCheckout": "Sign in to continue",
       "creditApplied": "PRO credit applied: −€{amount}"

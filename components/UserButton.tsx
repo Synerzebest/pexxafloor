@@ -235,7 +235,7 @@ export default function UserButton() {
                     >
                       <span className="inline-flex items-center gap-3">
                         <FileText size={16} />
-                        Mes devis
+                        {t("myQuotes")}
                       </span>
                       {quotes.length > 0 && (
                         <span className="rounded-full bg-orange-100 px-2 py-0.5 text-xs font-semibold text-orange-700">

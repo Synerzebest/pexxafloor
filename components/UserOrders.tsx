@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons";
 import type { CartItem } from "@/context/CartContext";
 import type { PackProduct } from "@/types/PackProductType";
+import { useLocale, useTranslations } from "next-intl";
 
 type Order = {
   id: string;
@@ -23,6 +24,8 @@ type Order = {
 };
 
 export default function UserOrders() {
+  const locale = useLocale();
+  const tc = useTranslations("Common");
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -80,7 +83,7 @@ export default function UserOrders() {
             icon={<CheckCircleOutlined />}
             style={{ backgroundColor: "#dcfce7", color: "#166534", borderColor: "#bbf7d0" }}
           >
-            Payée
+            {tc("orderStatus.paid")}
           </Tag>
         );
       case "preparing":
@@ -89,7 +92,7 @@ export default function UserOrders() {
             icon={<ClockCircleOutlined />}
             style={{ backgroundColor: "#ffedd5", color: "#9a3412", borderColor: "#fed7aa" }}
           >
-            En préparation
+            {tc("orderStatus.preparing")}
           </Tag>
         );
       case "packed":
@@ -98,7 +101,7 @@ export default function UserOrders() {
             icon={<InboxOutlined />}
             style={{ backgroundColor: "#dbeafe", color: "#1e3a8a", borderColor: "#bfdbfe" }}
           >
-            Emballée
+            {tc("orderStatus.packed")}
           </Tag>
         );
       case "ready":
@@ -107,7 +110,7 @@ export default function UserOrders() {
             icon={<InboxOutlined />}
             style={{ backgroundColor: "#cffafe", color: "#155e75", borderColor: "#a5f3fc" }}
           >
-            Prête
+            {tc("orderStatus.ready")}
           </Tag>
         );
       case "cancelled":
@@ -116,7 +119,7 @@ export default function UserOrders() {
             icon={<CloseCircleOutlined />}
             style={{ backgroundColor: "#fee2e2", color: "#991b1b", borderColor: "#fecaca" }}
           >
-            Annulée
+            {tc("orderStatus.cancelled")}
           </Tag>
         );
       default:
@@ -135,7 +138,7 @@ export default function UserOrders() {
   if (orders.length === 0) {
     return (
       <Empty
-        description="Aucune commande pour le moment"
+        description={tc("noOrders")}
         image={Empty.PRESENTED_IMAGE_SIMPLE}
         style={{ marginTop: 40 }}
       />
@@ -144,7 +147,7 @@ export default function UserOrders() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <h2 className="text-2xl font-bold mb-6">Mes commandes</h2>
+      <h2 className="text-2xl font-bold mb-6">{tc("myOrders")}</h2>
 
       <List
         grid={{ gutter: 16, column: 1 }}
@@ -156,7 +159,7 @@ export default function UserOrders() {
                 <div className="flex justify-between items-center">
                   <span>
                     <ShoppingOutlined className="mr-2 text-orange-500" />
-                    Commande du {new Date(o.created_at).toLocaleDateString()}
+                    {tc("orderFrom", { date: new Date(o.created_at).toLocaleDateString(locale) })}
                   </span>
                   <div className="flex items-center gap-3">
                     {renderStatus(o.status)}
@@ -170,7 +173,7 @@ export default function UserOrders() {
                 items={[
                   {
                     key: "1",
-                    label: "Voir les articles",
+                    label: tc("viewItems"),
                     children: (
                       <List
                         dataSource={o.items}
@@ -195,7 +198,7 @@ export default function UserOrders() {
                                   items={[
                                     {
                                       key: `sub-${idx}`,
-                                      label: `${item.products?.length || 0} produits inclus`,
+                                      label: tc("includedCount", { count: item.products?.length || 0 }),
                                       children: (
                                         <ul className="ml-5 list-disc text-sm text-gray-700">
                                           {item.products?.map((p: PackProduct) => (
@@ -212,7 +215,7 @@ export default function UserOrders() {
                             ) : (
                               <div className="flex justify-between w-full">
                                 <span>
-                                  {item.product?.name ?? "Produit"} × {item.quantity}
+                                  {item.product?.name ?? tc("product")} × {item.quantity}
                                 </span>
                                 <span className="font-medium">
                                   {((item.product?.price ?? 0) * item.quantity).toFixed(2)} €

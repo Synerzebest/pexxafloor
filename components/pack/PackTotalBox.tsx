@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { CheckCircle2, Save, Share2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 type Props = {
   total: number;
@@ -23,6 +24,7 @@ export function PackTotalBox({
   disabled = false,
   canSaveQuote = false,
 }: Props) {
+  const tc = useTranslations("Common");
   const [added, setAdded] = useState(false);
 
   const handleAdd = () => {
@@ -38,7 +40,7 @@ export function PackTotalBox({
         {/* TOTAL */}
         <div className="flex items-center justify-between">
           <span className="text-lg font-semibold text-gray-900">
-            Total à payer
+            {tc("totalToPay")}
           </span>
           <span className="text-3xl font-bold text-orange-600">
             {total.toFixed(2)} €
@@ -63,7 +65,7 @@ export function PackTotalBox({
                 className="flex items-center gap-2"
               >
                 <CheckCircle2 className="w-5 h-5" />
-                {isEditing ? "Modifié avec succès" : "Ajouté au panier"}
+                {isEditing ? tc("updatedSuccessfully") : tc("addedToCart")}
               </motion.div>
             ) : (
               <motion.div
@@ -73,7 +75,7 @@ export function PackTotalBox({
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.25 }}
               >
-                {isEditing ? "Mettre à jour le panier" : "Ajouter au panier"}
+                {isEditing ? tc("updateCart") : tc("addToCart")}
               </motion.div>
             )}
           </AnimatePresence>
@@ -87,7 +89,7 @@ export function PackTotalBox({
             className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <Share2 className="h-4 w-4" />
-            Partager ce devis
+            {tc("shareQuote")}
           </button>
 
           {canSaveQuote && (
@@ -98,16 +100,16 @@ export function PackTotalBox({
               className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-4 text-sm font-semibold text-orange-700 transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60"
             >
               <Save className="h-4 w-4" />
-              Enregistrer le devis
+              {tc("saveQuote")}
             </button>
           )}
         </div>
 
         {/* INFOS */}
         <div className="text-center text-xs text-gray-500 space-y-1">
-          <p>🚚 Livraison rapide</p>
-          <p>🇧🇪 Livraison offerte dès 99 €</p>
-          <p>🛡️ Garantie 2 ans</p>
+          <p>🚚 {tc("fastDelivery")}</p>
+          <p>🇧🇪 {tc("freeDelivery")}</p>
+          <p>🛡️ {tc("twoYearWarranty")}</p>
         </div>
       </div>
     </div>

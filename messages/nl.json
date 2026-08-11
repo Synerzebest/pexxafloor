@@ -8,8 +8,95 @@
       "expert_contact": "Praat met een expert",
       "contact_phone": "Telefoon",
       "contact_email": "E-mail",
-      "cart": "Winkelwagen openen"
+      "cart": "Winkelwagen openen",
+      "my_quotes": "Mijn offertes",
+      "quotes_description": "Selecteer een opgeslagen offerte om eraan verder te werken.",
+      "no_quotes": "Er zijn momenteel geen opgeslagen offertes.",
+      "delete_quote_confirm": "Offerte ‘{reference}’ verwijderen?",
+      "delete_quote_error": "Deze offerte kan niet worden verwijderd.",
+      "delete_quote": "Offerte verwijderen"
     },
+    "Common": {
+      "our": "Onze",
+      "bestSellers": "Bestverkochte producten",
+      "proArea": "PRO-zone",
+      "exclusiveDiscounts": "Exclusieve kortingen",
+      "vatExcluded": "excl. btw",
+      "vatIncluded": "incl. btw",
+      "proDiscount": "PRO-korting −{discount}%",
+      "total": "Totaal",
+      "totalToPay": "Te betalen totaal",
+      "add": "Toevoegen",
+      "added": "Toegevoegd",
+      "update": "Bijwerken",
+      "updated": "Bijgewerkt",
+      "addToCart": "Toevoegen aan winkelwagen",
+      "addedToCart": "Toegevoegd aan winkelwagen",
+      "updateCart": "Winkelwagen bijwerken",
+      "updatedSuccessfully": "Succesvol bijgewerkt",
+      "share": "Delen",
+      "shareQuote": "Deze offerte delen",
+      "save": "Opslaan",
+      "saveQuote": "Offerte opslaan",
+      "logout": "Afmelden",
+      "projectReference": "Projectreferentie",
+      "saveBeforeOpenError": "De offerte kan niet worden opgeslagen voordat ze wordt geopend.",
+      "openQuoteQuestion": "Deze offerte openen?",
+      "openQuoteDescription": "U werkt al aan een offerte. Wilt u die verlaten of opslaan voordat u ‘{reference}’ opent?",
+      "cancel": "Annuleren",
+      "discard": "Verlaten",
+      "saving": "Opslaan…",
+      "saveAndOpen": "Opslaan en openen",
+      "fastDelivery": "Snelle levering",
+      "freeDelivery": "Gratis levering vanaf € 99",
+      "twoYearWarranty": "2 jaar garantie",
+      "viewAll": "Alles bekijken",
+      "products": "Producten",
+      "product": "Product",
+      "productCount": "{count, plural, one {# product} other {# producten}}",
+      "includedCount": "{count, plural, one {# product inbegrepen} other {# producten inbegrepen}}",
+      "noProductIn": "Geen producten in {name}.",
+      "noProductsFound": "Geen producten gevonden in deze sub-subcategorie.",
+      "myOrders": "Mijn bestellingen",
+      "noOrders": "Momenteel geen bestellingen",
+      "orderFrom": "Bestelling van {date}",
+      "viewItems": "Artikelen bekijken",
+      "orderStatus": { "paid": "Betaald", "preparing": "In voorbereiding", "packed": "Verpakt", "ready": "Klaar", "cancelled": "Geannuleerd" }
+    },
+    "FAQ": {
+      "title": { "first": "Veelgestelde", "second": "vragen" },
+      "items": {
+        "1": { "question": "Is vloerverwarming geschikt voor alle soorten vloeren?", "answer": "Ja. Onze systemen zijn geschikt voor tegels, parket, vinyl, laminaat en pvc, zowel bij renovatie als nieuwbouw." },
+        "2": { "question": "Kan ik de vloerverwarming zelf installeren?", "answer": "Ja. Onze kits zijn ontworpen voor een eenvoudige installatie en een gedetailleerde handleiding begeleidt u stap voor stap. Onze technische ondersteuning blijft beschikbaar indien nodig." },
+        "3": { "question": "Hoeveel elektriciteit verbruikt vloerverwarming?", "answer": "Het verbruik ligt doorgaans tussen 70 en 150 W/m², afhankelijk van het gebruik en de isolatie. Met een thermostaat kunt u de temperatuur nauwkeurig programmeren en regelen." }
+      }
+    },
+    "ProLanding": {
+      "badge": "Professionele zone",
+      "title": { "first": "Word lid van ons netwerk van", "second": "professionals" },
+      "description": "Installateurs, loodgieters en verwarmingsspecialisten: profiteer van gunstige voorwaarden en ontwikkel uw activiteit met PexxaFloor Pro.",
+      "benefitsTitle": "Uw exclusieve voordelen",
+      "benefits": {
+        "discounts": { "title": "Exclusieve kortingen", "description": "Profiteer van aantrekkelijke kortingen op onze catalogus, bepaald per productcategorie." },
+        "delivery": { "title": "Levering op de werf", "description": "Laat uw bestellingen rechtstreeks op uw werf leveren en vereenvoudig uw logistiek." },
+        "priority": { "title": "Prioritaire verwerking", "description": "Uw bestellingen worden met voorrang verwerkt voor de best mogelijke levertijden." },
+        "support": { "title": "Persoonlijke ondersteuning", "description": "Een vaste contactpersoon beantwoordt uw technische en commerciële vragen." }
+      },
+      "cta": "PRO-klant worden"
+    },
+    "QuoteSave": {
+      "title": "Offerte opslaan", "description": "Alleen de projectreferentie is verplicht.",
+      "projectReference": "Projectreferentie", "customerName": "Naam van de klant", "phone": "Gsm-nummer", "email": "E-mailadres", "projectType": "Projecttype", "select": "Selecteren",
+      "projectTypes": { "maison": "Woning", "appartement": "Appartement", "bureaux": "Kantoren", "commerce": "Handelszaak", "autre": "Andere" },
+      "additionalItems": "Extra posten", "additionalItemsNote": "De korting op de levering is niet van toepassing op deze bedragen.", "addItem": "Post toevoegen", "other": "Andere", "itemName": "Naam van de post", "priceExclVat": "Prijs excl. btw", "removeItem": "Post verwijderen", "cancel": "Annuleren", "saving": "Opslaan…", "save": "Opslaan",
+      "itemTypes": { "Installation": "Installatie", "Étude de projet": "Projectstudie", "Préparation de chantier": "Voorbereiding van de werf", "Déblayage des déchets de travaux": "Afvoer van bouwafval", "Mise en service": "Inbedrijfstelling" }
+    },
+    "ProApplicationCard": {
+      "noApplication": "U hebt nog geen professionele aanvraag.", "createdAt": "Aangemaakt op", "verifiedAt": "Geverifieerd op", "name": "Naam", "email": "E-mail", "phone": "Telefoon", "businessType": "Type activiteit", "address": "Adres",
+      "statuses": { "pending": "In afwachting", "inReview": "In behandeling", "verified": "Geverifieerd", "rejected": "Geweigerd", "suspended": "Geschorst", "revision": "Te herzien" },
+      "messages": { "active": "Uw professionele account is actief 🎉", "pending": "Uw aanvraag wacht op goedkeuring.", "rejected": "Uw aanvraag werd geweigerd." }
+    },
+    "QuoteShare": { "title": "Deze offerte delen", "description": "Kies welk prijstype u wilt verzenden.", "preparing": "Bedragen voorbereiden…", "prepareError": "Het delen van de offerte kan niet worden voorbereid.", "shareError": "De PDF kan niet worden gedeeld.", "customerDiscount": "Korting voor de particuliere offerte", "sharePro": "Offerte met PRO-prijzen delen", "shareCustomer": "Offerte met particuliere prijzen delen", "totalExclVat": "Totaal excl. btw", "estimatedProfit": "Geschatte winst excl. btw" },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
       "title": "Vloerverwarming",
@@ -312,12 +399,17 @@
       "productsIncluded": "producten inbegrepen",
       "edit": "Bewerken",
       "checkCart": "Mijn winkelwagen zien",
-      "products_included": "Products included"
+      "products_included": "Producten inbegrepen",
+      "product": "Product",
+      "remove": "Verwijderen",
+      "editPack": "Dit pakket bewerken",
+      "includedCount": "{count, plural, one {# product inbegrepen} other {# producten inbegrepen}}"
     },
     "UserButton": {
       "login": "Login",
       "profilePage": "Mijn profiel",
-      "signOut": "Afmelden"
+      "signOut": "Afmelden",
+      "myQuotes": "Mijn offertes"
     },
     "Admin": {
       "adminPanel": "Beheerderspaneel",
@@ -366,6 +458,7 @@
       "total": "Totaal",
       "payment": "Ga naar betaling",
       "paymentLoading": "Betaling voorbereiden…",
+      "proDiscount": "PRO-korting",
       "loginRequired": "Log in om uw winkelwagen te bevestigen en door te gaan naar de betaling.",
       "loginToCheckout": "Inloggen om verder te gaan",
       "creditApplied": "PRO-tegoed toegepast: −€ {amount}"

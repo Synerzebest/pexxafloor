@@ -6,6 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { ProductCard } from "@/components";
 import { SubSubCategory } from "@/types/SubSubCategoryType";
 import { useUserProfile } from "@/hooks/useUserProfile";
+import { useTranslations } from "next-intl";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -35,6 +36,7 @@ export default function SubSubCategoryContent({
   subcategoryName,
 }: SubSubCategoryContentProps) {
   const {isPro, loading} = useUserProfile();
+  const tc = useTranslations("Common");
   const getName = (obj: Translatable) =>
     locale === "fr" ? obj.name_fr : locale === "nl" ? obj.name_nl : obj.name_en;
 
@@ -88,7 +90,7 @@ export default function SubSubCategoryContent({
           </ul>
         ) : (
           <p className="text-gray-500 italic">
-            Aucun produit trouvé dans cette sous-sous-catégorie.
+            {tc("noProductsFound")}
           </p>
         )}
       </motion.div>

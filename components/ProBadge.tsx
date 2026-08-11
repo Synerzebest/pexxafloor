@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react"
 import { Briefcase } from "lucide-react"
 import Link from "next/link"
-import { useLocale } from "next-intl"
+import { useLocale, useTranslations } from "next-intl"
 import { useUI } from "@/context/UIContext"
 import { supabase } from "@/lib/supabaseClient"
 
 const ProBadge = () => {
   const locale = useLocale()
+  const tc = useTranslations("Common")
   const { drawerOpen } = useUI()
 
   const [loading, setLoading] = useState(true)
@@ -68,8 +69,8 @@ const ProBadge = () => {
       <div className="bg-gradient-to-br from-orange-500 via-amber-500 to-orange-500 px-4 py-3 rounded-l-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:pr-6 flex items-center gap-2">
         <Briefcase className="w-5 h-5 text-white" />
         <div className="flex flex-col text-white">
-          <span className="font-bold text-sm">Espace PRO</span>
-          <span className="text-xs opacity-90">Remises exclusives</span>
+          <span className="font-bold text-sm">{tc("proArea")}</span>
+          <span className="text-xs opacity-90">{tc("exclusiveDiscounts")}</span>
         </div>
       </div>
     </Link>

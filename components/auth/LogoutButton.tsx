@@ -3,9 +3,11 @@
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'next/navigation';
 import { LogOutIcon } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 export default function LogoutButton() {
   const router = useRouter();
+  const tc = useTranslations('Common');
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -18,7 +20,7 @@ export default function LogoutButton() {
       className="cursor-pointer my-4 px-4 py-2 flex items-center gap-2 text-red-500 border border-red-500 rounded-lg"
     >
       <LogOutIcon />
-      Déconnexion
+      {tc('logout')}
     </button>
   );
 }

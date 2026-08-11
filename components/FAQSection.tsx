@@ -3,27 +3,15 @@
 import { useState } from "react";
 import { motion } from "framer-motion"; // Gardé pour la rotation de l'icône
 import { ChevronDown } from "lucide-react";
-
-const faqs = [
-  {
-    question: "Le chauffage au sol est-il compatible avec tous les types de sols ?",
-    answer:
-      "Oui. Nos câbles chauffants sont compatibles avec carrelage, parquet, vinyle, stratifié et sol PVC. Cette compatibilité étendue vous offre une grande flexibilité pour vos projets de rénovation ou de construction neuve, garantissant une chaleur uniforme et efficace quel que soit le revêtement de votre choix.",
-  },
-  {
-    question: "Puis-je installer le chauffage moi-même ?",
-    answer:
-      "Oui, absolument. Nos kits sont conçus pour être posés facilement même par un novice. Une notice détaillée vous guide étape par étape. De plus, notre support technique est disponible pour vous assister en cas de besoin.",
-  },
-  {
-    question: "Quelle est la consommation électrique de votre système de chauffage au sol ?",
-    answer:
-      "La consommation varie généralement entre 70 et 150 W/m² selon l’usage et l'isolation de votre pièce. Cependant, nos systèmes sont optimisés par un thermostat intelligent qui permet de programmer et d'ajuster précisément la température, réduisant ainsi la consommation d'énergie.",
-  },
-];
+import { useTranslations } from "next-intl";
 
 export default function FAQSection() {
+  const t = useTranslations("FAQ");
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const faqs = [1, 2, 3].map((number) => ({
+    question: t(`items.${number}.question`),
+    answer: t(`items.${number}.answer`),
+  }));
 
   const toggleFAQ = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
@@ -34,7 +22,7 @@ export default function FAQSection() {
       <div className="max-w-4xl mx-auto px-6 flex flex-col items-center">
         {/* Titre */}
         <h2 className="text-4xl font-extrabold text-gray-900 mb-12 relative">
-          Questions <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">Fréquentes</span>
+          {t("title.first")} <span className="bg-gradient-to-r from-orange-500 to-amber-500 bg-clip-text text-transparent">{t("title.second")}</span>
           <span className="block h-1 w-20 mx-auto mt-2 bg-gradient-to-r from-orange-500 to-amber-500 rounded-full"></span>
         </h2>
 

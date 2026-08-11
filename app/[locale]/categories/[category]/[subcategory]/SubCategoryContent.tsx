@@ -9,6 +9,7 @@ import { Product } from "@/types/ProductType";
 import { Category } from "@/types/CategoryType";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import ProductCardSkeleton from "@/components/ui/Skeleton";
+import { useTranslations } from "next-intl";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -24,6 +25,7 @@ export default function SubCategoryContent({
   locale,
 }: SubCategoryContentProps) {
   const { isPro, loading: loadingProfile } = useUserProfile();
+  const tc = useTranslations("Common");
 
   const getName = (obj: {
     name_fr: string;
@@ -79,7 +81,7 @@ export default function SubCategoryContent({
                   {getName(ssc)}
                 </h2>
                 <p className="text-sm text-gray-500">
-                  {ssc.products.length} produits
+                  {tc("productCount", { count: ssc.products.length })}
                 </p>
               </div>
 
@@ -105,7 +107,7 @@ export default function SubCategoryContent({
           className="space-y-6"
         >
           <h2 className="text-2xl font-semibold text-gray-800">
-            Produits
+            {tc("products")}
           </h2>
 
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
@@ -147,7 +149,7 @@ export default function SubCategoryContent({
               href={`/${locale}/categories/${category.slug}/${subcategory.slug}/${ssc.slug}`}
               className="text-orange-600 text-sm hover:underline"
             >
-              Voir tout →
+              {tc("viewAll")} →
             </Link>
           </div>
 
@@ -173,7 +175,7 @@ export default function SubCategoryContent({
             </ul>
           ) : (
             <p className="text-gray-500 italic">
-              Aucun produit dans {getName(ssc)}.
+              {tc("noProductIn", { name: getName(ssc) })}
             </p>
           )}
         </motion.section>

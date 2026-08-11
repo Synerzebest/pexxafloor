@@ -6,6 +6,7 @@ import { AuthProvider } from '@/context/AuthProvider';
 import { Toaster } from "sonner";
 import { UIProvider } from "@/context/UIContext"
 import { StoreDataProvider } from "@/context/StoreDataProvider";
+import { QuoteProvider } from "@/context/QuoteContext";
 
 export default async function LocaleLayout({
   children,
@@ -25,7 +26,8 @@ export default async function LocaleLayout({
       <div id="locale-wrapper" lang={locale}>
         <NextIntlClientProvider>
           <AuthProvider>
-            <StoreDataProvider>
+            <QuoteProvider>
+              <StoreDataProvider>
 
                 <UIProvider>
                   {children}
@@ -33,7 +35,8 @@ export default async function LocaleLayout({
                 <Toaster richColors position="top-center" duration={2500} />
                 <CartDrawer />
 
-            </StoreDataProvider>
+              </StoreDataProvider>
+            </QuoteProvider>
           </AuthProvider>
         </NextIntlClientProvider>
       </div>

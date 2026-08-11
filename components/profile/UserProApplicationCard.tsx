@@ -10,8 +10,10 @@ import {
   ClockCircleOutlined, 
   StopOutlined 
 } from "@ant-design/icons";
+import { useTranslations } from "next-intl";
 
 export default function UserProApplicationCard({ userId }: { userId: string }) {
+  const t = useTranslations("ProApplicationCard");
   const supabase = createBrowserClient(                 // ⬅️ NEW API
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -50,12 +52,12 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
   };
 
   const statusLabels: Record<ProApplication["status"], string> = {
-    PENDING: "En attente",
-    IN_REVIEW: "En cours d'examen",
-    VERIFIED: "Vérifié",
-    REJECTED: "Refusé",
-    SUSPENDED: "Suspendu",
-    REVISION: "À réviser",
+    PENDING: t("statuses.pending"),
+    IN_REVIEW: t("statuses.inReview"),
+    VERIFIED: t("statuses.verified"),
+    REJECTED: t("statuses.rejected"),
+    SUSPENDED: t("statuses.suspended"),
+    REVISION: t("statuses.revision"),
   };
 
   if (loading) {
@@ -70,7 +72,7 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
     return (
       <div className="text-center py-10">
         <p className="text-gray-700">
-          Vous n’avez pas encore de demande professionnelle.
+          {t("noApplication")}
         </p>
       </div>
     );
@@ -89,27 +91,27 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
 
       <div className="mt-4 grid md:grid-cols-2 gap-x-6 gap-y-3 text-sm">
         <p>
-          <span className="font-medium text-gray-700">Créée le : </span>
+          <span className="font-medium text-gray-700">{t("createdAt")} : </span>
           {dayjs(app.created_at).format("DD/MM/YYYY HH:mm")}
         </p>
 
         {app.verified_at && (
           <p>
-            <span className="font-medium text-gray-700">Vérifiée le : </span>
+            <span className="font-medium text-gray-700">{t("verifiedAt")} : </span>
             {dayjs(app.verified_at).format("DD/MM/YYYY HH:mm")}
           </p>
         )}
 
         <p>
-          <span className="font-medium text-gray-700">Nom : </span>
+          <span className="font-medium text-gray-700">{t("name")} : </span>
           {app.first_name} {app.last_name}
         </p>
         <p>
-          <span className="font-medium text-gray-700">Email : </span>
+          <span className="font-medium text-gray-700">{t("email")} : </span>
           {app.email}
         </p>
         <p>
-          <span className="font-medium text-gray-700">Téléphone : </span>
+          <span className="font-medium text-gray-700">{t("phone")} : </span>
           {app.phone}
         </p>
 
@@ -121,7 +123,7 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
         )}
 
         <p>
-          <span className="font-medium text-gray-700">Type d’activité : </span>
+          <span className="font-medium text-gray-700">{t("businessType")} : </span>
           {app.business_type}
         </p>
         <p>
@@ -132,7 +134,7 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
 
       <div className="mt-4 text-sm text-gray-600 border-t border-gray-100 pt-4">
         <p>
-          <span className="font-medium text-gray-700">Adresse :</span>{" "}
+          <span className="font-medium text-gray-700">{t("address")} :</span>{" "}
           {app.address_line1}
           {app.address_line2 ? `, ${app.address_line2}` : ""},{" "}
           {app.postcode} {app.town}
@@ -143,21 +145,21 @@ export default function UserProApplicationCard({ userId }: { userId: string }) {
       {app.status === "VERIFIED" && (
         <div className="mt-6 flex items-center gap-2 rounded-xl bg-green-50 px-4 py-3 border border-green-200 text-green-700">
           <CheckCircleOutlined />
-          <span>Votre compte professionnel est actif 🎉</span>
+          <span>{t("messages.active")}</span>
         </div>
       )}
 
       {app.status === "PENDING" && (
         <div className="mt-6 flex items-center gap-2 rounded-xl bg-yellow-50 px-4 py-3 border border-yellow-200 text-yellow-700">
           <ClockCircleOutlined />
-          <span>Votre demande est en attente de validation.</span>
+          <span>{t("messages.pending")}</span>
         </div>
       )}
 
       {app.status === "REJECTED" && (
         <div className="mt-6 flex items-center gap-2 rounded-xl bg-red-50 px-4 py-3 border border-red-200 text-red-700">
           <StopOutlined />
-          <span>Votre demande a été refusée.</span>
+          <span>{t("messages.rejected")}</span>
         </div>
       )}
     </div>

@@ -8,8 +8,95 @@
       "expert_contact": "Parler à un expert",
       "contact_phone": "Téléphone",
       "contact_email": "E-mail",
-      "cart": "Afficher le panier"
+      "cart": "Afficher le panier",
+      "my_quotes": "Mes devis",
+      "quotes_description": "Sélectionnez un devis enregistré pour continuer à travailler dessus.",
+      "no_quotes": "Aucun devis enregistré pour le moment.",
+      "delete_quote_confirm": "Supprimer le devis « {reference} » ?",
+      "delete_quote_error": "Impossible de supprimer ce devis.",
+      "delete_quote": "Supprimer le devis"
     },
+    "Common": {
+      "our": "Nos",
+      "bestSellers": "Meilleures ventes",
+      "proArea": "Espace PRO",
+      "exclusiveDiscounts": "Remises exclusives",
+      "vatExcluded": "TVA excl.",
+      "vatIncluded": "TVA incl.",
+      "proDiscount": "Remise PRO −{discount}%",
+      "total": "Total",
+      "totalToPay": "Total à payer",
+      "add": "Ajouter",
+      "added": "Ajouté",
+      "update": "Mettre à jour",
+      "updated": "Modifié",
+      "addToCart": "Ajouter au panier",
+      "addedToCart": "Ajouté au panier",
+      "updateCart": "Mettre à jour le panier",
+      "updatedSuccessfully": "Modifié avec succès",
+      "share": "Partager",
+      "shareQuote": "Partager ce devis",
+      "save": "Enregistrer",
+      "saveQuote": "Enregistrer le devis",
+      "logout": "Se déconnecter",
+      "projectReference": "Référence de projet",
+      "saveBeforeOpenError": "Impossible d’enregistrer le devis avant ouverture.",
+      "openQuoteQuestion": "Ouvrir ce devis ?",
+      "openQuoteDescription": "Vous travaillez déjà sur un devis. Voulez-vous l’abandonner ou l’enregistrer avant d’ouvrir « {reference} » ?",
+      "cancel": "Annuler",
+      "discard": "Abandonner",
+      "saving": "Enregistrement…",
+      "saveAndOpen": "Enregistrer puis ouvrir",
+      "fastDelivery": "Livraison rapide",
+      "freeDelivery": "Livraison offerte dès 99 €",
+      "twoYearWarranty": "Garantie 2 ans",
+      "viewAll": "Voir tout",
+      "products": "Produits",
+      "product": "Produit",
+      "productCount": "{count, plural, one {# produit} other {# produits}}",
+      "includedCount": "{count, plural, one {# produit inclus} other {# produits inclus}}",
+      "noProductIn": "Aucun produit dans {name}.",
+      "noProductsFound": "Aucun produit trouvé dans cette sous-sous-catégorie.",
+      "myOrders": "Mes commandes",
+      "noOrders": "Aucune commande pour le moment",
+      "orderFrom": "Commande du {date}",
+      "viewItems": "Voir les articles",
+      "orderStatus": { "paid": "Payée", "preparing": "En préparation", "packed": "Emballée", "ready": "Prête", "cancelled": "Annulée" }
+    },
+    "FAQ": {
+      "title": { "first": "Questions", "second": "Fréquentes" },
+      "items": {
+        "1": { "question": "Le chauffage au sol est-il compatible avec tous les types de sols ?", "answer": "Oui. Nos systèmes sont compatibles avec le carrelage, le parquet, le vinyle, le stratifié et le PVC, pour les projets de rénovation comme de construction neuve." },
+        "2": { "question": "Puis-je installer le chauffage moi-même ?", "answer": "Oui. Nos kits sont conçus pour être installés facilement et une notice détaillée vous guide étape par étape. Notre support technique reste disponible si nécessaire." },
+        "3": { "question": "Quelle est la consommation électrique du chauffage au sol ?", "answer": "La consommation varie généralement entre 70 et 150 W/m² selon l’usage et l’isolation. Un thermostat permet de programmer et d’ajuster précisément la température afin de maîtriser la consommation." }
+      }
+    },
+    "ProLanding": {
+      "badge": "Espace Professionnel",
+      "title": { "first": "Rejoignez notre réseau de", "second": "professionnels" },
+      "description": "Installateurs, plombiers, chauffagistes : accédez à des conditions privilégiées et développez votre activité avec PexxaFloor Pro.",
+      "benefitsTitle": "Vos avantages exclusifs",
+      "benefits": {
+        "discounts": { "title": "Remises exclusives", "description": "Bénéficiez de remises avantageuses sur notre catalogue, définies par catégorie de produits." },
+        "delivery": { "title": "Livraison sur chantier", "description": "Faites livrer vos commandes directement sur vos chantiers pour simplifier votre logistique." },
+        "priority": { "title": "Priorité de traitement", "description": "Vos commandes sont traitées en priorité pour vous garantir les meilleurs délais." },
+        "support": { "title": "Support dédié", "description": "Un interlocuteur dédié répond à vos questions techniques et commerciales." }
+      },
+      "cta": "Devenir PRO"
+    },
+    "QuoteSave": {
+      "title": "Enregistrer le devis", "description": "Seule la référence du projet est obligatoire.",
+      "projectReference": "Référence du projet", "customerName": "Nom du client", "phone": "N° de GSM", "email": "Adresse e-mail", "projectType": "Type de projet", "select": "Sélectionner",
+      "projectTypes": { "maison": "Maison", "appartement": "Appartement", "bureaux": "Bureaux", "commerce": "Commerce", "autre": "Autre" },
+      "additionalItems": "Postes supplémentaires", "additionalItemsNote": "Ces montants ne sont pas concernés par la remise sur la fourniture.", "addItem": "Ajouter un poste", "other": "Autre", "itemName": "Nom du poste", "priceExclVat": "Prix HTVA", "removeItem": "Supprimer ce poste", "cancel": "Annuler", "saving": "Enregistrement…", "save": "Enregistrer",
+      "itemTypes": { "Installation": "Installation", "Étude de projet": "Étude de projet", "Préparation de chantier": "Préparation de chantier", "Déblayage des déchets de travaux": "Déblayage des déchets de travaux", "Mise en service": "Mise en service" }
+    },
+    "ProApplicationCard": {
+      "noApplication": "Vous n’avez pas encore de demande professionnelle.", "createdAt": "Créée le", "verifiedAt": "Vérifiée le", "name": "Nom", "email": "E-mail", "phone": "Téléphone", "businessType": "Type d’activité", "address": "Adresse",
+      "statuses": { "pending": "En attente", "inReview": "En cours d’examen", "verified": "Vérifié", "rejected": "Refusé", "suspended": "Suspendu", "revision": "À réviser" },
+      "messages": { "active": "Votre compte professionnel est actif 🎉", "pending": "Votre demande est en attente de validation.", "rejected": "Votre demande a été refusée." }
+    },
+    "QuoteShare": { "title": "Partager ce devis", "description": "Choisissez le type de prix à envoyer.", "preparing": "Préparation des montants…", "prepareError": "Impossible de préparer le partage du devis.", "shareError": "Impossible de partager le PDF.", "customerDiscount": "Remise pour le devis particulier", "sharePro": "Partager le devis avec les prix PRO", "shareCustomer": "Partager le devis avec les prix particuliers", "totalExclVat": "Total HTVA", "estimatedProfit": "Bénéfice estimé HTVA" },
     "Hero": {
       "badge": "Solutions professionnelles de chauffage au sol",
       "title": "Le chauffage au sol",
@@ -312,12 +399,17 @@
       "productsIncluded": "produits inclus",
       "edit": "Modifier",
       "checkCart": "Voir mon panier",
-      "products_included": "Produits inclus"
+      "products_included": "Produits inclus",
+      "product": "Produit",
+      "remove": "Supprimer",
+      "editPack": "Modifier ce pack",
+      "includedCount": "{count, plural, one {# produit inclus} other {# produits inclus}}"
     },
     "UserButton": {
       "login": "Se connecter",
       "profilePage": "Mon profil",
-      "signOut": "Se déconnecter"
+      "signOut": "Se déconnecter",
+      "myQuotes": "Mes devis"
     },
     "Admin": {
       "adminPanel": "Panneau d'administration",
@@ -366,6 +458,7 @@
       "total": "Total",
       "payment": "Procéder au paiement",
       "paymentLoading": "Préparation du paiement…",
+      "proDiscount": "remise PRO",
       "loginRequired": "Connectez-vous pour valider votre panier et procéder au paiement.",
       "loginToCheckout": "Se connecter pour continuer",
       "creditApplied": "Crédit PRO appliqué : −{amount} €"

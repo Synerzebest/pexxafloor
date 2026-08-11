@@ -5,6 +5,7 @@ import CategorySidebarShell from "@/components/CategorySidebarShell";
 import { Product } from "@/types/ProductType";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -25,6 +26,7 @@ export default async function ProductPage({
     await params;
   const supabase = await createSupabaseServerAuthClient();
   const supportedLocale = locale as SupportedLocale;
+  const tc = await getTranslations({ locale, namespace: "Common" });
 
   const getName = (p: { name_fr: string; name_nl: string; name_en: string }) =>
     supportedLocale === "fr"
@@ -234,24 +236,24 @@ if (prod.subcategory.category.slug !== category) {
               <>
                 {discount > 0 && (
                   <p className="text-lg text-gray-400 line-through">
-                    {formatPrice(priceBrutHTVA)} € TVA excl.
+                    {formatPrice(priceBrutHTVA)} € {tc("vatExcluded")}
                   </p>
                 )}
 
                 <p className="text-3xl font-bold text-orange-700">
-                  {formatPrice(priceNetHTVA)} € TVA excl.
+                  {formatPrice(priceNetHTVA)} € {tc("vatExcluded")}
                 </p>
 
                 {discount > 0 && (
                   <p className="text-green-600 font-semibold mt-1">
-                    Remise PRO −{discount}%
+                    {tc("proDiscount", { discount })}
                   </p>
                 )}
               </>
             ) : (
               <p className="text-3xl font-bold text-orange-700">
                 {formatPrice(priceBrutTVAC)} €{" "}
-                <span className="text-base text-gray-500">TVA incl.</span>
+                <span className="text-base text-gray-500">{tc("vatIncluded")}</span>
               </p>
             )}
             </div>

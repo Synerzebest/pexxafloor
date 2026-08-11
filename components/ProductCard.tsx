@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Product } from "@/types/ProductType";
+import { useTranslations } from "next-intl";
 
 type Props = {
   product: Product & {
@@ -29,6 +30,7 @@ export default function ProductCard({
   subsubcategorySlug,
   isPro
 }: Props) {
+  const tc = useTranslations("Common");
 
   const getName = (obj: Translatable) =>
     locale === "fr"
@@ -101,26 +103,26 @@ export default function ProductCard({
               hasProDiscount ? (
                 <>
                   <div className="text-sm text-gray-400 line-through">
-                    {formatPrice(priceBrutHTVA)} € TVA excl.
+                    {formatPrice(priceBrutHTVA)} € {tc("vatExcluded")}
                   </div>
 
                   <div className="text-lg font-semibold text-orange-700">
-                    {formatPrice(priceNetHTVA)} € TVA excl.
+                    {formatPrice(priceNetHTVA)} € {tc("vatExcluded")}
                   </div>
 
                   <div className="text-xs font-medium text-green-600">
-                    Remise PRO −{discount}%
+                    {tc("proDiscount", { discount })}
                   </div>
                 </>
               ) : (
                 <div className="text-lg font-semibold text-orange-700">
-                  {formatPrice(priceBrutHTVA)} € TVA excl.
+                  {formatPrice(priceBrutHTVA)} € {tc("vatExcluded")}
                 </div>
               )
             ) : (
               <div className="text-lg font-semibold text-gray-900">
                 {formatPrice(priceBrutTVAC)}{" "} €
-                <span className="text-xs text-gray-500 pl-1">TVA incl.</span>
+                <span className="text-xs text-gray-500 pl-1">{tc("vatIncluded")}</span>
               </div>
             )}
           </div>

@@ -496,10 +496,10 @@ export default function Navbar() {
               <div className="flex items-start justify-between gap-4">
                 <div>
                   <h2 className="text-xl font-semibold text-gray-900">
-                    Mes devis
+                    {t('my_quotes')}
                   </h2>
                   <p className="mt-1 text-sm text-gray-500">
-                    Sélectionnez un devis enregistré pour continuer à travailler dessus.
+                    {t('quotes_description')}
                   </p>
                 </div>
                 <button
@@ -514,7 +514,7 @@ export default function Navbar() {
               <div className="mt-5 max-h-[60vh] space-y-3 overflow-y-auto">
                 {quotes.length === 0 ? (
                   <div className="rounded-lg border border-dashed border-gray-200 bg-gray-50 p-6 text-center text-sm text-gray-500">
-                    Aucun devis enregistré pour le moment.
+                    {t('no_quotes')}
                   </div>
                 ) : (
                   quotes.map((quote) => (
@@ -549,16 +549,16 @@ export default function Navbar() {
                       <button
                         type="button"
                         onClick={async () => {
-                          if (!window.confirm(`Supprimer le devis « ${quote.projectReference} » ?`)) return;
+                          if (!window.confirm(t('delete_quote_confirm', { reference: quote.projectReference }))) return;
                           try {
                             await deleteQuote(quote.id);
                           } catch (error) {
                             console.error(error);
-                            window.alert("Impossible de supprimer ce devis.");
+                            window.alert(t('delete_quote_error'));
                           }
                         }}
                         className="rounded-lg p-2 text-gray-400 transition hover:bg-red-50 hover:text-red-600"
-                        aria-label="Supprimer le devis"
+                        aria-label={t('delete_quote')}
                       >
                         <Trash2 className="h-4 w-4" />
                       </button>

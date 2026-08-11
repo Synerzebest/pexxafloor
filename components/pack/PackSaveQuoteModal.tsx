@@ -6,6 +6,7 @@ import type {
   PackQuoteAdditionalItem,
   PackQuoteDetails,
 } from "@/context/QuoteContext";
+import { useTranslations } from "next-intl";
 
 type Props = {
   open: boolean;
@@ -54,6 +55,7 @@ export function PackSaveQuoteModal({
   onClose,
   onSave,
 }: Props) {
+  const t = useTranslations("QuoteSave");
   const [projectReference, setProjectReference] = useState("");
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -88,10 +90,10 @@ export function PackSaveQuoteModal({
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
-              Enregistrer le devis
+              {t("title")}
             </h2>
             <p className="mt-1 text-sm text-gray-500">
-              Seule la référence du projet est obligatoire.
+              {t("description")}
             </p>
           </div>
           <button
@@ -106,7 +108,7 @@ export function PackSaveQuoteModal({
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <label className="sm:col-span-2">
             <span className="block text-sm font-medium text-gray-700">
-              Référence du projet *
+              {t("projectReference")} *
             </span>
             <input
               value={projectReference}
@@ -117,7 +119,7 @@ export function PackSaveQuoteModal({
 
           <label>
             <span className="block text-sm font-medium text-gray-700">
-              Nom du client
+              {t("customerName")}
             </span>
             <input
               value={customerName}
@@ -128,7 +130,7 @@ export function PackSaveQuoteModal({
 
           <label>
             <span className="block text-sm font-medium text-gray-700">
-              N° de GSM
+              {t("phone")}
             </span>
             <input
               value={customerPhone}
@@ -139,7 +141,7 @@ export function PackSaveQuoteModal({
 
           <label>
             <span className="block text-sm font-medium text-gray-700">
-              Adresse email
+              {t("email")}
             </span>
             <input
               type="email"
@@ -151,7 +153,7 @@ export function PackSaveQuoteModal({
 
           <label>
             <span className="block text-sm font-medium text-gray-700">
-              Type de projet
+              {t("projectType")}
             </span>
             <select
               value={projectType}
@@ -160,7 +162,7 @@ export function PackSaveQuoteModal({
             >
               {PROJECT_TYPES.map((type) => (
                 <option key={type.value} value={type.value}>
-                  {type.label}
+                  {type.value ? t(`projectTypes.${type.value}`) : t("select")}
                 </option>
               ))}
             </select>
@@ -171,10 +173,10 @@ export function PackSaveQuoteModal({
           <div className="flex items-center justify-between gap-4">
             <div>
               <h3 className="text-sm font-semibold text-gray-900">
-                Postes supplémentaires
+                {t("additionalItems")}
               </h3>
               <p className="mt-1 text-xs text-gray-500">
-                Ces montants ne sont pas concernés par la remise sur la fourniture.
+                {t("additionalItemsNote")}
               </p>
             </div>
             <button
@@ -184,7 +186,7 @@ export function PackSaveQuoteModal({
               }
               className="inline-flex items-center gap-1.5 rounded-lg border border-orange-200 px-3 py-2 text-sm font-medium text-orange-700 hover:bg-orange-50"
             >
-              <Plus className="h-4 w-4" /> Ajouter un poste
+              <Plus className="h-4 w-4" /> {t("addItem")}
             </button>
           </div>
 
@@ -214,14 +216,14 @@ export function PackSaveQuoteModal({
                     className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm"
                   >
                     {ADDITIONAL_ITEM_TYPES.map((type) => (
-                      <option key={type}>{type}</option>
+                      <option key={type} value={type}>{t(`itemTypes.${type}`)}</option>
                     ))}
-                    <option>Autre</option>
+                    <option value="Autre">{t("other")}</option>
                   </select>
                   {item.type === "Autre" && (
                     <input
                       value={item.customLabel}
-                      placeholder="Nom du poste"
+                      placeholder={t("itemName")}
                       onChange={(event) => {
                         const customLabel = event.target.value;
                         setAdditionalItems((items) =>
@@ -237,14 +239,14 @@ export function PackSaveQuoteModal({
                   )}
                 </div>
                 <label>
-                  <span className="sr-only">Prix HTVA</span>
+                  <span className="sr-only">{t("priceExclVat")}</span>
                   <div className="flex rounded-lg border border-gray-300 bg-white">
                     <input
                       type="number"
                       min={0}
                       step="0.01"
                       value={item.amount || ""}
-                      placeholder="Prix HTVA"
+                      placeholder={t("priceExclVat")}
                       onChange={(event) =>
                         setAdditionalItems((items) =>
                           items.map((current) =>
@@ -269,7 +271,7 @@ export function PackSaveQuoteModal({
                 </label>
                 <button
                   type="button"
-                  aria-label="Supprimer ce poste"
+                  aria-label={t("removeItem")}
                   onClick={() =>
                     setAdditionalItems((items) =>
                       items.filter((current) => current.id !== item.id)
@@ -290,7 +292,7 @@ export function PackSaveQuoteModal({
             onClick={onClose}
             className="rounded-lg border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
           >
-            Annuler
+            {t("cancel")}
           </button>
           <button
             type="button"
@@ -313,7 +315,7 @@ export function PackSaveQuoteModal({
             }
             className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {saving ? "Enregistrement..." : "Enregistrer"}
+            {saving ? t("saving") : t("save")}
           </button>
         </div>
       </div>

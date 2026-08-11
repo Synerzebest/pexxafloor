@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { PackQuoteDraft } from "@/context/QuoteContext";
 import { sanitizeForPDF as s } from "@/utils/sanitize";
 
@@ -277,6 +278,7 @@ async function sharePdf(doc: jsPDF, filename: string) {
 }
 
 export function PackShareQuoteModal({ open, draft, onClose }: Props) {
+  const t = useTranslations("QuoteShare");
   const [pricing, setPricing] = useState<SharePricing | null>(null);
   const [loading, setLoading] = useState(false);
   const [sharingMode, setSharingMode] = useState<ShareMode | null>(null);
@@ -309,7 +311,7 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
       } catch (err) {
         if (!cancelled) {
           console.error(err);
-          setError("Impossible de préparer le partage du devis.");
+          setError(t("prepareError"));
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -349,7 +351,7 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
       await sharePdf(doc, `devis-${suffix}.pdf`);
     } catch (err) {
       console.error(err);
-      window.alert("Impossible de partager le PDF.");
+      window.alert(t("shareError"));
     } finally {
       setSharingMode(null);
     }
@@ -363,10 +365,10 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
-              Partager ce devis
+              {t("title")}
             </h2>
             <p className="mt-1 text-sm text-gray-500">
-              Choisissez le type de prix à envoyer.
+              {t("description")}
             </p>
           </div>
           <button
@@ -380,7 +382,7 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
 
         {loading && (
           <div className="mt-6 rounded-lg bg-gray-50 p-5 text-sm text-gray-500">
-            Préparation des montants...
+            {t("preparing")}
           </div>
         )}
 
@@ -394,7 +396,7 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
           <div className="mt-6 space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700">
-                Remise pour le devis particulier
+                {t("customerDiscount")}
               </label>
               <div className="mt-2 flex items-center gap-2">
                 <input
@@ -421,10 +423,10 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
                 className="rounded-xl border border-orange-200 bg-orange-50 p-4 text-left transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span className="block font-semibold text-orange-800">
-                  Partager devis avec prix PRO
+                  {t("sharePro")}
                 </span>
                 <span className="mt-2 block text-sm text-gray-600">
-                  Total HTVA : {formatPrice(pricing.proTotal)} €
+                  {t("totalExclVat")} : {formatPrice(pricing.proTotal)} €
                 </span>
               </button>
 
@@ -435,16 +437,16 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
                 className="rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-orange-200 hover:bg-orange-50 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span className="block font-semibold text-gray-900">
-                  Partager devis avec prix particuliers
+                  {t("shareCustomer")}
                 </span>
                 <span className="mt-2 block text-sm text-gray-600">
-                  Total HTVA : {formatPrice(customerTotalAfterDiscount)} €
+                  {t("totalExclVat")} : {formatPrice(customerTotalAfterDiscount)} €
                 </span>
               </button>
             </div>
 
             <div className="rounded-lg bg-gray-50 p-4 text-sm text-gray-600">
-              Bénéfice estimé HTVA :{" "}
+              {t("estimatedProfit")} :{" "}
               <span className="font-semibold text-gray-900">
                 {formatPrice(marginAfterDiscount)} €
               </span>
