@@ -466,7 +466,7 @@ export default function Navbar() {
                     <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="mt-2 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
                       <a href="tel:+32494042932" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-800"><PhoneCall className="text-orange-500" size={16} />+32 494 042 932</a>
                       <a href="mailto:info@pexxafloor.be" className="flex items-center gap-3 border-t border-gray-200 px-4 py-3 text-sm font-medium text-gray-800"><Mail className="text-orange-500" size={16} />info@pexxafloor.be</a>
-                      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 border-t border-gray-200 px-4 py-3 text-sm font-medium text-gray-800"><FaWhatsapp className="text-emerald-600" size={17} />WhatsApp · +32 2 343 92 00</a>
+                      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 border-t border-gray-200 px-4 py-3 text-sm font-medium text-gray-800"><FaWhatsapp className="text-emerald-600" size={17} />WhatsApp · +32 2 494 042 932</a>
                     </motion.div>
                   )}
                 </AnimatePresence>
