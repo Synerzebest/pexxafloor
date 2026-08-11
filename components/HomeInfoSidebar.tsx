@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import {
   ArrowRight,
@@ -17,6 +18,7 @@ const cards = [
     icon: Truck,
     accent: "bg-emerald-50 text-emerald-700 ring-emerald-100",
     featured: false,
+    image: "/images/delivery-options.jpeg",
   },
   {
     key: "quote",
@@ -24,6 +26,7 @@ const cards = [
     icon: FilePenLine,
     accent: "bg-orange-50 text-orange-700 ring-orange-100",
     featured: false,
+    image: null,
   },
   {
     key: "installation",
@@ -31,6 +34,7 @@ const cards = [
     icon: Layers3,
     accent: "bg-sky-50 text-sky-700 ring-sky-100",
     featured: false,
+    image: null,
   },
   {
     key: "pro",
@@ -38,6 +42,7 @@ const cards = [
     icon: BadgePercent,
     accent: "bg-slate-800 text-white ring-slate-700",
     featured: true,
+    image: null,
   },
 ] as const;
 
@@ -59,7 +64,25 @@ export default function HomeInfoSidebar() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-        {cards.map(({ key, href, icon: Icon, accent, featured }) => {
+        {cards.map(({ key, href, icon: Icon, accent, featured, image }) => {
+          if (image) {
+            return (
+              <div
+                key={key}
+                className="overflow-hidden rounded-2xl border border-gray-200 bg-[#101313] shadow-sm"
+              >
+                <Image
+                  src={image}
+                  alt={t(`${key}.title`)}
+                  width={1254}
+                  height={1254}
+                  sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 280px"
+                  className="h-auto w-full object-contain"
+                />
+              </div>
+            );
+          }
+
           const content = (
             <>
               <div className="flex items-start justify-between gap-3">
