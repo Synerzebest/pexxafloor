@@ -4,6 +4,7 @@ import { Navbar, Footer, ProBadge } from "@/components";
 import { getLocale } from "next-intl/server";
 import { SubCategory } from "@/types/SubCategoryType";
 import { Category } from "@/types/CategoryType";
+import CategorySidebarShell from "@/components/CategorySidebarShell";
 import SubCategoryContent from "./SubCategoryContent";
 
 type SupportedLocale = "fr" | "nl" | "en";
@@ -93,11 +94,13 @@ export default async function SubcategoryPage({
       <Navbar />
       <ProBadge />
 
-      <SubCategoryContent
-        subcategory={subcat}
-        category={categoryData as Category}
-        locale={locale}
-      />
+      <CategorySidebarShell>
+        <SubCategoryContent
+          subcategory={subcat}
+          category={categoryData as Category}
+          locale={locale}
+        />
+      </CategorySidebarShell>
 
       <Footer />
     </>

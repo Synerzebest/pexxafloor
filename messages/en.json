@@ -5,7 +5,9 @@
       "benefits": "Benefits",
       "contact": "Contact",
       "quote_btn": "Get a Quote",
-      "whatsapp_banner": "Start a WhatsApp conversation",
+      "expert_contact": "Call an expert",
+      "contact_phone": "Phone",
+      "contact_email": "Email",
       "cart": "Open cart"
     },
     "Hero": {

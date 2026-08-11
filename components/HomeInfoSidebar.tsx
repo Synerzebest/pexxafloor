@@ -47,7 +47,7 @@ export default function HomeInfoSidebar() {
 
   return (
     <aside
-      className="mx-auto w-full max-w-xl px-4 py-12 sm:px-6 lg:mx-0 lg:max-w-none lg:px-5 lg:py-24"
+      className="mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none"
       aria-label={t("ariaLabel")}
     >
       <div className="mb-5 flex items-center gap-3">

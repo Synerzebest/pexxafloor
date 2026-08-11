@@ -4,6 +4,7 @@ import { getLocale } from "next-intl/server";
 import { Navbar, Footer, ProBadge } from "@/components";
 import CategoryContent from "./CategoryContent";
 import { Category } from "@/types/CategoryType";
+import CategorySidebarShell from "@/components/CategorySidebarShell";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -79,7 +80,9 @@ export default async function CategoryPage({
     <>
       <Navbar />
       <ProBadge />
-      <CategoryContent category={categoryData} locale={locale} />
+      <CategorySidebarShell>
+        <CategoryContent category={categoryData} locale={locale} />
+      </CategorySidebarShell>
       <Footer />
     </>
   );

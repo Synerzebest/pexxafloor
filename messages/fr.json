@@ -5,7 +5,9 @@
       "benefits": "Avantages",
       "contact": "Contact",
       "quote_btn": "Devis instantané",
-      "whatsapp_banner": "Lancer une discussion WhatsApp",
+      "expert_contact": "Parler à un expert",
+      "contact_phone": "Téléphone",
+      "contact_email": "E-mail",
       "cart": "Afficher le panier"
     },
     "Hero": {

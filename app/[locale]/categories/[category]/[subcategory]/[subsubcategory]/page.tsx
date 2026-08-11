@@ -3,6 +3,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { getLocale } from "next-intl/server";
 import { Navbar, Footer, ProBadge } from "@/components";
 import SubSubCategoryContent from "./SubSubCategoryContent";
+import CategorySidebarShell from "@/components/CategorySidebarShell";
 import { SubSubCategory } from "@/types/SubSubCategoryType";
 
 type SupportedLocale = "fr" | "nl" | "en";
@@ -81,14 +82,16 @@ export default async function SubSubCategoryPage({
       <Navbar />
       <ProBadge />
 
-      <SubSubCategoryContent
-        subsubcategory={subsubData as unknown as SubSubCategory}
-        locale={locale}
-        categorySlug={category}
-        subcategorySlug={subcategory}
-        categoryName={catData}
-        subcategoryName={subcatData}
-      />
+      <CategorySidebarShell>
+        <SubSubCategoryContent
+          subsubcategory={subsubData as unknown as SubSubCategory}
+          locale={locale}
+          categorySlug={category}
+          subcategorySlug={subcategory}
+          categoryName={catData}
+          subcategoryName={subcatData}
+        />
+      </CategorySidebarShell>
 
       <Footer />
     </>

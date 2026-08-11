@@ -65,7 +65,7 @@ export default function SubSubCategoryContent({
       <h1 className="text-4xl font-semibold tracking-tight text-gray-900">
         {getName(subsubcategory)}
       </h1>
-      
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}

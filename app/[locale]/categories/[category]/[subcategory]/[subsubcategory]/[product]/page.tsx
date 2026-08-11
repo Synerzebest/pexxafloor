@@ -1,6 +1,7 @@
 import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
 import { notFound } from "next/navigation";
 import { Navbar, Footer, ProductGallery, AddToCartButton, ProBadge } from "@/components";
+import CategorySidebarShell from "@/components/CategorySidebarShell";
 import { Product } from "@/types/ProductType";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
@@ -171,6 +172,7 @@ if (prod.subcategory.category.slug !== category) {
 
       <ProBadge />
 
+      <CategorySidebarShell>
       <div className="max-w-6xl mx-auto px-4 py-10 relative top-20 sm:top-36 pb-36">
 
         {/* BREADCRUMB */}
@@ -263,6 +265,7 @@ if (prod.subcategory.category.slug !== category) {
           </div>
         </div>
       </div>
+      </CategorySidebarShell>
 
       <Footer />
     </>

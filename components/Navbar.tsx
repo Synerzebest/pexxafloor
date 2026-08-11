@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight, Trash2, PhoneCall, Mail } from 'lucide-react';
+import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight, Trash2, PhoneCall, Mail, Headphones, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
@@ -40,10 +40,6 @@ export default function Navbar() {
   const locale = useLocale() as SupportedLocale;
   const pathname = usePathname() ?? '/';
   const router = useRouter();
-  const routeWithoutLocale = pathname.replace(/^\/(fr|nl|en)(?=\/|$)/, '') || '/';
-  const showWhatsappBanner = !['/admin', '/storekeeper', '/delivery'].some(
-    (route) => routeWithoutLocale === route || routeWithoutLocale.startsWith(`${route}/`)
-  );
   
   const t = useTranslations('Navbar');
   const { items, openCart } = useCart();
@@ -60,8 +56,12 @@ export default function Navbar() {
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const [openMobileCat, setOpenMobileCat] = useState<string | null>(null);
   const [openMobileSub, setOpenMobileSub] = useState<string | null>(null);
+  const [contactOpen, setContactOpen] = useState(false);
 
-  useEffect(() => setDrawerOpen(false), [pathname]);
+  useEffect(() => {
+    setDrawerOpen(false);
+    setContactOpen(false);
+  }, [pathname, setDrawerOpen]);
 
   const getName = (obj: Translatable) =>
     locale === 'fr' ? obj.name_fr : locale === 'nl' ? obj.name_nl : obj.name_en;
@@ -75,26 +75,7 @@ export default function Navbar() {
   const hoveredCategory = categories.find((c) => c.id === hoveredCat);
 
   return (
-    <>
-    <header className="w-full border-b border-gray-200 fixed z-20 bg-white">
-      {showWhatsappBanner && (
-        <a
-          href={whatsappUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group flex h-9 items-center justify-center gap-2 border-b border-emerald-700/15 bg-gradient-to-r from-emerald-700 via-emerald-600 to-emerald-700 px-4 text-sm font-medium text-white transition hover:brightness-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/80"
-          aria-label={`${t('whatsapp_banner')} — +32 2 343 92 00`}
-        >
-          <FaWhatsapp className="h-[18px] w-[18px] shrink-0" aria-hidden="true" />
-          <span>{t('whatsapp_banner')}</span>
-          <span className="hidden text-white/75 sm:inline">·</span>
-          <span className="hidden text-white/90 sm:inline">+32 2 343 92 00</span>
-          <ChevronRight
-            className="h-4 w-4 text-white/70 transition-transform group-hover:translate-x-0.5"
-            aria-hidden="true"
-          />
-        </a>
-      )}
+    <header className="fixed inset-x-0 top-0 z-20 w-full border-b border-gray-200 bg-white">
       {/* --- Bandeau principal --- */}
       <div className="flex items-center justify-between gap-4 px-4 bg-white">
         {/* Logo */}
@@ -114,22 +95,44 @@ export default function Navbar() {
           <ProductSearch />
         </div>
 
-        {/* Coordonnées de contact */}
-        <div className="hidden lg:flex shrink-0 flex-col gap-1.5 border-l border-gray-200 pl-4 text-sm font-medium text-gray-700">
-          <a
-            href="tel:+3223439200"
-            className="group flex items-center gap-2 transition-colors hover:text-orange-600"
+        {/* Contact expert */}
+        <div className="relative hidden shrink-0 lg:block">
+          <button
+            type="button"
+            onClick={() => setContactOpen((open) => !open)}
+            className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-orange-50 px-4 py-2 text-sm font-semibold text-orange-700 shadow-sm transition hover:border-orange-300 hover:bg-orange-100 cursor-pointer"
+            aria-expanded={contactOpen}
+            aria-haspopup="dialog"
           >
-            <PhoneCall className="text-orange-500" size={16} aria-hidden="true" />
-            <span>+32 2 343 92 00</span>
-          </a>
-          <a
-            href="mailto:info@pexxafloor.be"
-            className="group flex items-center gap-2 transition-colors hover:text-orange-600"
-          >
-            <Mail className="text-orange-500" size={16} aria-hidden="true" />
-            <span>info@pexxafloor.be</span>
-          </a>
+            <Headphones className="h-4 w-4" aria-hidden="true" />
+            {t('expert_contact')}
+            <ChevronDown className={`h-4 w-4 transition-transform ${contactOpen ? 'rotate-180' : ''}`} aria-hidden="true" />
+          </button>
+
+          <AnimatePresence>
+            {contactOpen && (
+              <motion.div
+                initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                transition={{ duration: 0.16 }}
+                className="absolute right-0 top-full z-50 mt-3 w-72 overflow-hidden rounded-2xl border border-gray-200 bg-white p-2 shadow-xl"
+              >
+                <a href="tel:+32494042932" onClick={() => setContactOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-orange-50">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-50 text-orange-600"><PhoneCall size={17} /></span>
+                  <span><span className="block text-xs text-gray-400">{t('contact_phone')}</span><span className="text-sm font-medium text-gray-800">+32 494 042 932</span></span>
+                </a>
+                <a href="mailto:info@pexxafloor.be" onClick={() => setContactOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-orange-50">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-orange-50 text-orange-600"><Mail size={17} /></span>
+                  <span><span className="block text-xs text-gray-400">{t('contact_email')}</span><span className="text-sm font-medium text-gray-800">info@pexxafloor.be</span></span>
+                </a>
+                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" onClick={() => setContactOpen(false)} className="flex items-center gap-3 rounded-xl px-3 py-3 transition hover:bg-emerald-50">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-emerald-600"><FaWhatsapp size={18} /></span>
+                  <span><span className="block text-xs text-gray-400">WhatsApp</span><span className="text-sm font-medium text-gray-800">+32 494 042 932</span></span>
+                </a>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
 
@@ -435,7 +438,7 @@ export default function Navbar() {
                     href={`/${locale}/quote`}
                     className="inline-flex flex-1 items-center justify-center rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-orange-700 transition-colors"
                   >
-                    Get a Quote
+                    {t('quote_btn')}
                   </Link>
                   <select
                     value={locale}
@@ -448,26 +451,25 @@ export default function Navbar() {
                   </select>
                 </div>
               </div>
-              <div className="mt-4 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
-                <a
-                  href="tel:+3223439200"
-                  className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-800 transition-colors hover:bg-orange-50 hover:text-orange-700"
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setContactOpen((open) => !open)}
+                  className="flex w-full items-center justify-between rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-semibold text-orange-700"
+                  aria-expanded={contactOpen}
                 >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-orange-500 shadow-sm">
-                    <PhoneCall size={16} aria-hidden="true" />
-                  </span>
-                  +32 2 343 92 00
-                </a>
-                <div className="mx-4 border-t border-gray-200" />
-                <a
-                  href="mailto:info@pexxafloor.be"
-                  className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-800 transition-colors hover:bg-orange-50 hover:text-orange-700"
-                >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-orange-500 shadow-sm">
-                    <Mail size={16} aria-hidden="true" />
-                  </span>
-                  info@pexxafloor.be
-                </a>
+                  <span className="flex items-center gap-2"><Headphones size={17} />{t('expert_contact')}</span>
+                  <ChevronDown className={`h-4 w-4 transition-transform ${contactOpen ? 'rotate-180' : ''}`} />
+                </button>
+                <AnimatePresence>
+                  {contactOpen && (
+                    <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="mt-2 overflow-hidden rounded-xl border border-gray-200 bg-gray-50">
+                      <a href="tel:+32494042932" className="flex items-center gap-3 px-4 py-3 text-sm font-medium text-gray-800"><PhoneCall className="text-orange-500" size={16} />+32 494 042 932</a>
+                      <a href="mailto:info@pexxafloor.be" className="flex items-center gap-3 border-t border-gray-200 px-4 py-3 text-sm font-medium text-gray-800"><Mail className="text-orange-500" size={16} />info@pexxafloor.be</a>
+                      <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 border-t border-gray-200 px-4 py-3 text-sm font-medium text-gray-800"><FaWhatsapp className="text-emerald-600" size={17} />WhatsApp · +32 2 343 92 00</a>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </motion.aside>
           </>
@@ -569,7 +571,5 @@ export default function Navbar() {
         )}
       </AnimatePresence>
     </header>
-    {showWhatsappBanner && <div className="h-9" aria-hidden="true" />}
-    </>
   );
 }
