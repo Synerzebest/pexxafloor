@@ -240,7 +240,8 @@ export default function CartDrawer() {
               <div className="mt-4 flex gap-2">
                 <Link
                   href={`/${locale}/cart`}
-                  className="flex-1 rounded-lg bg-gray-200 py-2 text-sm font-medium hover:bg-gray-300 text-center duration-300"
+                  onClick={closeCart}
+                  className="flex-1 rounded-lg bg-green-700 py-2 text-white text-sm font-medium hover:bg-green-800 text-center duration-300"
                 >
                   {t("checkCart")}
                 </Link>

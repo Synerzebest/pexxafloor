@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
-import { LoadScript } from "@react-google-maps/api";
+import { useJsApiLoader, type Libraries } from "@react-google-maps/api";
 import AddressAutocomplete from "@/components/ui/AddressAutocomplete";
 import { useCartCheckout } from "@/hooks/useCartCheckout";
 import Link from "next/link";
@@ -33,6 +33,49 @@ type AddressSelection = {
   city: string;
   country: string;
 };
+
+const GOOGLE_MAPS_LIBRARIES: Libraries = ["places"];
+
+function DeliveryAddressAutocomplete({
+  value,
+  onChange,
+  onPlaceSelected,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  onPlaceSelected: (data: AddressSelection) => void;
+}) {
+  const { isLoaded, loadError } = useJsApiLoader({
+    id: "pexxafloor-google-maps",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    libraries: GOOGLE_MAPS_LIBRARIES,
+  });
+
+  // Keep the address editable even if Google Places is temporarily unavailable.
+  if (loadError) {
+    return (
+      <input
+        type="text"
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        placeholder="Ex. 123 Rue du Tracé, 1000 Bruxelles"
+        className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-[15px] shadow-sm outline-none transition-all focus:border-orange-500 focus:ring-2 focus:ring-orange-500"
+      />
+    );
+  }
+
+  if (!isLoaded) {
+    return <div className="h-10 w-full animate-pulse rounded-xl bg-gray-100" />;
+  }
+
+  return (
+    <AddressAutocomplete
+      value={value}
+      onChange={onChange}
+      onPlaceSelected={onPlaceSelected}
+    />
+  );
+}
 
 export default function CheckoutSection({ items, isPro }: Props) {
   const locale = useLocale();
@@ -152,44 +195,41 @@ export default function CheckoutSection({ items, isPro }: Props) {
 
   return (
     <div className="mt-10 space-y-6">
-      {/* Client name */}
-      <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-3">
-        <label className="block text-sm font-medium text-gray-700">
-          {t("clientName")}
-        </label>
-        <input
-          type="text"
-          value={clientName}
-          onChange={(e) => setClientName(e.target.value)}
-          placeholder="Ex: PexxaFloor"
-          className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[15px]
-                     shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500
-                     transition-all outline-none bg-white"
-        />
-      </div>
+      {user && (
+        <>
+          {/* Client name */}
+          <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-3">
+            <label className="block text-sm font-medium text-gray-700">
+              {t("clientName")}
+            </label>
+            <input
+              type="text"
+              value={clientName}
+              onChange={(e) => setClientName(e.target.value)}
+              placeholder="Ex: PexxaFloor"
+              className="w-full border border-gray-200 rounded-xl px-3 py-2 text-[15px]
+                         shadow-sm focus:ring-2 focus:ring-orange-500 focus:border-orange-500
+                         transition-all outline-none bg-white"
+            />
+          </div>
 
-      {/* Address */}
-      <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-4">
+          {/* Address */}
+          <div className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
             {t("fullAddress")}
           </label>
 
-          <LoadScript
-            googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}
-            libraries={["places"]}
-          >
-            <AddressAutocomplete
-              value={address}
-              onChange={setAddress}
-              onPlaceSelected={(data: AddressSelection) => {
-                setAddress(data.address);
-                setPostalCode(data.postalCode);
-                setCity(data.city);
-                setCountry(data.country);
-              }}
-            />
-          </LoadScript>
+          <DeliveryAddressAutocomplete
+            value={address}
+            onChange={setAddress}
+            onPlaceSelected={(data) => {
+              setAddress(data.address);
+              setPostalCode(data.postalCode);
+              setCity(data.city);
+              setCountry(data.country);
+            }}
+          />
         </div>
 
         <div className="grid grid-cols-3 gap-4">
@@ -238,7 +278,9 @@ export default function CheckoutSection({ items, isPro }: Props) {
             />
           </div>
         </div>
-      </div>
+          </div>
+        </>
+      )}
 
        {/* Sticky total */}
         <div className="sticky bottom-0 bg-white border-t border-gray-100 shadow-lg p-4 sm:p-5 rounded-t-xl sm:rounded-xl">

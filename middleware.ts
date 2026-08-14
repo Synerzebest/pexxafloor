@@ -68,7 +68,15 @@ export async function middleware(req: NextRequest) {
 
   // 5. Redirection si l'utilisateur est déjà connecté et tente d'aller sur login/signup
   if (user && (path === "/login" || path === "/signup")) {
-    url.pathname = `/${locale}/profile`;
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("user_role")
+      .eq("id", user.id)
+      .maybeSingle();
+    url.pathname =
+      profile?.user_role === "admin"
+        ? `/${locale}/admin`
+        : `/${locale}/profile`;
     return NextResponse.redirect(url);
   }
 

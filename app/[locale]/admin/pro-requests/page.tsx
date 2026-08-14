@@ -1,6 +1,6 @@
 import { getLocale } from 'next-intl/server';
 import ProRequestsTable from '@/components/admin/pro-requests/ProRequestsTable';
-import { Navbar, Footer } from "@/components";
+import { Footer } from "@/components";
 import Link from "next/link";
 import { supabaseServer } from "@/lib/supabaseServer"
 
@@ -31,9 +31,7 @@ export default async function ProRequestsAdminPage() {
 
   return (
     <>
-      <Navbar />
-
-      <div className="absolute top-36 left-4">
+      <div className="px-4 pt-6">
         <Link
           href={`/${locale}/admin`}
           className="inline-flex items-center gap-2 text-orange-500 font-medium hover:text-orange-600 transition"
@@ -51,16 +49,14 @@ export default async function ProRequestsAdminPage() {
         </Link>
       </div>
 
-      <div className="relative top-44">
+      <div className="pt-8">
         <ProRequestsTable
           pending={pending ?? []}
           recent={recent ?? []}
         />
       </div>
 
-      <div className="relative top-32">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { Navbar, Footer } from "@/components";
+import { Footer } from "@/components";
 import { useState } from "react";
 import { Table, Card, Select, Button } from "antd";
 import { ReloadOutlined } from "@ant-design/icons";
@@ -33,9 +33,7 @@ export default function OrdersAdminPage() {
 
   return (
     <>
-      <Navbar />
-
-      <div className="absolute top-36 left-4">
+      <div className="px-4 pt-6">
         <Link
           href={`/${locale}/admin`}
           className="inline-flex items-center gap-2 text-orange-500 font-medium hover:text-orange-600 transition"
@@ -53,7 +51,7 @@ export default function OrdersAdminPage() {
         </Link>
       </div>
 
-      <div className="max-w-6xl mx-auto py-10 relative top-44">
+      <div className="mx-auto max-w-6xl px-4 py-10">
         {/* Filtres */}
         <div className="flex justify-between mb-4">
           <Select value={filterStatus} onChange={setFilterStatus} style={{ width: 180 }}>
@@ -95,9 +93,7 @@ export default function OrdersAdminPage() {
         />
       </div>
 
-      <div className="relative top-32">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }

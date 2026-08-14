@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Table, Select, Input } from "antd";
-import { Navbar, Footer } from "@/components";
+import { Footer } from "@/components";
 import { SearchOutlined } from "@ant-design/icons";
 import { useLocale } from "next-intl";
 import { toast } from "sonner";
@@ -78,9 +78,7 @@ export default function ProfilesAdminPage() {
 
   return (
     <>
-      <Navbar />
-
-      <div className="absolute top-36 left-4">
+      <div className="px-4 pt-6">
         <Link
           href={`/${locale}/admin`}
           className="inline-flex items-center gap-2 text-orange-500 font-medium hover:text-orange-600 transition"
@@ -98,7 +96,7 @@ export default function ProfilesAdminPage() {
         </Link>
       </div>
 
-      <div className="p-8 relative top-44">
+      <div className="p-8">
        <RoleAccessInfo locale={locale} />
 
         <h1 className="text-2xl font-bold mb-6">
@@ -155,9 +153,7 @@ export default function ProfilesAdminPage() {
         />
       </div>
 
-      <div className="relative top-32">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }

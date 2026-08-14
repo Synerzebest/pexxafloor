@@ -378,37 +378,8 @@ export default function PackPage() {
     }
   };
 
-  const handleShareQuote = async () => {
-    if (isPro) {
-      setIsShareModalOpen(true);
-      return;
-    }
-
-    const shareText = [
-      `Devis Pack ${getName(slug)}`,
-      `Surface : ${surface} m²`,
-      `Pas de pose : ${pasDePose} cm`,
-      `Tuyau : ${tuyauType}`,
-      `Total : ${total.toFixed(2)} €`,
-      typeof window !== "undefined" ? window.location.href : "",
-    ]
-      .filter(Boolean)
-      .join("\n");
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Devis Pack ${getName(slug)}`,
-          text: shareText,
-        });
-        return;
-      } catch (error) {
-        console.error("Partage natif indisponible :", error);
-      }
-    }
-
-    await navigator.clipboard.writeText(shareText);
-    window.alert("Le devis a été copié dans le presse-papiers.");
+  const handleShareQuote = () => {
+    setIsShareModalOpen(true);
   };
 
   if (error && products.length === 0) {
@@ -528,6 +499,7 @@ export default function PackPage() {
       <PackShareQuoteModal
         open={isShareModalOpen}
         draft={currentDraft}
+        isPro={isPro === true}
         onClose={() => setIsShareModalOpen(false)}
       />
 

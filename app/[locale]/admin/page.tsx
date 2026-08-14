@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Navbar, Footer } from "@/components";
+import { Footer } from "@/components";
 import { useLocale } from 'next-intl';
 import { Package, FolderKanban, ShoppingBasket, User } from 'lucide-react';
 import { useTranslations } from 'next-intl';
@@ -23,8 +23,7 @@ const AdminPage = () => {
 
   return (
     <>
-      <Navbar />
-      <main className="bg-gradient-to-b from-gray-50 to-white px-6 pt-10 relative top-32">
+      <main className="min-h-[70vh] bg-gradient-to-b from-gray-50 to-white px-6 py-10">
         <div className="max-w-6xl mx-auto">
           <motion.h1
             initial={{ opacity: 0, y: 15 }}
@@ -146,9 +145,7 @@ const AdminPage = () => {
           </div>
         </div>
       </main>
-      <div className="relative top-48">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 };

@@ -15,7 +15,7 @@ export function usePackConfig(
     existingPack?.tuyauType ?? "PERT"
   );
   const [typeAgrafe, setTypeAgrafe] = useState<40 | 60>(
-    existingPack?.typeAgrafe ?? 40
+    existingPack?.typeAgrafe ?? 60
   );
   const [typeIsolation, setTypeIsolation] = useState<0 | 15 | 30>(
     existingPack?.typeIsolation ?? 0

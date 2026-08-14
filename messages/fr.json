@@ -9,12 +9,14 @@
       "contact_phone": "Téléphone",
       "contact_email": "E-mail",
       "cart": "Afficher le panier",
+      "cart_count": "Afficher le panier, {count, plural, =0 {aucun article} one {# article} other {# articles}}",
       "my_quotes": "Mes devis",
       "quotes_description": "Sélectionnez un devis enregistré pour continuer à travailler dessus.",
       "no_quotes": "Aucun devis enregistré pour le moment.",
       "delete_quote_confirm": "Supprimer le devis « {reference} » ?",
       "delete_quote_error": "Impossible de supprimer ce devis.",
-      "delete_quote": "Supprimer le devis"
+      "delete_quote": "Supprimer le devis",
+      "pro_space": "Espace PRO"
     },
     "Common": {
       "our": "Nos",
@@ -61,7 +63,8 @@
       "noOrders": "Aucune commande pour le moment",
       "orderFrom": "Commande du {date}",
       "viewItems": "Voir les articles",
-      "orderStatus": { "paid": "Payée", "preparing": "En préparation", "packed": "Emballée", "ready": "Prête", "cancelled": "Annulée" }
+      "orderCount": "{count, plural, one {# commande} other {# commandes}}", "itemCount": "{count, plural, one {# article} other {# articles}}", "loadingOrders": "Chargement des commandes", "noOrdersDescription": "Vos commandes apparaîtront ici dès que vous aurez effectué votre premier achat.", "orderNumber": "Commande", "includedProducts": "Produits inclus", "installationSpacing": "pas", "quantityShort": "Qté", "backHome": "Retour à l’accueil",
+      "orderStatus": { "paid": "Payée", "preparing": "En préparation", "packed": "Emballée", "ready": "Prête", "delivering": "En livraison", "delivered": "Livrée", "cancelled": "Annulée" }
     },
     "FAQ": {
       "title": { "first": "Questions", "second": "Fréquentes" },
@@ -96,7 +99,7 @@
       "statuses": { "pending": "En attente", "inReview": "En cours d’examen", "verified": "Vérifié", "rejected": "Refusé", "suspended": "Suspendu", "revision": "À réviser" },
       "messages": { "active": "Votre compte professionnel est actif 🎉", "pending": "Votre demande est en attente de validation.", "rejected": "Votre demande a été refusée." }
     },
-    "QuoteShare": { "title": "Partager ce devis", "description": "Choisissez le type de prix à envoyer.", "preparing": "Préparation des montants…", "prepareError": "Impossible de préparer le partage du devis.", "shareError": "Impossible de partager le PDF.", "customerDiscount": "Remise pour le devis particulier", "sharePro": "Partager le devis avec les prix PRO", "shareCustomer": "Partager le devis avec les prix particuliers", "totalExclVat": "Total HTVA", "estimatedProfit": "Bénéfice estimé HTVA" },
+    "QuoteShare": { "title": "Partager ce devis", "description": "Choisissez le type de prix à envoyer.", "guestTitle": "Créer une estimation", "guestDescription": "Générez un devis neutre pour obtenir une estimation du prix de votre pack.", "guestDocumentTitle": "Estimation de votre pack", "previewGuest": "Aperçu du devis estimatif", "preparing": "Préparation des montants…", "prepareError": "Impossible de préparer le partage du devis.", "shareError": "Impossible de partager le PDF.", "previewError": "Impossible de générer l’aperçu du PDF.", "customerDiscount": "Remise pour le devis particulier", "sharePro": "Aperçu du devis avec les prix PRO", "shareCustomer": "Aperçu du devis avec les prix particuliers", "product": "Produit", "quantity": "Quantité", "totalExclVat": "Total HTVA", "totalInclVat": "Total TVAC", "estimatedProfit": "Bénéfice estimé HTVA", "previewProTitle": "Aperçu du devis PRO", "previewCustomerTitle": "Aperçu du devis particulier", "previewGuestTitle": "Aperçu du devis estimatif", "previewDescription": "Vérifiez le document avant de le télécharger.", "previewFrameTitle": "Aperçu du devis PDF", "back": "Retour au choix", "download": "Télécharger le PDF" },
     "Hero": {
       "badge": "Solutions professionnelles de chauffage au sol",
       "title": "Le chauffage au sol",
@@ -391,7 +394,8 @@
     },
     "AddToBasketButton": {
       "addToBasket": "Ajouter au panier",
-      "addedToBasket": "Ajouté au panier"
+      "addedToBasket": "Ajouté au panier",
+      "inCart": "{count, plural, one {# exemplaire dans le panier} other {# exemplaires dans le panier}}"
     },
     "CartDrawer": {
       "myCart": "Mon panier",
@@ -441,6 +445,12 @@
       },
       "included": "produits inclus",
       "emptyCart": "Votre panier est vide",
+      "empty": {
+        "title": "Votre panier vous attend",
+        "description": "Découvrez nos produits pour chauffage au sol ou composez directement un pack adapté à votre surface.",
+        "browse": "Découvrir les produits",
+        "calculate": "Calculer mon pack"
+      },
       "myCart":"Mon panier",
       "step": "Pas",
       "remove": "Retirer",
@@ -451,7 +461,7 @@
         "subtitle": "Optimisation du parcours des tuyaux par un expert."
       },
       "clientName": "Nom du client / Nom de l'entreprise",
-      "fullAddress": "Adresse complète",
+      "fullAddress": "Adresse de livraison",
       "zipCode": "Code postal",
       "city": "Ville",
       "country": "Pays",

@@ -21,6 +21,10 @@ export default function LoginForm({
   const t = useTranslations("Login");
   const router = useRouter();
   const { refreshUser } = useAuth();
+  const safeNextPath =
+    nextPath?.startsWith(`/${locale}/`) && !nextPath.startsWith(`//`)
+      ? nextPath
+      : undefined;
 
   const [email, setEmail] = useState("");
   const [pwd, setPwd] = useState("");
@@ -52,11 +56,11 @@ export default function LoginForm({
         return;
       }
 
-      const safeNextPath =
-        nextPath?.startsWith(`/${locale}/`) && !nextPath.startsWith(`//`)
-          ? nextPath
-          : `/${locale}/profile`;
-      router.replace(safeNextPath);
+      router.replace(
+        result.userRole === "admin"
+          ? `/${locale}/admin`
+          : safeNextPath || `/${locale}/profile`
+      );
       router.refresh();
     } catch (error) {
       console.error("Login failed:", error);
@@ -160,7 +164,7 @@ export default function LoginForm({
 
       {/* Google Login */}
       <a
-        href="/auth/login/google"
+        href={`/auth/login/google?next=${encodeURIComponent(safeNextPath || `/${locale}/profile`)}`}
         className="flex w-full max-w-sm items-center justify-center gap-2 rounded-lg border border-gray-300 py-2.5 font-medium text-gray-700 hover:bg-gray-100 transition"
       >
         <Image src="/images/google.png" alt="Google" width={18} height={18} />
@@ -171,7 +175,7 @@ export default function LoginForm({
       <p className="mt-6 text-sm text-gray-600">
         {t("noAccount")}{" "}
         <a
-          href={`/${locale}/signup`}
+          href={`/${locale}/signup${safeNextPath ? `?next=${encodeURIComponent(safeNextPath)}` : ""}`}
           className="font-medium text-orange-600 hover:text-orange-700 transition"
         >
           {t("createAccount")}

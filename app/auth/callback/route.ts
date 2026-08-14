@@ -38,6 +38,27 @@ export async function GET(request: Request) {
       errorUrl.searchParams.set("recoveryError", "1");
       return NextResponse.redirect(errorUrl);
     }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (user) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("user_role")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      if (profile?.user_role === "admin") {
+        const locale = next.split("/").filter(Boolean)[0];
+        const supportedLocale = ["fr", "nl", "en"].includes(locale)
+          ? locale
+          : "fr";
+        return NextResponse.redirect(
+          new URL(`/${supportedLocale}/admin`, url.origin)
+        );
+      }
+    }
   }
 
   return NextResponse.redirect(new URL(next, url.origin));

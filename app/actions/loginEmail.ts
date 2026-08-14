@@ -34,10 +34,20 @@ export async function loginWithEmail(formData: FormData) {
     }
   );
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   });
+
+  let userRole: string | null = null;
+  if (!error && data.user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("user_role")
+      .eq("id", data.user.id)
+      .maybeSingle();
+    userRole = profile?.user_role || null;
+  }
 
   return {
     error: error
@@ -45,5 +55,6 @@ export async function loginWithEmail(formData: FormData) {
           code: error.code || "auth_error",
         }
       : null,
+    userRole,
   };
 }

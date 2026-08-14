@@ -64,7 +64,7 @@ const ProBadge = () => {
   return (
     <Link
       href={`/${locale}/pro`}
-      className="fixed top-24 sm:top-32 right-0 z-30 group"
+      className="fixed right-0 top-32 z-30 hidden group md:block"
     >
       <div className="bg-gradient-to-br from-orange-500 via-amber-500 to-orange-500 px-4 py-3 rounded-l-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:pr-6 flex items-center gap-2">
         <Briefcase className="w-5 h-5 text-white" />

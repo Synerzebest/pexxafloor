@@ -1,6 +1,6 @@
 "use client";
 
-import { Navbar, Footer } from "@/components";
+import { Footer } from "@/components";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useFetchStoreData } from "@/hooks/useFetchStoreData";
@@ -38,9 +38,7 @@ export default function CatalogPage() {
 
   return (
     <>
-      <Navbar />
-
-      <div className="absolute top-36 left-4">
+      <div className="px-4 pt-6">
         <Link
           href={`/${locale}/admin`}
           className="inline-flex items-center gap-2 text-orange-500 font-medium hover:text-orange-600 transition"
@@ -58,7 +56,7 @@ export default function CatalogPage() {
         </Link>
       </div>
 
-      <div className="p-6 relative top-44">
+      <div className="p-6 pt-8">
 
         {/* --- MENU --- */}
         <div className="flex flex-wrap justify-center gap-4 mb-10 relative">
@@ -198,9 +196,7 @@ export default function CatalogPage() {
         </div>
       </div>
 
-      <div className="relative top-36">
-        <Footer />
-      </div>
+      <Footer />
     </>
   );
 }

@@ -1,13 +1,26 @@
 "use server";
 
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
 export async function signupWithEmail(formData: FormData) {
   const name = formData.get("name") as string;
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+  const locale = String(formData.get("locale") || "fr");
+  const requestedNext = String(formData.get("next") || "");
+  const next =
+    requestedNext.startsWith(`/${locale}/`) && !requestedNext.startsWith("//")
+      ? requestedNext
+      : `/${locale}/profile`;
   const cookieStore = await cookies();
+  const requestHeaders = await headers();
+  const origin =
+    requestHeaders.get("origin") ||
+    process.env.NEXT_PUBLIC_URL ||
+    "http://localhost:3000";
+  const callbackUrl = new URL("/auth/callback", origin);
+  callbackUrl.searchParams.set("next", next);
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -33,7 +46,8 @@ export async function signupWithEmail(formData: FormData) {
     options: {
       data: {
         name,
-      }
+      },
+      emailRedirectTo: callbackUrl.toString(),
     }
   });
 

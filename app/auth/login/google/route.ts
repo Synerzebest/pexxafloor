@@ -1,7 +1,13 @@
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
 
-export async function GET() {
+export async function GET(request: Request) {
+  const requestUrl = new URL(request.url);
+  const requestedNext = requestUrl.searchParams.get("next") || "/";
+  const next =
+    requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+      ? requestedNext
+      : "/";
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -32,7 +38,7 @@ export async function GET() {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${process.env.NEXT_PUBLIC_URL}/auth/callback`,
+      redirectTo: `${requestUrl.origin}/auth/callback?next=${encodeURIComponent(next)}`,
     },
   });
 

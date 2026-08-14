@@ -4,7 +4,11 @@ import { getLocale } from "next-intl/server";
 import { createServerClient } from "@supabase/ssr";
 import SignupForm from "@/components/auth/SignupForm";
 
-export default async function SignupPage() {
+export default async function SignupPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ next?: string }>;
+}) {
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
@@ -30,8 +34,13 @@ export default async function SignupPage() {
   } = await supabase.auth.getUser();
 
   const locale = await getLocale();
+  const params = await searchParams;
+  const nextPath =
+    params.next?.startsWith(`/${locale}/`) && !params.next.startsWith("//")
+      ? params.next
+      : undefined;
 
-  if (user) redirect(`/${locale}/profile`);
+  if (user) redirect(nextPath || `/${locale}/profile`);
 
-  return <SignupForm locale={locale} />;
+  return <SignupForm locale={locale} nextPath={nextPath} />;
 }

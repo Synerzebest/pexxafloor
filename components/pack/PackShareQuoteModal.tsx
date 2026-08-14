@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { X } from "lucide-react";
+import { ArrowLeft, Download, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import type { PackQuoteDraft } from "@/context/QuoteContext";
 import { sanitizeForPDF as s } from "@/utils/sanitize";
@@ -56,12 +56,21 @@ const UNISIS_ISSUER: QuoteIssuer = {
   vat: "BE 0871.407.121",
 };
 
-type ShareMode = "pro" | "customer";
+type ShareMode = "pro" | "customer" | "guest";
 
 type Props = {
   open: boolean;
   draft: PackQuoteDraft;
+  isPro: boolean;
   onClose: () => void;
+};
+
+type GuestPdfLabels = {
+  title: string;
+  product: string;
+  quantity: string;
+  totalExclVat: string;
+  totalInclVat: string;
 };
 
 function formatPrice(value: number) {
@@ -89,10 +98,15 @@ function buildQuotePdf({
     ? pricing.lines
     : pricing.lines.filter((line) => !line.id.startsWith("additional-item:"));
   const lines = visibleLines.map((line) => {
-    const isAdditionalItem = line.id.startsWith("additional-item:");
-    const unitPrice = isCustomer
-      ? line.customerUnitPrice * (isAdditionalItem ? 1 : 1 - discountRate)
-      : line.proUnitPrice;
+    if (isCustomer) {
+      return [
+        s(line.reference || "-"),
+        s(line.description),
+        s(String(line.quantity)),
+      ];
+    }
+
+    const unitPrice = line.proUnitPrice;
     const total = unitPrice * line.quantity;
 
     return [
@@ -180,7 +194,11 @@ function buildQuotePdf({
 
   autoTable(doc, {
     startY: tableStartY,
-    head: [[s("Reference"), s("Produit"), s("Qte"), s("PU HTVA"), s("Total HTVA")]],
+    head: [
+      isCustomer
+        ? [s("Reference"), s("Produit"), s("Qte")]
+        : [s("Reference"), s("Produit"), s("Qte"), s("PU HTVA"), s("Total HTVA")],
+    ],
     body: lines,
     margin: { left: 14, right: 14, bottom: 34 },
     styles: {
@@ -198,13 +216,19 @@ function buildQuotePdf({
     alternateRowStyles: {
       fillColor: [249, 250, 251],
     },
-    columnStyles: {
-      0: { cellWidth: 26 },
-      1: { cellWidth: 76 },
-      2: { halign: "center", cellWidth: 18 },
-      3: { halign: "right", cellWidth: 30 },
-      4: { halign: "right", cellWidth: 34 },
-    },
+    columnStyles: isCustomer
+      ? {
+          0: { cellWidth: 34 },
+          1: { cellWidth: 122 },
+          2: { halign: "center", cellWidth: 22 },
+        }
+      : {
+          0: { cellWidth: 26 },
+          1: { cellWidth: 76 },
+          2: { halign: "center", cellWidth: 18 },
+          3: { halign: "right", cellWidth: 30 },
+          4: { halign: "right", cellWidth: 34 },
+        },
   });
 
   const finalY = (doc as any).lastAutoTable.finalY + 12;
@@ -257,38 +281,116 @@ function buildQuotePdf({
   return doc;
 }
 
-async function sharePdf(doc: jsPDF, filename: string) {
-  const blob = doc.output("blob");
-  const file = new File([blob], filename, { type: "application/pdf" });
-  const nav = navigator as Navigator & {
-    canShare?: (data: ShareData) => boolean;
-  };
+async function loadPexxaLogo() {
+  const response = await fetch("/images/logo.png");
+  if (!response.ok) throw new Error("Unable to load PexxaFloor logo");
+  const blob = await response.blob();
 
-  if (navigator.share && (!nav.canShare || nav.canShare({ files: [file] }))) {
-    await navigator.share({
-      title: filename,
-      text: "Voici le devis.",
-      files: [file],
-    });
-    return;
-  }
-
-  doc.save(filename);
-  window.alert("Le PDF a été téléchargé. Vous pouvez maintenant l’envoyer au client.");
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result));
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(blob);
+  });
 }
 
-export function PackShareQuoteModal({ open, draft, onClose }: Props) {
+async function buildGuestQuotePdf(
+  draft: PackQuoteDraft,
+  labels: GuestPdfLabels
+) {
+  const doc = new jsPDF();
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const logo = await loadPexxaLogo();
+
+  // The neutral estimate deliberately contains no issuer, customer or legal data.
+  doc.addImage(logo, "PNG", 55, 8, 100, 67);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(17);
+  doc.setTextColor(17, 24, 39);
+  doc.text(s(labels.title), pageWidth / 2, 84, { align: "center" });
+
+  const lines = draft.products.map((product) => [
+    s(product.description),
+    s(String(draft.quantities[product.id] ?? 1)),
+  ]);
+
+  autoTable(doc, {
+    startY: 94,
+    head: [[s(labels.product), s(labels.quantity)]],
+    body: lines,
+    margin: { left: 18, right: 18, bottom: 18 },
+    styles: {
+      fontSize: 9,
+      cellPadding: 3.5,
+      font: "helvetica",
+      lineColor: [229, 231, 235],
+      lineWidth: 0.2,
+    },
+    headStyles: {
+      fillColor: [17, 24, 39],
+      textColor: [255, 255, 255],
+      fontStyle: "bold",
+    },
+    alternateRowStyles: { fillColor: [249, 250, 251] },
+    columnStyles: {
+      0: { cellWidth: 146 },
+      1: { halign: "center", cellWidth: 28 },
+    },
+  });
+
+  const totalHTVA = Number(draft.total || 0);
+  const totalTVAC = totalHTVA * 1.21;
+  const finalY = (doc as any).lastAutoTable.finalY + 12;
+  const rightX = pageWidth - 18;
+
+  doc.setFillColor(249, 250, 251);
+  doc.roundedRect(pageWidth - 92, finalY - 7, 74, 26, 3, 3, "F");
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(17, 24, 39);
+  doc.text(s(`${labels.totalExclVat} : ${formatPrice(totalHTVA)} EUR`), rightX, finalY, {
+    align: "right",
+  });
+  doc.text(s(`${labels.totalInclVat} : ${formatPrice(totalTVAC)} EUR`), rightX, finalY + 8, {
+    align: "right",
+  });
+
+  return doc;
+}
+
+export function PackShareQuoteModal({ open, draft, isPro, onClose }: Props) {
   const t = useTranslations("QuoteShare");
   const [pricing, setPricing] = useState<SharePricing | null>(null);
   const [loading, setLoading] = useState(false);
-  const [sharingMode, setSharingMode] = useState<ShareMode | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [customerDiscount, setCustomerDiscount] = useState(0);
+  const [preview, setPreview] = useState<{
+    url: string;
+    filename: string;
+    mode: ShareMode;
+  } | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (preview?.url) URL.revokeObjectURL(preview.url);
+    };
+  }, [preview]);
+
+  useEffect(() => {
+    if (!open) setPreview(null);
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
 
     let cancelled = false;
+
+    if (!isPro) {
+      setPricing(null);
+      setLoading(false);
+      setError(null);
+      return;
+    }
 
     async function loadPricing() {
       setLoading(true);
@@ -323,7 +425,7 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [open, draft]);
+  }, [open, draft, isPro, t]);
 
   const customerTotalAfterDiscount = useMemo(() => {
     if (!pricing) return 0;
@@ -341,19 +443,30 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
     ? customerTotalAfterDiscount - pricing.proTotal
     : 0;
 
-  const handleShare = async (mode: ShareMode) => {
-    if (!pricing) return;
-
+  const handlePreview = async (mode: ShareMode) => {
     try {
-      setSharingMode(mode);
-      const doc = buildQuotePdf({ pricing, mode, customerDiscount });
-      const suffix = mode === "customer" ? "particulier" : "pro";
-      await sharePdf(doc, `devis-${suffix}.pdf`);
+      const doc = mode === "guest"
+        ? await buildGuestQuotePdf(draft, {
+            title: t("guestDocumentTitle"),
+            product: t("product"),
+            quantity: t("quantity"),
+            totalExclVat: t("totalExclVat"),
+            totalInclVat: t("totalInclVat"),
+          })
+        : pricing
+          ? buildQuotePdf({ pricing, mode, customerDiscount })
+          : null;
+      if (!doc) return;
+      const suffix = mode === "customer" ? "particulier" : mode === "pro" ? "pro" : "estimatif";
+      const blob = doc.output("blob");
+      setPreview({
+        url: URL.createObjectURL(blob),
+        filename: `devis-${suffix}.pdf`,
+        mode,
+      });
     } catch (err) {
       console.error(err);
-      window.alert(t("shareError"));
-    } finally {
-      setSharingMode(null);
+      setError(t("previewError"));
     }
   };
 
@@ -361,14 +474,20 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/40 px-4">
-      <div className="w-full max-w-2xl rounded-xl bg-white p-5 shadow-xl">
+      <div className={`max-h-[94vh] w-full overflow-y-auto rounded-xl bg-white p-5 shadow-xl ${preview ? "max-w-6xl" : "max-w-2xl"}`}>
         <div className="flex items-start justify-between gap-4">
           <div>
             <h2 className="text-xl font-semibold text-gray-900">
-              {t("title")}
+              {preview
+                ? t(preview.mode === "customer"
+                    ? "previewCustomerTitle"
+                    : preview.mode === "pro"
+                      ? "previewProTitle"
+                      : "previewGuestTitle")
+                : t(isPro ? "title" : "guestTitle")}
             </h2>
             <p className="mt-1 text-sm text-gray-500">
-              {t("description")}
+              {preview ? t("previewDescription") : t(isPro ? "description" : "guestDescription")}
             </p>
           </div>
           <button
@@ -380,19 +499,48 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
           </button>
         </div>
 
-        {loading && (
+        {preview ? (
+          <div className="mt-5">
+            <div className="overflow-hidden rounded-xl border border-gray-200 bg-gray-100">
+              <iframe
+                src={preview.url}
+                title={t("previewFrameTitle")}
+                className="h-[68vh] w-full bg-white"
+              />
+            </div>
+
+            <div className="mt-4 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <button
+                type="button"
+                onClick={() => setPreview(null)}
+                className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 px-5 py-3 text-sm font-semibold text-gray-700 transition hover:bg-gray-50"
+              >
+                <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                {t("back")}
+              </button>
+              <a
+                href={preview.url}
+                download={preview.filename}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-orange-600 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-orange-700"
+              >
+                <Download className="h-4 w-4" aria-hidden="true" />
+                {t("download")}
+              </a>
+            </div>
+          </div>
+        ) : loading && (
           <div className="mt-6 rounded-lg bg-gray-50 p-5 text-sm text-gray-500">
             {t("preparing")}
           </div>
         )}
 
-        {error && (
+        {!preview && error && (
           <div className="mt-6 rounded-lg border border-red-200 bg-red-50 p-4 text-sm text-red-700">
             {error}
           </div>
         )}
 
-        {pricing && !loading && (
+        {!preview && pricing && !loading && (
           <div className="mt-6 space-y-5">
             <div>
               <label className="block text-sm font-medium text-gray-700">
@@ -418,8 +566,7 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
             <div className="grid gap-3 md:grid-cols-2">
               <button
                 type="button"
-                onClick={() => handleShare("pro")}
-                disabled={!!sharingMode}
+                onClick={() => handlePreview("pro")}
                 className="rounded-xl border border-orange-200 bg-orange-50 p-4 text-left transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span className="block font-semibold text-orange-800">
@@ -432,8 +579,7 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
 
               <button
                 type="button"
-                onClick={() => handleShare("customer")}
-                disabled={!!sharingMode}
+                onClick={() => handlePreview("customer")}
                 className="rounded-xl border border-gray-200 bg-white p-4 text-left transition hover:border-orange-200 hover:bg-orange-50 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <span className="block font-semibold text-gray-900">
@@ -451,6 +597,23 @@ export function PackShareQuoteModal({ open, draft, onClose }: Props) {
                 {formatPrice(marginAfterDiscount)} €
               </span>
             </div>
+          </div>
+        )}
+
+        {!preview && !isPro && !loading && (
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={() => handlePreview("guest")}
+              className="w-full rounded-xl border border-orange-200 bg-orange-50 p-5 text-left transition hover:bg-orange-100"
+            >
+              <span className="block font-semibold text-orange-800">
+                {t("previewGuest")}
+              </span>
+              <span className="mt-2 block text-sm text-gray-600">
+                {t("totalInclVat")} : {formatPrice(draft.total * 1.21)} €
+              </span>
+            </button>
           </div>
         )}
       </div>

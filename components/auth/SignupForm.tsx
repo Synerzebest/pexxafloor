@@ -9,7 +9,13 @@ import { Loader2, UserPlus, Mail, MailCheck } from "lucide-react";
 import { signupWithEmail } from "@/app/actions/signupEmail";
 import PasswordInput from "@/components/ui/PasswordInput";
 
-export default function SignupForm({ locale }: { locale: string }) {
+export default function SignupForm({
+  locale,
+  nextPath,
+}: {
+  locale: string;
+  nextPath?: string;
+}) {
   const t = useTranslations("Signup");
   const router = useRouter();
 
@@ -31,6 +37,8 @@ export default function SignupForm({ locale }: { locale: string }) {
 
     try {
       setLoading(true);
+      if (nextPath) formData.set("next", nextPath);
+      formData.set("locale", locale);
       const result = await signupWithEmail(formData);
 
       if (result.error) {
@@ -54,7 +62,7 @@ export default function SignupForm({ locale }: { locale: string }) {
         return;
       }
 
-      router.replace(`/${locale}/profile`);
+      router.replace(nextPath || `/${locale}/profile`);
       router.refresh();
     } catch (error) {
       console.error("Signup failed:", error);
@@ -108,7 +116,7 @@ export default function SignupForm({ locale }: { locale: string }) {
               {t("confirmation.instructions")}
             </div>
             <Link
-              href={`/${locale}/login`}
+              href={`/${locale}/login${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""}`}
               className="mt-7 inline-flex rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
             >
               {t("confirmation.login")}
@@ -231,7 +239,7 @@ export default function SignupForm({ locale }: { locale: string }) {
           </div>
 
           <a
-            href="/auth/login/google"
+            href={`/auth/login/google?next=${encodeURIComponent(nextPath || `/${locale}/profile`)}`}
             className="flex w-full items-center justify-center gap-3 rounded-lg
               border border-gray-300 bg-white py-2.5 text-sm font-medium text-gray-700
               hover:bg-gray-50 transition"

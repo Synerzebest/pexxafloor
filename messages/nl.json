@@ -9,12 +9,14 @@
       "contact_phone": "Telefoon",
       "contact_email": "E-mail",
       "cart": "Winkelwagen openen",
+      "cart_count": "Winkelwagen openen, {count, plural, =0 {geen artikelen} one {# artikel} other {# artikelen}}",
       "my_quotes": "Mijn offertes",
       "quotes_description": "Selecteer een opgeslagen offerte om eraan verder te werken.",
       "no_quotes": "Er zijn momenteel geen opgeslagen offertes.",
       "delete_quote_confirm": "Offerte ‘{reference}’ verwijderen?",
       "delete_quote_error": "Deze offerte kan niet worden verwijderd.",
-      "delete_quote": "Offerte verwijderen"
+      "delete_quote": "Offerte verwijderen",
+      "pro_space": "PRO-zone"
     },
     "Common": {
       "our": "Onze",
@@ -61,7 +63,8 @@
       "noOrders": "Momenteel geen bestellingen",
       "orderFrom": "Bestelling van {date}",
       "viewItems": "Artikelen bekijken",
-      "orderStatus": { "paid": "Betaald", "preparing": "In voorbereiding", "packed": "Verpakt", "ready": "Klaar", "cancelled": "Geannuleerd" }
+      "orderCount": "{count, plural, one {# bestelling} other {# bestellingen}}", "itemCount": "{count, plural, one {# artikel} other {# artikelen}}", "loadingOrders": "Bestellingen laden", "noOrdersDescription": "Uw bestellingen verschijnen hier zodra u uw eerste aankoop hebt voltooid.", "orderNumber": "Bestelling", "includedProducts": "Inbegrepen producten", "installationSpacing": "afstand", "quantityShort": "Aantal", "backHome": "Terug naar home",
+      "orderStatus": { "paid": "Betaald", "preparing": "In voorbereiding", "packed": "Verpakt", "ready": "Klaar", "delivering": "Onderweg", "delivered": "Geleverd", "cancelled": "Geannuleerd" }
     },
     "FAQ": {
       "title": { "first": "Veelgestelde", "second": "vragen" },
@@ -96,7 +99,7 @@
       "statuses": { "pending": "In afwachting", "inReview": "In behandeling", "verified": "Geverifieerd", "rejected": "Geweigerd", "suspended": "Geschorst", "revision": "Te herzien" },
       "messages": { "active": "Uw professionele account is actief 🎉", "pending": "Uw aanvraag wacht op goedkeuring.", "rejected": "Uw aanvraag werd geweigerd." }
     },
-    "QuoteShare": { "title": "Deze offerte delen", "description": "Kies welk prijstype u wilt verzenden.", "preparing": "Bedragen voorbereiden…", "prepareError": "Het delen van de offerte kan niet worden voorbereid.", "shareError": "De PDF kan niet worden gedeeld.", "customerDiscount": "Korting voor de particuliere offerte", "sharePro": "Offerte met PRO-prijzen delen", "shareCustomer": "Offerte met particuliere prijzen delen", "totalExclVat": "Totaal excl. btw", "estimatedProfit": "Geschatte winst excl. btw" },
+    "QuoteShare": { "title": "Deze offerte delen", "description": "Kies welk prijstype u wilt verzenden.", "guestTitle": "Een raming maken", "guestDescription": "Genereer een neutrale offerte om de prijs van uw pakket te ramen.", "guestDocumentTitle": "Raming van uw pakket", "previewGuest": "Voorbeeld van de prijsraming", "preparing": "Bedragen voorbereiden…", "prepareError": "Het delen van de offerte kan niet worden voorbereid.", "shareError": "De PDF kan niet worden gedeeld.", "previewError": "Het PDF-voorbeeld kan niet worden gegenereerd.", "customerDiscount": "Korting voor de particuliere offerte", "sharePro": "Voorbeeld met PRO-prijzen", "shareCustomer": "Voorbeeld met particuliere prijzen", "product": "Product", "quantity": "Aantal", "totalExclVat": "Totaal excl. btw", "totalInclVat": "Totaal incl. btw", "estimatedProfit": "Geschatte winst excl. btw", "previewProTitle": "Voorbeeld van de PRO-offerte", "previewCustomerTitle": "Voorbeeld van de particuliere offerte", "previewGuestTitle": "Voorbeeld van de prijsraming", "previewDescription": "Controleer het document voordat u het downloadt.", "previewFrameTitle": "Voorbeeld van de PDF-offerte", "back": "Terug naar keuze", "download": "PDF downloaden" },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
       "title": "Vloerverwarming",
@@ -391,7 +394,8 @@
     },
     "AddToBasketButton": {
       "addToBasket": "Toevoegen aan winkelwagen",
-      "addedToBasket": "Toegevoegd aan winkelwagen"
+      "addedToBasket": "Toegevoegd aan winkelwagen",
+      "inCart": "{count, plural, one {# exemplaar in de winkelwagen} other {# exemplaren in de winkelwagen}}"
     },
     "CartDrawer": {
       "myCart": "Mijn winkelwagen",
@@ -441,6 +445,12 @@
       },
       "included": "producten inbegrepen",
       "emptyCart": "Uw winkelwagen is leeg",
+      "empty": {
+        "title": "Uw winkelwagen wacht op uw project",
+        "description": "Ontdek onze vloerverwarmingsoplossingen of stel meteen een pakket samen dat bij uw oppervlakte past.",
+        "browse": "Producten ontdekken",
+        "calculate": "Mijn pakket berekenen"
+      },
       "myCart": "Mijn winkelwagen",
       "step": "Stap",
       "remove": "Verwijderen",
@@ -451,7 +461,7 @@
         "subtitle": "Optimalisatie van het leidingtraject door een expert."
       },
       "clientName": "Naam klant / Bedrijfsnaam",
-      "fullAddress": "Volledig adres",
+      "fullAddress": "Afleveradres",
       "zipCode": "Postcode",
       "city": "Stad",
       "country": "Land",

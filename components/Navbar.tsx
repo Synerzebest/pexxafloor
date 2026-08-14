@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
-import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight, Trash2, PhoneCall, Mail, Headphones, ChevronDown } from 'lucide-react';
+import { Menu as LucideMenu, Sparkles, X, ShoppingCart, ChevronRight, Trash2, PhoneCall, Mail, Headphones, ChevronDown, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from "next/image";
 import { useCart } from "@/context/CartContext";
@@ -14,6 +14,7 @@ import { useStoreData } from "@/context/StoreDataProvider";
 import { useUI } from "@/context/UIContext"
 import { useQuotes } from '@/context/QuoteContext';
 import { FaWhatsapp } from 'react-icons/fa';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 const SUPPORTED_LOCALES = ['fr', 'nl', 'en'] as const;
 type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
@@ -43,6 +44,11 @@ export default function Navbar() {
   
   const t = useTranslations('Navbar');
   const { items, openCart } = useCart();
+  const cartQuantity = items.reduce(
+    (total, item) => total + Math.max(0, Number(item.quantity) || 0),
+    0
+  );
+  const displayedCartQuantity = cartQuantity > 99 ? "99+" : cartQuantity;
   const {
     quotes,
     isQuoteListOpen,
@@ -53,6 +59,7 @@ export default function Navbar() {
 
   const { drawerOpen, setDrawerOpen } = useUI()
   const { categories, loading } = useStoreData();
+  const { isPro, loading: profileLoading } = useUserProfile();
   const [hoveredCat, setHoveredCat] = useState<string | null>(null);
   const [openMobileCat, setOpenMobileCat] = useState<string | null>(null);
   const [openMobileSub, setOpenMobileSub] = useState<string | null>(null);
@@ -144,13 +151,19 @@ export default function Navbar() {
             whileHover={{scale: 1.1}}
             onClick={openCart}
             className="relative cursor-pointer"
-            aria-label={t('cart')}
+            aria-label={t('cart_count', { count: cartQuantity })}
           >
             <ShoppingCart />
-            {items.length > 0 && (
-              <span className="absolute -top-2 -right-2 rounded-full bg-red-500 text-white text-xs px-1">
-                {items.length}
-              </span>
+            {cartQuantity > 0 && (
+              <motion.span
+                key={cartQuantity}
+                initial={{ scale: 0.65, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 420, damping: 22 }}
+                className="absolute -right-2.5 -top-2.5 grid h-5 min-w-5 place-items-center rounded-full bg-orange-600 px-1 text-[10px] font-bold leading-none text-white shadow-sm ring-2 ring-white"
+              >
+                {displayedCartQuantity}
+              </motion.span>
             )}
           </motion.button>
 
@@ -178,6 +191,16 @@ export default function Navbar() {
         </div>
 
         {/* Burger (mobile) */}
+        {!profileLoading && !isPro && (
+          <Link
+            href={`/${locale}/pro`}
+            className="ml-auto inline-flex shrink-0 items-center gap-1.5 rounded-full border border-orange-200 bg-orange-50 px-3 py-2 text-xs font-semibold text-orange-700 shadow-sm transition hover:bg-orange-100 md:hidden"
+          >
+            <Briefcase className="h-4 w-4" aria-hidden="true" />
+            {t('pro_space')}
+          </Link>
+        )}
+
         <button
           className="md:hidden inline-flex items-center justify-center rounded-md p-2 text-gray-700 hover:bg-gray-100"
           onClick={() => setDrawerOpen(true)}
@@ -421,13 +444,19 @@ export default function Navbar() {
                       setDrawerOpen(false);
                     }}
                     className="relative cursor-pointer"
-                    aria-label={t('cart')}
+                    aria-label={t('cart_count', { count: cartQuantity })}
                   >
                     <ShoppingCart />
-                    {items.length > 0 && (
-                      <span className="absolute -top-2 -right-2 rounded-full bg-red-500 text-white text-xs px-1">
-                        {items.length}
-                      </span>
+                    {cartQuantity > 0 && (
+                      <motion.span
+                        key={cartQuantity}
+                        initial={{ scale: 0.65, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 420, damping: 22 }}
+                        className="absolute -right-2.5 -top-2.5 grid h-5 min-w-5 place-items-center rounded-full bg-orange-600 px-1 text-[10px] font-bold leading-none text-white shadow-sm ring-2 ring-white"
+                      >
+                        {displayedCartQuantity}
+                      </motion.span>
                     )}
                   </button>
                 </div>

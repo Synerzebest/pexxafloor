@@ -9,12 +9,14 @@
       "contact_phone": "Phone",
       "contact_email": "Email",
       "cart": "Open cart",
+      "cart_count": "Open cart, {count, plural, =0 {no items} one {# item} other {# items}}",
       "my_quotes": "My quotes",
       "quotes_description": "Select a saved quote to continue working on it.",
       "no_quotes": "There are no saved quotes yet.",
       "delete_quote_confirm": "Delete quote “{reference}”?",
       "delete_quote_error": "Unable to delete this quote.",
-      "delete_quote": "Delete quote"
+      "delete_quote": "Delete quote",
+      "pro_space": "PRO area"
     },
     "Common": {
       "our": "Our",
@@ -61,7 +63,8 @@
       "noOrders": "No orders yet",
       "orderFrom": "Order from {date}",
       "viewItems": "View items",
-      "orderStatus": { "paid": "Paid", "preparing": "Preparing", "packed": "Packed", "ready": "Ready", "cancelled": "Cancelled" }
+      "orderCount": "{count, plural, one {# order} other {# orders}}", "itemCount": "{count, plural, one {# item} other {# items}}", "loadingOrders": "Loading orders", "noOrdersDescription": "Your orders will appear here once you have completed your first purchase.", "orderNumber": "Order", "includedProducts": "Included products", "installationSpacing": "spacing", "quantityShort": "Qty", "backHome": "Back to home",
+      "orderStatus": { "paid": "Paid", "preparing": "Preparing", "packed": "Packed", "ready": "Ready", "delivering": "Out for delivery", "delivered": "Delivered", "cancelled": "Cancelled" }
     },
     "FAQ": {
       "title": { "first": "Frequently asked", "second": "questions" },
@@ -96,7 +99,7 @@
       "statuses": { "pending": "Pending", "inReview": "Under review", "verified": "Verified", "rejected": "Rejected", "suspended": "Suspended", "revision": "Needs revision" },
       "messages": { "active": "Your professional account is active 🎉", "pending": "Your application is awaiting approval.", "rejected": "Your application was rejected." }
     },
-    "QuoteShare": { "title": "Share this quote", "description": "Choose which price type to send.", "preparing": "Preparing amounts…", "prepareError": "Unable to prepare the quote for sharing.", "shareError": "Unable to share the PDF.", "customerDiscount": "Discount for the customer quote", "sharePro": "Share quote with PRO prices", "shareCustomer": "Share quote with customer prices", "totalExclVat": "Total excl. VAT", "estimatedProfit": "Estimated profit excl. VAT" },
+    "QuoteShare": { "title": "Share this quote", "description": "Choose which price type to send.", "guestTitle": "Create an estimate", "guestDescription": "Generate a neutral quote to estimate the price of your pack.", "guestDocumentTitle": "Your pack estimate", "previewGuest": "Preview estimated quote", "preparing": "Preparing amounts…", "prepareError": "Unable to prepare the quote for sharing.", "shareError": "Unable to share the PDF.", "previewError": "Unable to generate the PDF preview.", "customerDiscount": "Discount for the customer quote", "sharePro": "Preview quote with PRO prices", "shareCustomer": "Preview quote with customer prices", "product": "Product", "quantity": "Quantity", "totalExclVat": "Total excl. VAT", "totalInclVat": "Total incl. VAT", "estimatedProfit": "Estimated profit excl. VAT", "previewProTitle": "PRO quote preview", "previewCustomerTitle": "Customer quote preview", "previewGuestTitle": "Estimated quote preview", "previewDescription": "Review the document before downloading it.", "previewFrameTitle": "PDF quote preview", "back": "Back to selection", "download": "Download PDF" },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
       "title": "Floor heating",
@@ -391,7 +394,8 @@
     },
     "AddToBasketButton": {
       "addToBasket": "Add to basket",
-      "addedToBasket": "Added to basket"
+      "addedToBasket": "Added to basket",
+      "inCart": "{count, plural, one {# item in cart} other {# items in cart}}"
     },
     "CartDrawer": {
       "myCart": "My cart",
@@ -441,6 +445,12 @@
       },
       "included": "products included",
       "emptyCart": "Your cart is empty",
+      "empty": {
+        "title": "Your cart is ready for you",
+        "description": "Explore our products or build a pack tailored to your surface area.",
+        "browse": "Explore products",
+        "calculate": "Calculate my pack"
+      },
       "myCart":"My cart",
       "step": "Step",
       "remove": "Remove",
@@ -451,7 +461,7 @@
         "subtitle": "Pipe routing optimization by an expert."
       },
       "clientName": "Client name / Company name",
-      "fullAddress": "Full address",
+      "fullAddress": "Delivery address",
       "zipCode": "Zip code",
       "city": "City",
       "country": "Country",
