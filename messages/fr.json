@@ -28,6 +28,8 @@
       "proDiscount": "Remise PRO −{discount}%",
       "total": "Total",
       "totalToPay": "Total à payer",
+      "totalExclVat": "Total HTVA",
+      "totalInclVat": "Total TVAC",
       "add": "Ajouter",
       "added": "Ajouté",
       "update": "Mettre à jour",
@@ -64,7 +66,7 @@
       "orderFrom": "Commande du {date}",
       "viewItems": "Voir les articles",
       "orderCount": "{count, plural, one {# commande} other {# commandes}}", "itemCount": "{count, plural, one {# article} other {# articles}}", "loadingOrders": "Chargement des commandes", "noOrdersDescription": "Vos commandes apparaîtront ici dès que vous aurez effectué votre premier achat.", "orderNumber": "Commande", "includedProducts": "Produits inclus", "installationSpacing": "pas", "quantityShort": "Qté", "backHome": "Retour à l’accueil",
-      "orderStatus": { "paid": "Payée", "preparing": "En préparation", "packed": "Emballée", "ready": "Prête", "delivering": "En livraison", "delivered": "Livrée", "cancelled": "Annulée" }
+      "orderStatus": { "paid": "Payée", "preparing": "En préparation", "verification": "En vérification", "packed": "Emballée", "ready": "Prête", "delivering": "En livraison", "delivered": "Livrée", "cancelled": "Annulée" }
     },
     "FAQ": {
       "title": { "first": "Questions", "second": "Fréquentes" },
@@ -191,13 +193,19 @@
     },
     "Footer": {
         "tagline": "Votre solution chauffage au sol rapide et transparente.",
-        "home": "Accueil",
-        "how-it-works": "Comment ça marche",
-        "benefits": "Avantages",
-        "contact": "Contact",
+        "products": "Tous les produits",
+        "quote": "Configurer un pack",
+        "pro": "Espace PRO",
         "rights": "Tous droits réservés.",
+        "legal": "Mentions légales",
         "privacy": "Politique de confidentialité",
-        "terms": "Conditions générales"
+        "terms": "Conditions générales de vente",
+        "cookies": "Politique des cookies",
+        "cookieSettings": "Gérer mes cookies",
+        "withdrawal": "Rétractation et retours"
+    },
+    "CookieConsent": {
+      "title": "Votre vie privée, simplement", "description": "Nous utilisons des technologies nécessaires au fonctionnement du site. Avec votre accord, Google Maps peut aussi faciliter la saisie de votre adresse.", "learnMore": "En savoir plus", "accept": "Tout accepter", "reject": "Tout refuser", "customize": "Personnaliser", "settingsTitle": "Préférences de confidentialité", "settingsDescription": "Choisissez librement les services facultatifs. Refuser n’empêche pas d’utiliser la boutique, le panier ou le paiement.", "necessaryTitle": "Fonctionnement nécessaire", "necessaryDescription": "Connexion sécurisée, panier, langue et protections techniques indispensables.", "alwaysActive": "Toujours actif", "externalTitle": "Services externes", "externalDescription": "Autorise Google Maps Places pour suggérer des adresses. Des données techniques et les recherches saisies peuvent être transmises à Google.", "save": "Enregistrer mes choix", "close": "Fermer"
     },
     "Login": { 
       "title": "Se connecter", 
@@ -402,7 +410,7 @@
       "emptyCart": "Votre panier est vide",
       "productsIncluded": "produits inclus",
       "edit": "Modifier",
-      "checkCart": "Voir mon panier",
+      "checkCart": "Valider mon panier",
       "products_included": "Produits inclus",
       "product": "Produit",
       "remove": "Supprimer",
@@ -424,7 +432,12 @@
       "orderManagement": "Gestion des commandes",
       "orderManagementDetails": "Vérifiez les commandes pour les envoyer en préparation",
       "userRolesManagement": "Gestion des rôles utilisateurs",
-      "userRolesManagementDetails": "Admin, magasinier, livreur"
+      "userRolesManagementDetails": "Admin, magasinier, livreur",
+      "proDiscountsManagement": "Remises PRO personnalisées",
+      "proDiscountsManagementDetails": "Remises par client et par catégorie"
+    },
+    "AdminProDiscounts": {
+      "title": "Remises PRO personnalisées", "description": "Attribuez une remise spécifique à un client PRO pour une ou plusieurs catégories. Une remise personnalisée remplace la remise générale de la catégorie et ne s’y additionne jamais.", "back": "Retour au panneau d’administration", "searchPlaceholder": "Rechercher par nom, société ou e-mail…", "loading": "Chargement…", "noUsers": "Aucun client PRO trouvé.", "selectUser": "Sélectionnez un client PRO pour configurer ses remises.", "customCount": "{count, plural, one {# remise personnalisée} other {# remises personnalisées}}", "loadError": "Impossible de charger les remises PRO.", "saveError": "Impossible d’enregistrer les remises.", "saved": "Remises personnalisées enregistrées.", "invalidDiscount": "Chaque remise doit être comprise entre 0 et 100 %.", "save": "Enregistrer les remises", "saving": "Enregistrement…", "ruleHelp": "Laissez le champ vide pour appliquer la remise PRO générale de la catégorie. Toute valeur renseignée, y compris 0 %, remplace entièrement la remise générale.", "generalDiscount": "Remise générale : {discount} %", "customApplied": "remise personnalisée appliquée", "generalApplied": "remise générale appliquée", "inheritPlaceholder": "Générale : {discount} %"
     },
     "NotFound": {
       "title": "Oups! Page introuvable",
@@ -441,7 +454,8 @@
       "errors": {
         "address": "Veuillez compléter l’adresse de livraison avant de continuer.",
         "clientName": "Veuillez indiquer le nom du client ou de l’entreprise.",
-        "checkout": "Impossible de préparer le paiement. Veuillez réessayer."
+        "checkout": "Impossible de préparer le paiement. Veuillez réessayer.",
+        "deleteAddress": "Impossible de supprimer cette adresse."
       },
       "included": "produits inclus",
       "emptyCart": "Votre panier est vide",
@@ -462,9 +476,21 @@
       },
       "clientName": "Nom du client / Nom de l'entreprise",
       "fullAddress": "Adresse de livraison",
+      "addressAutocompleteDisabled": "La saisie automatique Google est désactivée selon vos préférences.",
+      "enableAddressAutocomplete": "L’autoriser",
       "zipCode": "Code postal",
       "city": "Ville",
       "country": "Pays",
+      "vatExcluded": "HTVA",
+      "vatIncluded": "TVAC",
+      "totalExclVat": "Total HTVA",
+      "totalInclVat": "Total TVAC",
+      "savedAddresses": "Vos adresses enregistrées",
+      "newAddress": "Utiliser une nouvelle adresse",
+      "savedAddressesHint": "Sélectionnez une ancienne adresse ou saisissez-en une nouvelle ci-dessous.",
+      "saveAddress": "Enregistrer cette adresse pour mes prochaines commandes",
+      "saveAddressConsent": "En cochant cette case, vous acceptez que cette adresse soit conservée dans votre compte. Vous pourrez toujours utiliser une autre adresse.",
+      "deleteAddress": "Supprimer",
       "total": "Total",
       "payment": "Procéder au paiement",
       "paymentLoading": "Préparation du paiement…",

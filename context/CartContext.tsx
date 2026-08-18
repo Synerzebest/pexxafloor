@@ -11,10 +11,12 @@ type ProductItem = {
   name?: string;
   price?: number;
   image?: string;
+  reference?: string | null;
   product?: {
     name: string;
     price: number;
     image?: string;
+    reference?: string | null;
   };
 };
 

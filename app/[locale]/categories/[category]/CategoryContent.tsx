@@ -18,7 +18,7 @@ export default function CategoryContent({
   category: Category;
   locale: SupportedLocale;
 }) {
-  const { isPro, loading: loadingProfile } = useUserProfile();
+  const { isPro, categoryDiscounts, loading: loadingProfile } = useUserProfile();
   const t = useTranslations("Categories");
   const tc = useTranslations("Common");
   const getName = (
@@ -112,6 +112,7 @@ export default function CategoryContent({
                       subcategorySlug={sub.slug}
                       subsubcategorySlug={ssc.slug}
                       isPro={isPro}
+                      customDiscounts={categoryDiscounts}
                     />
                   ))}
                 </div>
@@ -130,6 +131,7 @@ export default function CategoryContent({
                           subcategorySlug={sub.slug}
                           subsubcategorySlug={ssc.slug}
                           isPro={isPro}
+                          customDiscounts={categoryDiscounts}
                         />
                       </li>
                     ))}

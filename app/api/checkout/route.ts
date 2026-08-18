@@ -5,6 +5,11 @@ import type { CartItem } from "@/context/CartContext";
 import { applyPackQuantityOverrides, computeDbPackProducts } from "@/utils/packDbCalculations";
 import { fetchPackBySlug } from "@/utils/packRepository";
 import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
+import {
+  applyProDiscountToPack,
+  getProPricingContext,
+  resolveProDiscount,
+} from "@/utils/proCategoryDiscounts";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-07-30.basil",
@@ -21,8 +26,9 @@ interface ShippingInfo {
 interface CheckoutBody {
   items: CartItem[];
   locale: string;
-  clientName: string;
   shipping: ShippingInfo;
+  saveAddress?: boolean;
+  savedAddressId?: string | null;
 }
 
 export async function POST(req: Request) {
@@ -43,7 +49,7 @@ export async function POST(req: Request) {
 
     const body = (await req.json()) as CheckoutBody;
 
-    const { items, locale, clientName, shipping } = body;
+    const { items, locale, shipping, saveAddress, savedAddressId } = body;
     const supabase = supabaseServer;
 
     // -------------------------
@@ -54,7 +60,6 @@ export async function POST(req: Request) {
     }
 
     if (
-      !clientName?.trim() ||
       !shipping?.address?.trim() ||
       !shipping?.postalCode?.trim() ||
       !shipping?.city?.trim() ||
@@ -69,13 +74,57 @@ export async function POST(req: Request) {
     // -------------------------
     // 🔒 RÉCUPÉRER PROFIL (PRO ?)
     // -------------------------
-    const { data: profile } = await supabase
+    const { data: profile, error: profileError } = await supabase
       .from("profiles")
-      .select("is_pro")
+      .select("is_pro, name, company_name")
       .eq("id", user.id)
-      .single();
+      .maybeSingle();
+
+    if (profileError) {
+      console.error("Erreur récupération profil checkout:", profileError);
+      return NextResponse.json({ error: "Profil introuvable" }, { status: 500 });
+    }
+
+    const clientName = String(
+      profile?.company_name ||
+      profile?.name ||
+      user.user_metadata?.full_name ||
+      user.user_metadata?.name ||
+      user.email
+    ).trim();
 
     const isPro = profile?.is_pro === true;
+    const pricingContext = await getProPricingContext(supabase, user.id);
+
+    // Une adresse n'est enregistrée que sur consentement explicite. Lorsqu'une
+    // adresse existante est réutilisée, sa date d'utilisation est actualisée.
+    if (savedAddressId) {
+      const { error: addressUpdateError } = await supabase
+        .from("shipping_addresses")
+        .update({ last_used_at: new Date().toISOString(), updated_at: new Date().toISOString() })
+        .eq("id", savedAddressId)
+        .eq("user_id", user.id);
+
+      if (addressUpdateError) throw addressUpdateError;
+    } else if (saveAddress === true) {
+      const now = new Date().toISOString();
+      const { error: addressSaveError } = await supabase
+        .from("shipping_addresses")
+        .upsert(
+          {
+            user_id: user.id,
+            address: shipping.address.trim(),
+            postal_code: shipping.postalCode.trim(),
+            city: shipping.city.trim(),
+            country: shipping.country.trim(),
+            updated_at: now,
+            last_used_at: now,
+          },
+          { onConflict: "user_id,address,postal_code,city,country" }
+        );
+
+      if (addressSaveError) throw addressSaveError;
+    }
 
     // -------------------------
     // EXTRACTION IDS
@@ -101,6 +150,10 @@ export async function POST(req: Request) {
           id,
           price,
           name_fr,
+          reference,
+          product_images!fk_product (
+            image_url
+          ),
           subcategories (
             id,
             category_id,
@@ -139,8 +192,12 @@ export async function POST(req: Request) {
         }
 
         // 🔥 RÉCUP DISCOUNT
-        const discount =
-          dbProduct.subcategories?.categories?.discount ?? 0;
+        const category = dbProduct.subcategories?.categories;
+        const discount = resolveProDiscount(
+          category?.id,
+          category?.discount,
+          pricingContext
+        );
 
         let unitPrice = Number(dbProduct.price);
 
@@ -158,6 +215,18 @@ export async function POST(req: Request) {
           ...item,
           unit_price: Number(unitPrice.toFixed(2)),
           base_price: Number(Number(dbProduct.price).toFixed(2)),
+          image: dbProduct.product_images?.[0]?.image_url || item.image || item.product?.image,
+          reference: dbProduct.reference || null,
+          product: {
+            ...item.product,
+            name: item.product?.name || dbProduct.name_fr,
+            price: Number(unitPrice.toFixed(2)),
+            image:
+              dbProduct.product_images?.[0]?.image_url ||
+              item.product?.image ||
+              item.image,
+            reference: dbProduct.reference || null,
+          },
         });
 
         line_items.push({
@@ -190,7 +259,11 @@ export async function POST(req: Request) {
           typeIsolation: Number(item.typeIsolation) as 0 | 15 | 30,
           selectedOptions: item.selectedOptions || {},
         });
-        const result = applyPackQuantityOverrides(computedPack, item.quantities);
+        const result = applyProDiscountToPack(
+          applyPackQuantityOverrides(computedPack, item.quantities),
+          pack,
+          pricingContext
+        );
 
         const quantity = Number(item.quantity || 1);
         computedTotal += result.total * quantity;
@@ -238,7 +311,7 @@ export async function POST(req: Request) {
       .insert({
         user_id: user.id,
         items: normalizedItems,
-        client_name: clientName.trim(),
+        client_name: clientName,
         shipping,
       })
       .select()
@@ -306,7 +379,7 @@ export async function POST(req: Request) {
       metadata: {
         user_id: user.id,
         cart_id: inserted.id,
-        client_name: clientName.trim(),
+        client_name: clientName,
         address: shipping.address,
         postal_code: shipping.postalCode,
         city: shipping.city,

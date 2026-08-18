@@ -1,23 +1,26 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { supabaseServer } from "@/lib/supabaseServer";
+import { requireRole } from "@/lib/requireRole";
 
 export async function GET(req: Request) {
+  const auth = await requireRole(["admin", "storekeeper", "delivery"]);
+  if (!auth.ok) return auth.response;
+
   const { searchParams } = new URL(req.url);
   const statusQuery = searchParams.get("status");
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
-
-  let query = supabase
+  let query = supabaseServer
     .from("orders")
     .select("*")
     .order("created_at", { ascending: false });
 
   // Si on a une query `status`
   if (statusQuery && statusQuery.length > 0) {
-    const statuses = statusQuery.split(","); // "paid,ready,packed" -> ["paid","ready","packed"]
+    const allowedStatuses = ["paid", "preparing", "verification", "packed", "ready", "delivering", "delivered", "cancelled"];
+    const statuses = statusQuery.split(",").filter((status) => allowedStatuses.includes(status));
+    if (statuses.length === 0) {
+      return NextResponse.json({ error: "Invalid status" }, { status: 400 });
+    }
 
     query = query.in("status", statuses);
   }

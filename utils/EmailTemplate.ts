@@ -52,7 +52,7 @@ function parseOrderItems(orderItems: any): ItemForEmail[] {
             } as ItemForEmail;
 
         } else if (item.type === 'pack' && item.slug) {
-            const packPrice = parseFloat(item.total); 
+            const packPrice = parseFloat(item.total) * Number(item.quantity || 1);
             if (isNaN(packPrice)) return null;
 
             return {

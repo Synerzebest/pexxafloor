@@ -27,6 +27,8 @@ export default function CartItem({
     : item.total;
   
   const hasDiscount = isProduct && basePrice > unitPrice;
+  const lineTotalHTVA = unitPrice * item.quantity;
+  const lineTotalTVAC = lineTotalHTVA * 1.21;
   
   const key = isProduct ? item.product_id : item.id;
   const packProducts = !isProduct && Array.isArray(item.products) ? item.products : [];
@@ -94,16 +96,22 @@ export default function CartItem({
                 updateQuantity(key, val ? Number(val) : 1)
               }
             />
-            <div className="text-right min-w-[100px]">
+            <div className="min-w-[125px] text-right">
               {/* Prix final */}
               <div className="font-semibold text-lg text-orange-600">
-                {(unitPrice * item.quantity).toFixed(2)} €
+                {lineTotalTVAC.toFixed(2)} €
+              </div>
+              <div className="text-xs font-medium text-gray-500">
+                {t("vatIncluded")}
+              </div>
+              <div className="mt-1 text-xs text-gray-600">
+                {lineTotalHTVA.toFixed(2)} € {t("vatExcluded")}
               </div>
 
               {/* Prix de base barré */}
               {hasDiscount && (
                 <div className="text-xs text-gray-400 line-through">
-                  {(basePrice * item.quantity).toFixed(2)} €
+                  {(basePrice * item.quantity).toFixed(2)} € {t("vatExcluded")}
                 </div>
               )}
             </div>
@@ -152,10 +160,10 @@ export default function CartItem({
 
                   <div className="shrink-0 text-right text-xs text-gray-600">
                     <div>
-                      x{item.quantities?.[p.id] ?? 1} · {Number(p.unit_price || 0).toFixed(2)} €
+                      x{item.quantities?.[p.id] ?? 1} · {Number(p.unit_price || 0).toFixed(2)} € {t("vatExcluded")}
                     </div>
                     <div className="font-semibold text-gray-900">
-                      {Number(p.total_price || 0).toFixed(2)} €
+                      {(Number(p.total_price || 0) * 1.21).toFixed(2)} € {t("vatIncluded")}
                     </div>
                   </div>
                 </div>

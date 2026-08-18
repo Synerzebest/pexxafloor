@@ -11,7 +11,6 @@ export function useCartPricing(items: any, user: any) {
       method: "POST",
       body: JSON.stringify({
         items,
-        user_id: user.id,
       }),
     })
       .then((res) => res.json())

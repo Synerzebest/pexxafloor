@@ -147,11 +147,20 @@ if (prod.subcategory.category.slug !== category) {
 
   // PRIX
   const TVA = 1.21;
-  const categoryDiscount =
-    prod.subcategory.category.discount ?? 0;
+  const categoryDiscount = prod.subcategory.category.discount ?? 0;
+  let effectiveProDiscount = Number(categoryDiscount || 0);
+  if (isPro && user) {
+    const { data: customDiscount } = await supabase
+      .from("pro_category_discounts")
+      .select("discount_percent")
+      .eq("user_id", user.id)
+      .eq("category_id", prod.subcategory.category.id)
+      .maybeSingle();
+    if (customDiscount) effectiveProDiscount = Number(customDiscount.discount_percent);
+  }
 
   const priceBrutHTVA = prod.price;
-  const discount = isPro ? categoryDiscount : 0;
+  const discount = isPro ? effectiveProDiscount : 0;
 
   const priceNetHTVA =
     discount > 0
@@ -263,6 +272,7 @@ if (prod.subcategory.category.slug !== category) {
               name={getName(prod)}
               unit_price={showProPrices ? priceNetHTVA : priceBrutHTVA}
               image_url={images[0]}
+              reference={prod.reference}
             />
           </div>
         </div>

@@ -2,25 +2,21 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import { NextResponse } from "next/server";
 import { applyPackQuantityOverrides, computeDbPackProducts } from "@/utils/packDbCalculations";
 import { fetchPackBySlug } from "@/utils/packRepository";
+import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
+import {
+  applyProDiscountToPack,
+  getProPricingContext,
+  resolveProDiscount,
+} from "@/utils/proCategoryDiscounts";
 
 export async function POST(req: Request) {
   try {
-    const { items, user_id } = await req.json();
+    const { items } = await req.json();
     const supabase = supabaseServer;
-
-    // 🔒 Vérif user PRO
-    const { data: profile, error: profileError } = await supabase
-      .from("profiles")
-      .select("is_pro")
-      .eq("id", user_id)
-      .single();
-
-    if (profileError) {
-      console.error("Erreur profil:", profileError);
-      return new Response("Erreur profil", { status: 500 });
-    }
-
-    const isPro = profile?.is_pro === true;
+    const supabaseAuth = await createSupabaseServerAuthClient();
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+    const pricingContext = await getProPricingContext(supabase, user?.id);
+    const isPro = pricingContext.isPro;
 
     // 🔒 IDs produits sécurisés
     const productIds = items
@@ -35,6 +31,10 @@ export async function POST(req: Request) {
         id,
         price,
         name_fr,
+        reference,
+        product_images!fk_product (
+          image_url
+        ),
         subcategories (
           id,
           category:category_id (
@@ -67,8 +67,12 @@ export async function POST(req: Request) {
 
         const basePrice = Number(p.price);
 
-        const discount =
-          p.subcategories?.category?.discount ?? 0;
+        const category = p.subcategories?.category;
+        const discount = resolveProDiscount(
+          category?.id,
+          category?.discount,
+          pricingContext
+        );
 
 
         let unitPrice = basePrice;
@@ -81,6 +85,15 @@ export async function POST(req: Request) {
           ...item,
           unit_price: Number(unitPrice.toFixed(2)),
           base_price: Number(basePrice.toFixed(2)),
+          image: p.product_images?.[0]?.image_url || item.image || item.product?.image,
+          reference: p.reference || null,
+          product: {
+            ...item.product,
+            name: item.product?.name || p.name_fr,
+            price: Number(unitPrice.toFixed(2)),
+            image: p.product_images?.[0]?.image_url || item.product?.image || item.image,
+            reference: p.reference || null,
+          },
         });
         continue;
       }
@@ -101,7 +114,11 @@ export async function POST(req: Request) {
           typeIsolation: Number(item.typeIsolation) as 0 | 15 | 30,
           selectedOptions: item.selectedOptions || {},
         });
-        const result = applyPackQuantityOverrides(computedPack, item.quantities);
+        const result = applyProDiscountToPack(
+          applyPackQuantityOverrides(computedPack, item.quantities),
+          pack,
+          pricingContext
+        );
 
         pricedItems.push({
           ...item,

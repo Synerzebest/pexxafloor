@@ -24,7 +24,7 @@ export default function SubCategoryContent({
   category,
   locale,
 }: SubCategoryContentProps) {
-  const { isPro, loading: loadingProfile } = useUserProfile();
+  const { isPro, categoryDiscounts, loading: loadingProfile } = useUserProfile();
   const tc = useTranslations("Common");
 
   const getName = (obj: {
@@ -124,6 +124,7 @@ export default function SubCategoryContent({
                     subcategorySlug={subcategory.slug}
                     subsubcategorySlug={null}
                     isPro={isPro}
+                    customDiscounts={categoryDiscounts}
                   />
                 ))}
           </ul>
@@ -170,6 +171,7 @@ export default function SubCategoryContent({
                   subcategorySlug={subcategory.slug}
                   subsubcategorySlug={ssc.slug}
                   isPro={isPro}
+                  customDiscounts={categoryDiscounts}
                 />
               ))}
             </ul>

@@ -28,6 +28,8 @@
       "proDiscount": "PRO-korting −{discount}%",
       "total": "Totaal",
       "totalToPay": "Te betalen totaal",
+      "totalExclVat": "Totaal excl. btw",
+      "totalInclVat": "Totaal incl. btw",
       "add": "Toevoegen",
       "added": "Toegevoegd",
       "update": "Bijwerken",
@@ -64,7 +66,7 @@
       "orderFrom": "Bestelling van {date}",
       "viewItems": "Artikelen bekijken",
       "orderCount": "{count, plural, one {# bestelling} other {# bestellingen}}", "itemCount": "{count, plural, one {# artikel} other {# artikelen}}", "loadingOrders": "Bestellingen laden", "noOrdersDescription": "Uw bestellingen verschijnen hier zodra u uw eerste aankoop hebt voltooid.", "orderNumber": "Bestelling", "includedProducts": "Inbegrepen producten", "installationSpacing": "afstand", "quantityShort": "Aantal", "backHome": "Terug naar home",
-      "orderStatus": { "paid": "Betaald", "preparing": "In voorbereiding", "packed": "Verpakt", "ready": "Klaar", "delivering": "Onderweg", "delivered": "Geleverd", "cancelled": "Geannuleerd" }
+      "orderStatus": { "paid": "Betaald", "preparing": "In voorbereiding", "verification": "In controle", "packed": "Verpakt", "ready": "Klaar", "delivering": "Onderweg", "delivered": "Geleverd", "cancelled": "Geannuleerd" }
     },
     "FAQ": {
       "title": { "first": "Veelgestelde", "second": "vragen" },
@@ -191,13 +193,19 @@
     },
     "Footer": {
         "tagline": "Uw snelle en transparante vloerverwarmingsoplossing.",
-        "home": "Home",
-        "how-it-works": "Hoe het werkt",
-        "benefits": "Voordelen",
-        "contact": "Contact",
+        "products": "Alle producten",
+        "quote": "Een pakket samenstellen",
+        "pro": "PRO-zone",
         "rights": "Alle rechten voorbehouden.",
+        "legal": "Wettelijke vermeldingen",
         "privacy": "Privacybeleid",
-        "terms": "Algemene voorwaarden"
+        "terms": "Algemene verkoopvoorwaarden",
+        "cookies": "Cookiebeleid",
+        "cookieSettings": "Cookies beheren",
+        "withdrawal": "Herroeping en retour"
+    },
+    "CookieConsent": {
+      "title": "Uw privacy, eenvoudig geregeld", "description": "We gebruiken technologie die nodig is voor de werking van de website. Met uw toestemming kan Google Maps helpen bij het invoeren van uw adres.", "learnMore": "Meer informatie", "accept": "Alles aanvaarden", "reject": "Alles weigeren", "customize": "Personaliseren", "settingsTitle": "Privacyvoorkeuren", "settingsDescription": "Kies vrij welke optionele diensten u toestaat. Weigeren verhindert het gebruik van de winkel, winkelwagen of betaling niet.", "necessaryTitle": "Strikt noodzakelijk", "necessaryDescription": "Veilige login, winkelwagen, taal en essentiële technische beveiliging.", "alwaysActive": "Altijd actief", "externalTitle": "Externe diensten", "externalDescription": "Staat Google Maps Places toe om adressen voor te stellen. Technische gegevens en ingevoerde zoekopdrachten kunnen naar Google worden verzonden.", "save": "Mijn keuzes opslaan", "close": "Sluiten"
     },
     "Login": { 
       "title": "Log in", 
@@ -402,7 +410,7 @@
       "emptyCart": "Uw winkelwagen is leeg",
       "productsIncluded": "producten inbegrepen",
       "edit": "Bewerken",
-      "checkCart": "Mijn winkelwagen zien",
+      "checkCart": "Bestellen",
       "products_included": "Producten inbegrepen",
       "product": "Product",
       "remove": "Verwijderen",
@@ -424,7 +432,12 @@
       "orderManagement": "Orderbeheer",
       "orderManagementDetails": "Controleer de bestellingen om ze ter voorbereiding te versturen",
       "userRolesManagement": "Beheer van gebruikersrollen",
-      "userRolesManagementDetails": "Administratief medewerker, magazijnmedewerker, bezorger"
+      "userRolesManagementDetails": "Administratief medewerker, magazijnmedewerker, bezorger",
+      "proDiscountsManagement": "Aangepaste PRO-kortingen",
+      "proDiscountsManagementDetails": "Kortingen per klant en categorie"
+    },
+    "AdminProDiscounts": {
+      "title": "Aangepaste PRO-kortingen", "description": "Ken een specifieke korting toe aan een PRO-klant voor een of meer categorieën. Een aangepaste korting vervangt de algemene categoriekorting en wordt er nooit bij opgeteld.", "back": "Terug naar het beheerderspaneel", "searchPlaceholder": "Zoeken op naam, bedrijf of e-mail…", "loading": "Laden…", "noUsers": "Geen PRO-klant gevonden.", "selectUser": "Selecteer een PRO-klant om de kortingen in te stellen.", "customCount": "{count, plural, one {# aangepaste korting} other {# aangepaste kortingen}}", "loadError": "De PRO-kortingen kunnen niet worden geladen.", "saveError": "De kortingen kunnen niet worden opgeslagen.", "saved": "Aangepaste kortingen opgeslagen.", "invalidDiscount": "Elke korting moet tussen 0 en 100% liggen.", "save": "Kortingen opslaan", "saving": "Opslaan…", "ruleHelp": "Laat een veld leeg om de algemene PRO-korting van de categorie toe te passen. Elke ingevulde waarde, ook 0%, vervangt de algemene korting volledig.", "generalDiscount": "Algemene korting: {discount}%", "customApplied": "aangepaste korting toegepast", "generalApplied": "algemene korting toegepast", "inheritPlaceholder": "Algemeen: {discount}%"
     },
     "NotFound": {
       "title": "Oeps! Pagina niet gevonden",
@@ -441,7 +454,8 @@
       "errors": {
         "address": "Vul het volledige leveringsadres in voordat u verdergaat.",
         "clientName": "Vul de naam van de klant of het bedrijf in.",
-        "checkout": "De betaling kan niet worden voorbereid. Probeer het opnieuw."
+        "checkout": "De betaling kan niet worden voorbereid. Probeer het opnieuw.",
+        "deleteAddress": "Dit adres kan niet worden verwijderd."
       },
       "included": "producten inbegrepen",
       "emptyCart": "Uw winkelwagen is leeg",
@@ -462,9 +476,21 @@
       },
       "clientName": "Naam klant / Bedrijfsnaam",
       "fullAddress": "Afleveradres",
+      "addressAutocompleteDisabled": "Google-adressuggesties zijn uitgeschakeld volgens uw voorkeuren.",
+      "enableAddressAutocomplete": "Toestaan",
       "zipCode": "Postcode",
       "city": "Stad",
       "country": "Land",
+      "vatExcluded": "excl. btw",
+      "vatIncluded": "incl. btw",
+      "totalExclVat": "Totaal excl. btw",
+      "totalInclVat": "Totaal incl. btw",
+      "savedAddresses": "Uw opgeslagen adressen",
+      "newAddress": "Een nieuw adres gebruiken",
+      "savedAddressesHint": "Kies een eerder adres of voer hieronder een nieuw adres in.",
+      "saveAddress": "Dit adres bewaren voor toekomstige bestellingen",
+      "saveAddressConsent": "Door dit vakje aan te vinken, stemt u ermee in dat dit adres in uw account wordt bewaard. U kunt altijd een ander adres gebruiken.",
+      "deleteAddress": "Verwijderen",
       "total": "Totaal",
       "payment": "Ga naar betaling",
       "paymentLoading": "Betaling voorbereiden…",

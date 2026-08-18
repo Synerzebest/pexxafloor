@@ -14,6 +14,7 @@ type Props = {
   subcategorySlug: string;
   subsubcategorySlug?: string | null;
   isPro: boolean | null;
+  customDiscounts?: Record<string, number>;
 };
 
 type Translatable = {
@@ -28,7 +29,8 @@ export default function ProductCard({
   categorySlug,
   subcategorySlug,
   subsubcategorySlug,
-  isPro
+  isPro,
+  customDiscounts = {},
 }: Props) {
   const tc = useTranslations("Common");
 
@@ -48,10 +50,15 @@ export default function ProductCard({
   const priceBrutHTVA = Number(product.price) || 0;
 
   const categoryDiscount = Number(product.subcategory?.category?.discount ?? 0) || 0;
+  const categoryId = product.subcategory?.category?.id;
 
   const showProPrices = isPro === true;
 
-  const discount = showProPrices ? categoryDiscount : 0;
+  const discount = showProPrices
+    ? categoryId && Object.prototype.hasOwnProperty.call(customDiscounts, categoryId)
+      ? Number(customDiscounts[categoryId])
+      : categoryDiscount
+    : 0;
 
   const priceNetHTVA =
     discount > 0

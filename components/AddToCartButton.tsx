@@ -28,6 +28,7 @@ export default function AddToCartButton(product: AddableProduct) {
         name: product.name,
         price: product.unit_price,
         image: product.image_url,
+        reference: product.reference,
       },
     });
 

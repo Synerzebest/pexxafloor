@@ -26,6 +26,7 @@ export function PackMobileFooter({
 }: Props) {
   const tc = useTranslations("Common");
   const [added, setAdded] = useState(false);
+  const totalTVAC = total * 1.21;
 
   const handleAdd = () => {
     if (disabled) return;
@@ -38,11 +39,10 @@ export function PackMobileFooter({
     <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 lg:hidden z-40">
       <div className="max-w-lg mx-auto space-y-3">
         <div className="flex justify-between items-center">
-        <div className="text-base font-bold text-gray-900">
-          {tc("total")} :{" "}
-          <span className="text-orange-600 text-xl">
-            {total.toFixed(2)} €
-          </span>
+        <div>
+          <div className="text-xs font-medium text-gray-500">{tc("totalInclVat")}</div>
+          <div className="text-xl font-bold text-orange-600">{totalTVAC.toFixed(2)} €</div>
+          <div className="text-xs text-gray-500">{tc("totalExclVat")} : {total.toFixed(2)} €</div>
         </div>
 
         <button

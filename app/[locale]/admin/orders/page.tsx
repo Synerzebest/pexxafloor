@@ -58,6 +58,7 @@ export default function OrdersAdminPage() {
             <Select.Option value="all">Toutes</Select.Option>
             <Select.Option value="paid">Payées</Select.Option>
             <Select.Option value="preparing">En préparation</Select.Option>
+            <Select.Option value="verification">En vérification</Select.Option>
             <Select.Option value="packed">Emballées</Select.Option>
             <Select.Option value="ready">Prêtes</Select.Option>
             <Select.Option value="delivering">En livraison</Select.Option>

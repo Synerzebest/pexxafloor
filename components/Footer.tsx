@@ -3,12 +3,14 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { Facebook, Instagram, Linkedin } from 'lucide-react';
+import { Mail, Phone } from 'lucide-react';
 import Image from 'next/image';
+import { useCookieConsent } from '@/context/CookieConsentContext';
 
 export default function Footer() {
   const locale = useLocale();
   const t = useTranslations('Footer');
+  const { openSettings } = useCookieConsent();
 
   return (
     <footer className="bg-orange-50 text-gray-700 mt-20 border-t border-orange-100">
@@ -20,7 +22,7 @@ export default function Footer() {
         className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10"
       >
         {/* === TOP SECTION === */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+        <div className="grid gap-8 md:grid-cols-[1.2fr_1fr_1fr]">
           {/* Logo + Tagline */}
           <div>
             <p className="text-2xl font-bold text-orange-600">PexxaFloor</p>
@@ -28,45 +30,15 @@ export default function Footer() {
           </div>
 
           {/* Navigation */}
-          <ul className="flex flex-wrap justify-start gap-6 text-sm font-medium">
-            <li>
-              <Link href={`/${locale}`} className="hover:text-orange-600 transition">
-                {t('home')}
-              </Link>
-            </li>
-            <li>
-              <button
-                onClick={() =>
-                  document.getElementById('how-it-works')?.scrollIntoView({ behavior: 'smooth' })
-                }
-                className="hover:text-orange-600 transition"
-              >
-                {t('how-it-works')}
-              </button>
-            </li>
-            <li>
-              <Link href={`/${locale}/benefits`} className="hover:text-orange-600 transition">
-                {t('benefits')}
-              </Link>
-            </li>
-            <li>
-              <Link href={`/${locale}/contact`} className="hover:text-orange-600 transition">
-                {t('contact')}
-              </Link>
-            </li>
+          <ul className="space-y-3 text-sm font-medium">
+            <li><Link href={`/${locale}/categories`} className="transition hover:text-orange-600">{t('products')}</Link></li>
+            <li><Link href={`/${locale}/quote`} className="transition hover:text-orange-600">{t('quote')}</Link></li>
+            <li><Link href={`/${locale}/pro`} className="transition hover:text-orange-600">{t('pro')}</Link></li>
           </ul>
 
-          {/* Social Icons */}
-          <div className="flex gap-4">
-            <Link href="#" className="hover:text-orange-600 transition" aria-label="Facebook">
-              <Facebook />
-            </Link>
-            <Link href="#" className="hover:text-orange-600 transition" aria-label="Instagram">
-              <Instagram />
-            </Link>
-            <Link href="#" className="hover:text-orange-600 transition" aria-label="LinkedIn">
-              <Linkedin />
-            </Link>
+          <div className="space-y-3 text-sm">
+            <a href="mailto:info@pexxafloor.be" className="flex items-center gap-2 transition hover:text-orange-600"><Mail className="h-4 w-4" />info@pexxafloor.be</a>
+            <a href="tel:+3223439200" className="flex items-center gap-2 transition hover:text-orange-600"><Phone className="h-4 w-4" />+32 494 042 932</a>
           </div>
         </div>
 
@@ -90,15 +62,19 @@ export default function Footer() {
         {/* === BOTTOM SECTION === */}
         <div className="h-px bg-orange-200" />
 
-        <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-gray-500">
+        <div className="flex flex-col justify-between gap-4 text-xs text-gray-500 lg:flex-row lg:items-center">
           <p>© {new Date().getFullYear()} PexxaFloor. {t('rights')}</p>
-          <div className="flex gap-4">
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <Link href={`/${locale}/legal`} className="hover:text-orange-600 transition">{t('legal')}</Link>
             <Link href={`/${locale}/privacy`} className="hover:text-orange-600 transition">
               {t('privacy')}
             </Link>
             <Link href={`/${locale}/terms`} className="hover:text-orange-600 transition">
               {t('terms')}
             </Link>
+            <Link href={`/${locale}/cookies`} className="hover:text-orange-600 transition">{t('cookies')}</Link>
+            <button type="button" onClick={openSettings} className="hover:text-orange-600 transition">{t('cookieSettings')}</button>
+            <Link href={`/${locale}/withdrawal`} className="hover:text-orange-600 transition">{t('withdrawal')}</Link>
           </div>
         </div>
       </motion.div>

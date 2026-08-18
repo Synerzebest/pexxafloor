@@ -6,7 +6,6 @@ import { supabase } from "@/lib/supabaseClient";
 
 export function useCartCheckout() {
   const [user, setUser] = useState<User | null>(null);
-  const [clientName, setClientName] = useState("");
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [city, setCity] = useState("");
@@ -25,14 +24,11 @@ export function useCartCheckout() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const isClientNameValid = clientName.trim() !== "";
   const isAddressValid =
     address && postalCode && city && country;
 
   return {
     user,
-    clientName,
-    setClientName,
     address,
     setAddress,
     postalCode,
@@ -41,7 +37,6 @@ export function useCartCheckout() {
     setCity,
     country,
     setCountry,
-    isClientNameValid,
     isAddressValid,
   };
 }

@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Footer } from "@/components";
 import { useLocale } from 'next-intl';
-import { Package, FolderKanban, ShoppingBasket, User } from 'lucide-react';
+import { Package, FolderKanban, ShoppingBasket, User, BadgePercent } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { motion, Variants } from 'framer-motion';
 
@@ -139,6 +139,15 @@ const AdminPage = () => {
                       {t('userRolesManagementDetails')}
                     </p>
                   </div>
+                </div>
+              </Link>
+            </motion.div>
+
+            <motion.div custom={4} initial="hidden" animate="visible" variants={cardVariants}>
+              <Link href={`/${locale}/admin/pro-discounts`} className="group relative block rounded-2xl border border-gray-200 bg-white p-6 shadow-sm transition-all hover:border-orange-400 hover:shadow-lg">
+                <div className="flex items-center gap-4">
+                  <div className="rounded-xl bg-orange-100 p-3 text-orange-600"><BadgePercent className="h-6 w-6" /></div>
+                  <div><h2 className="text-lg font-semibold text-gray-900 group-hover:text-orange-600">{t('proDiscountsManagement')}</h2><p className="text-sm text-gray-500">{t('proDiscountsManagementDetails')}</p></div>
                 </div>
               </Link>
             </motion.div>

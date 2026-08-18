@@ -121,9 +121,11 @@ export const addProductsTable = (doc: jsPDF, order: any) => {
 
   items.forEach((item) => {
     if (item.type === "pack") {
+      const packQuantity = Math.max(1, Number(item.quantity) || 1);
       rows.push([
         s(`PACK - ${item.slug?.toUpperCase?.() || "-"}` +
-        (item.surface ? ` (${item.surface} m2)` : "")),
+        (item.surface ? ` (${item.surface} m2)` : "") +
+        (packQuantity > 1 ? ` x${packQuantity}` : "")),
         "",
         "",
         "",
@@ -131,9 +133,9 @@ export const addProductsTable = (doc: jsPDF, order: any) => {
       ]);
 
       item.products.forEach((prod: any) => {
-        const qte = item.quantities?.[prod.id] ?? 1;
+        const qte = (item.quantities?.[prod.id] ?? 1) * packQuantity;
         const prixU = prod.unit_price ?? 0;
-        const sous = prod.total_price ?? prixU * qte;
+        const sous = prixU * qte;
 
         totalHTVA += sous;
 

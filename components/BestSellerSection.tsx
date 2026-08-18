@@ -8,7 +8,7 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 export default function BestSellersSection() {
   const locale = useLocale();
   const tc = useTranslations("Common");
-  const { isPro, loading: loadingProfile } = useUserProfile();
+  const { isPro, categoryDiscounts, loading: loadingProfile } = useUserProfile();
   const { products, loading } = useFetchBestSellers(6);
   
 
@@ -41,6 +41,7 @@ export default function BestSellersSection() {
                 subcategorySlug={subcategorySlug}
                 subsubcategorySlug={subsubcategorySlug}
                 isPro={isPro}
+                customDiscounts={categoryDiscounts}
               />
             );
           })}

@@ -4,6 +4,7 @@ import { supabaseServer } from "@/lib/supabaseServer";
 import type { PackQuoteDraft } from "@/context/QuoteContext";
 import { fetchPackBySlug } from "@/utils/packRepository";
 import { applyPackQuantityOverrides, computeDbPackProducts } from "@/utils/packDbCalculations";
+import { getProPricingContext, resolveProDiscount } from "@/utils/proCategoryDiscounts";
 
 type ShareLine = {
   id: string;
@@ -120,6 +121,7 @@ export async function POST(req: Request) {
   });
 
   const result = applyPackQuantityOverrides(computedPack, quote.quantities);
+  const pricingContext = await getProPricingContext(supabaseServer, auth.userId);
   const selectedOptionIds = quote.selectedOptions || {};
   const allLines = [
     ...result.products,
@@ -132,7 +134,12 @@ export async function POST(req: Request) {
     const rule = ruleById.get(line.id);
     const quantity = Number(result.quantities[line.id] || 1);
     const customerUnitPrice = Number(line.price || 0);
-    const discountPercent = Number(rule?.product?.subcategory?.category?.discount || 0);
+    const category = rule?.product?.subcategory?.category;
+    const discountPercent = resolveProDiscount(
+      category?.id,
+      category?.discount,
+      pricingContext
+    );
     const proUnitPrice =
       discountPercent > 0
         ? customerUnitPrice * (1 - discountPercent / 100)

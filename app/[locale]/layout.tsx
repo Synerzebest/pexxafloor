@@ -7,6 +7,8 @@ import { Toaster } from "sonner";
 import { UIProvider } from "@/context/UIContext"
 import { StoreDataProvider } from "@/context/StoreDataProvider";
 import { QuoteProvider } from "@/context/QuoteContext";
+import { CookieConsentProvider } from "@/context/CookieConsentContext";
+import CookieConsentBanner from "@/components/CookieConsentBanner";
 
 export default async function LocaleLayout({
   children,
@@ -25,6 +27,7 @@ export default async function LocaleLayout({
     <>
       <div id="locale-wrapper" lang={locale}>
         <NextIntlClientProvider>
+          <CookieConsentProvider>
           <AuthProvider>
             <QuoteProvider>
               <StoreDataProvider>
@@ -38,6 +41,8 @@ export default async function LocaleLayout({
               </StoreDataProvider>
             </QuoteProvider>
           </AuthProvider>
+          <CookieConsentBanner />
+          </CookieConsentProvider>
         </NextIntlClientProvider>
       </div>
     </>

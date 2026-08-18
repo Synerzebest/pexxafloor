@@ -43,7 +43,7 @@ export default async function SubcategoryPage({
         subsub:subsub_id ( slug ),
         product_images!fk_product ( image_url ),
         subcategory:subcategory_id (
-          category:category_id ( discount )
+          category:category_id ( id, discount )
         )
       ),
 
@@ -66,7 +66,7 @@ export default async function SubcategoryPage({
           subsub:subsub_id ( slug ),
           product_images!fk_product ( image_url ),
           subcategory:subcategory_id (
-            category:category_id ( discount )
+            category:category_id ( id, discount )
           )
         )
       )

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { Resend } from "resend";
 import { generateOrderEmailHtml } from "@/utils/EmailTemplate";
+import { requireRole } from "@/lib/requireRole";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -41,6 +42,9 @@ const translations = {
 };
 
 export async function POST(req: Request) {
+  const auth = await requireRole(["admin"]);
+  if (!auth.ok) return auth.response;
+
   try {
     const supabase = supabaseServer;
     const body = await req.json();
@@ -60,6 +64,7 @@ export async function POST(req: Request) {
       .from("orders")
       .select("language, user_id")
       .eq("id", order_id)
+      .eq("status", "paid")
       .single();
 
     if (fetchError || !existingOrder) {

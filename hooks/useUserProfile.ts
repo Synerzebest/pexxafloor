@@ -8,6 +8,7 @@ export function useUserProfile() {
   const { user, loading: loadingAuth } = useAuth();
 
   const [isPro, setIsPro] = useState<boolean | null>(null);
+  const [categoryDiscounts, setCategoryDiscounts] = useState<Record<string, number>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,6 +18,7 @@ export function useUserProfile() {
 
     if (!user) {
       setIsPro(false);
+      setCategoryDiscounts({});
       setLoading(false);
       return;
     }
@@ -35,8 +37,29 @@ export function useUserProfile() {
       if (error) {
         console.error("Profile fetch error:", error);
         setIsPro(false);
+        setCategoryDiscounts({});
       } else {
-        setIsPro(!!data?.is_pro);
+        const nextIsPro = !!data?.is_pro;
+        setIsPro(nextIsPro);
+        if (nextIsPro) {
+          const { data: discounts, error: discountsError } = await supabase
+            .from("pro_category_discounts")
+            .select("category_id, discount_percent")
+            .eq("user_id", user.id);
+          if (!alive) return;
+          if (discountsError) {
+            console.error("Custom PRO discounts fetch error:", discountsError);
+            setCategoryDiscounts({});
+          } else {
+            setCategoryDiscounts(
+              Object.fromEntries(
+                (discounts || []).map((item) => [item.category_id, Number(item.discount_percent)])
+              )
+            );
+          }
+        } else {
+          setCategoryDiscounts({});
+        }
       }
 
       setLoading(false);
@@ -51,6 +74,7 @@ export function useUserProfile() {
 
   return {
     isPro,
+    categoryDiscounts,
     loading: loading || loadingAuth,
   };
 }

@@ -63,6 +63,7 @@ export default async function SubSubCategoryPage({
         product_images!fk_product (image_url),
         subcategory:subcategory_id (
           category:category_id (
+            id,
             discount
           )
         )

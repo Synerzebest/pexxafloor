@@ -26,6 +26,7 @@ export function PackTotalBox({
 }: Props) {
   const tc = useTranslations("Common");
   const [added, setAdded] = useState(false);
+  const totalTVAC = total * 1.21;
 
   const handleAdd = () => {
     if (disabled) return;
@@ -38,13 +39,21 @@ export function PackTotalBox({
     <div className="mt-8 hidden lg:block rounded-2xl border border-orange-200 bg-white p-6">
       <div className="space-y-6">
         {/* TOTAL */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-end justify-between gap-4">
           <span className="text-lg font-semibold text-gray-900">
-            {tc("totalToPay")}
+            {tc("total")}
           </span>
-          <span className="text-3xl font-bold text-orange-600">
-            {total.toFixed(2)} €
-          </span>
+          <div className="text-right">
+            <div className="text-3xl font-bold text-orange-600">
+              {totalTVAC.toFixed(2)} €
+            </div>
+            <div className="mt-1 text-sm font-medium text-gray-500">
+              {tc("totalInclVat")}
+            </div>
+            <div className="mt-2 text-sm text-gray-600">
+              {tc("totalExclVat")} : <span className="font-semibold text-gray-800">{total.toFixed(2)} €</span>
+            </div>
+          </div>
         </div>
 
         {/* CTA */}

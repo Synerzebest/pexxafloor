@@ -16,6 +16,7 @@ import {
   Switch,
   Table,
   Tag,
+  Upload,
   message,
 } from "antd";
 import {
@@ -27,6 +28,7 @@ import {
   PlusOutlined,
   ShoppingOutlined,
 } from "@ant-design/icons";
+import type { UploadFile } from "antd/es/upload/interface";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Product } from "@/types/ProductType";
 import type { PackDefinition, PackQuantityMode, PackRole } from "@/types/PackConfigType";
@@ -191,6 +193,8 @@ export default function PackSection({
   const [editingItem, setEditingItem] = useState<any | null>(null);
   const [expandedPackIds, setExpandedPackIds] = useState<React.Key[]>([]);
   const [deletingItemId, setDeletingItemId] = useState<string | null>(null);
+  const [packImageFiles, setPackImageFiles] = useState<UploadFile[]>([]);
+  const [savingPack, setSavingPack] = useState(false);
   const [packForm] = Form.useForm<PackFormValues>();
   const [itemForm] = Form.useForm<PackItemFormValues>();
   const selectedRole = Form.useWatch("role", itemForm);
@@ -301,6 +305,16 @@ export default function PackSection({
   function openPackModal(pack?: PackDefinition) {
     setEditingPack(pack || null);
     setPackModalOpen(true);
+    setPackImageFiles(
+      pack?.image_url
+        ? [{
+            uid: `pack-${pack.id}`,
+            name: pack.image_url.split("/").pop() || "image-pack",
+            status: "done",
+            url: pack.image_url,
+          }]
+        : []
+    );
     packForm.setFieldsValue(
       pack
         ? pack
@@ -315,38 +329,83 @@ export default function PackSection({
   }
 
   async function savePack(values: PackFormValues) {
-    const payload = {
-      slug: values.slug.trim(),
-      name_fr: values.name_fr.trim(),
-      name_nl: values.name_nl.trim(),
-      name_en: values.name_en.trim(),
-      image_url: values.image_url?.trim() || null,
-      installation_ease: values.installation_ease ?? 50,
-      installation_speed: values.installation_speed ?? 50,
-      price_level: values.price_level ?? 50,
-      installation_height_fr: values.installation_height_fr?.trim() || null,
-      installation_height_nl: values.installation_height_nl?.trim() || null,
-      installation_height_en: values.installation_height_en?.trim() || null,
-      insulation_fr: values.insulation_fr?.trim() || null,
-      insulation_nl: values.insulation_nl?.trim() || null,
-      insulation_en: values.insulation_en?.trim() || null,
-      sort_order: values.sort_order || 0,
-      active: values.active ?? true,
-    };
+    setSavingPack(true);
+    let uploadedPath: string | null = null;
 
-    const result = editingPack
-      ? await supabase.from("packs").update(payload).eq("id", editingPack.id)
-      : await supabase.from("packs").insert(payload);
+    try {
+      const newImage = packImageFiles.find((file) => file.originFileObj)?.originFileObj as File | undefined;
+      let imageUrl = packImageFiles[0]?.url || null;
 
-    if (result.error) {
-      message.error("Erreur sauvegarde pack : " + result.error.message);
-      return;
+      if (newImage) {
+        const extension = newImage.name.split(".").pop()?.toLowerCase() || "jpg";
+        const safeSlug = values.slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-");
+        uploadedPath = `packs/${safeSlug}-${Date.now()}.${extension}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("images-products")
+          .upload(uploadedPath, newImage, {
+            cacheControl: "3600",
+            contentType: newImage.type,
+            upsert: false,
+          });
+        if (uploadError) throw uploadError;
+
+        imageUrl = supabase.storage
+          .from("images-products")
+          .getPublicUrl(uploadedPath).data.publicUrl;
+      }
+
+      const payload = {
+        slug: values.slug.trim(),
+        name_fr: values.name_fr.trim(),
+        name_nl: values.name_nl.trim(),
+        name_en: values.name_en.trim(),
+        image_url: imageUrl,
+        installation_ease: values.installation_ease ?? 50,
+        installation_speed: values.installation_speed ?? 50,
+        price_level: values.price_level ?? 50,
+        installation_height_fr: values.installation_height_fr?.trim() || null,
+        installation_height_nl: values.installation_height_nl?.trim() || null,
+        installation_height_en: values.installation_height_en?.trim() || null,
+        insulation_fr: values.insulation_fr?.trim() || null,
+        insulation_nl: values.insulation_nl?.trim() || null,
+        insulation_en: values.insulation_en?.trim() || null,
+        sort_order: values.sort_order || 0,
+        active: values.active ?? true,
+      };
+
+      const result = editingPack
+        ? await supabase.from("packs").update(payload).eq("id", editingPack.id)
+        : await supabase.from("packs").insert(payload);
+      if (result.error) throw result.error;
+
+      const previousUrl = editingPack?.image_url;
+      if (previousUrl && previousUrl !== imageUrl) {
+        const marker = "/storage/v1/object/public/images-products/";
+        const path = previousUrl.includes(marker)
+          ? decodeURIComponent(previousUrl.split(marker)[1] || "")
+          : "";
+        if (path.startsWith("packs/")) {
+          await supabase.storage.from("images-products").remove([path]);
+        }
+      }
+
+      message.success(editingPack ? "Pack modifié" : "Pack ajouté");
+      setPackModalOpen(false);
+      setPackImageFiles([]);
+      packForm.resetFields();
+      await fetchPacks();
+    } catch (error) {
+      if (uploadedPath) {
+        await supabase.storage.from("images-products").remove([uploadedPath]);
+      }
+      message.error(
+        "Erreur sauvegarde pack : " +
+          (error instanceof Error ? error.message : "échec de l’enregistrement")
+      );
+    } finally {
+      setSavingPack(false);
     }
-
-    message.success(editingPack ? "Pack modifié" : "Pack ajouté");
-    setPackModalOpen(false);
-    packForm.resetFields();
-    await fetchPacks();
   }
 
   function openItemModal(pack: PackDefinition, item?: any) {
@@ -655,7 +714,11 @@ export default function PackSection({
 
       <Modal
         open={packModalOpen}
-        onCancel={() => setPackModalOpen(false)}
+        onCancel={() => {
+          if (savingPack) return;
+          setPackModalOpen(false);
+          setPackImageFiles([]);
+        }}
         footer={null}
         title={editingPack ? "Modifier le pack" : "Ajouter un pack"}
         centered
@@ -675,11 +738,39 @@ export default function PackSection({
             <Input />
           </Form.Item>
           <Form.Item
-            name="image_url"
-            label="Image de la carte"
-            extra='Chemin public ou URL. Exemple : /images/treillis-system.jpg'
+            label="Image principale du pack"
+            extra="JPG, PNG, WebP ou AVIF — maximum 5 Mo. La nouvelle image remplacera l’ancienne."
           >
-            <Input placeholder="/images/treillis-system.jpg" />
+            <Upload
+              accept="image/jpeg,image/png,image/webp,image/avif"
+              listType="picture-card"
+              fileList={packImageFiles}
+              maxCount={1}
+              beforeUpload={(file) => {
+                const accepted = ["image/jpeg", "image/png", "image/webp", "image/avif"];
+                if (!accepted.includes(file.type)) {
+                  message.error("Format non accepté. Utilisez JPG, PNG, WebP ou AVIF.");
+                  return Upload.LIST_IGNORE;
+                }
+                if (file.size > 5 * 1024 * 1024) {
+                  message.error("L’image ne peut pas dépasser 5 Mo.");
+                  return Upload.LIST_IGNORE;
+                }
+                return false;
+              }}
+              onChange={({ fileList }) => setPackImageFiles(fileList.slice(-1))}
+              onRemove={() => {
+                setPackImageFiles([]);
+                return true;
+              }}
+            >
+              {packImageFiles.length === 0 && (
+                <div className="flex flex-col items-center gap-1">
+                  <PlusOutlined />
+                  <span className="text-xs">Choisir une image</span>
+                </div>
+              )}
+            </Upload>
           </Form.Item>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Form.Item name="installation_ease" label="Facilité de pose">
@@ -720,7 +811,7 @@ export default function PackSection({
           <Form.Item name="active" label="Actif" valuePropName="checked">
             <Switch />
           </Form.Item>
-          <Button htmlType="submit" type="primary" style={{ background: orange }}>
+          <Button htmlType="submit" type="primary" loading={savingPack} style={{ background: orange }}>
             Sauvegarder les paramètres
           </Button>
         </Form>

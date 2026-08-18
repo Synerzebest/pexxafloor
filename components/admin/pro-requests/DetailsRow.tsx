@@ -44,6 +44,47 @@ type Props = {
   error: string | null;
 };
 
+function DetailField({
+  label,
+  icon,
+  value,
+  children,
+}: {
+  label: string;
+  icon?: React.ReactNode;
+  value?: string | null;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div>
+      <div className="flex items-center gap-1 text-xs font-medium text-gray-600">
+        {icon}
+        {label}
+      </div>
+      {children ?? <div className="text-gray-900">{value || "-"}</div>}
+    </div>
+  );
+}
+
+function EditableInput({
+  name,
+  value,
+  onChange,
+}: {
+  name: keyof AppRow;
+  value: string;
+  onChange: (name: keyof AppRow, value: string) => void;
+}) {
+  return (
+    <input
+      name={name}
+      className="w-full rounded-md border border-gray-300 px-2 py-1 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+      value={value}
+      onChange={(event) => onChange(name, event.target.value)}
+    />
+  );
+}
+
 export function DetailsRow({
   request,
   isEditing,
@@ -59,53 +100,19 @@ export function DetailsRow({
 
   useEffect(() => {
     setFormData(request);
-  }, [request]);
+  }, [request, isEditing]);
 
   function update<K extends keyof AppRow>(key: K, value: AppRow[K]) {
     setFormData(prev => ({ ...prev, [key]: value }));
   }
 
-  function Field({
-    label,
-    icon,
-    value,
-    children,
-  }: {
-    label: string;
-    icon?: React.ReactNode;
-    value?: string | null;
-    children?: React.ReactNode;
-  }) {
-    return (
-      <div>
-        <div className="text-xs font-medium text-gray-600 flex gap-1 items-center">
-          {icon}
-          {label}
-        </div>
-        {children ? (
-          children
-        ) : (
-          <div className="text-gray-900">
-            {value || "-"}
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  function Input({
-    name,
-  }: {
-    name: keyof AppRow;
-  }) {
-    return (
-      <input
-        className="w-full rounded-md border border-gray-300 px-2 py-1 text-sm"
-        value={(formData[name] as string) ?? ""}
-        onChange={(e) => update(name, e.target.value)}
-      />
-    );
-  }
+  const input = (name: keyof AppRow) => (
+    <EditableInput
+      name={name}
+      value={(formData[name] as string) ?? ""}
+      onChange={(field, value) => update(field, value as AppRow[typeof field])}
+    />
+  );
 
   return (
     <tr className="border-t border-orange-100 bg-orange-50/40">
@@ -113,105 +120,105 @@ export function DetailsRow({
 
         <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 text-sm">
 
-          <Field
+          <DetailField
             label={t("labels.name")}
             icon={<User className="w-3.5 h-3.5" />}
           >
             {isEditing ? (
               <div className="flex flex-col gap-1">
-                <Input name="first_name" />
-                <Input name="last_name" />
+                {input("first_name")}
+                {input("last_name")}
               </div>
             ) : (
               <div className="text-gray-900">
                 {request.first_name} {request.last_name}
               </div>
             )}
-          </Field>
+          </DetailField>
 
-          <Field
+          <DetailField
             label={t("labels.email")}
             icon={<Mail className="w-3.5 h-3.5" />}
           >
             {isEditing ? (
-              <Input name="email" />
+              input("email")
             ) : (
               request.email
             )}
-          </Field>
+          </DetailField>
 
-          <Field
+          <DetailField
             label={t("labels.phone")}
             icon={<Phone className="w-3.5 h-3.5" />}
           >
             {isEditing ? (
-              <Input name="phone" />
+              input("phone")
             ) : (
               request.phone
             )}
-          </Field>
+          </DetailField>
 
           {request.whatsapp && (
-            <Field
+            <DetailField
               label="WhatsApp"
               icon={<MessageCircleMore className="w-3.5 h-3.5" />}
             >
               {isEditing ? (
-                <Input name="whatsapp" />
+                input("whatsapp")
               ) : (
                 request.whatsapp
               )}
-            </Field>
+            </DetailField>
           )}
 
-          <Field
+          <DetailField
             label={t("labels.company")}
             icon={<Building2 className="w-3.5 h-3.5" />}
           >
             {isEditing ? (
-              <Input name="company_name" />
+              input("company_name")
             ) : (
               request.company_name
             )}
-          </Field>
+          </DetailField>
 
           {request.vat && (
-            <Field
+            <DetailField
               label={t("labels.vat")}
               icon={<HandCoins className="w-3.5 h-3.5" />}
             >
               {isEditing ? (
-                <Input name="vat" />
+                input("vat")
               ) : (
                 request.vat
               )}
-            </Field>
+            </DetailField>
           )}
 
-          <Field
+          <DetailField
             label={t("labels.type")}
             icon={<Factory className="w-3.5 h-3.5" />}
           >
             {isEditing ? (
-              <Input name="business_type" />
+              input("business_type")
             ) : (
               request.business_type
             )}
-          </Field>
+          </DetailField>
 
           {/* Address full width */}
           <div className="sm:col-span-2 md:col-span-3">
-            <Field
+            <DetailField
               label={t("labels.address")}
               icon={<MapPin className="w-3.5 h-3.5" />}
             >
               {isEditing ? (
                 <div className="grid gap-2 sm:grid-cols-2">
-                  <Input name="address_line1" />
-                  <Input name="address_line2" />
-                  <Input name="postcode" />
-                  <Input name="town" />
-                  <Input name="county" />
+                  {input("address_line1")}
+                  {input("address_line2")}
+                  {input("postcode")}
+                  {input("town")}
+                  {input("county")}
                 </div>
               ) : (
                 <div className="text-gray-900">
@@ -222,15 +229,15 @@ export function DetailsRow({
                   {request.county && `, ${request.county}`}
                 </div>
               )}
-            </Field>
+            </DetailField>
           </div>
 
-          <Field
+          <DetailField
             label={t("labels.created")}
             value={new Date(request.created_at).toLocaleString()}
           />
 
-          <Field
+          <DetailField
             label={t("labels.status")}
             value={t(`status.${request.status.toLowerCase()}`)}
           />

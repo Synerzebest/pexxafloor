@@ -16,5 +16,7 @@ export type Order = {
     language: string;
     internal_note: string;
     internal_comment: string;
+    picking_items?: import("@/types/StorekeeperProductType").StorekeeperProduct[];
+    picking_step?: "picking" | "verification";
+    picking_updated_at?: string | null;
   };
-  

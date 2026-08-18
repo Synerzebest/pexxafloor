@@ -1,50 +1,68 @@
-import { useState, useEffect } from "react";
-import { parseOrderItems } from "@/utils/parseOrderItems";
-import { StorekeeperProduct } from "@/types/StorekeeperProductType";
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { Order } from "@/types/OrderType";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { StorekeeperProduct } from "@/types/StorekeeperProductType";
+import type { Order } from "@/types/OrderType";
+
+type PickingStep = "picking" | "verification";
+type Action = "save_progress" | "save_internal" | "start_verification" | "finish_verification";
 
 export function useOrder(orderId: string) {
-  const supabase = createClientComponentClient();
-
   const [order, setOrder] = useState<Order | null>(null);
   const [products, setProducts] = useState<StorekeeperProduct[]>([]);
-  const [step, setStep] = useState<"picking" | "verification">("picking");
+  const [step, setStep] = useState<PickingStep>("picking");
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
+  const loaded = useRef(false);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setLoadError(null);
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, { cache: "no-store" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to load order");
+      setOrder(data.order);
+      setProducts(data.products || []);
+      setStep(data.step || "picking");
+      loaded.current = true;
+    } catch (error) {
+      setLoadError(error instanceof Error ? error.message : "Unable to load order");
+    } finally {
+      setLoading(false);
+    }
+  }, [orderId]);
 
   useEffect(() => {
     load();
-  }, []);
+  }, [load]);
 
-  async function load() {
-    setLoading(true);
-
-    const { data, error } = await supabase
-      .from("orders")
-      .select("*")
-      .eq("id", orderId)
-      .single();
-
-    if (error) {
-      console.error(error);
-      setLoading(false);
-      return;
+  const runAction = useCallback(async (action: Action, extra: Record<string, unknown> = {}) => {
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action, products, ...extra }),
+      });
+      const data = await response.json();
+      if (!response.ok) return { error: data.error || "Unable to save" };
+      if (data.products && action !== "save_progress") setProducts(data.products);
+      if (data.step) setStep(data.step);
+      return { error: null };
+    } catch {
+      return { error: "Network error" };
+    } finally {
+      setSaving(false);
     }
+  }, [orderId, products]);
 
-    const parsed = parseOrderItems(data.items);
-
-    setOrder(data);
-    setProducts(parsed);
-    setStep(data.status === "verification" ? "verification" : "picking");
-    setLoading(false);
-  }
-
-  async function updateOrder(fields: any) {
-    if (!order) {
-        return { error: "Order not loaded" }; 
-    }
-    return supabase.from("orders").update(fields).eq("id", order.id);
-  }
+  useEffect(() => {
+    if (!loaded.current || loading) return;
+    const timeout = window.setTimeout(() => {
+      runAction("save_progress");
+    }, 700);
+    return () => window.clearTimeout(timeout);
+  }, [products, loading, runAction]);
 
   return {
     order,
@@ -53,8 +71,12 @@ export function useOrder(orderId: string) {
     step,
     setStep,
     loading,
-
+    saving,
+    loadError,
     reload: load,
-    updateOrder,
+    saveInternal: (internalNote: string, internalComment: string) =>
+      runAction("save_internal", { internalNote, internalComment }),
+    startVerification: () => runAction("start_verification"),
+    finishVerification: () => runAction("finish_verification"),
   };
 }

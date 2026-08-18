@@ -9,6 +9,7 @@ import jsPDF from "jspdf";
 import { addHeader, addProductsTable, addSignatureAndStampSection, addFooter } from "@/utils/pdfUtils";
 import { renderStatus } from "@/utils/renderStatus";
 import { useRouter } from "next/navigation";
+import { useLocale } from "next-intl";
 import { Order } from "@/types/OrderType";
 import type { ColumnsType } from "antd/es/table";
 
@@ -16,6 +17,7 @@ const { Option } = Select;
 
 export default function StorekeeperPage() {
   const router = useRouter();
+  const locale = useLocale();
 
   const {
     orders,
@@ -76,7 +78,7 @@ export default function StorekeeperPage() {
           <Tooltip title="Piquer cette commande">
             <button
               className="bg-gray-100 text-gray-800 p-2 rounded-lg cursor-pointer"
-              onClick={() => router.push(`/storekeeper/${record.id}`)}
+              onClick={() => router.push(`/${locale}/storekeeper/${record.id}`)}
             >
               <LucideShoppingBasket size={20} />
             </button>
@@ -120,6 +122,7 @@ export default function StorekeeperPage() {
           <Option value="">Toutes</Option>
           <Option value="paid">Payées</Option>
           <Option value="preparing">En préparation</Option>
+          <Option value="verification">En vérification</Option>
           <Option value="packed">Emballées</Option>
           <Option value="ready">Prêtes</Option>
           <Option value="delivering">En livraison</Option>

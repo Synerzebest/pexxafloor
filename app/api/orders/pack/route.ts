@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
-import { cookies } from "next/headers";
+import { requireRole } from "@/lib/requireRole";
 
 export async function POST(req: Request) {
+  const auth = await requireRole(["admin", "storekeeper"]);
+  if (!auth.ok) return auth.response;
+
   try {
     const supabase = supabaseServer;
     const body = await req.json();
@@ -22,6 +25,7 @@ export async function POST(req: Request) {
         validated_at: new Date().toISOString(),
       })
       .eq("id", order_id)
+      .in("status", ["preparing", "verification"])
       .select();
 
     if (error) {

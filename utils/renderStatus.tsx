@@ -12,6 +12,7 @@ import React from "react";
 type StatusKey =
   | "paid"
   | "preparing"
+  | "verification"
   | "packed"
   | "ready"
   | "delivering"
@@ -35,6 +36,13 @@ const STATUS_CONFIG: Record<
     bg: "#fef3c7",
     text: "#92400e",
     border: "#fde68a",
+  },
+  verification: {
+    label: "En vérification",
+    icon: <ClockCircleOutlined />,
+    bg: "#ecfdf5",
+    text: "#047857",
+    border: "#a7f3d0",
   },
   packed: {
     label: "Emballée",

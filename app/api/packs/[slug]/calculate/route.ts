@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
 import { computeDbPackProducts } from "@/utils/packDbCalculations";
 import { fetchPackBySlug } from "@/utils/packRepository";
+import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
+import { applyProDiscountToPack, getProPricingContext } from "@/utils/proCategoryDiscounts";
 
 type Params = {
   params: Promise<{ slug: string }>;
@@ -26,7 +28,7 @@ export async function POST(req: Request, { params }: Params) {
       return new Response("Pack introuvable", { status: 404 });
     }
 
-    const result = computeDbPackProducts({
+    const baseResult = computeDbPackProducts({
       pack,
       surface,
       pasDePose,
@@ -35,6 +37,10 @@ export async function POST(req: Request, { params }: Params) {
       typeIsolation: Number(body.typeIsolation) as 0 | 15 | 30,
       selectedOptions: body.selectedOptions || {},
     });
+    const supabaseAuth = await createSupabaseServerAuthClient();
+    const { data: { user } } = await supabaseAuth.auth.getUser();
+    const pricingContext = await getProPricingContext(supabaseServer, user?.id);
+    const result = applyProDiscountToPack(baseResult, pack, pricingContext);
 
     return NextResponse.json({
       pack: {
