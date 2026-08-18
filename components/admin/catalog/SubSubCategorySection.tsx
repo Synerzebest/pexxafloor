@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Card,
   Table,
@@ -23,6 +23,7 @@ import type { SubCategory } from "@/types/SubCategoryType";
 import type { SubSubCategory } from "@/types/SubSubCategoryType";
 import type { SubSubFormValues } from "@/types/SubSubFormValuesType";
 import type { ColumnsType } from "antd/es/table";
+import CatalogSearch, { matchesCatalogSearch } from "./CatalogSearch";
 
 export default function SubSubcategorySection({
   categories,
@@ -44,8 +45,29 @@ export default function SubSubcategorySection({
   const [deleting, setDeleting] = useState<SubSubCategory | null>(null);
   const [editing, setEditing] = useState<SubSubCategory | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   const [form] = Form.useForm<SubSubFormValues>();
+
+  const filteredSubsubcategories = useMemo(
+    () => subsubcategories.filter((subsubcategory) => {
+      const parent = subcategories.find((subcategory) => subcategory.id === subsubcategory.subcategory_id);
+      const category = parent ? categories.find((item) => item.id === parent.category_id) : null;
+      return matchesCatalogSearch(search, [
+        subsubcategory.name_fr,
+        subsubcategory.name_nl,
+        subsubcategory.name_en,
+        subsubcategory.slug,
+        parent?.name_fr,
+        parent?.name_nl,
+        parent?.name_en,
+        category?.name_fr,
+        category?.name_nl,
+        category?.name_en,
+      ]);
+    }),
+    [categories, search, subcategories, subsubcategories]
+  );
 
   // AJOUT
   async function add(values: SubSubFormValues) {
@@ -211,9 +233,16 @@ export default function SubSubcategorySection({
         </Button>
       }
     >
+      <CatalogSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Rechercher une sous-sous-catégorie ou son chemin…"
+        resultCount={filteredSubsubcategories.length}
+        totalCount={subsubcategories.length}
+      />
       <Table
         rowKey="id"
-        dataSource={subsubcategories}
+        dataSource={filteredSubsubcategories}
         columns={columns}
         loading={loading}
       />

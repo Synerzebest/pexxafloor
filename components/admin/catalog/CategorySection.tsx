@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Card,
   Table,
@@ -24,6 +24,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { CategoryFormValues } from "@/types/CategoryFormValuesType";
 import { Upload } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
+import CatalogSearch, { matchesCatalogSearch } from "./CatalogSearch";
 
 export default function CategorySection({
   categories,
@@ -42,7 +43,15 @@ export default function CategorySection({
   const [editing, setEditing] = useState<Category | null>(null);
   const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [imageRemoved, setImageRemoved] = useState(false);
+  const [search, setSearch] = useState("");
   const [form] = Form.useForm();
+
+  const filteredCategories = useMemo(
+    () => categories.filter((category) =>
+      matchesCatalogSearch(search, [category.name_fr, category.name_nl, category.name_en, category.slug])
+    ),
+    [categories, search]
+  );
 
   // --- Ajout ---
   async function add(values: CategoryFormValues) {
@@ -181,9 +190,16 @@ export default function CategorySection({
         </Button>
       }
     >
+      <CatalogSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Rechercher une catégorie par nom ou slug…"
+        resultCount={filteredCategories.length}
+        totalCount={categories.length}
+      />
       <Table
         rowKey="id"
-        dataSource={categories}
+        dataSource={filteredCategories}
         loading={loading}
         columns={[
           { title: "Nom", dataIndex: "name_fr" },          

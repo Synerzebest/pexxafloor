@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Card,
   Table,
@@ -24,6 +24,7 @@ import { slugInsert } from "@/hooks/slugInsert";
 import type { Category } from "@/types/CategoryType";
 import type { SubCategory } from "@/types/SubCategoryType";
 import type { SubCategoryFormValues } from "@/types/SubCategoryFormValues";
+import CatalogSearch, { matchesCatalogSearch } from "./CatalogSearch";
 
 interface Props {
   categories: Category[];
@@ -44,7 +45,24 @@ export default function SubcategorySection({
   const [openDelete, setOpenDelete] = useState(false);
   const [deleting, setDeleting] = useState<SubCategory | null>(null);
   const [editing, setEditing] = useState<SubCategory | null>(null);
+  const [search, setSearch] = useState("");
   const [form] = Form.useForm();
+
+  const filteredSubcategories = useMemo(
+    () => subcategories.filter((subcategory) => {
+      const parent = categories.find((category) => category.id === subcategory.category_id);
+      return matchesCatalogSearch(search, [
+        subcategory.name_fr,
+        subcategory.name_nl,
+        subcategory.name_en,
+        subcategory.slug,
+        parent?.name_fr,
+        parent?.name_nl,
+        parent?.name_en,
+      ]);
+    }),
+    [categories, search, subcategories]
+  );
 
   // --- AJOUT ---
   async function add(values:  SubCategoryFormValues) {
@@ -137,9 +155,16 @@ export default function SubcategorySection({
         </Button>
       }
     >
+      <CatalogSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Rechercher une sous-catégorie ou sa catégorie parente…"
+        resultCount={filteredSubcategories.length}
+        totalCount={subcategories.length}
+      />
       <Table
         rowKey="id"
-        dataSource={subcategories}
+        dataSource={filteredSubcategories}
         loading={loading}
         columns={[
           { title: "Nom", dataIndex: "name_fr" },

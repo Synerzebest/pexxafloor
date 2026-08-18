@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Card,
   Table,
@@ -21,6 +21,7 @@ import type { SubCategory } from "@/types/SubCategoryType";
 import type { SubSubCategory } from "@/types/SubSubCategoryType";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Product } from "@/types/ProductType";
+import CatalogSearch, { matchesCatalogSearch } from "./CatalogSearch";
 
 const orange = "#f97316"; 
 
@@ -45,6 +46,27 @@ export default function ProductSection({
   const [openDelete, setOpenDelete] = useState(false);
   const [deleting, setDeleting] = useState<Product | null>(null);
   const [editing, setEditing] = useState<Product | null>(null);
+  const [search, setSearch] = useState("");
+
+  const filteredProducts = useMemo(
+    () => products.filter((product) => matchesCatalogSearch(search, [
+      product.name_fr,
+      product.name_nl,
+      product.name_en,
+      product.slug,
+      product.reference,
+      product.subcategory?.name_fr,
+      product.subcategory?.name_nl,
+      product.subcategory?.name_en,
+      product.subcategory?.category?.name_fr,
+      product.subcategory?.category?.name_nl,
+      product.subcategory?.category?.name_en,
+      product.subsubcategory?.name_fr,
+      product.subsubcategory?.name_nl,
+      product.subsubcategory?.name_en,
+    ])),
+    [products, search]
+  );
 
   // --- SUPPRESSION ---
   async function confirmDelete() {
@@ -176,9 +198,16 @@ export default function ProductSection({
         </Button>
       }
     >
+      <CatalogSearch
+        value={search}
+        onChange={setSearch}
+        placeholder="Rechercher un produit par nom, référence, slug ou catégorie…"
+        resultCount={filteredProducts.length}
+        totalCount={products.length}
+      />
       <Table
         rowKey="id"
-        dataSource={products}
+        dataSource={filteredProducts}
         columns={columns}
         loading={loading}
         size="middle"
