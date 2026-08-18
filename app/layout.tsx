@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Newsreader } from "next/font/google";
 import { CartProvider } from "@/context/CartContext"
+import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
   title: "PexxaFloor",
@@ -21,6 +22,7 @@ export default function RootLayout({
   return (
     <html lang="fr" className={newsreader.variable}>
       <body>
+        <Analytics />
         <CartProvider>
           {children}
         </CartProvider>
