@@ -35,6 +35,9 @@ export type PackCatalogProduct = {
       discount?: number | null;
     } | null;
   } | null;
+  subsubcategory?: {
+    id: string;
+  } | null;
 };
 
 export type PackDefinition = {

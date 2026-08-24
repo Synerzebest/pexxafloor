@@ -3,14 +3,19 @@
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
-import { Mail, Phone } from 'lucide-react';
+import { Check, Crown, Mail, Phone } from 'lucide-react';
 import Image from 'next/image';
 import { useCookieConsent } from '@/context/CookieConsentContext';
+import { useAuth } from '@/context/AuthProvider';
+import { useUserProfile } from '@/hooks/useUserProfile';
 
 export default function Footer() {
   const locale = useLocale();
   const t = useTranslations('Footer');
   const { openSettings } = useCookieConsent();
+  const { user } = useAuth();
+  const { isPro, profileName, loading: profileLoading } = useUserProfile();
+  const memberName = profileName || user?.user_metadata?.full_name || user?.email?.split('@')[0] || t('proMemberFallback');
 
   return (
     <footer className="bg-orange-50 text-gray-700 mt-20 border-t border-orange-100">
@@ -33,7 +38,9 @@ export default function Footer() {
           <ul className="space-y-3 text-sm font-medium">
             <li><Link href={`/${locale}/categories`} className="transition hover:text-orange-600">{t('products')}</Link></li>
             <li><Link href={`/${locale}/quote`} className="transition hover:text-orange-600">{t('quote')}</Link></li>
-            <li><Link href={`/${locale}/pro`} className="transition hover:text-orange-600">{t('pro')}</Link></li>
+            {!profileLoading && !isPro && (
+              <li><Link href={`/${locale}/pro`} className="transition hover:text-orange-600">{t('pro')}</Link></li>
+            )}
           </ul>
 
           <div className="space-y-3 text-sm">
@@ -41,6 +48,33 @@ export default function Footer() {
             <a href="tel:+3223439200" className="flex items-center gap-2 transition hover:text-orange-600"><Phone className="h-4 w-4" />+32 494 042 932</a>
           </div>
         </div>
+
+        {!profileLoading && isPro && (
+          <div className="overflow-hidden rounded-2xl border border-orange-200 bg-white shadow-sm">
+            <div className="grid gap-5 p-5 sm:p-6 lg:grid-cols-[1.1fr_1fr] lg:items-center">
+              <div className="flex items-start gap-4">
+                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-orange-600 text-white shadow-sm">
+                  <Crown className="h-5 w-5" aria-hidden="true" />
+                </span>
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-orange-600">{t('proMemberEyebrow')}</p>
+                  <p className="mt-1 text-lg font-bold text-gray-950">{t('proMemberTitle', { name: memberName })}</p>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">{t('proMemberDescription')}</p>
+                </div>
+              </div>
+              <ul className="grid gap-2 text-sm text-gray-700 sm:grid-cols-3 lg:grid-cols-1">
+                {(['proBenefitPrices', 'proBenefitQuotes', 'proBenefitSupport'] as const).map((key) => (
+                  <li key={key} className="flex items-center gap-2">
+                    <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-green-100 text-green-700">
+                      <Check className="h-3.5 w-3.5" strokeWidth={3} aria-hidden="true" />
+                    </span>
+                    {t(key)}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        )}
 
       {/* === PAYMENT SECTION === */}
       <div className="border-t border-orange-200 pt-10">

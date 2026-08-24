@@ -6,6 +6,18 @@ export type ProPricingContext = {
   customDiscounts: Map<string, number>;
 };
 
+export type ProDiscountScope = {
+  categoryId?: string | null;
+  subcategoryId?: string | null;
+  subsubcategoryId?: string | null;
+  generalDiscount?: number | null;
+};
+
+export const discountScopeKey = (
+  type: "category" | "subcategory" | "subsubcategory",
+  id: string
+) => `${type}:${id}`;
+
 export async function getProPricingContext(
   supabase: SupabaseClient,
   userId: string | null | undefined
@@ -24,7 +36,7 @@ export async function getProPricingContext(
 
   const { data, error } = await supabase
     .from("pro_category_discounts")
-    .select("category_id, discount_percent")
+    .select("category_id, subcategory_id, subsubcategory_id, discount_percent")
     .eq("user_id", userId);
 
   if (error) throw new Error(`Unable to load custom PRO discounts: ${error.message}`);
@@ -32,21 +44,39 @@ export async function getProPricingContext(
   return {
     isPro: true,
     customDiscounts: new Map(
-      (data || []).map((row) => [String(row.category_id), Number(row.discount_percent)])
+      (data || []).flatMap((row) => {
+        if (row.subsubcategory_id) {
+          return [[discountScopeKey("subsubcategory", String(row.subsubcategory_id)), Number(row.discount_percent)] as const];
+        }
+        if (row.subcategory_id) {
+          return [[discountScopeKey("subcategory", String(row.subcategory_id)), Number(row.discount_percent)] as const];
+        }
+        if (row.category_id) {
+          return [[discountScopeKey("category", String(row.category_id)), Number(row.discount_percent)] as const];
+        }
+        return [];
+      })
     ),
   };
 }
 
 export function resolveProDiscount(
-  categoryId: string | null | undefined,
-  generalDiscount: number | null | undefined,
+  scope: ProDiscountScope,
   context: ProPricingContext
 ) {
   if (!context.isPro) return 0;
-  if (categoryId && context.customDiscounts.has(categoryId)) {
-    return context.customDiscounts.get(categoryId) ?? 0;
+
+  const candidates: Array<["category" | "subcategory" | "subsubcategory", string | null | undefined]> = [
+    ["subsubcategory", scope.subsubcategoryId],
+    ["subcategory", scope.subcategoryId],
+    ["category", scope.categoryId],
+  ];
+  for (const [type, id] of candidates) {
+    if (!id) continue;
+    const key = discountScopeKey(type, id);
+    if (context.customDiscounts.has(key)) return context.customDiscounts.get(key) ?? 0;
   }
-  return Number(generalDiscount || 0);
+  return Number(scope.generalDiscount || 0);
 }
 
 export function applyProDiscountToPack(
@@ -59,8 +89,14 @@ export function applyProDiscountToPack(
   const ruleById = new Map((pack.pack_items || []).map((rule) => [rule.id, rule]));
   const discountLine = (line: PackCalculationResult["products"][number]) => {
     const rule = ruleById.get(line.id);
-    const category = rule?.product?.subcategory?.category;
-    const discount = resolveProDiscount(category?.id, category?.discount, context);
+    const subcategory = rule?.product?.subcategory;
+    const category = subcategory?.category;
+    const discount = resolveProDiscount({
+      categoryId: category?.id,
+      subcategoryId: subcategory?.id,
+      subsubcategoryId: rule?.product?.subsubcategory?.id,
+      generalDiscount: category?.discount,
+    }, context);
     return {
       ...line,
       price: Number((line.price * (1 - discount / 100)).toFixed(2)),

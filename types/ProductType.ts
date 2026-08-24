@@ -18,6 +18,7 @@ export type Product = {
 
   price: number;
   reference?: string | null;
+  subsub_id?: string | null;
   is_best_seller?: boolean;
 
   product_images?: ProductImage[];
@@ -45,5 +46,10 @@ export type Product = {
     name_fr: string;
     name_nl: string;
     name_en: string;
+  } | null;
+
+  subsub?: {
+    id?: string;
+    slug?: string | null;
   } | null;
 };

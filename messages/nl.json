@@ -196,6 +196,13 @@
         "products": "Alle producten",
         "quote": "Een pakket samenstellen",
         "pro": "PRO-zone",
+        "proMemberFallback": "PRO-lid",
+        "proMemberEyebrow": "PexxaFloor PRO Club",
+        "proMemberTitle": "{name}, u bent al lid van de PRO Club",
+        "proMemberDescription": "Uw professionele voordelen zijn actief op uw account:",
+        "proBenefitPrices": "Gepersonaliseerde PRO-prijzen en kortingen",
+        "proBenefitQuotes": "Offertes maken en bewaren",
+        "proBenefitSupport": "Persoonlijke professionele begeleiding",
         "rights": "Alle rechten voorbehouden.",
         "legal": "Wettelijke vermeldingen",
         "privacy": "Privacybeleid",
@@ -359,7 +366,15 @@
         "address_line2": "Adres (regel 2) (optioneel)",
         "postcode": "Postcode",
         "town":"Stad",
-        "county": "Gemeente / Regio"
+        "county": "Regio / Provincie",
+        "address_help": "Controleer elk onderdeel van het adres voordat u de wijzigingen opslaat."
+      },
+      "placeholders": {
+        "address_line1": "Bijv. Stationsstraat 24",
+        "address_line2": "Bijv. Gebouw B, bus 3",
+        "postcode": "Bijv. 1000",
+        "town": "Bijv. Brussel",
+        "county": "Bijv. Brussels Hoofdstedelijk Gewest"
       },
       "status": {
         "pending": "In afwachting",
@@ -437,7 +452,7 @@
       "proDiscountsManagementDetails": "Kortingen per klant en categorie"
     },
     "AdminProDiscounts": {
-      "title": "Aangepaste PRO-kortingen", "description": "Ken een specifieke korting toe aan een PRO-klant voor een of meer categorieën. Een aangepaste korting vervangt de algemene categoriekorting en wordt er nooit bij opgeteld.", "back": "Terug naar het beheerderspaneel", "searchPlaceholder": "Zoeken op naam, bedrijf of e-mail…", "loading": "Laden…", "noUsers": "Geen PRO-klant gevonden.", "selectUser": "Selecteer een PRO-klant om de kortingen in te stellen.", "customCount": "{count, plural, one {# aangepaste korting} other {# aangepaste kortingen}}", "loadError": "De PRO-kortingen kunnen niet worden geladen.", "saveError": "De kortingen kunnen niet worden opgeslagen.", "saved": "Aangepaste kortingen opgeslagen.", "invalidDiscount": "Elke korting moet tussen 0 en 100% liggen.", "save": "Kortingen opslaan", "saving": "Opslaan…", "ruleHelp": "Laat een veld leeg om de algemene PRO-korting van de categorie toe te passen. Elke ingevulde waarde, ook 0%, vervangt de algemene korting volledig.", "generalDiscount": "Algemene korting: {discount}%", "customApplied": "aangepaste korting toegepast", "generalApplied": "algemene korting toegepast", "inheritPlaceholder": "Algemeen: {discount}%"
+      "title": "Aangepaste PRO-kortingen", "description": "Ken specifieke kortingen toe per categorie, subcategorie of onderliggende subcategorie. De meest specifieke regel vervangt de overgeërfde regel.", "back": "Terug naar het beheerderspaneel", "searchPlaceholder": "Zoeken op naam, bedrijf of e-mail…", "loading": "Laden…", "noUsers": "Geen PRO-klant gevonden.", "selectUser": "Selecteer een PRO-klant om de kortingen in te stellen.", "customCount": "{count, plural, one {# aangepaste korting} other {# aangepaste kortingen}}", "loadError": "De PRO-kortingen kunnen niet worden geladen.", "saveError": "De kortingen kunnen niet worden opgeslagen.", "saved": "Aangepaste kortingen opgeslagen.", "invalidDiscount": "Elke korting moet tussen 0 en 100% liggen.", "save": "Kortingen opslaan", "saving": "Opslaan…", "ruleHelp": "Laat een veld leeg om de korting van het bovenliggende niveau over te nemen. Elke ingevulde waarde, ook 0%, vervangt de overgeërfde korting zonder erbij te worden opgeteld.", "generalDiscount": "Algemene korting: {discount}%", "inheritedPlaceholder": "Overgeërfd: {discount}%", "customDiscountLabel": "Aangepaste korting", "inheritsDiscount": "erft {discount}%", "categoryLevel": "Categorie", "subcategoryLevel": "Subcategorie", "subsubcategoryLevel": "Onderliggende subcategorie", "noChildren": "Geen subcategorieën"
     },
     "NotFound": {
       "title": "Oeps! Pagina niet gevonden",

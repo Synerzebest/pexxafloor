@@ -31,22 +31,6 @@ export default async function SubcategoryPage({
         discount
       ),
 
-      products:products!products_subcategory_id_fkey (
-        id,
-        slug,
-        name_fr,
-        name_nl,
-        name_en,
-        price,
-        reference,
-        subsub_id,
-        subsub:subsub_id ( slug ),
-        product_images!fk_product ( image_url ),
-        subcategory:subcategory_id (
-          category:category_id ( id, discount )
-        )
-      ),
-
       subsubcategories:subsubcategories!subsubcategories_subcategory_id_fkey (
         id,
         slug,
@@ -66,6 +50,7 @@ export default async function SubcategoryPage({
           subsub:subsub_id ( slug ),
           product_images!fk_product ( image_url ),
           subcategory:subcategory_id (
+            id,
             category:category_id ( id, discount )
           )
         )

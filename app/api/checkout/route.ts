@@ -151,6 +151,7 @@ export async function POST(req: Request) {
           price,
           name_fr,
           reference,
+          subsub_id,
           product_images!fk_product (
             image_url
           ),
@@ -192,12 +193,14 @@ export async function POST(req: Request) {
         }
 
         // 🔥 RÉCUP DISCOUNT
-        const category = dbProduct.subcategories?.categories;
-        const discount = resolveProDiscount(
-          category?.id,
-          category?.discount,
-          pricingContext
-        );
+        const subcategory = dbProduct.subcategories;
+        const category = subcategory?.categories;
+        const discount = resolveProDiscount({
+          categoryId: category?.id,
+          subcategoryId: subcategory?.id,
+          subsubcategoryId: dbProduct.subsub_id,
+          generalDiscount: category?.discount,
+        }, pricingContext);
 
         let unitPrice = Number(dbProduct.price);
 

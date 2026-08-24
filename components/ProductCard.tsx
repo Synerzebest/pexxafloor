@@ -51,12 +51,18 @@ export default function ProductCard({
 
   const categoryDiscount = Number(product.subcategory?.category?.discount ?? 0) || 0;
   const categoryId = product.subcategory?.category?.id;
+  const subcategoryId = product.subcategory?.id;
+  const subsubcategoryId = product.subsub_id || product.subsubcategory?.id || product.subsub?.id;
 
   const showProPrices = isPro === true;
 
   const discount = showProPrices
-    ? categoryId && Object.prototype.hasOwnProperty.call(customDiscounts, categoryId)
-      ? Number(customDiscounts[categoryId])
+    ? subsubcategoryId && Object.prototype.hasOwnProperty.call(customDiscounts, `subsubcategory:${subsubcategoryId}`)
+      ? Number(customDiscounts[`subsubcategory:${subsubcategoryId}`])
+      : subcategoryId && Object.prototype.hasOwnProperty.call(customDiscounts, `subcategory:${subcategoryId}`)
+      ? Number(customDiscounts[`subcategory:${subcategoryId}`])
+      : categoryId && Object.prototype.hasOwnProperty.call(customDiscounts, `category:${categoryId}`)
+      ? Number(customDiscounts[`category:${categoryId}`])
       : categoryDiscount
     : 0;
 

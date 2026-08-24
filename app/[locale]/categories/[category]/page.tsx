@@ -58,6 +58,7 @@ export default async function CategoryPage({
           ),
           product_images!fk_product ( image_url ),
           subcategory:subcategory_id (
+            id,
             category:category_id (
               id,
               discount

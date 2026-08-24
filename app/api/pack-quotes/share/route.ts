@@ -134,12 +134,14 @@ export async function POST(req: Request) {
     const rule = ruleById.get(line.id);
     const quantity = Number(result.quantities[line.id] || 1);
     const customerUnitPrice = Number(line.price || 0);
-    const category = rule?.product?.subcategory?.category;
-    const discountPercent = resolveProDiscount(
-      category?.id,
-      category?.discount,
-      pricingContext
-    );
+    const subcategory = rule?.product?.subcategory;
+    const category = subcategory?.category;
+    const discountPercent = resolveProDiscount({
+      categoryId: category?.id,
+      subcategoryId: subcategory?.id,
+      subsubcategoryId: rule?.product?.subsubcategory?.id,
+      generalDiscount: category?.discount,
+    }, pricingContext);
     const proUnitPrice =
       discountPercent > 0
         ? customerUnitPrice * (1 - discountPercent / 100)

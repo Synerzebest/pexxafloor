@@ -114,7 +114,7 @@ export default function SystemCard({
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-black/10 to-transparent" />
         </motion.div>
 
         <h3 className="absolute bottom-4 left-5 text-xl font-semibold text-white drop-shadow">

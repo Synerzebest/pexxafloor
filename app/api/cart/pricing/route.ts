@@ -32,6 +32,7 @@ export async function POST(req: Request) {
         price,
         name_fr,
         reference,
+        subsub_id,
         product_images!fk_product (
           image_url
         ),
@@ -67,12 +68,14 @@ export async function POST(req: Request) {
 
         const basePrice = Number(p.price);
 
-        const category = p.subcategories?.category;
-        const discount = resolveProDiscount(
-          category?.id,
-          category?.discount,
-          pricingContext
-        );
+        const subcategory = p.subcategories;
+        const category = subcategory?.category;
+        const discount = resolveProDiscount({
+          categoryId: category?.id,
+          subcategoryId: subcategory?.id,
+          subsubcategoryId: p.subsub_id,
+          generalDiscount: category?.discount,
+        }, pricingContext);
 
 
         let unitPrice = basePrice;

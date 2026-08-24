@@ -196,6 +196,13 @@
         "products": "Tous les produits",
         "quote": "Configurer un pack",
         "pro": "Espace PRO",
+        "proMemberFallback": "Membre PRO",
+        "proMemberEyebrow": "Club PRO PexxaFloor",
+        "proMemberTitle": "{name}, vous êtes déjà membre du Club PRO",
+        "proMemberDescription": "Vos avantages professionnels sont actifs sur votre compte :",
+        "proBenefitPrices": "Tarifs et remises PRO personnalisés",
+        "proBenefitQuotes": "Création et sauvegarde de devis",
+        "proBenefitSupport": "Accompagnement professionnel dédié",
         "rights": "Tous droits réservés.",
         "legal": "Mentions légales",
         "privacy": "Politique de confidentialité",
@@ -359,7 +366,15 @@
         "address_line2": "Adresse (ligne 2) (optionnel)",
         "postcode": "Code postal",
         "town":"Ville",
-        "county": "Région / Province"
+        "county": "Région / Province",
+        "address_help": "Vérifiez chaque partie de l’adresse avant d’enregistrer les modifications."
+      },
+      "placeholders": {
+        "address_line1": "Ex. Rue de la Station 24",
+        "address_line2": "Ex. Bâtiment B, boîte 3",
+        "postcode": "Ex. 1000",
+        "town": "Ex. Bruxelles",
+        "county": "Ex. Bruxelles-Capitale"
       },
       "status": {
         "pending": "En attente",
@@ -437,7 +452,7 @@
       "proDiscountsManagementDetails": "Remises par client et par catégorie"
     },
     "AdminProDiscounts": {
-      "title": "Remises PRO personnalisées", "description": "Attribuez une remise spécifique à un client PRO pour une ou plusieurs catégories. Une remise personnalisée remplace la remise générale de la catégorie et ne s’y additionne jamais.", "back": "Retour au panneau d’administration", "searchPlaceholder": "Rechercher par nom, société ou e-mail…", "loading": "Chargement…", "noUsers": "Aucun client PRO trouvé.", "selectUser": "Sélectionnez un client PRO pour configurer ses remises.", "customCount": "{count, plural, one {# remise personnalisée} other {# remises personnalisées}}", "loadError": "Impossible de charger les remises PRO.", "saveError": "Impossible d’enregistrer les remises.", "saved": "Remises personnalisées enregistrées.", "invalidDiscount": "Chaque remise doit être comprise entre 0 et 100 %.", "save": "Enregistrer les remises", "saving": "Enregistrement…", "ruleHelp": "Laissez le champ vide pour appliquer la remise PRO générale de la catégorie. Toute valeur renseignée, y compris 0 %, remplace entièrement la remise générale.", "generalDiscount": "Remise générale : {discount} %", "customApplied": "remise personnalisée appliquée", "generalApplied": "remise générale appliquée", "inheritPlaceholder": "Générale : {discount} %"
+      "title": "Remises PRO personnalisées", "description": "Attribuez des remises spécifiques par catégorie, sous-catégorie ou sous-sous-catégorie. La règle la plus précise remplace la règle héritée.", "back": "Retour au panneau d’administration", "searchPlaceholder": "Rechercher par nom, société ou e-mail…", "loading": "Chargement…", "noUsers": "Aucun client PRO trouvé.", "selectUser": "Sélectionnez un client PRO pour configurer ses remises.", "customCount": "{count, plural, one {# remise personnalisée} other {# remises personnalisées}}", "loadError": "Impossible de charger les remises PRO.", "saveError": "Impossible d’enregistrer les remises.", "saved": "Remises personnalisées enregistrées.", "invalidDiscount": "Chaque remise doit être comprise entre 0 et 100 %.", "save": "Enregistrer les remises", "saving": "Enregistrement…", "ruleHelp": "Laissez un champ vide pour hériter de la remise du niveau supérieur. Toute valeur renseignée, y compris 0 %, remplace la remise héritée sans s’y additionner.", "generalDiscount": "Remise générale : {discount} %", "inheritedPlaceholder": "Héritée : {discount} %", "customDiscountLabel": "Remise personnalisée", "inheritsDiscount": "hérite de {discount} %", "categoryLevel": "Catégorie", "subcategoryLevel": "Sous-catégorie", "subsubcategoryLevel": "Sous-sous-catégorie", "noChildren": "Aucune sous-catégorie"
     },
     "NotFound": {
       "title": "Oups! Page introuvable",

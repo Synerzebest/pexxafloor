@@ -39,7 +39,6 @@ export default function SubCategoryContent({
       : obj.name_en;
 
   const hasSubSub = subcategory.subsubcategories.length > 0;
-  const hasDirectProducts = subcategory.products?.length > 0;
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-12 space-y-12 relative top-28 pb-36">
@@ -96,39 +95,6 @@ export default function SubCategoryContent({
             </Link>
           ))}
         </motion.div>
-      )}
-
-      {/* produits sans subsub) */}
-      {hasDirectProducts && (
-        <motion.section
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="space-y-6"
-        >
-          <h2 className="text-2xl font-semibold text-gray-800">
-            {tc("products")}
-          </h2>
-
-          <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {loadingProfile
-              ? Array.from({ length: 6 }).map((_, i) => (
-                  <ProductCardSkeleton key={i} />
-                ))
-              : subcategory.products.map((prod: Product) => (
-                  <ProductCard
-                    key={prod.id}
-                    product={prod}
-                    locale={locale}
-                    categorySlug={category.slug}
-                    subcategorySlug={subcategory.slug}
-                    subsubcategorySlug={null}
-                    isPro={isPro}
-                    customDiscounts={categoryDiscounts}
-                  />
-                ))}
-          </ul>
-        </motion.section>
       )}
 
       {/* produits par sous sous cat*/}

@@ -67,18 +67,24 @@ function DetailField({
 }
 
 function EditableInput({
+  id,
   name,
   value,
   onChange,
+  placeholder,
 }: {
+  id?: string;
   name: keyof AppRow;
   value: string;
   onChange: (name: keyof AppRow, value: string) => void;
+  placeholder?: string;
 }) {
   return (
     <input
+      id={id}
       name={name}
-      className="w-full rounded-md border border-gray-300 px-2 py-1 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+      placeholder={placeholder}
+      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
       value={value}
       onChange={(event) => onChange(name, event.target.value)}
     />
@@ -113,6 +119,29 @@ export function DetailsRow({
       onChange={(field, value) => update(field, value as AppRow[typeof field])}
     />
   );
+
+  const addressInput = (
+    name: "address_line1" | "address_line2" | "postcode" | "town" | "county",
+    label: string,
+    className: string,
+    placeholder?: string
+  ) => {
+    const id = `pro-request-${request.id}-${name}`;
+    return (
+      <label htmlFor={id} className={className}>
+        <span className="mb-1.5 block text-xs font-semibold text-gray-700">
+          {label}
+        </span>
+        <EditableInput
+          id={id}
+          name={name}
+          value={formData[name] ?? ""}
+          placeholder={placeholder}
+          onChange={(field, value) => update(field, value)}
+        />
+      </label>
+    );
+  };
 
   return (
     <tr className="border-t border-orange-100 bg-orange-50/40">
@@ -213,12 +242,42 @@ export function DetailsRow({
               icon={<MapPin className="w-3.5 h-3.5" />}
             >
               {isEditing ? (
-                <div className="grid gap-2 sm:grid-cols-2">
-                  {input("address_line1")}
-                  {input("address_line2")}
-                  {input("postcode")}
-                  {input("town")}
-                  {input("county")}
+                <div className="mt-2 rounded-xl border border-orange-100 bg-white/80 p-4">
+                  <p className="mb-3 text-xs text-gray-500">
+                    {t("labels.address_help")}
+                  </p>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+                    {addressInput(
+                      "address_line1",
+                      t("labels.address_line1"),
+                      "sm:col-span-2 lg:col-span-3",
+                      t("placeholders.address_line1")
+                    )}
+                    {addressInput(
+                      "address_line2",
+                      t("labels.address_line2"),
+                      "sm:col-span-2 lg:col-span-3",
+                      t("placeholders.address_line2")
+                    )}
+                    {addressInput(
+                      "postcode",
+                      t("labels.postcode"),
+                      "lg:col-span-2",
+                      t("placeholders.postcode")
+                    )}
+                    {addressInput(
+                      "town",
+                      t("labels.town"),
+                      "lg:col-span-2",
+                      t("placeholders.town")
+                    )}
+                    {addressInput(
+                      "county",
+                      t("labels.county"),
+                      "sm:col-span-2 lg:col-span-2",
+                      t("placeholders.county")
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="text-gray-900">

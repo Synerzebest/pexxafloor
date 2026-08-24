@@ -39,6 +39,9 @@ const PACK_SELECT = `
       name_en,
       price,
       reference,
+      subsubcategory:subsub_id (
+        id
+      ),
       subcategory:subcategory_id (
         id,
         category:category_id (

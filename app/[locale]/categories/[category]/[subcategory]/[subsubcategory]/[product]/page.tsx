@@ -6,6 +6,7 @@ import { Product } from "@/types/ProductType";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { getProPricingContext, resolveProDiscount } from "@/utils/proCategoryDiscounts";
 
 type SupportedLocale = "fr" | "nl" | "en";
 
@@ -150,13 +151,13 @@ if (prod.subcategory.category.slug !== category) {
   const categoryDiscount = prod.subcategory.category.discount ?? 0;
   let effectiveProDiscount = Number(categoryDiscount || 0);
   if (isPro && user) {
-    const { data: customDiscount } = await supabase
-      .from("pro_category_discounts")
-      .select("discount_percent")
-      .eq("user_id", user.id)
-      .eq("category_id", prod.subcategory.category.id)
-      .maybeSingle();
-    if (customDiscount) effectiveProDiscount = Number(customDiscount.discount_percent);
+    const pricingContext = await getProPricingContext(supabase, user.id);
+    effectiveProDiscount = resolveProDiscount({
+      categoryId: prod.subcategory.category.id,
+      subcategoryId: prod.subcategory.id,
+      subsubcategoryId: prod.subsubcategory?.id,
+      generalDiscount: categoryDiscount,
+    }, pricingContext);
   }
 
   const priceBrutHTVA = prod.price;

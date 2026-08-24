@@ -70,6 +70,27 @@ export default function Navbar() {
     setContactOpen(false);
   }, [pathname, setDrawerOpen]);
 
+  useEffect(() => {
+    if (!drawerOpen) return;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousBodyOverscroll = document.body.style.overscrollBehavior;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousHtmlOverscroll = document.documentElement.style.overscrollBehavior;
+
+    document.body.style.overflow = "hidden";
+    document.body.style.overscrollBehavior = "none";
+    document.documentElement.style.overflow = "hidden";
+    document.documentElement.style.overscrollBehavior = "none";
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+      document.body.style.overscrollBehavior = previousBodyOverscroll;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.documentElement.style.overscrollBehavior = previousHtmlOverscroll;
+    };
+  }, [drawerOpen]);
+
   const getName = (obj: Translatable) =>
     locale === 'fr' ? obj.name_fr : locale === 'nl' ? obj.name_nl : obj.name_en;
 
@@ -82,7 +103,11 @@ export default function Navbar() {
   const hoveredCategory = categories.find((c) => c.id === hoveredCat);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-20 w-full border-b border-gray-200 bg-white">
+    <header
+      className={`fixed inset-x-0 top-0 w-full border-b border-gray-200 bg-white ${
+        drawerOpen ? "z-[200]" : "z-20"
+      }`}
+    >
       {/* --- Bandeau principal --- */}
       <div className="flex items-center justify-between gap-4 px-4 bg-white">
         {/* Logo */}
@@ -307,14 +332,14 @@ export default function Navbar() {
         {drawerOpen && (
           <>
             <motion.div
-              className="fixed inset-0 bg-black/30 z-[100]"
+              className="fixed inset-0 z-[201] bg-black/30 touch-none"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setDrawerOpen(false)}
             />
             <motion.aside
-              className="fixed right-0 top-0 z-100 h-full w-80 max-w-[85%] bg-white shadow-xl p-4 flex flex-col"
+              className="fixed right-0 top-0 z-[202] flex h-dvh w-80 max-w-[85%] flex-col overflow-y-auto overscroll-contain bg-white p-4 shadow-xl"
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}

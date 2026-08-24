@@ -196,6 +196,13 @@
       "products": "All products",
       "quote": "Configure a pack",
       "pro": "PRO area",
+      "proMemberFallback": "PRO member",
+      "proMemberEyebrow": "PexxaFloor PRO Club",
+      "proMemberTitle": "{name}, you are already a PRO Club member",
+      "proMemberDescription": "Your professional benefits are active on your account:",
+      "proBenefitPrices": "Personalised PRO prices and discounts",
+      "proBenefitQuotes": "Create and save quotes",
+      "proBenefitSupport": "Dedicated professional support",
       "rights": "All rights reserved.",
       "legal": "Legal notice",
       "privacy": "Privacy Policy",
@@ -359,7 +366,15 @@
         "address_line2": "Address (line 2) (optional)",
         "postcode": "Post Code",
         "town":"City",
-        "county": "County"
+        "county": "Region / Province",
+        "address_help": "Check each part of the address before saving your changes."
+      },
+      "placeholders": {
+        "address_line1": "E.g. 24 Station Street",
+        "address_line2": "E.g. Building B, unit 3",
+        "postcode": "E.g. 1000",
+        "town": "E.g. Brussels",
+        "county": "E.g. Brussels-Capital"
       },
       "status": {
         "pending": "Pending",
@@ -437,7 +452,7 @@
       "proDiscountsManagementDetails": "Discounts by customer and category"
     },
     "AdminProDiscounts": {
-      "title": "Custom PRO discounts", "description": "Assign a specific discount to a PRO customer for one or more categories. A custom discount replaces the category’s general discount and is never added to it.", "back": "Back to admin panel", "searchPlaceholder": "Search by name, company or email…", "loading": "Loading…", "noUsers": "No PRO customer found.", "selectUser": "Select a PRO customer to configure their discounts.", "customCount": "{count, plural, one {# custom discount} other {# custom discounts}}", "loadError": "Unable to load PRO discounts.", "saveError": "Unable to save discounts.", "saved": "Custom discounts saved.", "invalidDiscount": "Each discount must be between 0 and 100%.", "save": "Save discounts", "saving": "Saving…", "ruleHelp": "Leave a field empty to use the category’s general PRO discount. Any entered value, including 0%, fully replaces the general discount.", "generalDiscount": "General discount: {discount}%", "customApplied": "custom discount applied", "generalApplied": "general discount applied", "inheritPlaceholder": "General: {discount}%"
+      "title": "Custom PRO discounts", "description": "Assign specific discounts by category, subcategory or child subcategory. The most specific rule replaces the inherited rule.", "back": "Back to admin panel", "searchPlaceholder": "Search by name, company or email…", "loading": "Loading…", "noUsers": "No PRO customer found.", "selectUser": "Select a PRO customer to configure their discounts.", "customCount": "{count, plural, one {# custom discount} other {# custom discounts}}", "loadError": "Unable to load PRO discounts.", "saveError": "Unable to save discounts.", "saved": "Custom discounts saved.", "invalidDiscount": "Each discount must be between 0 and 100%.", "save": "Save discounts", "saving": "Saving…", "ruleHelp": "Leave a field empty to inherit the discount from the parent level. Any entered value, including 0%, replaces the inherited discount without being added to it.", "generalDiscount": "General discount: {discount}%", "inheritedPlaceholder": "Inherited: {discount}%", "customDiscountLabel": "Custom discount", "inheritsDiscount": "inherits {discount}%", "categoryLevel": "Category", "subcategoryLevel": "Subcategory", "subsubcategoryLevel": "Child subcategory", "noChildren": "No subcategories"
     },
     "NotFound": {
       "title": "Whoops! Page not found",
