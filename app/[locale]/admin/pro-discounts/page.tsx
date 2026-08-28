@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowLeft, Building2, ChevronDown, ChevronRight, Percent, Save, Search, UserRound } from "lucide-react";
+import { Building2, ChevronDown, ChevronRight, Percent, Save, Search, UserRound } from "lucide-react";
 import { toast } from "sonner";
 
 type ProUser = { id: string; email: string | null; name: string | null; company_name: string | null };
@@ -29,6 +28,8 @@ export default function ProDiscountsPage() {
   const [expandedSubcategories, setExpandedSubcategories] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [generalValues, setGeneralValues] = useState<Record<string, string>>({});
+  const [savingGeneral, setSavingGeneral] = useState(false);
 
   const getName = (item: TranslatedName) =>
     locale === "fr" ? item.name_fr : locale === "nl" ? item.name_nl : item.name_en;
@@ -44,6 +45,10 @@ export default function ProDiscountsPage() {
       const data = (await response.json()) as { users: ProUser[]; categories: Category[]; discounts: Discount[] };
       setUsers(data.users);
       setCategories(data.categories);
+      setGeneralValues(Object.fromEntries(data.categories.map((category) => [
+        category.id,
+        category.discount === null ? "" : String(category.discount),
+      ])));
       setDiscounts(data.discounts);
       setSelectedUserId((current) =>
         current && data.users.some((user) => user.id === current) ? current : data.users[0]?.id || null
@@ -129,6 +134,36 @@ export default function ProDiscountsPage() {
     }
   }
 
+  async function saveGeneralDiscounts() {
+    const invalid = Object.values(generalValues).some(
+      (value) => value !== "" && (!Number.isFinite(Number(value)) || Number(value) < 0 || Number(value) > 100)
+    );
+    if (invalid) return toast.error(t("invalidDiscount"));
+
+    setSavingGeneral(true);
+    try {
+      const response = await fetch("/api/admin/pro-discounts", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          categoryDiscounts: categories.map((category) => ({
+            categoryId: category.id,
+            discountPercent: generalValues[category.id] === "" ? null : Number(generalValues[category.id]),
+          })),
+        }),
+      });
+      if (!response.ok) throw new Error(await response.text());
+      toast.success(t("generalSaved"));
+      await load(search);
+    } catch (error) {
+      console.error(error);
+      toast.error(t("generalSaveError"));
+    } finally {
+      setSavingGeneral(false);
+    }
+  }
+
   const toggleSet = (setter: React.Dispatch<React.SetStateAction<Set<string>>>, id: string) =>
     setter((current) => {
       const next = new Set(current);
@@ -150,8 +185,12 @@ export default function ProDiscountsPage() {
   return (
     <main className="min-h-screen bg-gray-50 px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
-        <Link href={`/${locale}/admin`} className="inline-flex items-center gap-2 text-sm font-semibold text-orange-600 hover:text-orange-700"><ArrowLeft className="h-4 w-4" />{t("back")}</Link>
-        <div className="mt-7"><p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-600">PexxaFloor Admin</p><h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950">{t("title")}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-gray-500">{t("description")}</p></div>
+        <div><p className="text-xs font-semibold uppercase tracking-[0.18em] text-orange-600">PexxaFloor Admin</p><h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-950">{t("title")}</h1><p className="mt-2 max-w-3xl text-sm leading-6 text-gray-500">{t("description")}</p></div>
+
+        <section className="mt-8 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm sm:p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"><div><h2 className="font-semibold text-gray-950">{t("generalTitle")}</h2><p className="mt-1 text-sm text-gray-500">{t("generalDescription")}</p></div><button type="button" onClick={saveGeneralDiscounts} disabled={savingGeneral || loading} className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-gray-950 px-5 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:opacity-60"><Save className="h-4 w-4" />{savingGeneral ? t("saving") : t("saveGeneral")}</button></div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">{categories.map((category) => <label key={category.id} className="rounded-xl border border-gray-200 bg-gray-50 p-3"><span className="text-sm font-medium text-gray-900">{getName(category)}</span><div className="relative mt-2"><Percent className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" /><input type="number" min={0} max={100} step="0.01" value={generalValues[category.id] ?? ""} onChange={(event) => setGeneralValues((current) => ({ ...current, [category.id]: event.target.value }))} placeholder="0" className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-3 pr-9 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100" /></div></label>)}</div>
+        </section>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-[340px_1fr]">
           <aside className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm">

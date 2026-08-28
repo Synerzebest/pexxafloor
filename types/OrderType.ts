@@ -5,6 +5,7 @@ export type Order = {
     total: number;
     items: any;
     client_name: string;
+    company_name?: string | null;
     created_at: string;
     address: string;
     postal_code: string;

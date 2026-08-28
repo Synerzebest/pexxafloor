@@ -45,6 +45,11 @@ type SavedAddress = {
 };
 
 const GOOGLE_MAPS_LIBRARIES: Libraries = ["places"];
+const VAT_RATE = 0.21;
+
+function toVatIncludedCents(priceExcludingVat: number) {
+  return Math.round(priceExcludingVat * (1 + VAT_RATE) * 100);
+}
 
 function GoogleDeliveryAddressAutocomplete({
   value,
@@ -150,34 +155,43 @@ export default function CheckoutSection({ items, isPro }: Props) {
     isAddressValid,
   } = useCartCheckout();
 
-  const { baseTotal, finalTotal } = items.reduce(
+  const { baseTotal, finalTotal, baseTotalTVACCents, finalTotalTVACCents } = items.reduce(
     (acc, i: any) => {
       if (i.type === "product") {
-        const base = (i.base_price ?? i.product?.price ?? 0) * i.quantity;
-        const final = (i.unit_price ?? i.product?.price ?? 0) * i.quantity;
+        const quantity = Number(i.quantity || 0);
+        const baseUnitPrice = Number(i.base_price ?? i.product?.price ?? 0);
+        const finalUnitPrice = Number(i.unit_price ?? i.product?.price ?? 0);
+        const base = baseUnitPrice * quantity;
+        const final = finalUnitPrice * quantity;
   
         acc.baseTotal += base;
         acc.finalTotal += final;
+        acc.baseTotalTVACCents += toVatIncludedCents(baseUnitPrice) * quantity;
+        acc.finalTotalTVACCents += toVatIncludedCents(finalUnitPrice) * quantity;
       }
   
       if (i.type === "pack") {
-        const total = i.total * i.quantity;
+        const quantity = Number(i.quantity || 1);
+        const unitTotal = Number(i.total || 0);
+        const total = unitTotal * quantity;
         acc.baseTotal += total;
         acc.finalTotal += total;
+        acc.baseTotalTVACCents += toVatIncludedCents(unitTotal) * quantity;
+        acc.finalTotalTVACCents += toVatIncludedCents(unitTotal) * quantity;
       }
   
       return acc;
     },
-    { baseTotal: 0, finalTotal: 0 }
+    { baseTotal: 0, finalTotal: 0, baseTotalTVACCents: 0, finalTotalTVACCents: 0 }
   );
   
   const hasDiscount = isPro && baseTotal > finalTotal;
   const creditAppliedCents =
     isPro && creditBalanceCents > 0
-      ? Math.min(creditBalanceCents, Math.max(0, Math.round(finalTotal * 100) - 50))
+      ? Math.min(creditBalanceCents, Math.max(0, finalTotalTVACCents - 50))
       : 0;
-  const displayedTotalHTVA = Math.max(0, finalTotal - creditAppliedCents / 100);
-  const displayedTotalTVAC = displayedTotalHTVA * 1.21;
+  const displayedTotalTVAC = Math.max(0, finalTotalTVACCents - creditAppliedCents) / 100;
+  const displayedTotalHTVA = displayedTotalTVAC / (1 + VAT_RATE);
 
   useEffect(() => {
     if (!user || !isPro) {
@@ -464,7 +478,7 @@ export default function CheckoutSection({ items, isPro }: Props) {
                 {hasDiscount && (
                   <div className="mt-2 flex items-center gap-2">
                     <span className="text-sm text-gray-400 line-through">
-                      {(baseTotal * 1.21).toFixed(2)} € {t("vatIncluded")}
+                      {(baseTotalTVACCents / 100).toFixed(2)} € {t("vatIncluded")}
                     </span>
                     <span className="text-xs font-medium text-green-600">
                       {t("proDiscount")}

@@ -31,6 +31,7 @@ export function useFetchBestSellers(limit = 6) {
             price,
             reference,
             is_best_seller,
+            sort_order,
 
             product_images!fk_product (
               id,
@@ -64,7 +65,7 @@ export function useFetchBestSellers(limit = 6) {
             )            
           `)
           .eq("is_best_seller", true)
-          .order("created_at", { ascending: false })
+          .order("sort_order", { ascending: true })
           .limit(limit);
 
         if (error) throw error;

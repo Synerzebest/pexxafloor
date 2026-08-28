@@ -315,7 +315,7 @@
       "addr2": "Address line 2",
       "optional": "optional",
       "town": "Commune / Town",
-      "county": "Region / Province",
+      "county": "Country",
       "postcode": "Postcode",
       "vat": "VAT Number",
       "whatsapp": "Whatsapp Number",
@@ -366,7 +366,7 @@
         "address_line2": "Address (line 2) (optional)",
         "postcode": "Post Code",
         "town":"City",
-        "county": "Region / Province",
+        "county": "Country",
         "address_help": "Check each part of the address before saving your changes."
       },
       "placeholders": {
@@ -438,6 +438,15 @@
       "signOut": "Sign out",
       "myQuotes": "My quotes"
     },
+    "AdminNavigation": {
+      "ariaLabel": "Admin navigation",
+      "dashboard": "Dashboard",
+      "catalog": "Catalog",
+      "requests": "PRO requests",
+      "orders": "Orders",
+      "roles": "Roles",
+      "discounts": "Discounts"
+    },
     "Admin": {
       "adminPanel": "Admin panel",
       "catalogManagement": "Catalog Management",
@@ -452,7 +461,7 @@
       "proDiscountsManagementDetails": "Discounts by customer and category"
     },
     "AdminProDiscounts": {
-      "title": "Custom PRO discounts", "description": "Assign specific discounts by category, subcategory or child subcategory. The most specific rule replaces the inherited rule.", "back": "Back to admin panel", "searchPlaceholder": "Search by name, company or email…", "loading": "Loading…", "noUsers": "No PRO customer found.", "selectUser": "Select a PRO customer to configure their discounts.", "customCount": "{count, plural, one {# custom discount} other {# custom discounts}}", "loadError": "Unable to load PRO discounts.", "saveError": "Unable to save discounts.", "saved": "Custom discounts saved.", "invalidDiscount": "Each discount must be between 0 and 100%.", "save": "Save discounts", "saving": "Saving…", "ruleHelp": "Leave a field empty to inherit the discount from the parent level. Any entered value, including 0%, replaces the inherited discount without being added to it.", "generalDiscount": "General discount: {discount}%", "inheritedPlaceholder": "Inherited: {discount}%", "customDiscountLabel": "Custom discount", "inheritsDiscount": "inherits {discount}%", "categoryLevel": "Category", "subcategoryLevel": "Subcategory", "subsubcategoryLevel": "Child subcategory", "noChildren": "No subcategories"
+      "title": "Custom PRO discounts", "description": "Assign specific discounts by category, subcategory or child subcategory. The most specific rule replaces the inherited rule.", "back": "Back to admin panel", "searchPlaceholder": "Search by name, company or email…", "loading": "Loading…", "noUsers": "No PRO customer found.", "selectUser": "Select a PRO customer to configure their discounts.", "customCount": "{count, plural, one {# custom discount} other {# custom discounts}}", "loadError": "Unable to load PRO discounts.", "saveError": "Unable to save discounts.", "saved": "Custom discounts saved.", "invalidDiscount": "Each discount must be between 0 and 100%.", "save": "Save discounts", "saving": "Saving…", "generalTitle": "General discounts by category", "generalDescription": "These discounts are the default for every PRO customer and can be overridden by a custom rule.", "saveGeneral": "Save general discounts", "generalSaved": "General discounts saved.", "generalSaveError": "Unable to save general discounts.", "ruleHelp": "Leave a field empty to inherit the discount from the parent level. Any entered value, including 0%, replaces the inherited discount without being added to it.", "generalDiscount": "General discount: {discount}%", "inheritedPlaceholder": "Inherited: {discount}%", "customDiscountLabel": "Custom discount", "inheritsDiscount": "inherits {discount}%", "categoryLevel": "Category", "subcategoryLevel": "Subcategory", "subsubcategoryLevel": "Child subcategory", "noChildren": "No subcategories"
     },
     "NotFound": {
       "title": "Whoops! Page not found",

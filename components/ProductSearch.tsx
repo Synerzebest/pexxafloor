@@ -35,6 +35,7 @@ export default function ProductSearch() {
           name_nl,
           name_en,
           price,
+          sort_order,
 
           subcategory:subcategories(
             id,
@@ -64,6 +65,7 @@ export default function ProductSearch() {
           )
         `)
         .ilike(`name_${locale}`, `%${query}%`)
+        .order("sort_order", { ascending: true })
         .limit(4);
 
       if (!error) setResults(data as unknown as Product[]);

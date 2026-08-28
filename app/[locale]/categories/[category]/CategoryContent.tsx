@@ -73,8 +73,12 @@ export default function CategoryContent({
       )}
 
       {/* ---------- SECTIONS DE PRODUITS POUR CHAQUE SOUS-CATÉGORIE ---------- */}
-      {category.subcategories?.map((sub) => (
-        <motion.section
+      {category.subcategories?.map((sub) => {
+        const directProducts = (sub.products || [])
+          .filter((product) => !product.subsub_id)
+          .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+
+        return <motion.section
           key={sub.id}
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -93,6 +97,31 @@ export default function CategoryContent({
             </Link>
           </div>
 
+          {/* Produits sans sous-sous-catégorie */}
+          {directProducts.length > 0 && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-semibold text-gray-700">{tc("products")}</h3>
+                <span className="text-sm text-gray-500">
+                  {tc("productCount", { count: directProducts.length })}
+                </span>
+              </div>
+              <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-4">
+                {directProducts.slice(0, 8).map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    locale={locale}
+                    categorySlug={category.slug}
+                    subcategorySlug={sub.slug}
+                    isPro={isPro}
+                    customDiscounts={categoryDiscounts}
+                  />
+                ))}
+              </ul>
+            </div>
+          )}
+
           {/* Liste des sous-sous-catégories */}
           {sub.subsubcategories?.map((ssc: SubSubCategory) => (
             <div key={ssc.id} className="space-y-6">
@@ -103,7 +132,7 @@ export default function CategoryContent({
               {/* grid si peu de produits, carrousel si beaucoup */}
               {ssc.products.length <= 4 ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-                  {ssc.products.slice(0, 4).map((prod) => (
+                  {[...ssc.products].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)).slice(0, 4).map((prod) => (
                     <ProductCard
                       key={prod.id}
                       product={prod}
@@ -119,7 +148,7 @@ export default function CategoryContent({
               ) : (
                 <div className="overflow-x-auto pb-2">
                   <ul className="flex gap-6 snap-x snap-mandatory scroll-smooth">
-                    {ssc.products.slice(0, 8).map((prod) => (
+                    {[...ssc.products].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)).slice(0, 8).map((prod) => (
                       <li
                         key={prod.id}
                         className="snap-start flex-shrink-0 w-64"
@@ -140,8 +169,8 @@ export default function CategoryContent({
               )}
             </div>
           ))}
-        </motion.section>
-      ))}
+        </motion.section>;
+      })}
     </div>
   );
 }

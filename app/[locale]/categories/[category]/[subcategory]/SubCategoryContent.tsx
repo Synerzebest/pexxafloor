@@ -39,6 +39,9 @@ export default function SubCategoryContent({
       : obj.name_en;
 
   const hasSubSub = subcategory.subsubcategories.length > 0;
+  const directProducts = (subcategory.products || []).filter(
+    (product) => !product.subsub_id
+  ).sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
 
   return (
     <div className="max-w-6xl mx-auto px-4 md:px-6 py-12 space-y-12 relative top-28 pb-36">
@@ -58,6 +61,47 @@ export default function SubCategoryContent({
       <h1 className="text-4xl font-semibold tracking-tight text-gray-900">
         {getName(subcategory)}
       </h1>
+
+      {/* Produits rattachés directement à la sous-catégorie */}
+      {directProducts.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
+          className="space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-semibold text-gray-800">
+              {tc("products")}
+            </h2>
+            <span className="text-sm text-gray-500">
+              {tc("productCount", { count: directProducts.length })}
+            </span>
+          </div>
+
+          {loadingProfile ? (
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+              {Array.from({ length: Math.min(directProducts.length, 3) }).map((_, i) => (
+                <ProductCardSkeleton key={i} />
+              ))}
+            </ul>
+          ) : (
+            <ul className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3">
+              {directProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  locale={locale}
+                  categorySlug={category.slug}
+                  subcategorySlug={subcategory.slug}
+                  isPro={isPro}
+                  customDiscounts={categoryDiscounts}
+                />
+              ))}
+            </ul>
+          )}
+        </motion.section>
+      )}
 
       {/* liste sous sous catégories */}
       {hasSubSub && (
@@ -128,7 +172,7 @@ export default function SubCategoryContent({
             </ul>
           ) : ssc.products.length > 0 ? (
             <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {ssc.products.map((prod: Product) => (
+              {[...ssc.products].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)).map((prod: Product) => (
                 <ProductCard
                   key={prod.id}
                   product={prod}

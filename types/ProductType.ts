@@ -20,6 +20,7 @@ export type Product = {
   reference?: string | null;
   subsub_id?: string | null;
   is_best_seller?: boolean;
+  sort_order?: number;
 
   product_images?: ProductImage[];
 

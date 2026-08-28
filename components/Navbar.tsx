@@ -111,14 +111,14 @@ export default function Navbar() {
       {/* --- Bandeau principal --- */}
       <div className="flex items-center justify-between gap-4 px-4 bg-white">
         {/* Logo */}
-        <Link href={`/${locale}`} className="shrink-0">
+        <Link href={`/${locale}`} className="relative z-10 shrink-0 overflow-visible sm:mr-[110px]">
           <Image
             src={logoImage}
             alt="Logo"
             width={110}
             height={80}
             priority
-            className="h-auto w-auto object-contain"
+            className="pointer-events-none h-auto w-auto origin-left scale-150 object-contain"
           />
         </Link>
 

@@ -14,18 +14,11 @@ export async function GET(req: Request) {
   if (!auth.ok) return auth.response;
 
   const search = new URL(req.url).searchParams.get("search")?.trim() || "";
-  let profilesQuery = supabaseServer
+  const profilesQuery = supabaseServer
     .from("profiles")
     .select("id, email, name, company_name")
     .eq("is_pro", true)
     .order("name", { ascending: true });
-
-  if (search) {
-    const escaped = search.replace(/[,%()]/g, " ");
-    profilesQuery = profilesQuery.or(
-      `email.ilike.%${escaped}%,name.ilike.%${escaped}%,company_name.ilike.%${escaped}%`
-    );
-  }
 
   const [{ data: users, error: usersError }, { data: categories, error: categoriesError }] =
     await Promise.all([
@@ -51,7 +44,40 @@ export async function GET(req: Request) {
     );
   }
 
-  const userIds = (users || []).map((user) => user.id);
+  const profileUsers = users || [];
+  const profileUserIds = profileUsers.map((user) => user.id);
+  const { data: applications, error: applicationsError } = profileUserIds.length
+    ? await supabaseServer
+        .from("pro_applications")
+        .select("user_id, company_name, created_at")
+        .in("user_id", profileUserIds)
+        .order("created_at", { ascending: false })
+    : { data: [], error: null };
+
+  if (applicationsError) {
+    return NextResponse.json({ error: applicationsError.message }, { status: 500 });
+  }
+
+  const applicationCompanyNames = new Map<string, string>();
+  for (const application of applications || []) {
+    if (!applicationCompanyNames.has(application.user_id)) {
+      applicationCompanyNames.set(application.user_id, application.company_name);
+    }
+  }
+
+  const normalizedSearch = search.toLocaleLowerCase();
+  const mergedUsers = profileUsers
+    .map((user) => ({
+      ...user,
+      company_name: applicationCompanyNames.get(user.id) || user.company_name,
+    }))
+    .filter((user) => !normalizedSearch || [user.email, user.name, user.company_name]
+      .some((value) => value?.toLocaleLowerCase().includes(normalizedSearch)))
+    .sort((a, b) => (a.company_name || a.name || a.email || "").localeCompare(
+      b.company_name || b.name || b.email || ""
+    ));
+
+  const userIds = mergedUsers.map((user) => user.id);
   const { data: rows, error: discountsError } = userIds.length
     ? await supabaseServer
         .from("pro_category_discounts")
@@ -70,7 +96,39 @@ export async function GET(req: Request) {
     return [];
   });
 
-  return NextResponse.json({ users: users || [], categories: categories || [], discounts });
+  return NextResponse.json({ users: mergedUsers, categories: categories || [], discounts });
+}
+
+export async function PATCH(req: Request) {
+  const auth = await requireAdmin();
+  if (!auth.ok) return auth.response;
+
+  const body = (await req.json()) as {
+    categoryDiscounts?: Array<{ categoryId: string; discountPercent: number | null }>;
+  };
+  if (!Array.isArray(body.categoryDiscounts)) {
+    return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+  }
+
+  const { data: categories, error: categoriesError } = await supabaseServer
+    .from("categories")
+    .select("id");
+  if (categoriesError) return NextResponse.json({ error: categoriesError.message }, { status: 500 });
+  const validIds = new Set((categories || []).map((category) => category.id));
+
+  for (const item of body.categoryDiscounts) {
+    const value = item.discountPercent === null ? null : Number(item.discountPercent);
+    if (!validIds.has(item.categoryId) || (value !== null && (!Number.isFinite(value) || value < 0 || value > 100))) {
+      return NextResponse.json({ error: "Invalid category discount" }, { status: 400 });
+    }
+    const { error } = await supabaseServer
+      .from("categories")
+      .update({ discount: value })
+      .eq("id", item.categoryId);
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json({ success: true });
 }
 
 export async function PUT(req: Request) {

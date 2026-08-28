@@ -315,7 +315,7 @@
         "addr2": "Adresse (ligne 2)",
         "optional": "optionnel",
         "town": "Commune / Ville",
-        "county": "Région / Province",
+        "county": "Pays",
         "postcode": "Code postal",
         "vat": "Numéro de TVA",
         "whatsapp": "Numéro Whatsapp",
@@ -366,7 +366,7 @@
         "address_line2": "Adresse (ligne 2) (optionnel)",
         "postcode": "Code postal",
         "town":"Ville",
-        "county": "Région / Province",
+        "county": "Pays",
         "address_help": "Vérifiez chaque partie de l’adresse avant d’enregistrer les modifications."
       },
       "placeholders": {
@@ -438,6 +438,15 @@
       "signOut": "Se déconnecter",
       "myQuotes": "Mes devis"
     },
+    "AdminNavigation": {
+      "ariaLabel": "Navigation de l’administration",
+      "dashboard": "Tableau de bord",
+      "catalog": "Catalogue",
+      "requests": "Demandes PRO",
+      "orders": "Commandes",
+      "roles": "Rôles",
+      "discounts": "Remises"
+    },
     "Admin": {
       "adminPanel": "Panneau d'administration",
       "catalogManagement": "Gestion du catalogue",
@@ -452,7 +461,7 @@
       "proDiscountsManagementDetails": "Remises par client et par catégorie"
     },
     "AdminProDiscounts": {
-      "title": "Remises PRO personnalisées", "description": "Attribuez des remises spécifiques par catégorie, sous-catégorie ou sous-sous-catégorie. La règle la plus précise remplace la règle héritée.", "back": "Retour au panneau d’administration", "searchPlaceholder": "Rechercher par nom, société ou e-mail…", "loading": "Chargement…", "noUsers": "Aucun client PRO trouvé.", "selectUser": "Sélectionnez un client PRO pour configurer ses remises.", "customCount": "{count, plural, one {# remise personnalisée} other {# remises personnalisées}}", "loadError": "Impossible de charger les remises PRO.", "saveError": "Impossible d’enregistrer les remises.", "saved": "Remises personnalisées enregistrées.", "invalidDiscount": "Chaque remise doit être comprise entre 0 et 100 %.", "save": "Enregistrer les remises", "saving": "Enregistrement…", "ruleHelp": "Laissez un champ vide pour hériter de la remise du niveau supérieur. Toute valeur renseignée, y compris 0 %, remplace la remise héritée sans s’y additionner.", "generalDiscount": "Remise générale : {discount} %", "inheritedPlaceholder": "Héritée : {discount} %", "customDiscountLabel": "Remise personnalisée", "inheritsDiscount": "hérite de {discount} %", "categoryLevel": "Catégorie", "subcategoryLevel": "Sous-catégorie", "subsubcategoryLevel": "Sous-sous-catégorie", "noChildren": "Aucune sous-catégorie"
+      "title": "Remises PRO personnalisées", "description": "Attribuez des remises spécifiques par catégorie, sous-catégorie ou sous-sous-catégorie. La règle la plus précise remplace la règle héritée.", "back": "Retour au panneau d’administration", "searchPlaceholder": "Rechercher par nom, société ou e-mail…", "loading": "Chargement…", "noUsers": "Aucun client PRO trouvé.", "selectUser": "Sélectionnez un client PRO pour configurer ses remises.", "customCount": "{count, plural, one {# remise personnalisée} other {# remises personnalisées}}", "loadError": "Impossible de charger les remises PRO.", "saveError": "Impossible d’enregistrer les remises.", "saved": "Remises personnalisées enregistrées.", "invalidDiscount": "Chaque remise doit être comprise entre 0 et 100 %.", "save": "Enregistrer les remises", "saving": "Enregistrement…", "generalTitle": "Remises générales par catégorie", "generalDescription": "Ces remises servent de base à tous les clients PRO et peuvent être remplacées par une règle personnalisée.", "saveGeneral": "Enregistrer les remises générales", "generalSaved": "Remises générales enregistrées.", "generalSaveError": "Impossible d’enregistrer les remises générales.", "ruleHelp": "Laissez un champ vide pour hériter de la remise du niveau supérieur. Toute valeur renseignée, y compris 0 %, remplace la remise héritée sans s’y additionner.", "generalDiscount": "Remise générale : {discount} %", "inheritedPlaceholder": "Héritée : {discount} %", "customDiscountLabel": "Remise personnalisée", "inheritsDiscount": "hérite de {discount} %", "categoryLevel": "Catégorie", "subcategoryLevel": "Sous-catégorie", "subsubcategoryLevel": "Sous-sous-catégorie", "noChildren": "Aucune sous-catégorie"
     },
     "NotFound": {
       "title": "Oups! Page introuvable",

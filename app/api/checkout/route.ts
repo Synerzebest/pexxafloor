@@ -15,6 +15,12 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-07-30.basil",
 });
 
+const VAT_RATE = 0.21;
+
+function toVatIncludedCents(priceExcludingVat: number) {
+  return Math.round(priceExcludingVat * (1 + VAT_RATE) * 100);
+}
+
 interface ShippingInfo {
   address: string;
   postalCode: string;
@@ -238,7 +244,9 @@ export async function POST(req: Request) {
             product_data: {
               name: dbProduct.name_fr,
             },
-            unit_amount: Math.round(unitPrice * 100),
+            // Les prix en base sont HTVA. Stripe doit recevoir le montant TVAC,
+            // car Checkout débite exactement la somme des unit_amount.
+            unit_amount: toVatIncludedCents(unitPrice),
           },
           quantity,
         });
@@ -299,7 +307,7 @@ export async function POST(req: Request) {
               product_data: {
                 name: pack.name_fr,
               },
-              unit_amount: Math.round(result.total * 100),
+              unit_amount: toVatIncludedCents(result.total),
             },
             quantity,
         });

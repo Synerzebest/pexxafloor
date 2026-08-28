@@ -58,6 +58,7 @@ export default async function SubSubCategoryPage({
         name_en,
         price,
         reference,
+        sort_order,
         subsub_id,
         subsub:subsub_id ( slug ),
         product_images!fk_product (image_url),

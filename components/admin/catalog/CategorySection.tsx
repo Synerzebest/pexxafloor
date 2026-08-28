@@ -99,7 +99,6 @@ export default function CategorySection({
         name_nl: values.name_nl,
         name_en: values.name_en,
         order: values.order ?? null,
-        discount: values.discount ?? null,
         image_url: imageUrl,
       })
       .eq("id", editing.id);
@@ -204,11 +203,6 @@ export default function CategorySection({
         columns={[
           { title: "Nom", dataIndex: "name_fr" },          
           { title: "Ordre", dataIndex: "order" },
-          { 
-            title: "Remise", 
-            dataIndex: "discount",
-            render: d => d ? `${d}%` : "-"
-          }, 
           {
             title: "Image",
             render: (_, record) =>
@@ -336,17 +330,6 @@ export default function CategorySection({
                 </Form.Item>
                 <Form.Item name="order" label="Ordre">
                   <InputNumber style={{ width: "100%" }} />
-                </Form.Item>
-
-                <Form.Item
-                  name="discount"
-                  label="Remise (%)"
-                  tooltip="Pour appliquer une remise à toute la catégorie et ses produits"
-                  rules={[
-                    { type: "number", min: 0, max: 100, message: "La remise doit être entre 0 et 100" }
-                  ]}
-                >
-                  <InputNumber style={{ width: "100%" }} placeholder="Ex: 10 pour 10%" />
                 </Form.Item>
 
                 <Form.Item label="Image de la catégorie">

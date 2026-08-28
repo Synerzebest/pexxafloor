@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Card,
   Table,
@@ -13,6 +13,7 @@ import {
   EditOutlined,
   PlusOutlined,
   DeleteOutlined,
+  HolderOutlined,
 } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import ProductForm from "./ProductForm";
@@ -47,6 +48,69 @@ export default function ProductSection({
   const [deleting, setDeleting] = useState<Product | null>(null);
   const [editing, setEditing] = useState<Product | null>(null);
   const [search, setSearch] = useState("");
+  const [orderOpen, setOrderOpen] = useState(false);
+  const [orderedProducts, setOrderedProducts] = useState<Product[]>(products);
+  const [draggedId, setDraggedId] = useState<string | null>(null);
+  const [savingOrder, setSavingOrder] = useState(false);
+
+  useEffect(() => setOrderedProducts(products), [products]);
+
+  const productGroupKey = (product: Product) =>
+    product.subsubcategory?.id || `subcategory:${product.subcategory.id}`;
+
+  const orderGroups = useMemo(() => {
+    const groups = new Map<string, { title: string; products: Product[] }>();
+    for (const product of orderedProducts) {
+      const key = productGroupKey(product);
+      const title = [
+        product.subcategory.category.name_fr,
+        product.subcategory.name_fr,
+        product.subsubcategory?.name_fr || "Produits directs",
+      ].join(" › ");
+      const group = groups.get(key) || { title, products: [] };
+      group.products.push(product);
+      groups.set(key, group);
+    }
+    return [...groups.entries()].map(([key, group]) => ({
+      key,
+      title: group.title,
+      products: group.products.sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)),
+    }));
+  }, [orderedProducts]);
+
+  function moveProduct(targetId: string) {
+    if (!draggedId || draggedId === targetId) return;
+    const dragged = orderedProducts.find((product) => product.id === draggedId);
+    const target = orderedProducts.find((product) => product.id === targetId);
+    if (!dragged || !target || productGroupKey(dragged) !== productGroupKey(target)) return;
+
+    const group = orderedProducts
+      .filter((product) => productGroupKey(product) === productGroupKey(dragged))
+      .sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0));
+    const from = group.findIndex((product) => product.id === draggedId);
+    const to = group.findIndex((product) => product.id === targetId);
+    const reordered = [...group];
+    const [moved] = reordered.splice(from, 1);
+    reordered.splice(to, 0, moved);
+    const positions = new Map(reordered.map((product, index) => [product.id, index]));
+    setOrderedProducts((current) => current.map((product) =>
+      positions.has(product.id) ? { ...product, sort_order: positions.get(product.id) } : product
+    ));
+  }
+
+  async function saveProductOrder() {
+    setSavingOrder(true);
+    const updates = orderedProducts.map((product) =>
+      supabase.from("products").update({ sort_order: product.sort_order ?? 0 }).eq("id", product.id)
+    );
+    const results = await Promise.all(updates);
+    const error = results.find((result) => result.error)?.error;
+    setSavingOrder(false);
+    if (error) return message.error("Impossible d’enregistrer l’ordre : " + error.message);
+    message.success("Ordre d’affichage enregistré !");
+    setOrderOpen(false);
+    fetchAll();
+  }
 
   const filteredProducts = useMemo(
     () => products.filter((product) => matchesCatalogSearch(search, [
@@ -178,7 +242,10 @@ export default function ProductSection({
         boxShadow: "0 4px 14px rgba(0,0,0,0.08)",
         padding: "4px 12px",
       }}
-      extra={
+      extra={<Space>
+        <Button icon={<HolderOutlined />} onClick={() => setOrderOpen(true)}>
+          Gérer l’ordre
+        </Button>
         <Button
           icon={<PlusOutlined />}
           onClick={() => {
@@ -196,7 +263,7 @@ export default function ProductSection({
         >
           Ajouter
         </Button>
-      }
+      </Space>}
     >
       <CatalogSearch
         value={search}
@@ -219,6 +286,45 @@ export default function ProductSection({
           showSizeChanger: false,
         }}
       />
+
+      <Modal
+        open={orderOpen}
+        onCancel={() => { setOrderOpen(false); setOrderedProducts(products); }}
+        title="Ordre d’affichage des produits"
+        width={820}
+        centered
+        footer={[
+          <Button key="cancel" onClick={() => { setOrderOpen(false); setOrderedProducts(products); }}>Annuler</Button>,
+          <Button key="save" type="primary" loading={savingOrder} onClick={saveProductOrder} style={{ background: orange }}>Enregistrer l’ordre</Button>,
+        ]}
+      >
+        <p className="mb-5 text-sm text-gray-500">Faites glisser les produits dans chaque groupe. L’ordre est appliqué aux pages du catalogue et aux résultats de recherche.</p>
+        <div className="max-h-[65vh] space-y-6 overflow-y-auto pr-2">
+          {orderGroups.map((group) => (
+            <section key={group.key}>
+              <h3 className="sticky top-0 z-10 mb-2 bg-white py-2 text-sm font-semibold text-gray-700">{group.title}</h3>
+              <div className="space-y-2">
+                {group.products.map((product, index) => (
+                  <div
+                    key={product.id}
+                    draggable
+                    onDragStart={() => setDraggedId(product.id)}
+                    onDragEnd={() => setDraggedId(null)}
+                    onDragOver={(event) => event.preventDefault()}
+                    onDrop={() => moveProduct(product.id)}
+                    className={`flex cursor-grab items-center gap-3 rounded-xl border bg-white p-3 shadow-sm transition active:cursor-grabbing ${draggedId === product.id ? "border-orange-400 opacity-50" : "border-gray-200 hover:border-orange-300"}`}
+                  >
+                    <HolderOutlined className="text-lg text-gray-400" />
+                    <span className="grid h-7 w-7 place-items-center rounded-lg bg-orange-50 text-xs font-bold text-orange-700">{index + 1}</span>
+                    {product.product_images?.[0]?.image_url && <img src={product.product_images[0].image_url} alt="" className="h-10 w-10 rounded-lg object-contain" />}
+                    <div className="min-w-0"><p className="truncate text-sm font-semibold text-gray-900">{product.name_fr}</p><p className="text-xs text-gray-500">{product.reference || "Sans référence"}</p></div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </Modal>
 
       {/* --- MODALE AJOUT / MODIF --- */}
       <AnimatePresence>

@@ -76,7 +76,7 @@ export default function SubSubCategoryContent({
       >
         {subsubcategory.products.length > 0 ? (
           <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {subsubcategory.products.map((prod) => (
+            {[...subsubcategory.products].sort((a, b) => (a.sort_order ?? 0) - (b.sort_order ?? 0)).map((prod) => (
               <ProductCard
                 key={prod.id}
                 product={prod}

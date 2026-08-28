@@ -2,13 +2,12 @@
 
 import { Footer } from "@/components";
 import { useState } from "react";
-import { Table, Card, Select, Button } from "antd";
-import { ReloadOutlined } from "@ant-design/icons";
+import { Table, Card, Select, Button, Input } from "antd";
+import { ReloadOutlined, SearchOutlined } from "@ant-design/icons";
 import { useLocale } from "next-intl";
 import { useOrdersAdmin } from "@/hooks/useOrdersAdmin";
 import { getOrdersColumns } from "@/components/admin/orders/OrdersColumns";
 import { OrderDetailsModal } from "@/components/admin/orders/OrderDetailsModal";
-import Link from "next/link";
 
 export default function OrdersAdminPage() {
   const locale = useLocale() as 'fr' | 'en' | 'nl';
@@ -26,35 +25,31 @@ export default function OrdersAdminPage() {
   } = useOrdersAdmin(locale);
 
   const [filterStatus, setFilterStatus] = useState("all");
+  const [search, setSearch] = useState("");
 
-  const filtered = filterStatus === "all"
-    ? orders
-    : orders.filter((o) => o.status === filterStatus);
+  const normalizedSearch = search.trim().toLocaleLowerCase();
+  const filtered = orders.filter((order) => {
+    const matchesStatus = filterStatus === "all" || order.status === filterStatus;
+    const matchesSearch = !normalizedSearch || order.company_name
+      ?.toLocaleLowerCase()
+      .includes(normalizedSearch);
+    return matchesStatus && matchesSearch;
+  });
 
   return (
     <>
-      <div className="px-4 pt-6">
-        <Link
-          href={`/${locale}/admin`}
-          className="inline-flex items-center gap-2 text-orange-500 font-medium hover:text-orange-600 transition"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Retour au panneau d’administration
-        </Link>
-      </div>
-
       <div className="mx-auto max-w-6xl px-4 py-10">
         {/* Filtres */}
-        <div className="flex justify-between mb-4">
-          <Select value={filterStatus} onChange={setFilterStatus} style={{ width: 180 }}>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Input
+            allowClear
+            prefix={<SearchOutlined />}
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Rechercher par nom d’entreprise…"
+            className="sm:max-w-sm"
+          />
+          <Select value={filterStatus} onChange={setFilterStatus} className="w-full sm:w-48">
             <Select.Option value="all">Toutes</Select.Option>
             <Select.Option value="paid">Payées</Select.Option>
             <Select.Option value="preparing">En préparation</Select.Option>
@@ -66,7 +61,7 @@ export default function OrdersAdminPage() {
             <Select.Option value="cancelled">Annulées</Select.Option>
           </Select>
 
-          <Button icon={<ReloadOutlined />} loading={loading} onClick={loadOrders}>
+          <Button className="sm:ml-auto" icon={<ReloadOutlined />} loading={loading} onClick={loadOrders}>
             Recharger
           </Button>
         </div>

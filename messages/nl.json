@@ -315,7 +315,7 @@
       "addr2": "Adres (regel 2)",
       "optional": "optioneel",
       "town": "Gemeente / Stad",
-      "county": "Regio / Provincie",
+      "county": "Land",
       "postcode": "Postcode",
       "vat": "BTW-nummer",
       "whatsapp": "WhatsApp-nummer",
@@ -366,7 +366,7 @@
         "address_line2": "Adres (regel 2) (optioneel)",
         "postcode": "Postcode",
         "town":"Stad",
-        "county": "Regio / Provincie",
+        "county": "Land",
         "address_help": "Controleer elk onderdeel van het adres voordat u de wijzigingen opslaat."
       },
       "placeholders": {
@@ -438,6 +438,15 @@
       "signOut": "Afmelden",
       "myQuotes": "Mijn offertes"
     },
+    "AdminNavigation": {
+      "ariaLabel": "Beheernavigatie",
+      "dashboard": "Dashboard",
+      "catalog": "Catalogus",
+      "requests": "PRO-aanvragen",
+      "orders": "Bestellingen",
+      "roles": "Rollen",
+      "discounts": "Kortingen"
+    },
     "Admin": {
       "adminPanel": "Beheerderspaneel",
       "catalogManagement": "Catalogusbeheer",
@@ -452,7 +461,7 @@
       "proDiscountsManagementDetails": "Kortingen per klant en categorie"
     },
     "AdminProDiscounts": {
-      "title": "Aangepaste PRO-kortingen", "description": "Ken specifieke kortingen toe per categorie, subcategorie of onderliggende subcategorie. De meest specifieke regel vervangt de overgeërfde regel.", "back": "Terug naar het beheerderspaneel", "searchPlaceholder": "Zoeken op naam, bedrijf of e-mail…", "loading": "Laden…", "noUsers": "Geen PRO-klant gevonden.", "selectUser": "Selecteer een PRO-klant om de kortingen in te stellen.", "customCount": "{count, plural, one {# aangepaste korting} other {# aangepaste kortingen}}", "loadError": "De PRO-kortingen kunnen niet worden geladen.", "saveError": "De kortingen kunnen niet worden opgeslagen.", "saved": "Aangepaste kortingen opgeslagen.", "invalidDiscount": "Elke korting moet tussen 0 en 100% liggen.", "save": "Kortingen opslaan", "saving": "Opslaan…", "ruleHelp": "Laat een veld leeg om de korting van het bovenliggende niveau over te nemen. Elke ingevulde waarde, ook 0%, vervangt de overgeërfde korting zonder erbij te worden opgeteld.", "generalDiscount": "Algemene korting: {discount}%", "inheritedPlaceholder": "Overgeërfd: {discount}%", "customDiscountLabel": "Aangepaste korting", "inheritsDiscount": "erft {discount}%", "categoryLevel": "Categorie", "subcategoryLevel": "Subcategorie", "subsubcategoryLevel": "Onderliggende subcategorie", "noChildren": "Geen subcategorieën"
+      "title": "Aangepaste PRO-kortingen", "description": "Ken specifieke kortingen toe per categorie, subcategorie of onderliggende subcategorie. De meest specifieke regel vervangt de overgeërfde regel.", "back": "Terug naar het beheerderspaneel", "searchPlaceholder": "Zoeken op naam, bedrijf of e-mail…", "loading": "Laden…", "noUsers": "Geen PRO-klant gevonden.", "selectUser": "Selecteer een PRO-klant om de kortingen in te stellen.", "customCount": "{count, plural, one {# aangepaste korting} other {# aangepaste kortingen}}", "loadError": "De PRO-kortingen kunnen niet worden geladen.", "saveError": "De kortingen kunnen niet worden opgeslagen.", "saved": "Aangepaste kortingen opgeslagen.", "invalidDiscount": "Elke korting moet tussen 0 en 100% liggen.", "save": "Kortingen opslaan", "saving": "Opslaan…", "generalTitle": "Algemene kortingen per categorie", "generalDescription": "Deze kortingen gelden standaard voor elke PRO-klant en kunnen door een aangepaste regel worden vervangen.", "saveGeneral": "Algemene kortingen opslaan", "generalSaved": "Algemene kortingen opgeslagen.", "generalSaveError": "De algemene kortingen kunnen niet worden opgeslagen.", "ruleHelp": "Laat een veld leeg om de korting van het bovenliggende niveau over te nemen. Elke ingevulde waarde, ook 0%, vervangt de overgeërfde korting zonder erbij te worden opgeteld.", "generalDiscount": "Algemene korting: {discount}%", "inheritedPlaceholder": "Overgeërfd: {discount}%", "customDiscountLabel": "Aangepaste korting", "inheritsDiscount": "erft {discount}%", "categoryLevel": "Categorie", "subcategoryLevel": "Subcategorie", "subsubcategoryLevel": "Onderliggende subcategorie", "noChildren": "Geen subcategorieën"
     },
     "NotFound": {
       "title": "Oeps! Pagina niet gevonden",

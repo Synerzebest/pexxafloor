@@ -137,9 +137,19 @@ export default function ProductForm({
       slug = `${baseSlug}-${counter++}`;
     }
 
+    let orderQuery = supabase
+      .from("products")
+      .select("sort_order")
+      .eq("subcategory_id", values.subcategory_id ?? "");
+    orderQuery = values.subsub_id
+      ? orderQuery.eq("subsub_id", values.subsub_id)
+      : orderQuery.is("subsub_id", null);
+    const { data: siblings } = await orderQuery.order("sort_order", { ascending: false }).limit(1);
+    const nextSortOrder = Number(siblings?.[0]?.sort_order ?? -1) + 1;
+
     const { data: prod, error } = await supabase
       .from("products")
-      .insert([{ ...sanitizeValues(values), slug }])
+      .insert([{ ...sanitizeValues(values), slug, sort_order: nextSortOrder }])
       .select("id")
       .single();
 

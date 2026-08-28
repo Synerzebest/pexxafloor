@@ -47,6 +47,8 @@ export function useFetchStoreData() {
           price,
           reference,
           is_best_seller,
+          sort_order,
+          subsub_id,
           created_at,
   
           product_images!fk_product (
@@ -80,7 +82,8 @@ export function useFetchStoreData() {
             name_en
           )
         `)
-        .order("created_at", { ascending: false }),
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: true }),
     ]);
   
     setCategories(cats.data || []);

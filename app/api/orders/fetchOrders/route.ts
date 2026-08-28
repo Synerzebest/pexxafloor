@@ -31,5 +31,44 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ data });
+  const userIds = [...new Set((data || []).map((order) => order.user_id).filter(Boolean))];
+  const [{ data: applications, error: applicationsError }, { data: profiles, error: profilesError }] =
+    userIds.length
+      ? await Promise.all([
+          supabaseServer
+            .from("pro_applications")
+            .select("user_id, company_name, created_at")
+            .in("user_id", userIds)
+            .order("created_at", { ascending: false }),
+          supabaseServer
+            .from("profiles")
+            .select("id, company_name")
+            .in("id", userIds),
+        ])
+      : [{ data: [], error: null }, { data: [], error: null }];
+
+  if (applicationsError || profilesError) {
+    return NextResponse.json(
+      { error: applicationsError?.message || profilesError?.message },
+      { status: 500 }
+    );
+  }
+
+  const applicationCompanies = new Map<string, string>();
+  for (const application of applications || []) {
+    if (!applicationCompanies.has(application.user_id)) {
+      applicationCompanies.set(application.user_id, application.company_name);
+    }
+  }
+  const profileCompanies = new Map(
+    (profiles || []).map((profile) => [profile.id, profile.company_name] as const)
+  );
+  const enrichedOrders = (data || []).map((order) => ({
+    ...order,
+    company_name: order.user_id
+      ? applicationCompanies.get(order.user_id) || profileCompanies.get(order.user_id) || null
+      : null,
+  }));
+
+  return NextResponse.json({ data: enrichedOrders });
 }

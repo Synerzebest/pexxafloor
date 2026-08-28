@@ -17,7 +17,12 @@ export const getOrdersColumns = (
   {
     title: "Client",
     dataIndex: "client_name",
-    render: (u: string) => <span>{u.slice(0, 6)}...</span>,
+    render: (name: string | null) => <span>{name || "—"}</span>,
+  },
+  {
+    title: "Société",
+    dataIndex: "company_name",
+    render: (companyName: string | null) => <span className="font-medium">{companyName || "—"}</span>,
   },
   {
     title: "Statut",
