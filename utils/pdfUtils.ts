@@ -290,8 +290,8 @@ export const addFooter = (doc: jsPDF) => {
   const pageWidth = doc.internal.pageSize.width;
 
   const lignes = [
-    s("UNISIS BELGIUM SPRL Brusselstraat 107 D 1702 Groot Bijgaarden"),
-    s("TEL: +32 2 343 92 00 - Fax: +32 2 343 92 02 info@discoveryshop.be - www.discoveryshop.be"),
+    s("UNISIS BELGIUM SPRL Rue du Broek 114, 1082 BERCHEM-SAINTE-AGATHE, Belgique"),
+    s("TEL: +32 494 042 932 - info@pexxafloor.be - www.pexxafloor.be"),
     s("BNP PARIBAS FORTIS BE51 0014 4682 9162 - TVA/BTW BE 0871.407.121"),
   ];
 

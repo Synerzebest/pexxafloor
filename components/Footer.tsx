@@ -45,7 +45,7 @@ export default function Footer() {
 
           <div className="space-y-3 text-sm">
             <a href="mailto:info@pexxafloor.be" className="flex items-center gap-2 transition hover:text-orange-600"><Mail className="h-4 w-4" />info@pexxafloor.be</a>
-            <a href="tel:+3223439200" className="flex items-center gap-2 transition hover:text-orange-600"><Phone className="h-4 w-4" />+32 494 042 932</a>
+            <a href="tel:+32494042932" className="flex items-center gap-2 transition hover:text-orange-600"><Phone className="h-4 w-4" />+32 494 042 932</a>
           </div>
         </div>
 

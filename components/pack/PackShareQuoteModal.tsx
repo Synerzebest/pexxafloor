@@ -48,11 +48,12 @@ type QuoteIssuer = {
 
 const UNISIS_ISSUER: QuoteIssuer = {
   name: "Unisis Development SRL",
-  addressLine1: "Brusselstraat 107 D",
-  postcode: "1702",
-  town: "Groot-Bijgaarden",
-  phone: "+32 2 343 92 00",
-  email: "info@discoveryshop.be",
+  addressLine1: "Rue du Broek 114",
+  postcode: "1082",
+  town: "BERCHEM-SAINTE-AGATHE",
+  country: "Belgique",
+  phone: "+32 494 042 932",
+  email: "info@pexxafloor.be",
   vat: "BE 0871.407.121",
 };
 
