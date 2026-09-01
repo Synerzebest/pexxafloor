@@ -14,6 +14,8 @@ const formatPrice = (value: number) =>
     maximumFractionDigits: 2,
   }).format(value);
 
+const VAT_MULTIPLIER = 1.21
+
 type SystemCardProps = {
   img: string
   title: string
@@ -174,13 +176,22 @@ export default function SystemCard({
           <motion.div
             initial={{ opacity: 0, y: 5 }}
             animate={{ opacity: 1, y: 0 }}
-            className="flex items-center justify-end gap-1 text-lg font-semibold text-orange-600"
+            className="flex items-start justify-end gap-1 text-right"
           >
             {priceLoading && calculatedTotal === null
-              ? t('priceLoading')
+              ? <span className="text-lg font-semibold text-orange-600">{t('priceLoading')}</span>
               : calculatedTotal !== null
-                ? `${formatPrice(calculatedTotal)} €`
-                : t('priceUnavailable')}
+                ? (
+                    <div>
+                      <div className="text-lg font-semibold text-orange-600">
+                        {formatPrice(calculatedTotal)} € {t('vatExcluded')}
+                      </div>
+                      <div className="text-sm font-medium text-gray-600">
+                        {formatPrice(calculatedTotal * VAT_MULTIPLIER)} € {t('vatIncluded')}
+                      </div>
+                    </div>
+                  )
+                : <span className="text-lg font-semibold text-orange-600">{t('priceUnavailable')}</span>}
             {calculatedTotal !== null && (
               <span
                 className="group/priceTip relative inline-flex"

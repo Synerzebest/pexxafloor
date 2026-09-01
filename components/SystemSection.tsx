@@ -79,7 +79,7 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
                 surface: parsedSurface,
                 pasDePose: 20,
                 tuyauType: "PERT",
-                typeAgrafe: 40,
+                typeAgrafe: 60,
                 typeIsolation: 0,
               }),
             });

@@ -144,6 +144,8 @@
       "price": "Price",
       "priceLoading": "Calculating...",
       "priceUnavailable": "Price unavailable",
+      "vatExcluded": "excl. VAT",
+      "vatIncluded": "incl. VAT",
       "genericPriceNote": "Price calculated with a standard configuration: 20 cm spacing, PERT pipe and default options. The final price may change in the configurator.",
       "height-installation": "Installation height",
       "insulation": "Insulation",

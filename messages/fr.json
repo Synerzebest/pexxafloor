@@ -144,6 +144,8 @@
         "price": "Prix",
         "priceLoading": "Calcul...",
         "priceUnavailable": "Prix indisponible",
+        "vatExcluded": "HTVA",
+        "vatIncluded": "TVAC",
         "genericPriceNote": "Prix calculé avec une configuration standard : pas de pose 20 cm, tuyau PERT et options par défaut. Le prix final peut changer dans le configurateur.",
         "height-installation": "Hauteur d'installation",
         "insulation": "Isolation",
