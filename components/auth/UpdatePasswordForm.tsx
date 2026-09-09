@@ -9,7 +9,13 @@ import { Loader2 } from "lucide-react";
 import { supabase } from "@/lib/supabaseClient";
 import PasswordInput from "@/components/ui/PasswordInput";
 
-export default function UpdatePasswordForm({ locale }: { locale: string }) {
+export default function UpdatePasswordForm({
+  locale,
+  recoveryError = false,
+}: {
+  locale: string;
+  recoveryError?: boolean;
+}) {
   const t = useTranslations("PasswordRecovery");
   const router = useRouter();
   const [password, setPassword] = useState("");
@@ -22,6 +28,12 @@ export default function UpdatePasswordForm({ locale }: { locale: string }) {
   useEffect(() => {
     let cancelled = false;
 
+    if (recoveryError) {
+      setHasSession(false);
+      setCheckingSession(false);
+      return;
+    }
+
     supabase.auth.getUser().then(({ data, error: userError }) => {
       if (cancelled) return;
       setHasSession(!userError && Boolean(data.user));
@@ -31,7 +43,7 @@ export default function UpdatePasswordForm({ locale }: { locale: string }) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [recoveryError]);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

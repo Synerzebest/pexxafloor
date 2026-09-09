@@ -39,6 +39,11 @@ export async function GET(request: Request) {
       return NextResponse.redirect(errorUrl);
     }
 
+    // Recovery must reach the password form, including for administrators.
+    if (/^\/(fr|nl|en)\/update-password\/?$/.test(next)) {
+      return NextResponse.redirect(new URL(next, url.origin));
+    }
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
