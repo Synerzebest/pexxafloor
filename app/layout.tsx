@@ -5,8 +5,9 @@ import { CartProvider } from "@/context/CartContext"
 import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
-  title: "PexxaFloor",
-  description: "Le site de chauffage au sol n°1",
+  title: "Chauffage au sol : kits et packs sur mesure | PexxaFloor",
+  description:
+    "Configurez votre pack de chauffage au sol sur mesure avec PexxaFloor. Estimation immédiate en ligne, équipements et accessoires pour particuliers et professionnels.",
 };
 
 const newsreader = Newsreader({
