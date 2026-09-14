@@ -4,9 +4,9 @@ export type LegalDocumentKey = "legal" | "terms" | "privacy" | "cookies" | "with
 type DocumentContent = { title: string; description: string; updated: string; sections: LegalSection[] };
 
 const company = {
-  fr: "Unisis Development SRL, exploitant la marque PexxaFloor — Rue du Broek 114, 1082, BERCHEM-SAINTE-AGATHE, Belgique — BCE/TVA BE 0871.407.121 — info@pexxafloor.be — +32 494 042 932.",
-  en: "Unisis Development SRL, trading under the PexxaFloor brand — Rue du Broek 114, 1082, BERCHEM-SAINTE-AGATHE, Belgique — company/VAT number BE 0871.407.121 — info@pexxafloor.be — +32 494 042 932.",
-  nl: "Unisis Development SRL, handelend onder het merk PexxaFloor — Rue du Broek 114, 1082, BERCHEM-SAINTE-AGATHE, Belgique — KBO/btw BE 0871.407.121 — info@pexxafloor.be — +32 494 042 932.",
+  fr: "Unisis Development SRL, exploitant la marque PexxaFloor — Rue du Broek 114, 1082, BERCHEM-SAINTE-AGATHE, Belgique — BCE/TVA BE 1020.797.613 — info@pexxafloor.be — +32 494 042 932.",
+  en: "Unisis Development SRL, trading under the PexxaFloor brand — Rue du Broek 114, 1082, BERCHEM-SAINTE-AGATHE, Belgique — company/VAT number BE 1020.797.613 — info@pexxafloor.be — +32 494 042 932.",
+  nl: "Unisis Development SRL, handelend onder het merk PexxaFloor — Rue du Broek 114, 1082, BERCHEM-SAINTE-AGATHE, Belgique — KBO/btw BE 1020.797.613 — info@pexxafloor.be — +32 494 042 932.",
 };
 
 const content: Record<"fr" | "en" | "nl", Record<LegalDocumentKey, DocumentContent>> = {
