@@ -1,3 +1,4 @@
+import { notifyOrder } from "@/lib/email/orderOutbox";
 import { NextResponse } from "next/server";
 import { requireRole } from "@/lib/requireRole";
 import { supabaseServer } from "@/lib/supabaseServer";
@@ -134,7 +135,7 @@ export async function PATCH(req: Request, { params }: Params) {
     if (order.status !== "verification" || order.picking_step !== "verification") {
       return NextResponse.json({ error: "Invalid order status" }, { status: 409 });
     }
-    const { error } = await supabaseServer
+    const { data: updatedOrder, error } = await supabaseServer
       .from("orders")
       .update({
         status: "packed",
@@ -142,10 +143,14 @@ export async function PATCH(req: Request, { params }: Params) {
         picking_items: products,
         picking_updated_at: now,
       })
-      .eq("id", id);
-    return error
-      ? NextResponse.json({ error: error.message }, { status: 500 })
-      : NextResponse.json({ success: true, products });
+      .eq("id", id)
+      .eq("status", "verification")
+      .select("id")
+      .maybeSingle();
+    if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+    if (!updatedOrder) return NextResponse.json({ error: "Order status already changed" }, { status: 409 });
+    const notification = await notifyOrder(id);
+    return NextResponse.json({ success: true, products, notification });
   }
 
   return NextResponse.json({ error: "Invalid action" }, { status: 400 });

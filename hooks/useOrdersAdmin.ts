@@ -68,7 +68,11 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
         return;
       }
 
-      toast.success("Statut mis à jour");
+      if (json.notification?.pending) {
+        toast.warning("Statut mis à jour. L’e-mail est en attente d’envoi.");
+      } else {
+        toast.success("Statut mis à jour");
+      }
 
       // Mettre à jour la liste des commandes
       setOrders((prev) =>
@@ -83,9 +87,9 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
       );
     } catch (err) {
       toast.error("Erreur réseau");
+    } finally {
+      setProcessing((prev) => ({ ...prev, [key]: false }));
     }
-
-    setProcessing((prev) => ({ ...prev, [key]: false }));
   }
 
   return {

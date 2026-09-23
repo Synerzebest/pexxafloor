@@ -1,3 +1,9 @@
+function escapeHtml(value: unknown): string {
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+    }[char]!));
+}
+
 // Définition de la Locale (simplifiée car 'next-intl' n'est pas disponible ici)
 type Locale = 'fr' | 'en' | 'nl';
 
@@ -39,13 +45,13 @@ function parseOrderItems(orderItems: any): ItemForEmail[] {
     return rawItems.map((item: any) => {
         if (!item || !item.type || !item.quantity) return null;
 
-        if (item.type === 'product' && item.product) {
-            const totalPrice = parseFloat((item.product.price * item.quantity).toString());
+        if (item.type === 'product') {
+            const totalPrice = parseFloat(((item.unit_price ?? item.product?.price ?? item.price) * item.quantity).toString());
             if (isNaN(totalPrice)) return null;
 
             return {
                 id: item.product_id || item.id,
-                description: item.product.name,
+                description: item.product?.name ?? item.name ?? item.product_id,
                 total_price: totalPrice,
                 quantity: item.quantity,
                 type: 'product',
@@ -110,7 +116,7 @@ function generateOrderDetailsHtml(items: ItemForEmail[], orderTotal: string, loc
             return `
                 <tr style="font-size:14px; color:#4b5563;">
                     <td style="padding:8px 0;">
-                        ${itemName}
+                        ${escapeHtml(itemName)}
                         ${quantityDisplay}
                     </td>
                     <td align="right" style="padding:8px 0; font-weight:600;">
@@ -165,8 +171,9 @@ const translations = {
         recapTitle: "Récapitulatif de la commande",
         noItems: "Aucun article dans la commande.",
         article: "Article",
-        price: "Prix",
-        total: "Total",
+        price: "Prix HTVA",
+        total: "Total payé TVAC",
+        status: "Statut",
         footerThanks: "Merci pour votre confiance,",
         footerTeam: "L’équipe PexxaFloor",
         buttonText: "Voir ma commande",
@@ -190,8 +197,9 @@ const translations = {
         recapTitle: "Order Summary",
         noItems: "No items in the order.",
         article: "Item",
-        price: "Price",
-        total: "Total",
+        price: "Price excl. VAT",
+        total: "Total paid incl. VAT",
+        status: "Status",
         footerThanks: "Thank you for your trust,",
         footerTeam: "The PexxaFloor Team",
         buttonText: "View my order",
@@ -215,8 +223,9 @@ const translations = {
         recapTitle: "Besteloverzicht",
         noItems: "Geen artikelen in de bestelling.",
         article: "Artikel",
-        price: "Prijs",
-        total: "Totaal",
+        price: "Prijs excl. btw",
+        total: "Totaal betaald incl. btw",
+        status: "Status",
         footerThanks: "Bedankt voor uw vertrouwen,",
         footerTeam: "Het PexxaFloor Team",
         buttonText: "Bekijk mijn bestelling",
@@ -346,7 +355,7 @@ export function generateOrderEmailHtml({
     const t = translations[locale] || translations['fr'];
     const productsForEmail = parseOrderItems(orderItems);
     const orderDetailsHtml = generateOrderDetailsHtml(productsForEmail, orderTotal, locale);
-    const stepperHtml = generateStepperHtml(currentStep, locale);
+    const stepperHtml = currentStep < 0 ? "" : generateStepperHtml(currentStep, locale);
 
     return `
 <!DOCTYPE html>
@@ -405,7 +414,7 @@ export function generateOrderEmailHtml({
             
             <tr>
               <td style="font-size:22px; font-weight:600; color:#111827; padding-bottom:15px;">
-                ${emailTitle}
+                ${escapeHtml(emailTitle)}<br><span style="font-size:14px;">#${escapeHtml(orderId.slice(0, 8))}</span>
               </td>
             </tr>
 
@@ -441,7 +450,7 @@ export function generateOrderEmailHtml({
                     font-weight:600;
                   "
                 >
-                  Statut : ${statusBadgeText}
+                  ${t.status} : ${escapeHtml(statusBadgeText)}
                 </span>
               </td>
             </tr>
@@ -449,7 +458,7 @@ export function generateOrderEmailHtml({
             <tr>
               <td align="center" style="padding-bottom:30px;">
                 <a
-                  href="${link}"
+                  href="${escapeHtml(link)}"
                   style="
                     display:inline-block;
                     background:#ff7a00;

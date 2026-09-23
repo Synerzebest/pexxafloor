@@ -178,17 +178,19 @@ export default function StorekeeperPage() {
   }, []);
 
   const markAsReady = async (orderId: string) => {
-    const { error } = await supabase
-      .from("orders")
-      .update({ status: "ready" })
-      .eq("id", orderId);
-
-    if (error) {
-      console.error(error);
-      message.error("Erreur lors de la mise à jour du statut");
-    } else {
-      message.success("Commande passée en 'packed'");
+    try {
+      const response = await fetch("/api/orders/ready", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: orderId }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error || "Erreur lors de la mise à jour du statut");
+      if (result.notification?.pending) message.warning("Commande prête. L’e-mail est en attente d’envoi.");
+      else message.success("Commande prête à expédier");
       fetchOrders(statusFilter);
+    } catch (error) {
+      message.error(error instanceof Error ? error.message : "Erreur réseau");
     }
   };
 

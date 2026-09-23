@@ -3,6 +3,7 @@ export const runtime = "nodejs";
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { supabaseServer } from "@/lib/supabaseServer";
+import { notifyOrder } from "@/lib/email/orderOutbox";
 import type { CartItem } from "@/context/CartContext";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -114,6 +115,7 @@ export async function POST(req: Request) {
           );
         }
 
+        await notifyOrder(existingOrder.id);
         return NextResponse.json({ received: true });
       }
 
@@ -175,6 +177,8 @@ export async function POST(req: Request) {
           { status: 500 }
         );
       }
+
+      await notifyOrder(order.id);
 
       // Nettoyage panier
       await supabase.from("carts_temp").delete().eq("id", cartId);

@@ -34,7 +34,8 @@ export function useStorekeeperOrders() {
       const json = await res.json();
       if (!res.ok) return message.error(json.error);
 
-      message.success("Commande passée en 'packed'");
+      if (json.notification?.pending) message.warning("Commande emballée. L’e-mail est en attente d’envoi.");
+      else message.success("Commande emballée");
 
       setOrders(prev =>
         prev.map(o => (o.id === id ? { ...o, status: "packed" } : o))

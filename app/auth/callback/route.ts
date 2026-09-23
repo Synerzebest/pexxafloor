@@ -7,9 +7,11 @@ export async function GET(request: Request) {
   const code = url.searchParams.get("code");
   const requestedNext = url.searchParams.get("next") || "/";
   const next =
-    requestedNext.startsWith("/") && !requestedNext.startsWith("//")
+    requestedNext.startsWith("/") && !requestedNext.startsWith("//") && !requestedNext.includes("\\")
       ? requestedNext
       : "/";
+  const locale = next.split("/").filter(Boolean)[0];
+  const supportedLocale = ["fr", "nl", "en"].includes(locale) ? locale : "fr";
 
   const cookieStore = await cookies();
 
@@ -18,21 +20,20 @@ export async function GET(request: Request) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        get(name: string) {
-          return cookieStore.get(name)?.value;
+        getAll() {
+          return cookieStore.getAll();
         },
-        set(name: string, value: string, options: any) {
-          cookieStore.set({ name, value, ...options });
-        },
-        remove(name: string, options: any) {
-          cookieStore.delete({ name, ...options });
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value, options }) => {
+            cookieStore.set(name, value, options);
+          });
         },
       }
     }
   );
 
   if (code) {
-    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
     if (error) {
       const errorUrl = new URL(next, url.origin);
       errorUrl.searchParams.set("recoveryError", "1");
@@ -40,8 +41,9 @@ export async function GET(request: Request) {
     }
 
     // Recovery must reach the password form, including for administrators.
-    if (/^\/(fr|nl|en)\/update-password\/?$/.test(next)) {
-      return NextResponse.redirect(new URL(next, url.origin));
+    const isRecovery = "redirectType" in data && data.redirectType === "recovery";
+    if (isRecovery || /^\/(fr|nl|en)\/update-password\/?$/.test(next)) {
+      return NextResponse.redirect(new URL(`/${supportedLocale}/update-password`, url.origin));
     }
 
     const {
@@ -55,10 +57,6 @@ export async function GET(request: Request) {
         .maybeSingle();
 
       if (profile?.user_role === "admin") {
-        const locale = next.split("/").filter(Boolean)[0];
-        const supportedLocale = ["fr", "nl", "en"].includes(locale)
-          ? locale
-          : "fr";
         return NextResponse.redirect(
           new URL(`/${supportedLocale}/admin`, url.origin)
         );

@@ -24,9 +24,22 @@ export async function middleware(req: NextRequest) {
   // 1. On laisse passer les routes d'authentification critiques
   if (
     req.nextUrl.pathname.startsWith("/auth/login") ||
+    req.nextUrl.pathname.startsWith("/auth/recovery") ||
     req.nextUrl.pathname.startsWith("/auth/callback")
   ) {
     return NextResponse.next();
+  }
+
+  // Supabase may fall back to the Site URL after a domain change.
+  // Exchange the code on the server before the browser consumes it and loses
+  // the recovery type stored with the PKCE verifier.
+  const entryPath = stripLocale(req.nextUrl.pathname);
+  const authCode = req.nextUrl.searchParams.get("code");
+  if (authCode && ["/", "/login", "/signup", "/update-password"].includes(entryPath)) {
+    const callbackUrl = new URL("/auth/callback", req.url);
+    callbackUrl.searchParams.set("code", authCode);
+    callbackUrl.searchParams.set("next", req.nextUrl.pathname);
+    return NextResponse.redirect(callbackUrl);
   }
 
   // 2. Initialiser la réponse avec l'internationalisation

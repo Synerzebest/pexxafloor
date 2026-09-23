@@ -21,8 +21,8 @@ export default function ForgotPasswordForm({ locale }: { locale: string }) {
     setLoading(true);
     setError(null);
 
-    const callbackUrl = new URL("/auth/callback", window.location.origin);
-    callbackUrl.searchParams.set("next", `/${locale}/update-password`);
+    const callbackUrl = new URL("/auth/recovery", window.location.origin);
+    callbackUrl.searchParams.set("locale", locale);
 
     const { error: resetError } = await supabase.auth.resetPasswordForEmail(
       email.trim(),

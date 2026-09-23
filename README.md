@@ -73,6 +73,11 @@ NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=<google-maps-browser-key>
 
 # Resend
 RESEND_API_KEY=<resend-api-key>
+RESEND_FROM_EMAIL="PexxaFloor <commandes@votre-domaine-verifie.be>"
+# Facultatif : adresse qui recevra les réponses des clients
+RESEND_REPLY_TO=info@votre-domaine.be
+# Secret aléatoire pour la tâche de relance (par exemple : openssl rand -hex 32)
+CRON_SECRET=<secret-aleatoire>
 ```
 
 `SUPABASE_SERVICE_ROLE_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` et `RESEND_API_KEY` sont strictement privés. Ils ne doivent jamais être préfixés par `NEXT_PUBLIC_`, exposés dans le navigateur ou ajoutés au dépôt Git.
@@ -255,3 +260,75 @@ Effectuez ensuite un test manuel dans les trois langues pour les parcours suivan
 ## Licence
 
 Projet privé. Toute reproduction, distribution ou utilisation sans autorisation est interdite.
+
+
+## Mise en service des e-mails automatiques
+
+### Commandes (API Resend)
+
+1. Vérifier le domaine de l’expéditeur dans Resend en ajoutant les entrées DNS demandées. L’adresse `onboarding@resend.dev` est réservée aux tests ; elle n’est plus utilisée par l’application.
+2. Renseigner `RESEND_API_KEY`, `RESEND_FROM_EMAIL`, `NEXT_PUBLIC_URL` et `CRON_SECRET` dans `.env.local` (ou `.env`) **et dans les variables de production de l’hébergeur**. `NEXT_PUBLIC_URL` doit être l’URL HTTPS canonique du site, avec la bonne variante `www`. Redémarrer le serveur local ou redéployer après modification.
+3. Exécuter [la migration de notifications](supabase/migrations/202609140001_order_email_outbox.sql) dans le SQL Editor Supabase **avant de déployer le nouveau code**. Elle ajoute une file privée et un déclencheur transactionnel sur les commandes. Elle n’envoie aucun mail aux anciennes commandes. Les nouveaux paiements et changements de statut sont enregistrés atomiquement avec la commande, même si Resend est indisponible.
+4. Déployer. Les routes métier tentent immédiatement l’envoi au propriétaire de la commande, dans la langue de la commande (FR/NL/EN). L’adresse est lue depuis Supabase Auth. Les liens mènent à `/{locale}/profile`, qui contient l’historique réel des commandes.
+
+Notifications couvertes : paiement confirmé (`paid`), préparation (`preparing`), emballage vérifié (`packed`), prête à expédier (`ready`), en livraison (`delivering`), livrée (`delivered`) et annulée (`cancelled`, si une commande passe à ce statut). L’étape `verification` est interne et ne produit pas un second mail de préparation. Les modifications directes de statut en base sont également mises en attente par le déclencheur SQL.
+
+### Relances et suivi
+
+`vercel.json` prévoit une relance quotidienne à 04:00 UTC, compatible avec une fréquence quotidienne. Les envois normaux restent immédiats. Pour une reprise rapide après panne, configurer un ordonnanceur appelant **toutes les 5 minutes** :
+
+```text
+GET https://votre-domaine.be/api/cron/emails
+Authorization: Bearer <CRON_SECRET>
+```
+
+Sur une offre Vercel autorisant cette fréquence, remplacer le planning par `*/5 * * * *`. Sur un autre hébergeur, configurer cet appel explicitement. Le traitement prend au plus 10 messages par appel ; augmenter la fréquence en cas de volume important. La route refuse tout appel sans le secret. Un échec donne un HTTP 503, exploitable par la supervision de l’ordonnanceur.
+
+Les messages refusés restent en base, avec des délais croissants de 5 à 60 minutes. Une notification d’une commande attend l’envoi des précédentes. Un verrou temporaire empêche deux traitements simultanés du même message. Une clé d’idempotence et le contenu exact de la requête sont conservés lors des reprises. Resend protège les doublons pendant 24 heures ; au-delà, une réponse réseau perdue après acceptation reste un cas ambigu. `sent_at` signifie **accepté par Resend**, pas nécessairement remis dans la boîte de réception : consulter Resend pour les rebonds et la délivrabilité.
+
+Pour diagnostiquer les notifications sans afficher les adresses ni le contenu des mails :
+
+```sql
+select id, order_id, status, attempts, sent_at, resend_id, last_error, available_at
+from public.order_email_outbox
+order by created_at desc
+limit 100;
+```
+
+Après correction de configuration, une notification en échec sera reprise au prochain passage. Le champ `request_payload` conserve l’expéditeur et le destinataire d’origine : si une mauvaise adresse d’expédition y est enregistrée, vérifier d’abord dans Resend qu’aucun envoi n’a été accepté avant toute réparation manuelle. Ne pas réinitialiser une notification déjà acceptée, au risque de la renvoyer.
+
+### Inscription et réinitialisation du mot de passe (Supabase Auth)
+
+Ces mails sont émis par **Supabase Auth**, qui ne lit pas la variable `RESEND_API_KEY` de Next.js. Activer son SMTP personnalisé :
+
+- Serveur : `smtp.resend.com`
+- Port : `465`
+- Utilisateur : `resend`
+- Mot de passe : la clé API Resend
+- Expéditeur : une adresse du domaine vérifié ; nom : `PexxaFloor`
+
+Vérifier aussi les paramètres Site URL, Redirect URLs et les modèles de confirmation/récupération dans Supabase. Ne pas remplacer les liens de confirmation Supabase par un simple lien vers l’accueil.
+
+Références : [SMTP Supabase avec Resend](https://resend.com/docs/send-with-supabase-smtp), [idempotence Resend](https://resend.com/docs/dashboard/emails/idempotency-keys).
+
+### Vérification
+
+```bash
+node --test tests/order-email.test.cjs
+npx tsc --noEmit --incremental false
+```
+
+Les tests simulent Resend ; aucun mail réel n’est envoyé. Avant mise en service, utiliser un compte de test pour vérifier la confirmation d’inscription, la récupération du mot de passe, un paiement Stripe de test puis chaque transition de commande. Vérifier le destinataire, la langue, le lien, le statut Resend et l’absence de nouvel envoi lorsqu’on rejoue la tâche. Simuler ensuite un refus Resend et contrôler la reprise après correction.
+
+### Récupération du mot de passe sur pexxafloor.be
+
+Déployer `/auth/recovery` avant de changer le modèle du mail. Dans Supabase :
+
+1. **Authentication → URL Configuration → Site URL** : `https://pexxafloor.be` (sans slash final).
+2. Ajouter les Redirect URLs `https://pexxafloor.be/auth/recovery?locale=fr`, `https://pexxafloor.be/auth/recovery?locale=nl` et `https://pexxafloor.be/auth/recovery?locale=en`. Conserver les URLs de callback utilisées par l’inscription et Google.
+3. Dans **Email Templates → Reset Password**, utiliser [le modèle de récupération](supabase/templates/recovery.html). Son lien `{{ .SiteURL }}/auth/recovery?token_hash={{ .TokenHash }}` est vérifié exclusivement comme une récupération, puis redirigé vers le formulaire français. Il fonctionne également depuis un autre navigateur, sans dépendre d’un cookie PKCE du navigateur d’origine.
+4. Demander un **nouveau** mail depuis la production. Tester avec un compte admin et un compte client. Un lien expiré ou déjà utilisé doit afficher l’erreur de récupération, même si le navigateur a déjà une session.
+
+Le modèle Supabase standard `{{ .ConfirmationURL }}` reste pris en charge avec les nouvelles adresses de retour ; son parcours PKCE nécessite le navigateur et le domaine d’origine. Le modèle fourni ci-dessus rend explicite la destination du mail et évite de dépendre de la redirection par défaut vers l’accueil.
+
+Vérification locale (aucun vrai mail envoyé) : `node --test tests/password-recovery.test.cjs`.

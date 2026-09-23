@@ -3,6 +3,8 @@
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import type { User } from "@supabase/supabase-js";
+import { useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 
 type AuthContextType = {
   user: User | null;
@@ -17,6 +19,8 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+  const locale = useLocale();
+  const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -33,14 +37,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     refreshUser();
 
     const { data: sub } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      (event, session) => {
         setUser(session?.user ?? null);
         setLoading(false);
+        if (event === "PASSWORD_RECOVERY") {
+          router.replace(`/${locale}/update-password`);
+        }
       }
     );
 
     return () => sub.subscription.unsubscribe();
-  }, [refreshUser]);
+  }, [refreshUser, locale, router]);
 
   return (
     <AuthContext.Provider value={{ user, loading, refreshUser }}>

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { StorekeeperProduct } from "@/types/StorekeeperProductType";
 import type { Order } from "@/types/OrderType";
@@ -46,6 +47,7 @@ export function useOrder(orderId: string) {
       });
       const data = await response.json();
       if (!response.ok) return { error: data.error || "Unable to save" };
+      if (data.notification?.pending) toast.warning("Commande mise à jour. L’e-mail est en attente d’envoi.");
       if (data.products && action !== "save_progress") setProducts(data.products);
       if (data.step) setStep(data.step);
       return { error: null };
