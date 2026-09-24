@@ -21,6 +21,7 @@ function stripLocale(pathname: string) {
 }
 
 export async function middleware(req: NextRequest) {
+  if (req.nextUrl.pathname === "/opengraph-image") return NextResponse.next();
   // 1. On laisse passer les routes d'authentification critiques
   if (
     req.nextUrl.pathname.startsWith("/auth/login") ||

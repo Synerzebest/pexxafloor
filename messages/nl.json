@@ -71,9 +71,9 @@
     "FAQ": {
       "title": { "first": "Veelgestelde", "second": "vragen" },
       "items": {
-        "1": { "question": "Is vloerverwarming geschikt voor alle soorten vloeren?", "answer": "Ja. Onze systemen zijn geschikt voor tegels, parket, vinyl, laminaat en pvc, zowel bij renovatie als nieuwbouw." },
-        "2": { "question": "Kan ik de vloerverwarming zelf installeren?", "answer": "Ja. Onze kits zijn ontworpen voor een eenvoudige installatie en een gedetailleerde handleiding begeleidt u stap voor stap. Onze technische ondersteuning blijft beschikbaar indien nodig." },
-        "3": { "question": "Hoeveel elektriciteit verbruikt vloerverwarming?", "answer": "Het verbruik ligt doorgaans tussen 70 en 150 W/m², afhankelijk van het gebruik en de isolatie. Met een thermostaat kunt u de temperatuur nauwkeurig programmeren en regelen." }
+        "1": { "question": "Is vloerverwarming geschikt voor mijn vloerafwerking?", "answer": "De geschiktheid hangt af van het systeem, de vloerafwerking en de warmteweerstand. Controleer de voorschriften van de fabrikant voor tegels, parket, vinyl of laminaat en de toegestane temperaturen voordat u uw installatie kiest." },
+        "2": { "question": "Kan ik vloerverwarming zelf installeren?", "answer": "Dit hangt af van het gekozen systeem en uw ervaring. Raadpleeg de technische handleidingen en laat de dimensionering, aansluitingen en ingebruikname controleren door een gekwalificeerde vakman." },
+        "3": { "question": "Waarvan hangt het energieverbruik van vloerverwarming af?", "answer": "Het verbruik hangt onder meer af van de isolatie, de verwarmde oppervlakte, de gewenste temperatuur, de regeling en de warmtebron. Vermogen in W/m² is niet hetzelfde als verbruik in kWh. De configurator raamt het benodigde materiaal, niet het energieverbruik van de woning." }
       }
     },
     "ProLanding": {

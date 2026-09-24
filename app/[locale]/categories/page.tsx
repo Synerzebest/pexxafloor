@@ -1,5 +1,11 @@
+import { staticMetadata } from "@/lib/seo/metadata";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return staticMetadata((await params).locale, "categories");
+}
+
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { publicCatalog } from "@/lib/seo/catalog";
+const supabase = publicCatalog();
 import { getLocale } from "next-intl/server";
 import { Navbar, Footer, ProBadge } from "@/components";
 import CategoriesContent from "./CategoriesContent";

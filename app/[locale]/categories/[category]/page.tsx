@@ -1,5 +1,11 @@
+import { categoryMetadata } from "@/lib/seo/catalog";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string; category: string }> }) {
+  return categoryMetadata(await params);
+}
+
 import { notFound } from "next/navigation";
-import { supabase } from "@/lib/supabaseClient";
+import { publicCatalog } from "@/lib/seo/catalog";
+const supabase = publicCatalog();
 import { getLocale } from "next-intl/server";
 import { Navbar, Footer, ProBadge } from "@/components";
 import CategoryContent from "./CategoryContent";

@@ -332,3 +332,20 @@ Déployer `/auth/recovery` avant de changer le modèle du mail. Dans Supabase :
 Le modèle Supabase standard `{{ .ConfirmationURL }}` reste pris en charge avec les nouvelles adresses de retour ; son parcours PKCE nécessite le navigateur et le domaine d’origine. Le modèle fourni ci-dessus rend explicite la destination du mail et évite de dépendre de la redirection par défaut vers l’accueil.
 
 Vérification locale (aucun vrai mail envoyé) : `node --test tests/password-recovery.test.cjs`.
+
+
+## Référencement naturel
+
+- Domaine canonique : `https://pexxafloor.be`, défini dans `lib/seo/metadata.ts`. Le domaine `www` redirige en permanence vers ce domaine ; conserver cette direction dans Vercel pour éviter une boucle de redirections.
+- Titres, descriptions, URL canoniques, Open Graph et correspondances FR/NL/EN par page publique. Les fiches utilisent les noms/descriptions traduits du catalogue.
+- `/sitemap.xml` liste les pages publiques, catégories, produits et packs actifs dans les trois langues. Il est régénéré toutes les heures et pagine les lectures Supabase. Une erreur de catalogue n’est pas remplacée par un sitemap incomplet.
+- `/robots.txt` déclare le sitemap. Les pages de compte, panier, inscription et gestion portent `noindex`. Elles restent explorables pour que les moteurs puissent lire cette directive. Les déploiements Vercel Preview sont non indexables.
+- Les fiches produits publient `Product`, `Offer` et `BreadcrumbList`. Le prix structuré est le prix public TVAC à 21 %, jamais une remise PRO. Aucun stock, avis ou fabricant n’est inventé.
+- Les packs ont un titre et une introduction rendus côté serveur, puis un configurateur interactif. Les packs actifs sont également accessibles depuis l’accueil.
+- L’image de partage par défaut est générée à `/opengraph-image`.
+
+Après déploiement : vérifier le domaine dans Google Search Console via DNS et soumettre `https://pexxafloor.be/sitemap.xml`. Inspecter une page FR, NL et EN, ainsi qu’une fiche produit avec le test Google des résultats enrichis. Contrôler les Core Web Vitals dans Search Console lorsque suffisamment de données réelles sont disponibles. Merchant Center et la validation des comptes Google sont des étapes externes ; aucun compte n’est créé automatiquement.
+
+Amélioration éditoriale continue : renseigner des descriptions uniques et exactes dans `description_fr`, `description_nl` et `description_en`, avec références, usages, compatibilités et contraintes de pose vérifiées. Ajouter des photos pertinentes et des liens de partenaires légitimes. Ne pas ajouter d’avis fictifs ni de pages locales dupliquées.
+
+Tests SEO : `node --test tests/seo.test.cjs` et `npm run build`.

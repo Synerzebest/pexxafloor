@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
+import { getLocale } from "next-intl/server";
+import { SITE_URL } from "@/lib/seo/metadata";
 import "./globals.css";
 import { Newsreader } from "next/font/google";
 import { CartProvider } from "@/context/CartContext"
 import { Analytics } from "@vercel/analytics/next"
 
 export const metadata: Metadata = {
-  title: "Chauffage au sol : kits et packs sur mesure | PexxaFloor",
-  description:
-    "Configurez votre pack de chauffage au sol sur mesure avec PexxaFloor. Estimation immédiate en ligne, équipements et accessoires pour particuliers et professionnels.",
+  metadataBase: new URL(SITE_URL),
+  title: { default: "PexxaFloor", template: "%s | PexxaFloor" },
+  robots: process.env.VERCEL_ENV === "preview" ? { index: false, follow: false } : { index: true, follow: true },
 };
 
 const newsreader = Newsreader({
@@ -15,13 +17,14 @@ const newsreader = Newsreader({
   variable: "--font-newsreader",
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const locale = await getLocale();
   return (
-    <html lang="fr" className={newsreader.variable}>
+    <html lang={locale} className={newsreader.variable}>
       <body>
         <Analytics />
         <CartProvider>

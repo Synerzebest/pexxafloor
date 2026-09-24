@@ -28,6 +28,8 @@ export default function ProductGallery({ images, alt }: Props) {
             <Image
               src={url}
               alt={`${alt} ${idx + 1}`}
+              sizes="(max-width: 768px) 100vw, 448px"
+              priority={idx === 0}
               fill
               className="object-contain rounded-lg"
             />
@@ -51,6 +53,7 @@ export default function ProductGallery({ images, alt }: Props) {
             <Image
               src={url}
               alt={`${alt} - ${idx + 1}`}
+              sizes="80px"
               fill
               className="object-contain"
             />

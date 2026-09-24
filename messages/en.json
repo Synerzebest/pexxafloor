@@ -71,9 +71,9 @@
     "FAQ": {
       "title": { "first": "Frequently asked", "second": "questions" },
       "items": {
-        "1": { "question": "Is underfloor heating compatible with every type of flooring?", "answer": "Yes. Our systems are compatible with tiles, parquet, vinyl, laminate and PVC, for both renovation and new-build projects." },
-        "2": { "question": "Can I install the heating system myself?", "answer": "Yes. Our kits are designed for easy installation and detailed instructions guide you step by step. Our technical support remains available if needed." },
-        "3": { "question": "How much electricity does underfloor heating use?", "answer": "Consumption generally ranges from 70 to 150 W/m² depending on use and insulation. A thermostat lets you schedule and precisely adjust the temperature to control consumption." }
+        "1": { "question": "Is underfloor heating compatible with my floor covering?", "answer": "Compatibility depends on the heating system, floor covering and its thermal resistance. Check the manufacturer’s requirements for tiles, parquet, vinyl or laminate, including temperature limits, before choosing your installation." },
+        "2": { "question": "Can I install underfloor heating myself?", "answer": "This depends on the system and your experience. Consult the technical instructions and have a qualified professional check the system sizing, connections and commissioning." },
+        "3": { "question": "What affects underfloor heating energy consumption?", "answer": "Consumption depends on factors such as insulation, heated floor area, target temperature, controls and the heat source. Power in W/m² is not the same as energy consumption in kWh. The configurator estimates the required materials, not the home’s energy consumption." }
       }
     },
     "ProLanding": {

@@ -71,9 +71,9 @@
     "FAQ": {
       "title": { "first": "Questions", "second": "Fréquentes" },
       "items": {
-        "1": { "question": "Le chauffage au sol est-il compatible avec tous les types de sols ?", "answer": "Oui. Nos systèmes sont compatibles avec le carrelage, le parquet, le vinyle, le stratifié et le PVC, pour les projets de rénovation comme de construction neuve." },
-        "2": { "question": "Puis-je installer le chauffage moi-même ?", "answer": "Oui. Nos kits sont conçus pour être installés facilement et une notice détaillée vous guide étape par étape. Notre support technique reste disponible si nécessaire." },
-        "3": { "question": "Quelle est la consommation électrique du chauffage au sol ?", "answer": "La consommation varie généralement entre 70 et 150 W/m² selon l’usage et l’isolation. Un thermostat permet de programmer et d’ajuster précisément la température afin de maîtriser la consommation." }
+        "1": { "question": "Le chauffage au sol est-il compatible avec mon revêtement ?", "answer": "La compatibilité dépend du système, du revêtement et de sa résistance thermique. Vérifiez les prescriptions du fabricant pour le carrelage, le parquet, le vinyle ou le stratifié, ainsi que les limites de température avant de choisir votre installation." },
+        "2": { "question": "Puis-je installer le chauffage au sol moi-même ?", "answer": "La pose dépend du système choisi et de votre expérience. Consultez les notices techniques et faites valider le dimensionnement, les raccordements et la mise en service par un professionnel qualifié." },
+        "3": { "question": "De quoi dépend la consommation du chauffage au sol ?", "answer": "La consommation dépend notamment de l’isolation du bâtiment, de la surface chauffée, de la température souhaitée, de la régulation et du générateur de chaleur. Une puissance en W/m² ne correspond pas à une consommation en kWh. Le configurateur estime le matériel nécessaire, pas la consommation énergétique du logement." }
       }
     },
     "ProLanding": {

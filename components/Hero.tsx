@@ -24,7 +24,8 @@ export default function Hero() {
       {/* Background Image */}
       <Image
         src="/images/hero.jpeg"
-        alt="Floor heating background"
+        alt=""
+        sizes="100vw"
         fill
         priority
         className="object-cover opacity-40"
@@ -45,7 +46,7 @@ export default function Hero() {
       >
         {/* Title */}
         <motion.h1
-          initial={{ opacity: 0, x: -40 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
           className="
@@ -59,7 +60,7 @@ export default function Hero() {
 
         {/* Subtitle */}
         <motion.p
-          initial={{ opacity: 0, x: -40 }}
+          initial={false}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.7 }}
           className="

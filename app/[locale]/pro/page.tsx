@@ -1,3 +1,8 @@
+import { staticMetadata } from "@/lib/seo/metadata";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  return staticMetadata((await params).locale, "pro");
+}
+
 import { Briefcase, Truck, Percent, Clock, Shield, ArrowRight } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import Link from 'next/link';

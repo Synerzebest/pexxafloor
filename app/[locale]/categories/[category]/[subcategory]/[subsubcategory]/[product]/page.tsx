@@ -1,3 +1,9 @@
+import JsonLd from "@/components/seo/JsonLd";
+import { productMetadata, productStructuredData } from "@/lib/seo/product";
+export async function generateMetadata({ params }: { params: ProductRouteParams }) {
+  return productMetadata(await params);
+}
+
 import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
 import { notFound } from "next/navigation";
 import { Navbar, Footer, ProductGallery, AddToCartButton, ProBadge } from "@/components";
@@ -180,6 +186,7 @@ if (prod.subcategory.category.slug !== category) {
 
   return (
     <>
+      <JsonLd data={productStructuredData(prod, locale)} />
       <Navbar />
 
       <ProBadge />
