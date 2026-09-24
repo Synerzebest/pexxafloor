@@ -2,14 +2,8 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin"
 
 const nextConfig: NextConfig = {
-    async redirects() {
-        return [{
-            source: "/:path*",
-            has: [{ type: "host", value: "www.pexxafloor.be" }],
-            destination: "https://pexxafloor.be/:path*",
-            permanent: true,
-        }];
-    },
+    // Domain redirects are managed in Vercel (apex -> www).
+    // A reverse redirect here would create an infinite loop.
     async headers() {
         return ["/auth/:path*", "/api/:path*"].map(source => ({
             source,

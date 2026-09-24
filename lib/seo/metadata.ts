@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
 // Canonicals must never inherit a localhost or Vercel preview origin.
-export const SITE_URL = "https://pexxafloor.be";
+export const SITE_URL = "https://www.pexxafloor.be";
 export const locales = ["fr", "nl", "en"] as const;
 export type Locale = typeof locales[number];
 export function seoLocale(value: string): Locale {

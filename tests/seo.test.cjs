@@ -21,8 +21,8 @@ const metadata = load('lib/seo/metadata.ts');
 test('canonical and translated alternatives use the production domain and matching paths',()=>{
   for(const locale of metadata.locales) {
     const data=metadata.pageMetadata(locale,'packs/natte','A name','A description');
-    assert.equal(data.alternates.canonical,`https://pexxafloor.be/${locale}/packs/natte`);
-    for(const other of metadata.locales) assert.equal(data.alternates.languages[other],`https://pexxafloor.be/${other}/packs/natte`);
+    assert.equal(data.alternates.canonical,`https://www.pexxafloor.be/${locale}/packs/natte`);
+    for(const other of metadata.locales) assert.equal(data.alternates.languages[other],`https://www.pexxafloor.be/${other}/packs/natte`);
     assert.equal(data.openGraph.url,data.alternates.canonical);
   }
   assert.notEqual(metadata.staticMetadata('fr','home').title.absolute, metadata.staticMetadata('nl','home').title.absolute);
@@ -54,13 +54,13 @@ test('sitemap paginates products and includes only valid public paths in every l
   }})};
   const result=await load('app/sitemap.ts',{'@/lib/seo/catalog':mock}).default();
   const urls=result.map(row=>row.url);
-  assert.ok(urls.includes('https://pexxafloor.be/fr/categories/heat/pipes/default/product-500'));
-  assert.ok(urls.includes('https://pexxafloor.be/nl/packs/natte'));
+  assert.ok(urls.includes('https://www.pexxafloor.be/fr/categories/heat/pipes/default/product-500'));
+  assert.ok(urls.includes('https://www.pexxafloor.be/nl/packs/natte'));
   assert.ok(!urls.some(url=>/orphan|hidden|login|admin|profile/.test(url)));
   assert.equal(new Set(urls).size,urls.length);
 });
 test('production robots advertise sitemap; previews do not permit crawling',()=>{
-  const prod=load('app/robots.ts').default();assert.equal(prod.sitemap,'https://pexxafloor.be/sitemap.xml');
+  const prod=load('app/robots.ts').default();assert.equal(prod.sitemap,'https://www.pexxafloor.be/sitemap.xml');
   assert.ok(!prod.rules.disallow.includes('/fr/login'));
   const preview=load('app/robots.ts',{}, {VERCEL_ENV:'preview'}).default();assert.equal(preview.rules.disallow,'/');
 });
