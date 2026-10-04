@@ -113,21 +113,29 @@ export default function ProSignupForm({ locale }: Props) {
       return;
     }
 
-    const { data: existing, error: checkError } = await supabase
-      .from("pro_applications")
-      .select("id, status")
-      .eq("user_id", user.id)
-      .maybeSingle();
+    const [{ data: profile, error: profileError }, { data: existing, error: checkError }] =
+      await Promise.all([
+        supabase
+          .from("profiles")
+          .select("is_pro")
+          .eq("id", user.id)
+          .maybeSingle(),
+        supabase
+          .from("pro_applications")
+          .select("id, status")
+          .eq("user_id", user.id)
+          .maybeSingle(),
+      ]);
 
-    if (checkError) {
+    if (profileError || checkError) {
       setLoading(false);
-      setErr("Erreur de vérification, veuillez réessayer.");
+      setErr(t("errors.check"));
       return;
     }
 
-    if (existing) {
+    if (profile?.is_pro === true || existing) {
       setLoading(false);
-      setErr("Vous avez déjà une demande en cours ou validée.");
+      setErr(t("errors.alreadyProOrApplied"));
       return;
     }
 

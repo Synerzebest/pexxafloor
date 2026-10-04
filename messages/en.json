@@ -114,7 +114,7 @@
       "eyebrow": "Instant quote",
       "title": { "line1": "Underfloor heating", "line2": "tailored" },
       "subtitle": "Get an immediate estimate by simply entering the surface to heat.",
-      "surfaceLabel": "Surface to heat in square meters",
+      "surfaceLabel": "Enter the actual area to be heated here, deducting the spaces where no tubing will be installed (closets and fixed furniture, kitchen island, shower, bathtub, etc.).",
       "surfacePlaceholder": "e.g. 85",
       "cta": "Get my price",
       "points": {
@@ -333,7 +333,9 @@
       "errors": {
         "required": "Please complete all required fields.",
         "session": "Your session expired. Please sign in again.",
-        "acceptTerms": "You must accept the terms and conditions to continue."
+        "acceptTerms": "You must accept the terms and conditions to continue.",
+        "check": "Unable to check your professional status. Please try again.",
+        "alreadyProOrApplied": "You are already a PRO customer or you already have a request in progress."
       }
     },
     "AdminPro": {
@@ -560,7 +562,7 @@
       "reset": "Reset"
     },
     "PackIncluded": {
-      "title": "Included in the pack"
+      "title": "Free with the purchase of this pack"
     },
     "PackOptions": {
       "title": "Available options (Add)"

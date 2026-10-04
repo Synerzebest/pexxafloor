@@ -114,7 +114,7 @@
         "eyebrow": "Devis instantané",
         "title": { "line1": "Chauffage au sol", "line2": "sur mesure" },
         "subtitle": "Obtenez une estimation immédiate de votre installation en indiquant simplement la surface à chauffer.",
-        "surfaceLabel": "Surface à chauffer en mètres carrés",
+        "surfaceLabel": "Indiquez ici la surface réellement à chauffer, en déduisant les zones où aucun tube ne sera posé (placards et meubles fixes, îlot de cuisine, douche, baignoire, etc.).",
         "surfacePlaceholder": "Ex. 85",
         "cta": "Calculer mon prix",
         "points": {
@@ -333,7 +333,9 @@
         "errors": {
           "required": "Veuillez compléter tous les champs obligatoires.",
           "session": "Votre session a expiré. Merci de vous reconnecter.",
-          "acceptTerms": "Vous devez accepter les conditions pour continuer."
+          "acceptTerms": "Vous devez accepter les conditions pour continuer.",
+          "check": "Impossible de vérifier votre statut professionnel. Veuillez réessayer.",
+          "alreadyProOrApplied": "Vous êtes déjà client PRO ou vous avez déjà une demande en cours."
         }
     },
     "AdminPro": {
@@ -560,7 +562,7 @@
       "reset": "Réinitialiser"
     },
     "PackIncluded": {
-      "title": "Inclus dans le pack"
+      "title": "Offert à l'achat de ce pack"
     },
     "PackOptions": {
       "title": "Options disponibles (Ajouter)"

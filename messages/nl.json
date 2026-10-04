@@ -114,7 +114,7 @@
         "eyebrow": "Directe offerte",
         "title": { "line1": "Vloerverwarming", "line2": "op maat" },
         "subtitle": "Krijg meteen een schatting door enkel het te verwarmen oppervlak in te geven.",
-        "surfaceLabel": "Oppervlakte in vierkante meter",
+        "surfaceLabel": "Voer hier het daadwerkelijke te verwarmen oppervlak in, onder aftrek van de ruimtes waar geen leidingen worden aangelegd (kasten en vast meubilair, kookeiland, douche, bad, enz.).",
         "surfacePlaceholder": "Bijv. 85",
         "cta": "Mijn prijs berekenen",
         "points": {
@@ -333,7 +333,9 @@
       "errors": {
         "required": "Vul alle verplichte velden in.",
         "session": "Uw sessie is verlopen. Gelieve opnieuw in te loggen.",
-        "acceptTerms": "U moet de voorwaarden accepteren om verder te gaan."
+        "acceptTerms": "U moet de voorwaarden accepteren om verder te gaan.",
+        "check": "Uw professionele status kan niet worden gecontroleerd. Probeer opnieuw.",
+        "alreadyProOrApplied": "U bent al PRO-klant of u hebt al een aanvraag lopen."
       }
     },    
     "AdminPro": {
@@ -560,7 +562,7 @@
       "reset": "Reset"
     },
     "PackIncluded": {
-      "title": "Inbegrepen in het pakket"
+      "title": "Gratis bij aankoop van dit pakket"
     },
     "PackOptions": {
       "title": "Beschikbare opties (Toevoegen)"

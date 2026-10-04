@@ -25,7 +25,6 @@ export default function UserButton() {
   const { quotes, openQuoteList } = useQuotes();
 
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [profileLoading, setProfileLoading] = useState(true);
   const [open, setOpen] = useState(false);
 
   const rootRef = useRef<HTMLDivElement>(null);
@@ -37,25 +36,32 @@ export default function UserButton() {
 
     if (!user) {
       setProfile(null);
-      setProfileLoading(false);
       return;
     }
 
+    const currentUser = user;
     let cancelled = false;
 
     async function loadProfile() {
-      setProfileLoading(true);
-      if(!user) return
+      try {
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("id, name, is_pro")
+          .eq("id", currentUser.id)
+          .maybeSingle();
 
-      const { data } = await supabase
-        .from("profiles")
-        .select("id, name, is_pro")
-        .eq("id", user.id)
-        .single();
+        if (error) {
+          console.error("Unable to load user profile:", error);
+        }
 
-      if (!cancelled) {
-        setProfile(data ?? null);
-        setProfileLoading(false);
+        if (!cancelled) {
+          setProfile(error ? null : data ?? null);
+        }
+      } catch (error) {
+        console.error("Unable to load user profile:", error);
+        if (!cancelled) {
+          setProfile(null);
+        }
       }
     }
 
@@ -90,7 +96,7 @@ export default function UserButton() {
     };
   }, []);
 
-  if (loading || profileLoading) {
+  if (loading) {
     return (
       <div className="inline-flex items-center gap-2 px-2 py-1.5">
         {/* Avatar skeleton */}

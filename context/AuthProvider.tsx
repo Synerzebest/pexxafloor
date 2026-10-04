@@ -12,6 +12,15 @@ type AuthContextType = {
   refreshUser: () => Promise<User | null>;
 };
 
+function withTimeout<T>(promise: Promise<T>, ms: number) {
+  return Promise.race([
+    promise,
+    new Promise<never>((_, reject) =>
+      window.setTimeout(() => reject(new Error("Auth request timed out")), ms)
+    ),
+  ]);
+}
+
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
@@ -26,11 +35,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const refreshUser = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase.auth.getUser();
-    const nextUser = error ? null : data.user ?? null;
-    setUser(nextUser);
-    setLoading(false);
-    return nextUser;
+    try {
+      const { data, error } = await withTimeout(supabase.auth.getUser(), 8000);
+      const nextUser = error ? null : data.user ?? null;
+      setUser(nextUser);
+      return nextUser;
+    } catch (error) {
+      console.error("Unable to refresh auth user:", error);
+      setUser(null);
+      return null;
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {

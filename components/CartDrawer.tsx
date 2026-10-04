@@ -137,6 +137,7 @@ export default function CartDrawer() {
                     if (item.type === "pack") {
                       const packHTVA = item.total * item.quantity;
                       const packTVAC = packHTVA * (1 + TVA_RATE);
+                      const editPackHref = `/${locale}/packs/${item.slug}?packId=${item.id}`;
 
                       return (
                         <li
@@ -177,7 +178,8 @@ export default function CartDrawer() {
                               ))}
                             </ul>
                             <Link
-                              href={`/packs/${item.slug}?packId=${item.id}`}
+                              href={editPackHref}
+                              onClick={closeCart}
                               className="inline-block mt-2 text-blue-600 hover:underline"
                             >
                               {t("editPack")}
@@ -210,7 +212,8 @@ export default function CartDrawer() {
                               </button>
                             </div>
                             <Link
-                              href={`/packs/${item.slug}?packId=${item.id}`}
+                              href={editPackHref}
+                              onClick={closeCart}
                               className="text-blue-600 text-sm hover:underline"
                             >
                               {t("edit")}

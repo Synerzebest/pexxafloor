@@ -32,13 +32,19 @@ export default function ProButton({
         .eq("user_id", userId)
         .maybeSingle();
 
-      if (error) {
-        console.error("Supabase error:", error);
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("is_pro")
+        .eq("id", userId)
+        .maybeSingle();
+
+      if (error || profileError) {
+        console.error("Supabase error:", error || profileError);
         return;
       }
 
       setHasApp(!!app);
-      setIsPro(app?.status === "VERIFIED");
+      setIsPro(profile?.is_pro === true || app?.status === "VERIFIED");
     }
 
     check();
@@ -55,7 +61,7 @@ export default function ProButton({
             <p className="mt-1 text-sm text-gray-700">{t("pro.desc")}</p>
           </div>
           <Link
-            href={`/${locale}/pro-signup`}
+            href={`/${locale}/pro`}
             className="w-fit mt-4 sm:mt-0 inline-block rounded-xl bg-orange-600 hover:bg-orange-700 px-4 py-2 text-white font-medium"
           >
             {t("pro.button")}
