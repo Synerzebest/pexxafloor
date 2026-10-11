@@ -1,5 +1,7 @@
 "use client";
 
+import { formatEuro, toInclVat } from "@/lib/pricing/vat";
+import { Price } from "@/components/ui/Price";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
@@ -12,8 +14,8 @@ export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeFromCart } = useCart();
   const locale = useLocale();
   const t = useTranslations("CartDrawer");
+  const tc = useTranslations("Common");
 
-  const TVA_RATE = 0.21; // 21%
 
   const totalHTVA = items.reduce((acc, i) => {
     if (i.type === "product") return acc + (i.product?.price ?? 0) * i.quantity;
@@ -21,7 +23,8 @@ export default function CartDrawer() {
     return acc;
   }, 0);
 
-  const totalTVAC = totalHTVA * (1 + TVA_RATE);
+  // "Mon panier" is the one place (with payment) where both totals are shown
+  const totalTVAC = toInclVat(totalHTVA);
 
   return (
     <AnimatePresence>
@@ -65,7 +68,6 @@ export default function CartDrawer() {
                     // === PRODUIT ===
                     if (item.type === "product") {
                       const priceHTVA = item.product?.price ?? 0;
-                      const priceTVAC = priceHTVA * (1 + TVA_RATE);
 
                       return (
                         <li
@@ -87,14 +89,7 @@ export default function CartDrawer() {
                           </div>
 
                           {/* Prix */}
-                          <div className="flex items-center justify-between">
-                            <p className="text-orange-600 font-semibold text-lg">
-                              {priceTVAC.toFixed(2)} € TVAC
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {priceHTVA.toFixed(2)} € HTVA
-                            </p>
-                          </div>
+                          <Price exclVat={priceHTVA} className="text-orange-600 font-semibold text-lg" />
 
                           {/* Contrôles quantité + supprimer */}
                           <div className="flex items-center justify-start">
@@ -136,7 +131,6 @@ export default function CartDrawer() {
                     // === PACK ===
                     if (item.type === "pack") {
                       const packHTVA = item.total * item.quantity;
-                      const packTVAC = packHTVA * (1 + TVA_RATE);
                       const editPackHref = `/${locale}/packs/${item.slug}?packId=${item.id}`;
 
                       return (
@@ -157,14 +151,7 @@ export default function CartDrawer() {
                             </button>
                           </div>
 
-                          <div>
-                            <p className="text-orange-600 font-semibold text-lg">
-                              {packTVAC.toFixed(2)} € TVAC
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {packHTVA.toFixed(2)} € HTVA
-                            </p>
-                          </div>
+                          <Price exclVat={packHTVA} className="text-orange-600 font-semibold text-lg" />
 
                           <PackContentsPreview pack={item} />
 
@@ -214,12 +201,12 @@ export default function CartDrawer() {
             {/* Footer */}
             <div className="mt-4 border-t pt-3 space-y-1">
               <div className="flex justify-between text-sm text-gray-600">
-                <span>Total HTVA</span>
-                <span>{totalHTVA.toFixed(2)} €</span>
+                <span>{tc("totalExclVat")}</span>
+                <span className="tabular-nums">{formatEuro(totalHTVA, locale)}</span>
               </div>
               <div className="flex justify-between text-lg font-semibold text-orange-600">
-                <span>Total TVAC</span>
-                <span>{totalTVAC.toFixed(2)} €</span>
+                <span>{tc("totalInclVat")}</span>
+                <span className="tabular-nums">{formatEuro(totalTVAC, locale)}</span>
               </div>
 
               <div className="mt-4 flex gap-2">

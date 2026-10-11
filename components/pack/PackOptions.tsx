@@ -1,5 +1,6 @@
 "use client";
 
+import { Price } from "@/components/ui/Price";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
@@ -59,9 +60,7 @@ export function PackOptions({
                   <span className="block min-w-0 text-sm font-medium text-gray-800">
                     {opt.description}
                   </span>
-                  <span className="block text-sm font-bold text-gray-700">
-                    + {opt.price.toFixed(2)} €
-                  </span>
+                  <Price exclVat={opt.price} prefix="+ " className="block text-sm font-bold text-gray-700" />
                 </div>
               </div>
 

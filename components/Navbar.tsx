@@ -1,5 +1,6 @@
 'use client';
 
+import { Price } from "@/components/ui/Price";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useLocale, useTranslations } from 'next-intl';
@@ -598,7 +599,7 @@ export default function Navbar() {
                             {quote.projectReference}
                           </p>
                           <p className="mt-1 text-sm text-gray-500">
-                            Pack {quote.slug} · {quote.surface} m² · {quote.total.toFixed(2)} €
+                            Pack {quote.slug} · {quote.surface} m² · <Price exclVat={quote.total} labelClassName="" />
                           </p>
                           {(quote.customerName || quote.projectType) && (
                             <p className="mt-1 text-xs text-gray-400">

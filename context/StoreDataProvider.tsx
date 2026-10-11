@@ -4,21 +4,29 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabaseClient";
 import { Category } from "@/types/CategoryType";
 
+type PackImage = { slug: string; image_url: string | null };
+
 type StoreDataContextType = {
   categories: Category[];
   loading: boolean;
   refetch: () => Promise<void>;
+  /** Pack photo from the catalog; undefined while packs are still loading */
+  getPackImage: (slug: string) => string | undefined;
 };
+
+const PACK_IMAGE_FALLBACK = "/images/box.png";
 
 const StoreDataContext = createContext<StoreDataContextType>({
   categories: [],
   loading: true,
   refetch: async () => {},
+  getPackImage: () => undefined,
 });
 
 export function StoreDataProvider({ children }: { children: React.ReactNode }) {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
+  const [packImages, setPackImages] = useState<Record<string, string | null> | null>(null);
 
   const fetchCategories = async () => {
     setLoading(true);
@@ -47,7 +55,20 @@ export function StoreDataProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchCategories();
+
+    supabase
+      .from("packs")
+      .select("slug, image_url")
+      .then(({ data, error }) => {
+        if (error) console.error("Erreur fetch packs:", error);
+        setPackImages(
+          Object.fromEntries(((data as PackImage[] | null) || []).map((pack) => [pack.slug, pack.image_url]))
+        );
+      });
   }, []);
+
+  const getPackImage = (slug: string) =>
+    packImages === null ? undefined : packImages[slug] || PACK_IMAGE_FALLBACK;
 
   return (
     <StoreDataContext.Provider
@@ -55,6 +76,7 @@ export function StoreDataProvider({ children }: { children: React.ReactNode }) {
         categories,
         loading,
         refetch: fetchCategories,
+        getPackImage,
       }}
     >
       {children}

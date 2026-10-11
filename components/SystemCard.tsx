@@ -1,5 +1,6 @@
 'use client'
 
+import { Price } from "@/components/ui/Price";
 import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
@@ -7,14 +8,6 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { Hammer, Zap, Euro, Ruler, Thermometer, HelpCircle } from 'lucide-react'
-
-const formatPrice = (value: number) =>
-  new Intl.NumberFormat("fr-BE", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(value);
-
-const VAT_MULTIPLIER = 1.21
 
 type SystemCardProps = {
   img: string
@@ -182,14 +175,11 @@ export default function SystemCard({
               ? <span className="text-lg font-semibold text-orange-600">{t('priceLoading')}</span>
               : calculatedTotal !== null
                 ? (
-                    <div>
-                      <div className="text-lg font-semibold text-orange-600">
-                        {formatPrice(calculatedTotal)} € {t('vatExcluded')}
-                      </div>
-                      <div className="text-sm font-medium text-gray-600">
-                        {formatPrice(calculatedTotal * VAT_MULTIPLIER)} € {t('vatIncluded')}
-                      </div>
-                    </div>
+                    <Price
+                      exclVat={calculatedTotal}
+                      className="text-lg font-semibold text-orange-600"
+                      labelClassName="text-sm font-medium text-gray-600"
+                    />
                   )
                 : <span className="text-lg font-semibold text-orange-600">{t('priceUnavailable')}</span>}
             {calculatedTotal !== null && (

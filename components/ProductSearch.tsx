@@ -1,5 +1,6 @@
 "use client";
 
+import { Price } from "@/components/ui/Price";
 import { useState, useEffect } from "react";
 import { Input, Dropdown } from "antd";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
@@ -137,9 +138,7 @@ export default function ProductSearch({ variant = "dropdown", onNavigate, onFocu
             <div className="text-xs text-gray-500">
               {cat} → {sub}
             </div>
-            <div className="text-sm font-medium text-gray-800">
-              {price.toFixed(2)} €
-            </div>
+            <Price exclVat={price} className="text-sm font-medium text-gray-800" />
           </div>
         </div>
       ),
@@ -208,9 +207,11 @@ export default function ProductSearch({ variant = "dropdown", onNavigate, onFocu
                         <p className="line-clamp-2 text-sm font-medium leading-snug text-gray-900">{name}</p>
                         <p className="truncate text-xs text-gray-500">{[cat, sub].filter(Boolean).join(" › ")}</p>
                       </div>
-                      <span className="shrink-0 text-sm font-semibold text-orange-600 tabular-nums">
-                        {price.toFixed(2)} €
-                      </span>
+                      <Price
+                        exclVat={price}
+                        className="shrink-0 text-right text-sm font-semibold text-orange-600"
+                        labelClassName="block text-[10px] font-normal text-gray-500"
+                      />
                     </Link>
                   </li>
                 ))}

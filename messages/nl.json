@@ -24,6 +24,8 @@
       "pro_space": "PRO-zone"
     },
     "Common": {
+      "priceExclVat": "excl. btw",
+      "priceInclVat": "incl. btw",
       "our": "Onze",
       "bestSellers": "Bestverkochte producten",
       "proArea": "PRO-zone",
@@ -250,7 +252,7 @@
       "email": "E-mailadres",
       "sendLink": "Link versturen",
       "sending": "Bezig met versturen…",
-      "requestSuccess": "Als er een account met dit adres bestaat, is er een herstelmail verzonden.",
+      "requestSuccess": "Als er een account bij dit e-mailadres hoort, ontvangt u een link om uw wachtwoord opnieuw in te stellen.",
       "requestError": "De e-mail kan momenteel niet worden verzonden. Probeer het opnieuw.",
       "backToLogin": "Terug naar inloggen",
       "updateTitle": "Nieuw wachtwoord",

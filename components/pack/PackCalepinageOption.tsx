@@ -1,6 +1,10 @@
 "use client";
 
+import { Price } from "@/components/ui/Price";
 import { useTranslations } from "next-intl";
+
+// Value of the layout plan offered with the pack (excl. VAT)
+const CALEPINAGE_VALUE_EXCL_VAT = 125;
 
 type Props = {
   calepinage: boolean;
@@ -36,9 +40,7 @@ export function PackCalepinageOption({
           <div className="flex-1">
             <p className="text-sm font-semibold text-gray-800">
               {t('title')}
-              <span className="ml-2 text-gray-400 line-through text-xs">
-                125,00 €
-              </span>
+              <Price exclVat={CALEPINAGE_VALUE_EXCL_VAT} className="ml-2 text-gray-400 line-through text-xs" labelClassName="" />
               <span className="ml-2 text-green-600 text-xs font-medium">
                 {t('gift')}
               </span>

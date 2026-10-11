@@ -24,6 +24,8 @@
       "pro_space": "PRO area"
     },
     "Common": {
+      "priceExclVat": "excl. VAT",
+      "priceInclVat": "incl. VAT",
       "our": "Our",
       "bestSellers": "Best sellers",
       "proArea": "PRO area",
@@ -250,7 +252,7 @@
       "email": "Email address",
       "sendLink": "Send reset link",
       "sending": "Sending…",
-      "requestSuccess": "If an account matches this address, a recovery email has been sent.",
+      "requestSuccess": "If an account matches this email, you will receive a link to reset your password.",
       "requestError": "Unable to send the email right now. Please try again.",
       "backToLogin": "Back to sign in",
       "updateTitle": "New password",

@@ -1,9 +1,10 @@
 "use client";
 
+import { Price } from "@/components/ui/Price";
 import { useState } from "react";
 import { CheckCircle2, Save, Share2, ShieldCheck, ShoppingCart, Truck, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 type Props = {
   total: number;
@@ -25,11 +26,7 @@ export function PackTotalBox({
   canSaveQuote = false,
 }: Props) {
   const tc = useTranslations("Common");
-  const locale = useLocale();
-  const formatPrice = (value: number) =>
-    new Intl.NumberFormat(`${locale}-BE`, { style: "currency", currency: "EUR" }).format(value);
   const [added, setAdded] = useState(false);
-  const totalTVAC = total * 1.21;
 
   const handleAdd = () => {
     if (disabled) return;
@@ -44,15 +41,13 @@ export function PackTotalBox({
         {/* TOTAL */}
         <div className={`min-w-0 flex-1 transition-opacity ${disabled ? "opacity-50" : ""}`} aria-live="polite">
           <p className="text-sm font-medium uppercase tracking-wider text-gray-500">
-            {tc("totalInclVat")}
+            {tc("total")}
           </p>
-          <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 tabular-nums">
-            {formatPrice(totalTVAC)}
-          </p>
-          <p className="mt-2 text-sm text-gray-500">
-            {tc("totalExclVat")}{" "}
-            <span className="font-semibold text-gray-700 tabular-nums">{formatPrice(total)}</span>
-          </p>
+          <Price
+            exclVat={total}
+            className="mt-1 block text-4xl font-bold tracking-tight text-gray-900"
+            labelClassName="text-base font-medium tracking-normal text-gray-500"
+          />
         </div>
 
         {/* CTA */}

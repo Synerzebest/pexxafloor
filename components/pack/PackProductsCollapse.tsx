@@ -1,5 +1,7 @@
 "use client";
 
+import { usePriceDisplay } from "@/hooks/usePriceDisplay";
+import { Price } from "@/components/ui/Price";
 import { Collapse, InputNumber, Button, Modal } from "antd";
 import { useState } from "react";
 import Image from "next/image";
@@ -28,6 +30,7 @@ export function PackProductsCollapse({
   setQuantities,
 }: Props) {
   const t = useTranslations('PackProductsCollapse');
+  const { format } = usePriceDisplay();
   const [previewImage, setPreviewImage] = useState<string | null>(null);
 
   return (
@@ -68,7 +71,7 @@ export function PackProductsCollapse({
                       {item.description}
                     </p>
                     <p className="text-xs text-gray-500">
-                      {t('unitPrice')} : {item.price.toFixed(2)} €
+                      {t('unitPrice')} : {format(item.price)}
                     </p>
                   </div>
                 </div>
@@ -81,10 +84,8 @@ export function PackProductsCollapse({
                   >
                     {qty}
                   </span>{" "}
-                  x {item.price.toFixed(2)} € ={" "}
-                  <span className="font-bold">
-                    {(qty * item.price).toFixed(2)} €
-                  </span>
+                  x {format(item.price)} ={" "}
+                  <Price exclVat={qty * item.price} className="font-bold" />
                 </p>
               </div>
             ),

@@ -1,5 +1,6 @@
 "use client";
 
+import { Price } from "@/components/ui/Price";
 import { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
@@ -82,9 +83,11 @@ export function PackContentsPreview({ pack }: { pack: PackItem }) {
                   <p className="mt-0.5 text-xs text-gray-500 tabular-nums">× {row.quantity}</p>
                 </div>
                 {row.lineTotal > 0 ? (
-                  <span className="shrink-0 text-xs font-semibold text-gray-700 tabular-nums">
-                    {row.lineTotal.toFixed(2)} €
-                  </span>
+                  <Price
+                    exclVat={row.lineTotal}
+                    className="shrink-0 text-right text-xs font-semibold text-gray-700"
+                    labelClassName="block text-[10px] font-normal text-gray-500"
+                  />
                 ) : (
                   <span className="shrink-0 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
                     {t("free")}

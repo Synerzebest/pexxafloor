@@ -1,9 +1,10 @@
 "use client";
 
+import { Price } from "@/components/ui/Price";
 import { useState } from "react";
 import { CheckCircle2, Save, Share2, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
 type Props = {
   total: number;
@@ -25,11 +26,7 @@ export function PackMobileFooter({
   canSaveQuote = false,
 }: Props) {
   const tc = useTranslations("Common");
-  const locale = useLocale();
-  const formatPrice = (value: number) =>
-    new Intl.NumberFormat(`${locale}-BE`, { style: "currency", currency: "EUR" }).format(value);
   const [added, setAdded] = useState(false);
-  const totalTVAC = total * 1.21;
 
   const handleAdd = () => {
     if (disabled) return;
@@ -41,15 +38,9 @@ export function PackMobileFooter({
   return (
     <div className="sticky bottom-0 w-full bg-white border-t border-gray-200 p-4 lg:hidden z-40">
       <div className="max-w-lg mx-auto space-y-3">
-        <div className={`flex items-end justify-between gap-3 transition-opacity ${disabled ? "opacity-50" : ""}`}>
-          <div>
-            <div className="text-xs font-medium text-gray-500">{tc("totalInclVat")}</div>
-            <div className="text-xl font-bold text-gray-900 tabular-nums">{formatPrice(totalTVAC)}</div>
-          </div>
-          <div className="text-right text-xs text-gray-500">
-            {tc("totalExclVat")}
-            <div className="font-semibold text-gray-700 tabular-nums">{formatPrice(total)}</div>
-          </div>
+        <div className={`flex items-baseline justify-between gap-3 transition-opacity ${disabled ? "opacity-50" : ""}`}>
+          <span className="text-sm font-medium text-gray-500">{tc("total")}</span>
+          <Price exclVat={total} className="text-xl font-bold text-gray-900" labelClassName="text-xs font-medium text-gray-500" />
         </div>
 
         <button

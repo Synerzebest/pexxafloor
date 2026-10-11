@@ -47,18 +47,21 @@ export default function ForgotPasswordForm({ locale }: { locale: string }) {
         <Image
           src="/images/logo.png"
           alt="PexxaFloor"
-          width={95}
+          width={250}
           height={62}
           priority
-          className="mx-auto opacity-90"
+          className="mx-auto"
         />
 
         <h1 className="mt-7 text-center text-3xl font-semibold tracking-tight text-gray-900">
           {t("requestTitle")}
         </h1>
-        <p className="mt-3 text-center text-sm leading-6 text-gray-500">
-          {t("requestDescription")}
-        </p>
+        {/* The success message replaces the instructions once the link is sent */}
+        {!sent && (
+          <p className="mt-3 text-center text-sm leading-6 text-gray-500">
+            {t("requestDescription")}
+          </p>
+        )}
 
         {sent ? (
           <div className="mt-8">

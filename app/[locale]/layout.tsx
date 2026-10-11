@@ -3,6 +3,7 @@ import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
 import CartDrawer from "@/components/CartDrawer";
 import { AuthProvider } from '@/context/AuthProvider';
+import { PriceDisplayProvider } from '@/context/PriceDisplayContext';
 import { Toaster } from "sonner";
 import { UIProvider } from "@/context/UIContext"
 import { StoreDataProvider } from "@/context/StoreDataProvider";
@@ -29,6 +30,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <CookieConsentProvider>
           <AuthProvider>
+          <PriceDisplayProvider>
             <QuoteProvider>
               <StoreDataProvider>
 
@@ -40,6 +42,7 @@ export default async function LocaleLayout({
 
               </StoreDataProvider>
             </QuoteProvider>
+          </PriceDisplayProvider>
           </AuthProvider>
           <CookieConsentBanner />
           </CookieConsentProvider>

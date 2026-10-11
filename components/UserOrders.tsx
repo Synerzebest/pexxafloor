@@ -1,5 +1,7 @@
 "use client";
 
+import { VAT_RATE } from "@/lib/pricing/vat";
+import { Price } from "@/components/ui/Price";
 import { useEffect, useMemo, useState } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import Image from "next/image";
@@ -19,7 +21,7 @@ import {
 import type { CartItem } from "@/context/CartContext";
 import type { PackProduct } from "@/types/PackProductType";
 import { useLocale, useTranslations } from "next-intl";
-import { getPackImage } from "@/utils/getPackImage";
+import { useStoreData } from "@/context/StoreDataProvider";
 
 type Order = {
   id: string;
@@ -49,6 +51,7 @@ function StatusIcon({ status }: { status: string }) {
 }
 
 export default function UserOrders() {
+  const { getPackImage } = useStoreData();
   const locale = useLocale();
   const tc = useTranslations("Common");
   const supabase = useMemo(
@@ -92,9 +95,6 @@ export default function UserOrders() {
       subscription.subscription.unsubscribe();
     };
   }, [supabase]);
-
-  const formatPrice = (value: number) =>
-    new Intl.NumberFormat(locale, { style: "currency", currency: "EUR" }).format(value);
 
   const statusLabel = (status: string) => {
     const knownStatuses = ["paid", "preparing", "packed", "ready", "delivering", "delivered", "cancelled"];
@@ -160,9 +160,11 @@ export default function UserOrders() {
                       <StatusIcon status={status} />
                       {statusLabel(status)}
                     </span>
-                    <span className="text-xl font-bold tracking-tight text-gray-950">
-                      {formatPrice(Number(order.total))}
-                    </span>
+                    {/* orders.total is the amount paid, VAT included */}
+                    <Price
+                      exclVat={Number(order.total) / (1 + VAT_RATE)}
+                      className="text-xl font-bold tracking-tight text-gray-950"
+                    />
                   </div>
                 </div>
 
@@ -176,14 +178,18 @@ export default function UserOrders() {
                       item.type === "pack" ? (
                         <div key={`${item.id}-${index}`} className="rounded-xl border border-gray-100 bg-white p-4">
                           <div className="flex items-center gap-4">
-                            <Image src={getPackImage(item.slug)} alt={`Pack ${item.slug}`} width={72} height={72} className="h-16 w-16 rounded-xl bg-gray-50 object-cover" />
+                            {getPackImage(item.slug) ? (
+                              <Image src={getPackImage(item.slug)!} alt={`Pack ${item.slug}`} width={72} height={72} className="h-16 w-16 shrink-0 rounded-xl bg-gray-50 object-cover" />
+                            ) : (
+                              <div className="h-16 w-16 shrink-0 animate-pulse rounded-xl bg-gray-100" />
+                            )}
                             <div className="min-w-0 flex-1">
                               <div className="flex items-start justify-between gap-3">
                                 <div>
                                   <p className="font-semibold text-gray-900">Pack {item.slug}</p>
                                   <p className="mt-1 text-xs text-gray-500">{item.surface} m² · {tc("installationSpacing")} {item.pasDePose} cm · {item.tuyauType}</p>
                                 </div>
-                                <p className="shrink-0 font-semibold text-gray-900">{formatPrice(item.total * item.quantity)}</p>
+                                <Price exclVat={item.total * item.quantity} className="shrink-0 text-right font-semibold text-gray-900" labelClassName="block text-xs font-normal text-gray-500" />
                               </div>
                             </div>
                           </div>
@@ -209,7 +215,7 @@ export default function UserOrders() {
                             <p className="truncate font-semibold text-gray-900">{item.product?.name || item.name || tc("product")}</p>
                             <p className="mt-1 text-sm text-gray-500">{tc("quantityShort")} {item.quantity}</p>
                           </div>
-                          <p className="shrink-0 font-semibold text-gray-900">{formatPrice((item.product?.price ?? item.price ?? 0) * item.quantity)}</p>
+                          <Price exclVat={(item.product?.price ?? item.price ?? 0) * item.quantity} className="shrink-0 text-right font-semibold text-gray-900" labelClassName="block text-xs font-normal text-gray-500" />
                         </div>
                       )
                     )}
