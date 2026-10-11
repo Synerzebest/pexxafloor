@@ -103,7 +103,7 @@ export default function Navbar() {
   const hoveredCategory = categories.find((c) => c.id === hoveredCat);
 
   return (
-    <header
+    <header id="site-navbar"
       className={`fixed inset-x-0 top-0 w-full border-b border-gray-200 bg-white ${
         drawerOpen ? "z-[200]" : "z-20"
       }`}

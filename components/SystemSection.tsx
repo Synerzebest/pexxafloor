@@ -120,7 +120,7 @@ export default function SystemsSection({ surface, setSurface }: SystemsSectionPr
       id="systems-section"
     >
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        <h2 className="mb-10 text-center text-3xl font-bold text-orange-600">
+        <h2 id="systems-title" className="mb-10 text-center text-3xl font-bold text-orange-600">
           {t('title')}
         </h2>
 

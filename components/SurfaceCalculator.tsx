@@ -129,7 +129,11 @@ export default function SurfaceCalculator({surface, setSurface}: SurfaceCalculat
           <button
             disabled={isNaN(parseFloat(surface)) || parseFloat(surface) <= 0}
             onClick={() => {
-              document.getElementById('systems-section')?.scrollIntoView({ behavior: 'smooth' });
+              const title = document.getElementById('systems-title');
+              if (!title) return;
+              const navbarHeight = document.getElementById('site-navbar')?.getBoundingClientRect().height ?? 0;
+              const top = title.getBoundingClientRect().top + window.scrollY - navbarHeight - 16;
+              window.scrollTo({ top, behavior: 'smooth' });
             }}
             className={`rounded-xl px-5 py-3 text-center text-sm font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-300/60
               ${isNaN(parseFloat(surface)) || parseFloat(surface) <= 0

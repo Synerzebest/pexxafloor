@@ -92,7 +92,7 @@ export function PackGallery({ products }: Props) {
             </p>
           )}
 
-          <div className="grid max-h-48 w-full grid-cols-4 gap-2 overflow-y-auto pr-1">
+          <div className="grid max-h-48 w-full grid-cols-4 content-start gap-2 overflow-y-auto p-1">
             {uniqueGalleryProducts.map((p, idx) => {
               const selected = selectedIndex === idx;
 
@@ -102,12 +102,14 @@ export function PackGallery({ products }: Props) {
                   type="button"
                   onClick={() => setSelectedIndex(idx)}
                   aria-label={`Afficher ${p.description}`}
-                  className={`relative aspect-square overflow-hidden rounded-lg border bg-white transition ${
+                  className={`relative block w-full overflow-hidden rounded-lg border bg-white transition ${
                     selected
-                      ? "border-orange-600 ring-2 ring-orange-200"
+                      ? "border-orange-600 ring-2 ring-inset ring-orange-200"
                       : "border-gray-200 hover:border-orange-400"
                   }`}
                 >
+                  {/* padding-top: 100% garantit un carré même si le conteneur limite la hauteur des lignes */}
+                  <span className="block pt-[100%]" aria-hidden="true" />
                   <Image
                     src={p.image || "/images/box.png"}
                     alt={p.description}
