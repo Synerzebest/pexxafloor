@@ -2,9 +2,10 @@
 
 import { Modal, Card, Avatar } from "antd";
 import { renderStatus } from "@/utils/renderStatus";
+import { renderOrderMode } from "@/utils/renderOrderMode";
 import { Loader } from "@/components/ui/Loader";
 
-import type { Order } from "@/types/OrderType";
+import { getOrderMode, type Order } from "@/types/OrderType";
 import type { ProductItem, PackItem, CartItem } from "@/context/CartContext";
 
 type ProcessingState = {
@@ -56,6 +57,11 @@ export function OrderDetailsModal({
           <div>
             <p className="text-gray-500">Statut</p>
             {renderStatus(selected.status)}
+          </div>
+
+          <div>
+            <p className="text-gray-500">Mode Stripe</p>
+            {renderOrderMode(getOrderMode(selected))}
           </div>
 
           <div>

@@ -6,6 +6,7 @@ import { Table, Card, Select, Button, Input } from "antd";
 import { ReloadOutlined, SearchOutlined } from "@ant-design/icons";
 import { useLocale } from "next-intl";
 import { useOrdersAdmin } from "@/hooks/useOrdersAdmin";
+import { getOrderMode } from "@/types/OrderType";
 import { getOrdersColumns } from "@/components/admin/orders/OrdersColumns";
 import { OrderDetailsModal } from "@/components/admin/orders/OrderDetailsModal";
 
@@ -26,6 +27,7 @@ export default function OrdersAdminPage() {
 
   const [filterStatus, setFilterStatus] = useState("all");
   const [search, setSearch] = useState("");
+  const [filterMode, setFilterMode] = useState("all");
 
   const normalizedSearch = search.trim().toLocaleLowerCase();
   const filtered = orders.filter((order) => {
@@ -33,7 +35,8 @@ export default function OrdersAdminPage() {
     const matchesSearch = !normalizedSearch || order.company_name
       ?.toLocaleLowerCase()
       .includes(normalizedSearch);
-    return matchesStatus && matchesSearch;
+    const matchesMode = filterMode === "all" || getOrderMode(order) === filterMode;
+    return matchesStatus && matchesSearch && matchesMode;
   });
 
   return (
@@ -59,6 +62,12 @@ export default function OrdersAdminPage() {
             <Select.Option value="delivering">En livraison</Select.Option>
             <Select.Option value="delivered">Livrées</Select.Option>
             <Select.Option value="cancelled">Annulées</Select.Option>
+          </Select>
+
+          <Select value={filterMode} onChange={setFilterMode} className="w-full sm:w-40">
+            <Select.Option value="all">Tous les modes</Select.Option>
+            <Select.Option value="live">Production</Select.Option>
+            <Select.Option value="test">Test</Select.Option>
           </Select>
 
           <Button className="sm:ml-auto" icon={<ReloadOutlined />} loading={loading} onClick={loadOrders}>

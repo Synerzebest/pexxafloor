@@ -1,6 +1,7 @@
 import { renderStatus } from "@/utils/renderStatus";
 import { EyeOutlined } from "@ant-design/icons";
-import type { Order } from "@/types/OrderType";
+import { renderOrderMode } from "@/utils/renderOrderMode";
+import { getOrderMode, type Order } from "@/types/OrderType";
 import type { ColumnsType } from "antd/es/table";
 
 export const getOrdersColumns = (
@@ -28,6 +29,11 @@ export const getOrdersColumns = (
     title: "Statut",
     dataIndex: "status",
     render: renderStatus,
+  },
+  {
+    title: "Mode",
+    key: "mode",
+    render: (_: unknown, record: Order) => renderOrderMode(getOrderMode(record)),
   },
   {
     title: "Total",
