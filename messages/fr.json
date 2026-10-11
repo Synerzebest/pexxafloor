@@ -1,5 +1,10 @@
 {
     "Navbar": {
+      "search": {
+        "placeholder": "Rechercher un produit…",
+        "noResults": "Aucun produit trouvé",
+        "clear": "Effacer la recherche"
+      },
       "home": "Accueil",
       "how-it-works": "Comment ça marche",
       "benefits": "Avantages",
@@ -261,12 +266,15 @@
       "requestAnotherLink": "Demander un nouveau lien"
     },
     "Signup": {
+      "fields": {
+        "emailInvalid": "Adresse e-mail invalide.",
+        "passwordHint": "8 caractères minimum"
+      },
         "title": "Créer un compte", 
         "subtitle": "Rejoignez PexxaFloor et profitez d’un confort optimal",
         "email": "Email",
         "name":"Nom complet",
         "password": "Mot de passe",
-        "confirm": "Confirmer mot de passe",
         "or": "Ou",
         "cta": "Créer mon compte", 
         "google": "S'inscrire avec Google",
@@ -282,7 +290,6 @@
         "errors": { 
           "required": "Email et mot de passe sont requis.", 
           "tooShort": "Min. 8 caractères.", 
-          "mismatch": "Les mots de passe ne correspondent pas.",
           "name_missing": "Nom requis",
           "emailAlreadyUsed": "Un compte utilise déjà cette adresse e-mail. Essayez de vous connecter ou utilisez « Mot de passe oublié ».",
           "weakPassword": "Ce mot de passe ne respecte pas les exigences de sécurité.",
@@ -425,6 +432,7 @@
       "inCart": "{count, plural, one {# exemplaire dans le panier} other {# exemplaires dans le panier}}"
     },
     "CartDrawer": {
+      "free": "Offert",
       "myCart": "Mon panier",
       "emptyCart": "Votre panier est vide",
       "productsIncluded": "produits inclus",
@@ -571,5 +579,14 @@
       "title": "Plan de calepinage personnalisé",
       "gift": "Offert à l'achat de ce pack",
       "description": "Optimise le parcours des tuyaux et facilite la pose. Un expert vous contactera pour valider votre plan (surface, collecteur, contraintes, etc.)."
+    },
+  "AuthShell": {
+      "backHome": "Retour au site",
+      "tagline": "Le chauffage au sol, livré prêt à poser.",
+      "benefits": [
+        "Packs complets calculés pour votre surface",
+        "Suivi de vos commandes et devis en un endroit",
+        "Paiement sécurisé et livraison en Belgique"
+      ]
     }
-  }
+}

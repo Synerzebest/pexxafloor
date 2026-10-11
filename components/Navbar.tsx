@@ -64,6 +64,8 @@ export default function Navbar() {
   const [openMobileCat, setOpenMobileCat] = useState<string | null>(null);
   const [openMobileSub, setOpenMobileSub] = useState<string | null>(null);
   const [contactOpen, setContactOpen] = useState(false);
+  // The mobile drawer goes full width while the search field is focused
+  const [searchFocused, setSearchFocused] = useState(false);
 
   useEffect(() => {
     setDrawerOpen(false);
@@ -339,7 +341,7 @@ export default function Navbar() {
               onClick={() => setDrawerOpen(false)}
             />
             <motion.aside
-              className="fixed right-0 top-0 z-[202] flex h-dvh w-80 max-w-[85%] flex-col overflow-y-auto overscroll-contain bg-white p-4 shadow-xl"
+              className={`fixed right-0 top-0 z-[202] flex h-dvh flex-col overflow-y-auto overscroll-contain bg-white p-4 shadow-xl transition-[width,max-width] duration-300 ease-out ${searchFocused ? "w-full max-w-full" : "w-80 max-w-[85%]"}`}
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
@@ -362,7 +364,16 @@ export default function Navbar() {
                     {t('home')}
                   </Link>
                 </li>
-                <li><ProductSearch /></li>
+                <li>
+                  <ProductSearch
+                    variant="inline"
+                    onFocusChange={setSearchFocused}
+                    onNavigate={() => {
+                      setSearchFocused(false);
+                      setDrawerOpen(false);
+                    }}
+                  />
+                </li>
                 {categories.map((cat) => (
                   <li key={cat.id} className="border-b border-gray-100">
                     {/* CATÉGORIE */}

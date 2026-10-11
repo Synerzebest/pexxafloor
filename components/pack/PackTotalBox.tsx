@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Save, Share2 } from "lucide-react";
+import { CheckCircle2, Save, Share2, ShieldCheck, ShoppingCart, Truck, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 type Props = {
   total: number;
@@ -25,6 +25,9 @@ export function PackTotalBox({
   canSaveQuote = false,
 }: Props) {
   const tc = useTranslations("Common");
+  const locale = useLocale();
+  const formatPrice = (value: number) =>
+    new Intl.NumberFormat(`${locale}-BE`, { style: "currency", currency: "EUR" }).format(value);
   const [added, setAdded] = useState(false);
   const totalTVAC = total * 1.21;
 
@@ -36,91 +39,99 @@ export function PackTotalBox({
   };
 
   return (
-    <div className="mt-8 hidden lg:block rounded-2xl border border-orange-200 bg-white p-6">
-      <div className="space-y-6">
+    <div className="mt-8 hidden overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm lg:block">
+      <div className="flex items-center gap-8 p-6 xl:p-8">
         {/* TOTAL */}
-        <div className="flex items-end justify-between gap-4">
-          <span className="text-lg font-semibold text-gray-900">
-            {tc("total")}
-          </span>
-          <div className="text-right">
-            <div className="text-3xl font-bold text-orange-600">
-              {totalTVAC.toFixed(2)} €
-            </div>
-            <div className="mt-1 text-sm font-medium text-gray-500">
-              {tc("totalInclVat")}
-            </div>
-            <div className="mt-2 text-sm text-gray-600">
-              {tc("totalExclVat")} : <span className="font-semibold text-gray-800">{total.toFixed(2)} €</span>
-            </div>
-          </div>
+        <div className={`min-w-0 flex-1 transition-opacity ${disabled ? "opacity-50" : ""}`} aria-live="polite">
+          <p className="text-sm font-medium uppercase tracking-wider text-gray-500">
+            {tc("totalInclVat")}
+          </p>
+          <p className="mt-1 text-4xl font-bold tracking-tight text-gray-900 tabular-nums">
+            {formatPrice(totalTVAC)}
+          </p>
+          <p className="mt-2 text-sm text-gray-500">
+            {tc("totalExclVat")}{" "}
+            <span className="font-semibold text-gray-700 tabular-nums">{formatPrice(total)}</span>
+          </p>
         </div>
 
         {/* CTA */}
-        <button
-          onClick={handleAdd}
-          disabled={added || disabled}
-          className={`cursor-pointer bg-orange-600 hover:bg-orange-700 relative overflow-hidden h-12 w-full rounded-xl font-medium text-white flex items-center justify-center transition
-            ${added || disabled ? "cursor-not-allowed opacity-70" : "cursor-allowed"}`}
-        >
-          <AnimatePresence mode="wait" initial={false}>
-            {added ? (
-              <motion.div
-                key="added"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-                className="flex items-center gap-2"
-              >
-                <CheckCircle2 className="w-5 h-5" />
-                {isEditing ? tc("updatedSuccessfully") : tc("addedToCart")}
-              </motion.div>
-            ) : (
-              <motion.div
-                key="add"
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -8 }}
-                transition={{ duration: 0.25 }}
-              >
-                {isEditing ? tc("updateCart") : tc("addToCart")}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </button>
-
-        <div className={canSaveQuote ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 gap-3"}>
+        <div className="w-full max-w-sm space-y-3">
           <button
-            type="button"
-            onClick={onShareQuote}
-            disabled={disabled}
-            className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
+            onClick={handleAdd}
+            disabled={added || disabled}
+            className={`relative flex w-full items-center justify-center overflow-hidden rounded-xl py-3.5 font-semibold text-white shadow-sm transition focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-200
+              ${added ? "bg-emerald-600" : "bg-orange-600 hover:bg-orange-700"}
+              ${disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
           >
-            <Share2 className="h-4 w-4" />
-            {tc("shareQuote")}
+            <AnimatePresence mode="wait" initial={false}>
+              {added ? (
+                <motion.span
+                  key="added"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex items-center gap-2"
+                >
+                  <CheckCircle2 className="h-5 w-5" />
+                  {isEditing ? tc("updatedSuccessfully") : tc("addedToCart")}
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="add"
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -8 }}
+                  transition={{ duration: 0.25 }}
+                  className="flex items-center gap-2"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  {isEditing ? tc("updateCart") : tc("addToCart")}
+                </motion.span>
+              )}
+            </AnimatePresence>
           </button>
 
-          {canSaveQuote && (
+          <div className={canSaveQuote ? "grid grid-cols-2 gap-3" : "grid grid-cols-1 gap-3"}>
             <button
               type="button"
-              onClick={onSaveQuote}
+              onClick={onShareQuote}
               disabled={disabled}
-              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-4 text-sm font-semibold text-orange-700 transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60"
+              className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-3 text-sm font-medium text-gray-700 transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              <Save className="h-4 w-4" />
-              {tc("saveQuote")}
+              <Share2 className="h-4 w-4 shrink-0" />
+              {tc("shareQuote")}
             </button>
-          )}
-        </div>
 
-        {/* INFOS */}
-        <div className="text-center text-xs text-gray-500 space-y-1">
-          <p>🚚 {tc("fastDelivery")}</p>
-          <p>🇧🇪 {tc("freeDelivery")}</p>
-          <p>🛡️ {tc("twoYearWarranty")}</p>
+            {canSaveQuote && (
+              <button
+                type="button"
+                onClick={onSaveQuote}
+                disabled={disabled}
+                className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-orange-200 bg-orange-50 px-3 text-sm font-semibold text-orange-700 transition hover:bg-orange-100 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Save className="h-4 w-4 shrink-0" />
+                {tc("saveQuote")}
+              </button>
+            )}
+          </div>
         </div>
       </div>
+
+      {/* INFOS */}
+      <ul className="grid grid-cols-3 divide-x divide-gray-200 border-t border-gray-200 bg-gray-50 text-sm text-gray-600">
+        {[
+          { icon: Zap, label: tc("fastDelivery") },
+          { icon: Truck, label: tc("freeDelivery") },
+          { icon: ShieldCheck, label: tc("twoYearWarranty") },
+        ].map(({ icon: Icon, label }) => (
+          <li key={label} className="flex items-center justify-center gap-2 px-3 py-3 text-center">
+            <Icon className="h-4 w-4 shrink-0 text-orange-600" aria-hidden="true" />
+            <span>{label}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, Save, Share2 } from "lucide-react";
+import { CheckCircle2, Save, Share2, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 type Props = {
   total: number;
@@ -25,6 +25,9 @@ export function PackMobileFooter({
   canSaveQuote = false,
 }: Props) {
   const tc = useTranslations("Common");
+  const locale = useLocale();
+  const formatPrice = (value: number) =>
+    new Intl.NumberFormat(`${locale}-BE`, { style: "currency", currency: "EUR" }).format(value);
   const [added, setAdded] = useState(false);
   const totalTVAC = total * 1.21;
 
@@ -36,28 +39,29 @@ export function PackMobileFooter({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 p-4 lg:hidden z-40">
+    <div className="sticky bottom-0 w-full bg-white border-t border-gray-200 p-4 lg:hidden z-40">
       <div className="max-w-lg mx-auto space-y-3">
-        <div className="flex justify-between items-center">
-        <div>
-          <div className="text-xs font-medium text-gray-500">{tc("totalInclVat")}</div>
-          <div className="text-xl font-bold text-orange-600">{totalTVAC.toFixed(2)} €</div>
-          <div className="text-xs text-gray-500">{tc("totalExclVat")} : {total.toFixed(2)} €</div>
+        <div className={`flex items-end justify-between gap-3 transition-opacity ${disabled ? "opacity-50" : ""}`}>
+          <div>
+            <div className="text-xs font-medium text-gray-500">{tc("totalInclVat")}</div>
+            <div className="text-xl font-bold text-gray-900 tabular-nums">{formatPrice(totalTVAC)}</div>
+          </div>
+          <div className="text-right text-xs text-gray-500">
+            {tc("totalExclVat")}
+            <div className="font-semibold text-gray-700 tabular-nums">{formatPrice(total)}</div>
+          </div>
         </div>
 
         <button
           onClick={handleAdd}
           disabled={added || disabled}
-          className={`cursor-pointer relative overflow-hidden px-4 py-2 rounded-lg text-white font-medium flex items-center justify-center transition
-            ${
-              added || disabled
-                ? "cursor-not-allowed bg-gray-300"
-                : "bg-orange-600 hover:bg-orange-700"
-            }`}
+          className={`relative flex w-full items-center justify-center overflow-hidden rounded-xl py-3 font-semibold text-white transition
+            ${added ? "bg-emerald-600" : "bg-orange-600 hover:bg-orange-700"}
+            ${disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"}`}
         >
           <AnimatePresence mode="wait" initial={false}>
             {added ? (
-              <motion.div
+              <motion.span
                 key="added"
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -65,23 +69,24 @@ export function PackMobileFooter({
                 transition={{ duration: 0.25 }}
                 className="flex items-center gap-2"
               >
-                <CheckCircle2 className="w-4 h-4" />
-                {isEditing ? tc("updated") : tc("added")}
-              </motion.div>
+                <CheckCircle2 className="h-5 w-5" />
+                {isEditing ? tc("updatedSuccessfully") : tc("addedToCart")}
+              </motion.span>
             ) : (
-              <motion.div
+              <motion.span
                 key="add"
                 initial={{ opacity: 0, y: 6 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -6 }}
                 transition={{ duration: 0.25 }}
+                className="flex items-center gap-2"
               >
-                {isEditing ? tc("update") : tc("add")}
-              </motion.div>
+                <ShoppingCart className="h-5 w-5" />
+                {isEditing ? tc("updateCart") : tc("addToCart")}
+              </motion.span>
             )}
           </AnimatePresence>
         </button>
-        </div>
 
         <div className={canSaveQuote ? "grid grid-cols-2 gap-2" : "grid grid-cols-1 gap-2"}>
           <button

@@ -4,18 +4,30 @@ import { useState, useEffect } from "react";
 import { Input, Dropdown } from "antd";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import Link from "next/link";
+import { Loader2, Search, X } from "lucide-react";
 import type { Product } from "@/types/ProductType";
 import Image from "next/image";
 
-export default function ProductSearch() {
+type Props = {
+  /** "inline" renders results in the flow (mobile drawer) instead of a floating dropdown */
+  variant?: "dropdown" | "inline";
+  onNavigate?: () => void;
+  onFocusChange?: (focused: boolean) => void;
+};
+
+export default function ProductSearch({ variant = "dropdown", onNavigate, onFocusChange }: Props) {
   const supabase = createClientComponentClient();
   const locale = useLocale();
+  const t = useTranslations("Navbar.search");
   const router = useRouter();
 
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<Product[]>([]);
+  // Query whose results are currently displayed; avoids flashing "no results" during the debounce
+  const [searchedQuery, setSearchedQuery] = useState("");
 
   useEffect(() => {
     if (!query || query.length < 2) {
@@ -69,6 +81,7 @@ export default function ProductSearch() {
         .limit(4);
 
       if (!error) setResults(data as unknown as Product[]);
+      setSearchedQuery(query);
       setLoading(false);
     };
 
@@ -76,7 +89,7 @@ export default function ProductSearch() {
     return () => clearTimeout(timer);
   }, [query, locale, supabase]);
 
-  const menuItems = results.map((p) => {
+  const entries = results.map((p) => {
     const name =
       locale === "fr" ? p.name_fr : locale === "nl" ? p.name_nl : p.name_en;
   
@@ -99,8 +112,12 @@ export default function ProductSearch() {
       ? `/${locale}/categories/${p.subcategory.category.slug}/${p.subcategory.slug}/${p.subsubcategory.slug}/${p.slug}`
       : `/${locale}/categories/${p.subcategory.category.slug}/${p.subcategory.slug}/default/${p.slug}`;
   
+    return { id: p.id, name, sub, cat, img, url, price: Number(p.price) };
+  });
+
+  const menuItems = entries.map(({ id, name, sub, cat, img, url, price }) => {
     return {
-      key: p.id,
+      key: id,
       label: (
         <div
           onClick={() => router.push(url)}
@@ -121,7 +138,7 @@ export default function ProductSearch() {
               {cat} → {sub}
             </div>
             <div className="text-sm font-medium text-gray-800">
-              {Number(p.price).toFixed(2)} €
+              {price.toFixed(2)} €
             </div>
           </div>
         </div>
@@ -129,6 +146,81 @@ export default function ProductSearch() {
     };
   });
   
+
+  if (variant === "inline") {
+    const searching = query.length >= 2 && searchedQuery === query;
+    return (
+      <div>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" aria-hidden="true" />
+          <input
+            type="search"
+            enterKeyHint="search"
+            autoComplete="off"
+            placeholder={t("placeholder")}
+            aria-label={t("placeholder")}
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => onFocusChange?.(true)}
+            onBlur={() => onFocusChange?.(false)}
+            className="h-12 w-full rounded-xl border border-gray-200 bg-gray-50 pl-11 pr-11 text-base text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-100 [&::-webkit-search-cancel-button]:hidden"
+          />
+          {loading ? (
+            <Loader2 className="absolute right-3.5 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-orange-500" aria-hidden="true" />
+          ) : query ? (
+            <button
+              type="button"
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => setQuery("")}
+              aria-label={t("clear")}
+              className="absolute right-1.5 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-lg text-gray-400 transition hover:bg-gray-100 hover:text-gray-700"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          ) : null}
+        </div>
+
+        {searching && !loading && (
+          <div
+            className="mt-2 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm"
+            aria-live="polite"
+            // Keep the input focused while tapping a result so the full-width drawer stays put
+            onMouseDown={(e) => e.preventDefault()}
+          >
+            {entries.length === 0 ? (
+              <p className="px-4 py-5 text-center text-sm text-gray-500">{t("noResults")}</p>
+            ) : (
+              <ul className="divide-y divide-gray-100">
+                {entries.map(({ id, name, sub, cat, img, url, price }) => (
+                  <li key={id}>
+                    <Link
+                      href={url}
+                      onClick={() => {
+                        setQuery("");
+                        onNavigate?.();
+                      }}
+                      className="flex items-center gap-3 px-3 py-2.5 transition active:bg-orange-50"
+                    >
+                      <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-gray-100 bg-gray-50">
+                        <Image src={img || "/images/box.png"} alt="" fill sizes="48px" className="object-contain p-1" />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="line-clamp-2 text-sm font-medium leading-snug text-gray-900">{name}</p>
+                        <p className="truncate text-xs text-gray-500">{[cat, sub].filter(Boolean).join(" › ")}</p>
+                      </div>
+                      <span className="shrink-0 text-sm font-semibold text-orange-600 tabular-nums">
+                        {price.toFixed(2)} €
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <Dropdown
@@ -138,7 +230,7 @@ export default function ProductSearch() {
       overlayClassName="w-96"
     >
       <Input.Search
-        placeholder="Rechercher un produit..."
+        placeholder={t("placeholder")}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         loading={loading}

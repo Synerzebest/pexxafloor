@@ -15,6 +15,7 @@ type Props = {
 
 export function PackIncluded({ included }: Props) {
   const t = useTranslations('PackIncluded');
+  if (included.length === 0) return null;
   return (
     <div className="bg-white p-6 rounded-xl border border-gray-100">
       <h2 className="font-semibold text-xl mb-4 text-gray-800 border-b pb-3">

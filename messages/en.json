@@ -1,5 +1,10 @@
 {
     "Navbar": {
+      "search": {
+        "placeholder": "Search for a product…",
+        "noResults": "No products found",
+        "clear": "Clear search"
+      },
       "home": "Home",
       "how-it-works": "How it works",
       "benefits": "Benefits",
@@ -261,12 +266,15 @@
       "requestAnotherLink": "Request another link"
     },
     "Signup": {
+      "fields": {
+        "emailInvalid": "Invalid email address.",
+        "passwordHint": "At least 8 characters"
+      },
       "title": "Signup", 
       "subtitle": "Join PexxaFloor and enjoy optimal comfort",
       "email": "Email",
       "name":"Full name",
       "password": "Password",
-      "confirm": "Confirm password",
       "cta": "Create my account", 
       "google": "Signup with Google",
       "or": "Or",
@@ -282,7 +290,6 @@
       "errors": { 
         "required": "Email and password are required.", 
         "tooShort": "At least 8 caracters.", 
-        "mismatch": "Passwords do not match.",
         "name_missing": "Name is required",
         "emailAlreadyUsed": "An account already uses this email address. Try signing in or use “Forgot your password?”.",
         "weakPassword": "This password does not meet the security requirements.",
@@ -425,6 +432,7 @@
       "inCart": "{count, plural, one {# item in cart} other {# items in cart}}"
     },
     "CartDrawer": {
+      "free": "Free",
       "myCart": "My cart",
       "emptyCart": "Your cart is empty",
       "productsIncluded": "products included",
@@ -571,5 +579,14 @@
       "title": "Custom layout plan",
       "gift": "Offered with the purchase of this pack",
       "description": "Pipe routing optimization by an expert."
+    },
+  "AuthShell": {
+      "backHome": "Back to site",
+      "tagline": "Underfloor heating, delivered ready to install.",
+      "benefits": [
+        "Complete packs sized for your surface",
+        "Track your orders and quotes in one place",
+        "Secure payment and delivery in Belgium"
+      ]
     }
-  }
+}

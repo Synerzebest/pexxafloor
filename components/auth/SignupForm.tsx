@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Image from "next/image";
-import { Loader2, UserPlus, Mail, MailCheck } from "lucide-react";
+import { Check, Loader2, UserPlus, Mail, MailCheck, User } from "lucide-react";
 import { signupWithEmail } from "@/app/actions/signupEmail";
 import PasswordInput from "@/components/ui/PasswordInput";
+import AuthShell, { AuthAlert, AuthDivider, GoogleButton, authInputClass } from "@/components/auth/AuthShell";
 
 export default function SignupForm({
   locale,
@@ -22,18 +22,32 @@ export default function SignupForm({
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [pwd, setPwd] = useState("");
-  const [pwd2, setPwd2] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [confirmationSent, setConfirmationSent] = useState(false);
+  const [touched, setTouched] = useState<Partial<Record<FieldKey, boolean>>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const fieldErrors: Record<FieldKey, string | null> = {
+    name: name.trim() ? null : t("errors.name_missing"),
+    email: EMAIL_PATTERN.test(email.trim()) ? null : t("fields.emailInvalid"),
+    password: pwd.length >= 8 ? null : t("errors.tooShort"),
+  };
+  // Errors appear once a field is left, not while the user is still typing in it.
+  const visibleError = (field: FieldKey) =>
+    (touched[field] || submitted) ? fieldErrors[field] : null;
+  const touch = (field: FieldKey) => () => setTouched((current) => ({ ...current, [field]: true }));
 
   async function handleSubmit(formData: FormData) {
     setErr(null);
+    setSubmitted(true);
 
-    if (!email.trim() || !pwd) return setErr(t("errors.required"));
-    if (pwd.length < 8) return setErr(t("errors.tooShort"));
-    if (pwd !== pwd2) return setErr(t("errors.mismatch"));
-    if (!name.trim()) return setErr(t("errors.name_missing"));
+    const firstInvalid = FIELD_ORDER.find((field) => fieldErrors[field]);
+    if (firstInvalid) {
+      formRef.current?.querySelector<HTMLInputElement>(`#signup-${firstInvalid}`)?.focus();
+      return;
+    }
 
     try {
       setLoading(true);
@@ -72,193 +86,183 @@ export default function SignupForm({
     }
   }
 
-  return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-gray-50">
-  <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+  const loginHref = `/${locale}/login${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""}`;
 
-    {/* LEFT – Branding */}
-    <div className="hidden lg:flex flex-col justify-center px-6">
-      <Image
-        src="/images/logo.png"
-        width={120}
-        height={80}
-        alt="Logo"
-        priority
-        className="opacity-90"
+  if (confirmationSent) {
+    return (
+      <AuthShell locale={locale}>
+        <div className="text-center">
+          <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-orange-50 text-orange-600">
+            <MailCheck className="h-8 w-8" aria-hidden="true" />
+          </span>
+          <h1 className="mt-6 text-2xl font-semibold tracking-tight text-gray-900">
+            {t("confirmation.title")}
+          </h1>
+          <p className="mt-3 text-sm leading-6 text-gray-600">
+            {t("confirmation.description")}
+          </p>
+          <p className="mt-3 break-all font-medium text-gray-900">{email}</p>
+          <div className="mt-6 rounded-xl border border-orange-100 bg-orange-50 p-4 text-left text-sm leading-6 text-orange-900">
+            {t("confirmation.instructions")}
+          </div>
+          <Link
+            href={loginHref}
+            className="mt-7 inline-flex rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
+          >
+            {t("confirmation.login")}
+          </Link>
+        </div>
+      </AuthShell>
+    );
+  }
+
+  return (
+    <AuthShell
+      locale={locale}
+      title={t("title")}
+      subtitle={t("subtitle")}
+      footer={
+        <>
+          {t("alreadyAccount")}{" "}
+          <Link href={loginHref} className="font-semibold text-orange-600 transition hover:text-orange-700">
+            {t("login")}
+          </Link>
+        </>
+      }
+    >
+      <GoogleButton
+        href={`/auth/login/google?next=${encodeURIComponent(nextPath || `/${locale}/profile`)}`}
+        label={t("google")}
       />
 
-      <h1 className="mt-10 text-4xl font-semibold tracking-tight text-gray-900 max-w-md">
-        {t("title")}
-      </h1>
+      <AuthDivider label={t("or")} />
 
-      <p className="mt-4 text-lg text-gray-600 max-w-md leading-relaxed">
-        {t("subtitle")}
-      </p>
-    </div>
-
-    {/* RIGHT – Form */}
-    <div className="flex justify-center">
-      <div className="w-full max-w-md rounded-2xl bg-white px-8 py-10 shadow-sm">
-
-        {confirmationSent ? (
-          <div className="py-6 text-center">
-            <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-orange-50 text-orange-600">
-              <MailCheck className="h-8 w-8" aria-hidden="true" />
-            </span>
-            <h1 className="mt-6 text-2xl font-semibold tracking-tight text-gray-900">
-              {t("confirmation.title")}
-            </h1>
-            <p className="mt-3 text-sm leading-6 text-gray-600">
-              {t("confirmation.description")}
-            </p>
-            <p className="mt-3 break-all font-medium text-gray-900">{email}</p>
-            <div className="mt-6 rounded-xl border border-orange-100 bg-orange-50 p-4 text-left text-sm leading-6 text-orange-900">
-              {t("confirmation.instructions")}
-            </div>
-            <Link
-              href={`/${locale}/login${nextPath ? `?next=${encodeURIComponent(nextPath)}` : ""}`}
-              className="mt-7 inline-flex rounded-xl bg-gray-900 px-5 py-3 text-sm font-medium text-white transition hover:bg-gray-800"
-            >
-              {t("confirmation.login")}
-            </Link>
-          </div>
-        ) : (
-          <>
-        {/* Mobile header */}
-        <div className="lg:hidden flex flex-col items-center text-center mb-8">
-          <Image
-            src="/images/logo.png"
-            width={90}
-            height={60}
-            alt="Logo"
-            priority
-          />
-          <h1 className="mt-5 text-2xl font-semibold text-gray-900">
-            {t("title")}
-          </h1>
-          <p className="mt-2 text-sm text-gray-500">
-            {t("subtitle")}
-          </p>
-        </div>
-
-        <form action={handleSubmit} className="space-y-5">
-
-          {/* Name */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              {t("name")}
-            </label>
-            <div className="relative mt-2">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                name="name"
-                type="text"
-                placeholder="John Doe"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full rounded-xl border border-gray-300 py-3 pl-11 pr-4
-                  focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-              />
-            </div>
-          </div>
-
-          {/* Email */}
-          <div>
-            <label className="text-sm font-medium text-gray-700">
-              {t("email")}
-            </label>
-            <div className="relative mt-2">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
-              <input
-                name="email"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-gray-300 py-3 pl-11 pr-4
-                  focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-              />
-            </div>
-          </div>
-
-          {/* Password */}
-          <div className="space-y-4">
-            <div>
-              <label className="text-sm font-medium text-gray-700">
-                {t("password")}
-              </label>
-              <div className="mt-2">
-                <PasswordInput
-                  name="password"
-                  autoComplete="new-password"
-                  placeholder="••••••••"
-                  value={pwd}
-                  onChange={(e) => setPwd(e.target.value)}
-                  className="w-full rounded-xl border border-gray-300 py-3
-                    focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-                />
-              </div>
-            </div>
-
-            <div>
-              <PasswordInput
-                autoComplete="new-password"
-                placeholder={t("confirm")}
-                value={pwd2}
-                onChange={(e) => setPwd2(e.target.value)}
-                className="w-full rounded-xl border border-gray-300 py-3
-                  focus:border-orange-500 focus:ring-2 focus:ring-orange-200 outline-none"
-              />
-            </div>
-          </div>
-
-          {err && (
-            <p className="text-sm text-red-600 text-center">{err}</p>
-          )}
-
-          {/* CTA */}
-          <button
-            disabled={loading}
-            className="mt-2 w-full rounded-xl bg-orange-600 py-3 text-white font-medium
-              hover:bg-orange-700 transition disabled:bg-orange-300 flex items-center justify-center gap-2"
-          >
-            {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
-            ) : (
-              <UserPlus className="h-5 w-5" />
-            )}
-            {t("cta")}
-          </button>
-
-          <div className="my-6 flex items-center">
-            <div className="h-px flex-1 bg-gray-200" />
-            <span className="mx-3 text-xs uppercase tracking-wide text-gray-400">
-              {t("or")}
-            </span>
-            <div className="h-px flex-1 bg-gray-200" />
-          </div>
-
-          <a
-            href={`/auth/login/google?next=${encodeURIComponent(nextPath || `/${locale}/profile`)}`}
-            className="flex w-full items-center justify-center gap-3 rounded-lg
-              border border-gray-300 bg-white py-2.5 text-sm font-medium text-gray-700
-              hover:bg-gray-50 transition"
-          >
-            <Image
-              src="/images/google.png"
-              alt="Google"
-              width={18}
-              height={18}
+      <form ref={formRef} action={handleSubmit} noValidate className="space-y-3">
+        <Field id="signup-name" label={t("name")} error={visibleError("name")}>
+          <div className="relative">
+            <User className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <input
+              id="signup-name"
+              name="name"
+              type="text"
+              autoComplete="name"
+              placeholder="Full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onBlur={touch("name")}
+              {...fieldA11y("signup-name", visibleError("name"))}
+              className={`${inputClass(visibleError("name"))} pl-11 pr-4`}
             />
-            {t("google")}
-          </a>
-        </form>
-          </>
-        )}
+          </div>
+        </Field>
+
+        <Field id="signup-email" label={t("email")} error={visibleError("email")}>
+          <div className="relative">
+            <Mail className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+            <input
+              id="signup-email"
+              name="email"
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              autoCapitalize="none"
+              spellCheck={false}
+              placeholder="email@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onBlur={touch("email")}
+              {...fieldA11y("signup-email", visibleError("email"))}
+              className={`${inputClass(visibleError("email"))} pl-11 pr-4`}
+            />
+          </div>
+        </Field>
+
+        <Field
+          id="signup-password"
+          label={t("password")}
+          error={visibleError("password")}
+          hint={<Hint ok={pwd.length >= 8}>{t("fields.passwordHint")}</Hint>}
+        >
+          <PasswordInput
+            id="signup-password"
+            name="password"
+            autoComplete="new-password"
+            placeholder="••••••••"
+            value={pwd}
+            onChange={(e) => setPwd(e.target.value)}
+            onBlur={touch("password")}
+            {...fieldA11y("signup-password", visibleError("password"))}
+            className={inputClass(visibleError("password"))}
+          />
+        </Field>
+
+        {err && <AuthAlert tone="error">{err}</AuthAlert>}
+
+        <button
+          disabled={loading}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-orange-600 py-3 font-semibold text-white shadow-sm transition hover:bg-orange-700 focus:outline-none focus-visible:ring-4 focus-visible:ring-orange-200 disabled:cursor-not-allowed disabled:bg-orange-300"
+        >
+          {loading ? (
+            <Loader2 className="h-5 w-5 animate-spin" />
+          ) : (
+            <UserPlus className="h-5 w-5" />
+          )}
+          {t("cta")}
+        </button>
+      </form>
+    </AuthShell>
+  );
+}
+
+type FieldKey = "name" | "email" | "password";
+const FIELD_ORDER: FieldKey[] = ["name", "email", "password"];
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function inputClass(error: string | null) {
+  return error
+    ? authInputClass.replace("border-gray-300", "border-red-400").replace("focus:border-orange-500 focus:ring-orange-100", "focus:border-red-500 focus:ring-red-100")
+    : authInputClass;
+}
+
+function fieldA11y(id: string, error: string | null) {
+  return {
+    "aria-invalid": Boolean(error),
+    "aria-describedby": `${id}-message`,
+  };
+}
+
+function Field({
+  id,
+  label,
+  error,
+  hint,
+  children,
+}: {
+  id: string;
+  label: string;
+  error: string | null;
+  hint?: ReactNode;
+  children: ReactNode;
+}) {
+  return (
+    <div className="space-y-1">
+      <label htmlFor={id} className="text-sm font-medium text-gray-700">
+        {label}
+      </label>
+      {children}
+      {/* Only takes space when there is something to show */}
+      <div id={`${id}-message`} aria-live="polite" className="text-xs empty:hidden">
+        {error ? <p className="text-red-600">{error}</p> : hint}
       </div>
     </div>
-  </div>
-</div>
+  );
+}
 
+function Hint({ ok, children }: { ok: boolean; children: ReactNode }) {
+  return (
+    <p className={`flex items-center gap-1 transition-colors ${ok ? "text-emerald-600" : "text-gray-500"}`}>
+      <Check className={`h-3.5 w-3.5 transition-opacity ${ok ? "opacity-100" : "opacity-40"}`} aria-hidden="true" />
+      {children}
+    </p>
   );
 }

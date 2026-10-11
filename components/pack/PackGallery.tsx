@@ -52,7 +52,7 @@ export function PackGallery({ products }: Props) {
 
   return (
     <div className="lg:col-span-1">
-      <div className="lg:sticky lg:top-24 self-start rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
+      <div className="lg:sticky lg:top-36 self-start rounded-xl border border-gray-100 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-4">
           <div className="group relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
             <Image

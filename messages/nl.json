@@ -1,5 +1,10 @@
 {
     "Navbar": {
+      "search": {
+        "placeholder": "Zoek een product…",
+        "noResults": "Geen producten gevonden",
+        "clear": "Zoekopdracht wissen"
+      },
       "home": "Home",
       "how-it-works": "Hoe het werkt",
       "benefits": "Voordelen",
@@ -261,12 +266,15 @@
       "requestAnotherLink": "Nieuwe link aanvragen"
     },
     "Signup": {
+      "fields": {
+        "emailInvalid": "Ongeldig e-mailadres.",
+        "passwordHint": "Minimaal 8 tekens"
+      },
         "title": "Maak een account aan", 
         "subtitle": "Sluit u aan bij PexxaFloor en geniet van optimaal comfort",
         "email": "Email",
         "name": "Volledige naam",
         "password": "Wachtwoord",
-        "confirm": "Wachwoord bevestigen",
         "cta": "Mijn account aanmaken", 
         "google": "Signup met Google",
         "or": "Of",
@@ -282,7 +290,6 @@
         "errors": { 
           "required": "E-mailadres en wachtwoord zijn vereist.", 
           "tooShort": "Min. 8 tekens.", 
-          "mismatch": "De wachtwoorden komen niet overeen.",
           "name_missing": "Naam is vereist",
           "emailAlreadyUsed": "Er bestaat al een account met dit e-mailadres. Probeer in te loggen of gebruik « Wachtwoord vergeten ».",
           "weakPassword": "Dit wachtwoord voldoet niet aan de beveiligingsvereisten.",
@@ -425,6 +432,7 @@
       "inCart": "{count, plural, one {# exemplaar in de winkelwagen} other {# exemplaren in de winkelwagen}}"
     },
     "CartDrawer": {
+      "free": "Gratis",
       "myCart": "Mijn winkelwagen",
       "emptyCart": "Uw winkelwagen is leeg",
       "productsIncluded": "producten inbegrepen",
@@ -571,5 +579,14 @@
       "title": "Gepersonaliseerd legplan",
       "gift": "Gratis bij aankoop van dit pakket",
       "description": "Optimalisatie van het leidingtraject door een expert."
+    },
+  "AuthShell": {
+      "backHome": "Terug naar de site",
+      "tagline": "Vloerverwarming, klaar om te plaatsen geleverd.",
+      "benefits": [
+        "Complete pakketten berekend voor uw oppervlakte",
+        "Volg uw bestellingen en offertes op één plek",
+        "Veilige betaling en levering in België"
+      ]
     }
-  }
+}

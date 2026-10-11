@@ -415,7 +415,9 @@ export default function PackConfigurator({ introduction }: { introduction: React
       <Navbar />
       <ProBadge />
 
-      <section className="mx-auto max-w-7xl px-4 py-8 md:py-12 relative top-24 space-y-4">
+      {/* Wrapper bounds the sticky mobile total bar so it stops above the footer */}
+      <div>
+      <section className="mx-auto max-w-7xl px-4 py-8 md:py-12 mt-24 space-y-4">
         {introduction}
 
         {existingPack && (
@@ -495,6 +497,7 @@ export default function PackConfigurator({ introduction }: { introduction: React
         disabled={isRecalculating || isSavingQuote}
         canSaveQuote={isPro === true}
       />
+      </div>
 
       <PackShareQuoteModal
         open={isShareModalOpen}

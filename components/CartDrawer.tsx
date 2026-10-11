@@ -6,7 +6,7 @@ import { useCart } from "@/context/CartContext";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import AnimatedDropdown from "./ui/AnimatedDropdown";
+import { PackContentsPreview } from "./cart/PackContentsPreview";
 
 export default function CartDrawer() {
   const { items, isOpen, closeCart, updateQuantity, removeFromCart } = useCart();
@@ -166,25 +166,7 @@ export default function CartDrawer() {
                             </p>
                           </div>
 
-                          <AnimatedDropdown
-                            title={t("includedCount", { count: item.products.length })}
-                            defaultOpen={false}
-                          >
-                            <ul className="ml-2 mt-2 space-y-1 list-disc">
-                              {item.products.map((p) => (
-                                <li key={p.id}>
-                                  {p.description} — {p.unit_price.toFixed(2)} €
-                                </li>
-                              ))}
-                            </ul>
-                            <Link
-                              href={editPackHref}
-                              onClick={closeCart}
-                              className="inline-block mt-2 text-blue-600 hover:underline"
-                            >
-                              {t("editPack")}
-                            </Link>
-                          </AnimatedDropdown>
+                          <PackContentsPreview pack={item} />
 
                           <div className="flex items-center justify-between mt-2">
                             <div className="flex items-center gap-2">
