@@ -1,7 +1,8 @@
 "use client";
 
-import { Modal, Card, Avatar } from "antd";
-import { renderStatus } from "@/utils/renderStatus";
+import { Modal, Card, Avatar, Select, Popconfirm } from "antd";
+import { useEffect, useState } from "react";
+import { renderStatus, statusLabel, ORDER_STATUS_ORDER } from "@/utils/renderStatus";
 import { renderOrderMode } from "@/utils/renderOrderMode";
 import { Loader } from "@/components/ui/Loader";
 
@@ -12,6 +13,9 @@ type ProcessingState = {
   validating: boolean;
   delivering: boolean;
   delivered: boolean;
+  readying: boolean;
+  packing: boolean;
+  overriding: boolean;
 };
 
 type Props = {
@@ -23,6 +27,8 @@ type Props = {
   confirmOrder: (id: string) => void;
   readyOrder: (id: string) => void;
   finalizeOrder: (id: string) => void;
+  packOrder: (id: string) => void;
+  setOrderStatus: (id: string, status: string) => void;
 };
 
 export function OrderDetailsModal({
@@ -34,7 +40,11 @@ export function OrderDetailsModal({
   confirmOrder,
   readyOrder,
   finalizeOrder,
+  packOrder,
+  setOrderStatus,
 }: Props) {
+  const [manualStatus, setManualStatus] = useState<string | null>(null);
+  useEffect(() => setManualStatus(null), [selected?.id, selected?.status]);
   if (!selected) return null;
 
   // items peut être string -> JSON.parse
@@ -111,12 +121,21 @@ export function OrderDetailsModal({
           />
         )}
 
+        {(selected.status === "preparing" || selected.status === "verification") && (
+          <ActionButton
+            disabled={processing.packing}
+            onClick={() => packOrder(selected.id)}
+            label="Passer en statut emballée"
+            loading={processing.packing}
+          />
+        )}
+
         {selected.status === "packed" && (
           <ActionButton
-            disabled={processing.validating}
+            disabled={processing.readying}
             onClick={() => readyOrder(selected.id)}
             label="Passer en statut prête"
-            loading={processing.validating}
+            loading={processing.readying}
           />
         )}
 
@@ -137,6 +156,50 @@ export function OrderDetailsModal({
             loading={processing.delivered}
           />
         )}
+
+        {/* Manual override: any status, e.g. to skip a step or correct a mistake */}
+        <div className="mt-6 rounded-lg border border-gray-200 bg-gray-50 p-4">
+          <p className="text-sm font-medium text-gray-700">Changer le statut manuellement</p>
+          <p className="mt-1 text-xs text-gray-500">
+            Le client reçoit l’e-mail correspondant au nouveau statut.
+          </p>
+          <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+            <Select
+              className="sm:w-60"
+              placeholder="Choisir un statut"
+              value={manualStatus}
+              onChange={setManualStatus}
+              options={ORDER_STATUS_ORDER.filter((status) => status !== selected.status).map((status) => ({
+                value: status,
+                label: statusLabel(status),
+              }))}
+            />
+            <Popconfirm
+              title={`Passer la commande en « ${manualStatus ? statusLabel(manualStatus) : ""} » ?`}
+              description={
+                manualStatus === "cancelled"
+                  ? "Le client sera prévenu par e-mail. Le remboursement Stripe n’est pas automatique."
+                  : "Le client sera prévenu par e-mail."
+              }
+              okText="Confirmer"
+              cancelText="Annuler"
+              disabled={!manualStatus}
+              onConfirm={() => {
+                if (!manualStatus) return;
+                setOrderStatus(selected.id, manualStatus);
+                setManualStatus(null);
+              }}
+            >
+              <button
+                type="button"
+                disabled={!manualStatus || processing.overriding}
+                className="rounded-lg bg-gray-900 px-4 py-1.5 text-sm text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {processing.overriding ? <Loader /> : "Appliquer"}
+              </button>
+            </Popconfirm>
+          </div>
+        </div>
       </div>
     </Modal>
   );

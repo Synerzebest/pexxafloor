@@ -19,6 +19,10 @@ type StatusKey =
   | "delivered"
   | "cancelled";
 
+export const ORDER_STATUS_ORDER: StatusKey[] = [
+  "paid", "preparing", "verification", "packed", "ready", "delivering", "delivered", "cancelled",
+];
+
 const STATUS_CONFIG: Record<
   StatusKey,
   { label: string; icon: React.ReactNode; bg: string; text: string; border: string }
@@ -80,6 +84,9 @@ const STATUS_CONFIG: Record<
     border: "#e5e7eb",
   },
 };
+
+export const statusLabel = (status: string) =>
+  STATUS_CONFIG[status as StatusKey]?.label ?? status;
 
 export const renderStatus = (status: string) => {
   const key = status.toLowerCase() as StatusKey;

@@ -22,6 +22,8 @@ export default function OrdersAdminPage() {
     confirmOrder,
     readyOrder,
     finalizeOrder,
+    packOrder,
+    setOrderStatus,
     processing,
   } = useOrdersAdmin(locale);
 
@@ -95,6 +97,8 @@ export default function OrdersAdminPage() {
           confirmOrder={confirmOrder}
           readyOrder={readyOrder}
           finalizeOrder={finalizeOrder}
+          packOrder={packOrder}
+          setOrderStatus={setOrderStatus}
         />
       </div>
 

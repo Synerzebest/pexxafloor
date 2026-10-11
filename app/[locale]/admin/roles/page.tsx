@@ -12,6 +12,9 @@ type Profile = {
   id: string;
   email: string | null;
   user_role: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  created_at: string | null;
 };
 
 // dictionnaire des traductions
@@ -92,10 +95,10 @@ export default function ProfilesAdminPage() {
           prefix={<SearchOutlined />}
           placeholder={
             locale === "fr"
-              ? "Rechercher par email"
+              ? "Rechercher par nom ou email"
               : locale === "nl"
-              ? "Zoeken op e-mail"
-              : "Search by email"
+              ? "Zoeken op naam of e-mail"
+              : "Search by name or email"
           }
           value={search}
           onChange={(e) => {
@@ -109,8 +112,29 @@ export default function ProfilesAdminPage() {
           rowKey="id"
           dataSource={profiles}
           loading={loading}
+          scroll={{ x: true }}
           columns={[
+            {
+              title: locale === "fr" ? "Nom" : locale === "nl" ? "Achternaam" : "Last name",
+              dataIndex: "last_name",
+              sorter: (a: Profile, b: Profile) => (a.last_name || "").localeCompare(b.last_name || ""),
+              render: (value: string | null) => value || "—",
+            },
+            {
+              title: locale === "fr" ? "Prénom" : locale === "nl" ? "Voornaam" : "First name",
+              dataIndex: "first_name",
+              render: (value: string | null) => value || "—",
+            },
             { title: "Email", dataIndex: "email" },
+            {
+              title: locale === "fr" ? "Inscription" : locale === "nl" ? "Registratie" : "Signed up",
+              dataIndex: "created_at",
+              defaultSortOrder: "descend" as const,
+              sorter: (a: Profile, b: Profile) =>
+                new Date(a.created_at || 0).getTime() - new Date(b.created_at || 0).getTime(),
+              render: (value: string | null) =>
+                value ? new Date(value).toLocaleDateString(`${locale}-BE`) : "—",
+            },
             {
               title:
                 locale === "fr"

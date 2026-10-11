@@ -462,6 +462,10 @@
       "discounts": "Kortingen"
     },
     "Admin": {
+      "storekeeperPage": "Magazijnruimte",
+      "storekeeperPageDetails": "Bestellingen verzamelen en controleren voor het inpakken",
+      "deliveryPage": "Leveringsruimte",
+      "deliveryPageDetails": "Bestellingen opvolgen die klaar, onderweg of geleverd zijn",
       "adminPanel": "Beheerderspaneel",
       "catalogManagement": "Catalogusbeheer",
       "catalogManagementDetails": "Categorieën, subcategorieën, producten en packs",

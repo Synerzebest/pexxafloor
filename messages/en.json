@@ -462,6 +462,10 @@
       "discounts": "Discounts"
     },
     "Admin": {
+      "storekeeperPage": "Storekeeper area",
+      "storekeeperPageDetails": "Pick and check the orders to pack",
+      "deliveryPage": "Delivery area",
+      "deliveryPageDetails": "Track ready, in-transit and delivered orders",
       "adminPanel": "Admin panel",
       "catalogManagement": "Catalog Management",
       "catalogManagementDetails": "Categories, subcategories, products and packs",

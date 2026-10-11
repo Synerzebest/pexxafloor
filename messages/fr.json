@@ -462,6 +462,10 @@
       "discounts": "Remises"
     },
     "Admin": {
+      "storekeeperPage": "Espace magasinier",
+      "storekeeperPageDetails": "Préparer et vérifier les commandes à emballer",
+      "deliveryPage": "Espace livraison",
+      "deliveryPageDetails": "Suivre les commandes prêtes, en livraison et livrées",
       "adminPanel": "Panneau d'administration",
       "catalogManagement": "Gestion du catalogue",
       "catalogManagementDetails": "Catégories, sous-catégories, produits et packs",

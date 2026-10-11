@@ -15,6 +15,8 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
     delivering: false,
     delivered: false,
     readying: false,
+    packing: false,
+    overriding: false,
   });
 
   async function loadOrders() {
@@ -45,7 +47,8 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
     orderId: string,
     newStatus: string,
     key: string,
-    locale: Locale 
+    locale: Locale,
+    extraBody: Record<string, string> = {}
   ) {
     const order = orders.find((o) => o.id === orderId);
     if (!order) return toast.error("Commande introuvable");
@@ -59,6 +62,7 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
         body: JSON.stringify({ 
             order_id: orderId,
             locale: locale, // 👈 AJOUT DE LA LOCALE DANS LE BODY
+            ...extraBody,
         }),
       });
 
@@ -107,5 +111,9 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
       updateStatus("/api/orders/ready", id, "ready", "readying", currentLocale),
     finalizeOrder: (id: string) =>
       updateStatus("/api/orders/delivered", id, "delivered", "delivered", currentLocale),
+    packOrder: (id: string) =>
+      updateStatus("/api/orders/pack", id, "packed", "packing", currentLocale),
+    setOrderStatus: (id: string, status: string) =>
+      updateStatus("/api/orders/status", id, status, "overriding", currentLocale, { status }),
   };
 }
