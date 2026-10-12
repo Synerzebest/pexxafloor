@@ -23,7 +23,7 @@ export default function Hero() {
     >
       {/* Background Image */}
       <Image
-        src="/images/hero.jpeg"
+        src="/images/hero.png"
         alt=""
         sizes="100vw"
         fill

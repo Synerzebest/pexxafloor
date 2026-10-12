@@ -30,7 +30,7 @@ export default function AuthShell({
       {/* Brand panel */}
       <aside className="relative hidden overflow-hidden lg:block">
         <Image
-          src="/images/hero.jpeg"
+          src="/images/hero.png"
           alt=""
           fill
           priority
