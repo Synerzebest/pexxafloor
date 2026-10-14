@@ -273,6 +273,7 @@ export default function ProductSection({
         totalCount={products.length}
       />
       <Table
+        scroll={{ x: "max-content" }}
         rowKey="id"
         dataSource={filteredProducts}
         columns={columns}

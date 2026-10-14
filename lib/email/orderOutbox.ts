@@ -1,7 +1,7 @@
 import "server-only";
 import { Resend } from "resend";
 import { supabaseServer } from "@/lib/supabaseServer";
-import { buildOrderMessage, type OrderEmailSnapshot } from "./orderMessage";
+import { buildOrderMessage, sendsCustomerEmail, type OrderEmailSnapshot, type ShippingAddress } from "./orderMessage";
 
 type EmailRequest = { from: string; to: string; subject: string; html: string; text: string; replyTo?: string };
 type OutboxEntry = {
@@ -36,9 +36,19 @@ async function makeRequest(entry: OutboxEntry, config: ReturnType<typeof emailCo
   // Auth is authoritative: profiles.email can be missing or out of date.
   const { data, error } = await supabaseServer.auth.admin.getUserById(entry.payload.user_id);
   if (error || !data.user?.email) throw new Error("Unable to find the order owner's email");
+
+  // The queued snapshot has no address: read it from the order for the "out for delivery" email
+  let shippingAddress: ShippingAddress | undefined;
+  if (entry.payload.status === "delivering") {
+    const { data: order, error: orderError } = await supabaseServer.from("orders")
+      .select("client_name, address, postal_code, city, country").eq("id", entry.order_id).maybeSingle();
+    if (orderError) throw new Error("Unable to load the delivery address");
+    shippingAddress = order ?? undefined;
+  }
+
   return {
     from: config.from, to: data.user.email, replyTo: config.replyTo,
-    ...buildOrderMessage(entry.payload, config.siteUrl),
+    ...buildOrderMessage(entry.payload, config.siteUrl, shippingAddress),
   };
 }
 
@@ -52,6 +62,15 @@ export async function processOrderEmails(orderId?: string, limit = 10) {
     if (error) throw new Error("Email queue unavailable: apply the order_email_outbox migration");
     const entry = data?.[0] as OutboxEntry | undefined;
     if (!entry) break;
+
+    // Internal steps (e.g. "packed") are queued by the status trigger but never emailed
+    if (!sendsCustomerEmail(entry.payload.status)) {
+      const { error: skipError } = await supabaseServer.from("order_email_outbox").update({
+        sent_at: new Date().toISOString(), locked_until: null, last_error: "skipped: no customer email for this status",
+      }).eq("id", entry.id).eq("attempts", entry.attempts);
+      if (skipError) throw new Error("Unable to skip the internal notification");
+      continue;
+    }
     try {
       let request = entry.request_payload;
       if (!request) {

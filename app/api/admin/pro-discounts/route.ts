@@ -45,32 +45,9 @@ export async function GET(req: Request) {
   }
 
   const profileUsers = users || [];
-  const profileUserIds = profileUsers.map((user) => user.id);
-  const { data: applications, error: applicationsError } = profileUserIds.length
-    ? await supabaseServer
-        .from("pro_applications")
-        .select("user_id, company_name, created_at")
-        .in("user_id", profileUserIds)
-        .order("created_at", { ascending: false })
-    : { data: [], error: null };
-
-  if (applicationsError) {
-    return NextResponse.json({ error: applicationsError.message }, { status: 500 });
-  }
-
-  const applicationCompanyNames = new Map<string, string>();
-  for (const application of applications || []) {
-    if (!applicationCompanyNames.has(application.user_id)) {
-      applicationCompanyNames.set(application.user_id, application.company_name);
-    }
-  }
-
   const normalizedSearch = search.toLocaleLowerCase();
   const mergedUsers = profileUsers
-    .map((user) => ({
-      ...user,
-      company_name: applicationCompanyNames.get(user.id) || user.company_name,
-    }))
+    // profiles.company_name mirrors the latest PRO application (trigger pro_applications_sync_profile_company)
     .filter((user) => !normalizedSearch || [user.email, user.name, user.company_name]
       .some((value) => value?.toLocaleLowerCase().includes(normalizedSearch)))
     .sort((a, b) => (a.company_name || a.name || a.email || "").localeCompare(

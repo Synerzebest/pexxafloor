@@ -2,22 +2,39 @@ import { useEffect, useState } from "react";
 import { Order } from "@/types/OrderType";
 import { toast } from "sonner";
 
-// Définition du type Locale pour le hook
-type Locale = 'fr' | 'en' | 'nl';
-
-export function useOrdersAdmin(currentLocale: Locale = 'fr') { 
+export function useOrdersAdmin() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [selected, setSelected] = useState<Order | null>(null);
   const [loading, setLoading] = useState(false);
 
   const [processing, setProcessing] = useState({
-    validating: false,
-    delivering: false,
-    delivered: false,
-    readying: false,
-    packing: false,
-    overriding: false,
+    moving: false,
+    paying: false,
   });
+
+  async function setOrderPaid(orderId: string, paid: boolean) {
+    setProcessing((prev) => ({ ...prev, paying: true }));
+    try {
+      const res = await fetch("/api/orders/payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ order_id: orderId, paid }),
+      });
+      const json = await res.json();
+      if (!res.ok) {
+        toast.error(json.error || "Erreur lors de la mise à jour du paiement");
+        return;
+      }
+      const paidAt: string | null = json.order?.paid_at ?? null;
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, paid_at: paidAt } : o)));
+      setSelected((prev) => (prev && prev.id === orderId ? { ...prev, paid_at: paidAt } : prev));
+      toast.success(paid ? "Commande marquée comme payée" : "Commande marquée comme non payée");
+    } catch {
+      toast.error("Erreur réseau");
+    } finally {
+      setProcessing((prev) => ({ ...prev, paying: false }));
+    }
+  }
 
   async function loadOrders() {
     setLoading(true);
@@ -42,57 +59,36 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
     loadOrders();
   }, []);
 
-  async function updateStatus(
-    api: string,
-    orderId: string,
-    newStatus: string,
-    key: string,
-    locale: Locale,
-    extraBody: Record<string, string> = {}
-  ) {
-    const order = orders.find((o) => o.id === orderId);
-    if (!order) return toast.error("Commande introuvable");
-
-    setProcessing((prev) => ({ ...prev, [key]: true }));
-
+  // Moves the order one step along the workflow; only moving forward emails the customer
+  async function moveOrderStatus(order: Order, direction: "next" | "previous") {
+    setProcessing((prev) => ({ ...prev, moving: true }));
     try {
-      const res = await fetch(api, {
+      const res = await fetch("/api/orders/status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            order_id: orderId,
-            locale: locale, // 👈 AJOUT DE LA LOCALE DANS LE BODY
-            ...extraBody,
-        }),
+        body: JSON.stringify({ order_id: order.id, direction, from: order.status }),
       });
-
       const json = await res.json();
       if (!res.ok) {
         toast.error(json.error || "Erreur lors de la mise à jour");
         return;
       }
 
-      if (json.notification?.pending) {
+      const newStatus: string = json.order.status;
+      if (direction === "previous") {
+        toast.success("Statut précédent rétabli (aucun e-mail envoyé)");
+      } else if (json.notification?.pending) {
         toast.warning("Statut mis à jour. L’e-mail est en attente d’envoi.");
       } else {
-        toast.success("Statut mis à jour");
+        toast.success("Statut mis à jour, le client a été prévenu");
       }
 
-      // Mettre à jour la liste des commandes
-      setOrders((prev) =>
-        prev.map((o) =>
-          o.id === orderId ? { ...o, status: newStatus } : o
-        )
-      );
-
-      // Mettre à jour la commande sélectionnée si elle est ouverte
-      setSelected((prev) =>
-        prev ? { ...prev, status: newStatus } : prev
-      );
-    } catch (err) {
+      setOrders((prev) => prev.map((o) => (o.id === order.id ? { ...o, status: newStatus } : o)));
+      setSelected((prev) => (prev && prev.id === order.id ? { ...prev, status: newStatus } : prev));
+    } catch {
       toast.error("Erreur réseau");
     } finally {
-      setProcessing((prev) => ({ ...prev, [key]: false }));
+      setProcessing((prev) => ({ ...prev, moving: false }));
     }
   }
 
@@ -103,17 +99,7 @@ export function useOrdersAdmin(currentLocale: Locale = 'fr') {
     setSelected,
     loadOrders,
     processing,
-    validateOrder: (id: string) =>
-      updateStatus("/api/orders/validate", id, "preparing", "validating", currentLocale),
-    confirmOrder: (id: string) =>
-      updateStatus("/api/orders/deliver", id, "delivering", "delivering", currentLocale),
-    readyOrder: (id: string) =>
-      updateStatus("/api/orders/ready", id, "ready", "readying", currentLocale),
-    finalizeOrder: (id: string) =>
-      updateStatus("/api/orders/delivered", id, "delivered", "delivered", currentLocale),
-    packOrder: (id: string) =>
-      updateStatus("/api/orders/pack", id, "packed", "packing", currentLocale),
-    setOrderStatus: (id: string, status: string) =>
-      updateStatus("/api/orders/status", id, status, "overriding", currentLocale, { status }),
+    moveOrderStatus,
+    setOrderPaid,
   };
 }

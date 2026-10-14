@@ -48,11 +48,11 @@ export default function AdminBestSellerSection({
         return (
           <div
             key={p.id}
-            className="flex items-center justify-between rounded-xl border border-gray-200 bg-white p-4"
+            className="flex items-center justify-between gap-3 rounded-xl border border-gray-200 bg-white p-3 sm:p-4"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex min-w-0 items-center gap-3 sm:gap-4">
               {image && (
-                <div className="relative h-16 w-16 overflow-hidden rounded-lg">
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg sm:h-16 sm:w-16">
                   <Image
                     src={image}
                     alt={p.name_fr}
@@ -62,8 +62,8 @@ export default function AdminBestSellerSection({
                 </div>
               )}
 
-              <div>
-                <p className="font-medium text-gray-800">
+              <div className="min-w-0">
+                <p className="line-clamp-2 font-medium text-gray-800">
                   {p.name_fr}
                 </p>
 
@@ -85,6 +85,7 @@ export default function AdminBestSellerSection({
             </div>
 
             <Switch
+              className="shrink-0"
               checked={!!p.is_best_seller}
               onChange={(checked) =>
                 toggle(p.id, checked)

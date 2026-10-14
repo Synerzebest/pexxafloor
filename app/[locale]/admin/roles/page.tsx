@@ -80,7 +80,7 @@ export default function ProfilesAdminPage() {
 
   return (
     <>
-      <div className="p-8">
+      <div className="px-4 py-6 sm:p-8">
        <RoleAccessInfo locale={locale} />
 
         <h1 className="text-2xl font-bold mb-6">
@@ -106,13 +106,13 @@ export default function ProfilesAdminPage() {
             setSearch(val);
             fetchProfiles(val);
           }}
-          style={{ maxWidth: 400, marginBottom: 16 }}
+          style={{ maxWidth: 400, width: "100%", marginBottom: 16 }}
         />
         <Table
           rowKey="id"
           dataSource={profiles}
           loading={loading}
-          scroll={{ x: true }}
+          scroll={{ x: "max-content" }}
           columns={[
             {
               title: locale === "fr" ? "Nom" : locale === "nl" ? "Achternaam" : "Last name",

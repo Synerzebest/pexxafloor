@@ -1,5 +1,6 @@
 "use client";
 
+import { formatEuro } from "@/lib/pricing/vat";
 import { useEffect, useState } from "react";
 import { useLocale } from "next-intl";
 import { useTranslations } from "next-intl";
@@ -155,7 +156,7 @@ export default function CheckoutSection({ items, isPro }: Props) {
     isAddressValid,
   } = useCartCheckout();
 
-  const { baseTotal, finalTotal, baseTotalTVACCents, finalTotalTVACCents } = items.reduce(
+  const { baseTotal, finalTotal, finalTotalTVACCents } = items.reduce(
     (acc, i: any) => {
       if (i.type === "product") {
         const quantity = Number(i.quantity || 0);
@@ -191,7 +192,6 @@ export default function CheckoutSection({ items, isPro }: Props) {
       ? Math.min(creditBalanceCents, Math.max(0, finalTotalTVACCents - 50))
       : 0;
   const displayedTotalTVAC = Math.max(0, finalTotalTVACCents - creditAppliedCents) / 100;
-  const displayedTotalHTVA = displayedTotalTVAC / (1 + VAT_RATE);
 
   useEffect(() => {
     if (!user || !isPro) {
@@ -458,43 +458,39 @@ export default function CheckoutSection({ items, isPro }: Props) {
         <div className="sticky bottom-0 bg-white border-t border-gray-100 shadow-lg p-4 sm:p-5 rounded-t-xl sm:rounded-xl">
             <div className="w-full flex flex-col items-start justify-center gap-4">
 
-            {/* Total */}
-            <div className="w-full flex flex-row justify-between items-start">
-              <span className="text-sm sm:text-lg font-medium text-gray-600">{t("total")}:</span>
+            {/* Summary, one amount per line */}
+            <dl className="w-full space-y-2 text-sm">
+              {isPro ? (
+                <>
+                  <SummaryLine label={t("grossTotalExclVat")} value={formatEuro(baseTotal, locale)} />
+                  <SummaryLine
+                    label={t("proDiscountExclVat")}
+                    value={`− ${formatEuro(baseTotal - finalTotal, locale)}`}
+                    valueClassName={hasDiscount ? "text-green-600" : undefined}
+                  />
+                  <SummaryLine label={t("netTotalExclVat")} value={formatEuro(finalTotal, locale)} strong />
+                </>
+              ) : (
+                <SummaryLine label={t("totalExclVat")} value={formatEuro(finalTotal, locale)} />
+              )}
 
-              <div className="text-right flex flex-col items-end leading-none">
-                {/* Prix final */}
-                <div className="text-2xl sm:text-3xl font-semibold tracking-tight text-orange-600">
-                  {displayedTotalTVAC.toFixed(2)} €
-                </div>
-                <div className="mt-1 text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  {t("totalInclVat")}
-                </div>
-                <div className="mt-2 text-sm text-gray-600">
-                  {t("totalExclVat")} : <span className="font-semibold text-gray-900">{displayedTotalHTVA.toFixed(2)} €</span>
-                </div>
+              <div className="!my-3 border-t border-gray-200" role="separator" />
 
-                {/* Ancien prix + remise */}
-                {hasDiscount && (
-                  <div className="mt-2 flex items-center gap-2">
-                    <span className="text-sm text-gray-400 line-through">
-                      {(baseTotalTVACCents / 100).toFixed(2)} € {t("vatIncluded")}
-                    </span>
-                    <span className="text-xs font-medium text-green-600">
-                      {t("proDiscount")}
-                    </span>
-                  </div>
-                )}
-                {creditAppliedCents > 0 && (
-                  <div className="mt-2 text-sm font-medium text-emerald-600">
-                    {t("creditApplied", {
-                      amount: (creditAppliedCents / 100).toFixed(2),
-                    })}
-                  </div>
-                )}
+              {creditAppliedCents > 0 && (
+                <SummaryLine
+                  label={t("creditLine")}
+                  value={`− ${formatEuro(creditAppliedCents / 100, locale)}`}
+                  valueClassName="text-emerald-600"
+                />
+              )}
+              <div className="flex items-baseline justify-between gap-4">
+                <dt className="text-base font-semibold text-gray-900">{t("totalInclVat")}</dt>
+                <dd className="text-2xl sm:text-3xl font-semibold tracking-tight text-orange-600 tabular-nums">
+                  {formatEuro(displayedTotalTVAC, locale)}
+                </dd>
               </div>
-            </div>
-            
+            </dl>
+
             {/* Checkout Button */}
             {!user ? (
               <div className="w-full sm:w-auto">
@@ -520,6 +516,27 @@ export default function CheckoutSection({ items, isPro }: Props) {
 
             </div>
         </div>
+    </div>
+  );
+}
+
+function SummaryLine({
+  label,
+  value,
+  strong = false,
+  valueClassName,
+}: {
+  label: string;
+  value: string;
+  strong?: boolean;
+  valueClassName?: string;
+}) {
+  return (
+    <div className="flex items-baseline justify-between gap-4">
+      <dt className={strong ? "font-semibold text-gray-900" : "text-gray-600"}>{label}</dt>
+      <dd className={`tabular-nums ${strong ? "font-semibold text-gray-900" : "text-gray-700"} ${valueClassName ?? ""}`}>
+        {value}
+      </dd>
     </div>
   );
 }

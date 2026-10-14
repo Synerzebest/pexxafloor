@@ -23,13 +23,13 @@ const AdminPage = () => {
 
   return (
     <>
-      <main className="min-h-[70vh] bg-gradient-to-b from-gray-50 to-white px-6 py-10">
+      <main className="min-h-[70vh] bg-gradient-to-b from-gray-50 to-white px-4 py-8 sm:px-6 sm:py-10">
         <div className="max-w-6xl mx-auto">
           <motion.h1
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="text-3xl font-bold text-gray-900 mb-8"
+            className="mb-6 text-2xl font-bold text-gray-900 sm:mb-8 sm:text-3xl"
           >
             {t('adminPanel')}
           </motion.h1>

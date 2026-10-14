@@ -73,7 +73,8 @@
       "orderFrom": "Order from {date}",
       "viewItems": "View items",
       "orderCount": "{count, plural, one {# order} other {# orders}}", "itemCount": "{count, plural, one {# item} other {# items}}", "loadingOrders": "Loading orders", "noOrdersDescription": "Your orders will appear here once you have completed your first purchase.", "orderNumber": "Order", "includedProducts": "Included products", "installationSpacing": "spacing", "quantityShort": "Qty", "backHome": "Back to home",
-      "orderStatus": { "paid": "Paid", "preparing": "Preparing", "verification": "Under verification", "packed": "Packed", "ready": "Ready", "delivering": "Out for delivery", "delivered": "Delivered", "cancelled": "Cancelled" }
+      "paymentStatus": { "paid": "Paid", "unpaid": "Unpaid" },
+      "orderStatus": { "paid": "Confirmed", "preparing": "Preparing", "verification": "Under verification", "packed": "Packed", "ready": "Ready", "delivering": "Out for delivery", "delivered": "Delivered", "cancelled": "Cancelled" }
     },
     "FAQ": {
       "title": { "first": "Frequently asked", "second": "questions" },
@@ -348,6 +349,10 @@
       }
     },
     "AdminPro": {
+      "toast": {
+        "statusChanged": "Application moved to “{status}”",
+        "statusError": "Unable to change the application status"
+      },
       "title": "Professional Applications",
       "pendingTitle": "Pending",
       "recentTitle": "Recent Applications",
@@ -493,6 +498,10 @@
       "productCount": "{count, plural, =0 {No products} one {# product} other {# products}}"
     },
     "Cart": {
+      "grossTotalExclVat": "Gross total excl. VAT",
+      "proDiscountExclVat": "Pro discount excl. VAT",
+      "netTotalExclVat": "Net total excl. VAT",
+      "creditLine": "Credit applied",
       "errors": {
         "address": "Please fill in the complete delivery address before continuing.",
         "clientName": "Please provide the name of the client or company.",

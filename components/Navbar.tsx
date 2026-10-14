@@ -1,5 +1,6 @@
 'use client';
 
+import LanguageSwitcher from "./LanguageSwitcher";
 import { Price } from "@/components/ui/Price";
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -97,8 +98,7 @@ export default function Navbar() {
   const getName = (obj: Translatable) =>
     locale === 'fr' ? obj.name_fr : locale === 'nl' ? obj.name_nl : obj.name_en;
 
-  const onChangeLocale = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const nextLocale = e.target.value as SupportedLocale;
+  const onChangeLocale = (nextLocale: SupportedLocale) => {
     router.push(swapLocaleInPath(pathname, nextLocale));
     setDrawerOpen(false);
   };
@@ -207,15 +207,7 @@ export default function Navbar() {
             </Link>
           </motion.div>
 
-          <select
-            value={locale}
-            onChange={onChangeLocale}
-            className="rounded-lg border border-gray-300 bg-white px-2 py-1 text-sm"
-          >
-            <option value="fr">FR</option>
-            <option value="nl">NL</option>
-            <option value="en">EN</option>
-          </select>
+          <LanguageSwitcher locale={locale} onSelect={onChangeLocale} />
         </div>
 
         {/* Burger (mobile) */}
@@ -506,15 +498,7 @@ export default function Navbar() {
                   >
                     {t('quote_btn')}
                   </Link>
-                  <select
-                    value={locale}
-                    onChange={onChangeLocale}
-                    className="rounded-lg border border-gray-300 bg-white px-2 py-1 text-sm"
-                  >
-                    <option value="fr">FR</option>
-                    <option value="nl">NL</option>
-                    <option value="en">EN</option>
-                  </select>
+                  <LanguageSwitcher locale={locale} onSelect={onChangeLocale} variant="segmented" />
                 </div>
               </div>
               <div className="mt-4">

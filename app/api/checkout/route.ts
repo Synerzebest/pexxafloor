@@ -382,8 +382,13 @@ export async function POST(req: Request) {
     // -------------------------
     // STRIPE
     // -------------------------
+    // Stripe Checkout in the site language; "auto" falls back to the browser language
+    const stripeLocale: Stripe.Checkout.SessionCreateParams.Locale =
+      locale === "fr" || locale === "nl" || locale === "en" ? locale : "auto";
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      locale: stripeLocale,
       customer_email: user.email,
       line_items,
       discounts: couponId ? [{ coupon: couponId }] : undefined,

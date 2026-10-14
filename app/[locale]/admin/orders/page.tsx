@@ -6,7 +6,7 @@ import { Table, Card, Select, Button, Input } from "antd";
 import { ReloadOutlined, SearchOutlined } from "@ant-design/icons";
 import { useLocale } from "next-intl";
 import { useOrdersAdmin } from "@/hooks/useOrdersAdmin";
-import { getOrderMode } from "@/types/OrderType";
+import { getOrderMode, isOrderPaid } from "@/types/OrderType";
 import { getOrdersColumns } from "@/components/admin/orders/OrdersColumns";
 import { OrderDetailsModal } from "@/components/admin/orders/OrderDetailsModal";
 
@@ -18,18 +18,15 @@ export default function OrdersAdminPage() {
     selected,
     setSelected,
     loadOrders,
-    validateOrder,
-    confirmOrder,
-    readyOrder,
-    finalizeOrder,
-    packOrder,
-    setOrderStatus,
+    moveOrderStatus,
+    setOrderPaid,
     processing,
-  } = useOrdersAdmin(locale);
+  } = useOrdersAdmin();
 
   const [filterStatus, setFilterStatus] = useState("all");
   const [search, setSearch] = useState("");
   const [filterMode, setFilterMode] = useState("all");
+  const [filterPayment, setFilterPayment] = useState("all");
 
   const normalizedSearch = search.trim().toLocaleLowerCase();
   const filtered = orders.filter((order) => {
@@ -38,7 +35,9 @@ export default function OrdersAdminPage() {
       ?.toLocaleLowerCase()
       .includes(normalizedSearch);
     const matchesMode = filterMode === "all" || getOrderMode(order) === filterMode;
-    return matchesStatus && matchesSearch && matchesMode;
+    const matchesPayment =
+      filterPayment === "all" || (filterPayment === "paid") === isOrderPaid(order);
+    return matchesStatus && matchesSearch && matchesMode && matchesPayment;
   });
 
   return (
@@ -56,7 +55,7 @@ export default function OrdersAdminPage() {
           />
           <Select value={filterStatus} onChange={setFilterStatus} className="w-full sm:w-48">
             <Select.Option value="all">Toutes</Select.Option>
-            <Select.Option value="paid">Payées</Select.Option>
+            <Select.Option value="paid">Confirmées</Select.Option>
             <Select.Option value="preparing">En préparation</Select.Option>
             <Select.Option value="verification">En vérification</Select.Option>
             <Select.Option value="packed">Emballées</Select.Option>
@@ -64,6 +63,12 @@ export default function OrdersAdminPage() {
             <Select.Option value="delivering">En livraison</Select.Option>
             <Select.Option value="delivered">Livrées</Select.Option>
             <Select.Option value="cancelled">Annulées</Select.Option>
+          </Select>
+
+          <Select value={filterPayment} onChange={setFilterPayment} className="w-full sm:w-40">
+            <Select.Option value="all">Tous paiements</Select.Option>
+            <Select.Option value="paid">Payées</Select.Option>
+            <Select.Option value="unpaid">Non payées</Select.Option>
           </Select>
 
           <Select value={filterMode} onChange={setFilterMode} className="w-full sm:w-40">
@@ -80,8 +85,19 @@ export default function OrdersAdminPage() {
         {/* Table */}
         <Card>
           <Table
+            scroll={{ x: "max-content" }}
             dataSource={filtered}
-            columns={getOrdersColumns(locale, setSelected)}
+            columns={getOrdersColumns(locale)}
+            size="middle"
+            pagination={{ pageSize: 20, hideOnSinglePage: true, showSizeChanger: false }}
+            rowClassName="cursor-pointer"
+            onRow={(order) => ({
+              onClick: () => setSelected(order),
+              onKeyDown: (event) => {
+                if (event.key === "Enter") setSelected(order);
+              },
+              tabIndex: 0,
+            })}
             rowKey="id"
             loading={loading}
           />
@@ -93,12 +109,8 @@ export default function OrdersAdminPage() {
           setSelected={setSelected}
           locale={locale}
           processing={processing}
-          validateOrder={validateOrder}
-          confirmOrder={confirmOrder}
-          readyOrder={readyOrder}
-          finalizeOrder={finalizeOrder}
-          packOrder={packOrder}
-          setOrderStatus={setOrderStatus}
+          moveOrderStatus={moveOrderStatus}
+          setOrderPaid={setOrderPaid}
         />
       </div>
 

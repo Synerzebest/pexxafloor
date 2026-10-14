@@ -73,7 +73,8 @@
       "orderFrom": "Bestelling van {date}",
       "viewItems": "Artikelen bekijken",
       "orderCount": "{count, plural, one {# bestelling} other {# bestellingen}}", "itemCount": "{count, plural, one {# artikel} other {# artikelen}}", "loadingOrders": "Bestellingen laden", "noOrdersDescription": "Uw bestellingen verschijnen hier zodra u uw eerste aankoop hebt voltooid.", "orderNumber": "Bestelling", "includedProducts": "Inbegrepen producten", "installationSpacing": "afstand", "quantityShort": "Aantal", "backHome": "Terug naar home",
-      "orderStatus": { "paid": "Betaald", "preparing": "In voorbereiding", "verification": "In controle", "packed": "Verpakt", "ready": "Klaar", "delivering": "Onderweg", "delivered": "Geleverd", "cancelled": "Geannuleerd" }
+      "paymentStatus": { "paid": "Betaald", "unpaid": "Niet betaald" },
+      "orderStatus": { "paid": "Bevestigd", "preparing": "In voorbereiding", "verification": "In controle", "packed": "Verpakt", "ready": "Klaar", "delivering": "Onderweg", "delivered": "Geleverd", "cancelled": "Geannuleerd" }
     },
     "FAQ": {
       "title": { "first": "Veelgestelde", "second": "vragen" },
@@ -348,6 +349,10 @@
       }
     },    
     "AdminPro": {
+      "toast": {
+        "statusChanged": "Aanvraag gewijzigd naar “{status}”",
+        "statusError": "Kan de status van de aanvraag niet wijzigen"
+      },
       "title": "Professionele aanvragen",
       "pendingTitle": "In afwachting",
       "recentTitle": "Recente aanvragen",
@@ -493,6 +498,10 @@
       "productCount": "{count, plural, =0 {Geen producten} one {# product} other {# producten}}"
     },
     "Cart": {
+      "grossTotalExclVat": "Brutototaal excl. btw",
+      "proDiscountExclVat": "Pro-korting excl. btw",
+      "netTotalExclVat": "Nettototaal excl. btw",
+      "creditLine": "Toegepast tegoed",
       "errors": {
         "address": "Vul het volledige leveringsadres in voordat u verdergaat.",
         "clientName": "Vul de naam van de klant of het bedrijf in.",

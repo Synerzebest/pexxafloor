@@ -197,6 +197,7 @@ export default function CategorySection({
         totalCount={categories.length}
       />
       <Table
+        scroll={{ x: "max-content" }}
         rowKey="id"
         dataSource={filteredCategories}
         loading={loading}

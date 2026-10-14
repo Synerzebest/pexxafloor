@@ -133,27 +133,39 @@ export async function POST(req: Request) {
       }
 
       // Création commande
-      const { data: order, error: insertError } = await supabase
+      const orderPayload = {
+        user_id: userId,
+        stripe_session_id: session.id,
+        status: "paid",
+        total:
+          session.amount_total !== null && session.amount_total !== undefined
+            ? session.amount_total / 100
+            : 0,
+        items: cart.items,
+        client_name: metadata.client_name,
+        address: metadata.address,
+        postal_code: metadata.postal_code,
+        city: metadata.city,
+        country: metadata.country,
+        language: metadata.language,
+        created_at: new Date().toISOString(),
+      };
+      const paidAt = new Date().toISOString();
+      let { data: order, error: insertError } = await supabase
         .from("orders")
-        .insert({
-          user_id: userId,
-          stripe_session_id: session.id,
-          status: "paid",
-          total:
-            session.amount_total !== null && session.amount_total !== undefined
-              ? session.amount_total / 100
-              : 0,
-          items: cart.items,
-          client_name: metadata.client_name,
-          address: metadata.address,
-          postal_code: metadata.postal_code,
-          city: metadata.city,
-          country: metadata.country,
-          language: metadata.language,
-          created_at: new Date().toISOString(),
-        })
+        .insert({ ...orderPayload, paid_at: paidAt })
         .select("id")
         .single();
+
+      // paid_at comes from a migration: never lose a paid order if it is not applied yet
+      if (insertError && ["PGRST204", "42703"].includes(insertError.code)) {
+        console.warn("orders.paid_at missing, apply migration 202610120001_order_paid_at.sql");
+        ({ data: order, error: insertError } = await supabase
+          .from("orders")
+          .insert(orderPayload)
+          .select("id")
+          .single());
+      }
 
       if (insertError || !order) {
         console.error("Erreur insertion commande:", insertError);

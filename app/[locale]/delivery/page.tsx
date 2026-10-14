@@ -7,7 +7,7 @@ import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { Navbar, Footer } from "@/components";
 import { Truck, FileText, Edit3, BadgeCheck } from "lucide-react";
 import jsPDF from "jspdf";
-import { addHeader, addProductsTable, addSignatureAndStampSection, addFooter } from "@/utils/pdfUtils";
+import { generateDeliveryNote as buildDeliveryNote } from "@/utils/pdfUtils";
 import { renderStatus } from "@/utils/renderStatus"
 import { Order } from "@/types/OrderType";
 
@@ -46,12 +46,8 @@ export default function StorekeeperPage() {
   };
 
   const generateDeliveryNote = async (order: Order) => {
-    const doc = new jsPDF();
     try {
-      addHeader(doc, order);
-      addProductsTable(doc, order);
-      addSignatureAndStampSection(doc);
-      addFooter(doc);
+      const doc = await buildDeliveryNote(order);
       const fileName = `bon_livraison_${order.id.slice(0, 8)}.pdf`;
       doc.save(fileName);
     } catch (err) {
@@ -294,7 +290,7 @@ export default function StorekeeperPage() {
             onChange={(value) => setStatusFilter(value)}
             options={[
               { label: "En préparation", value: "preparing" },
-              { label: "Payées", value: "paid" },
+              { label: "Confirmées", value: "paid" },
               { label: "Validées", value: "validated" },
               { label: "Prêtes", value: "ready" },
               { label: "Emballées", value: "packed"},

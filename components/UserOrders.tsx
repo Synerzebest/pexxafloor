@@ -1,5 +1,6 @@
 "use client";
 
+import { isOrderPaid } from "@/types/OrderType";
 import { VAT_RATE } from "@/lib/pricing/vat";
 import { Price } from "@/components/ui/Price";
 import { useEffect, useMemo, useState } from "react";
@@ -11,6 +12,8 @@ import {
   Box,
   CheckCircle2,
   ChevronDown,
+  CircleAlert,
+  CreditCard,
   Clock3,
   Home,
   PackageCheck,
@@ -29,11 +32,14 @@ type Order = {
   total: number;
   items: CartItem[];
   created_at: string;
+  paid_at?: string | null;
+  stripe_session_id?: string | null;
 };
 
 const statusStyles: Record<string, string> = {
-  paid: "bg-emerald-50 text-emerald-700 ring-emerald-200",
+  paid: "bg-gray-50 text-gray-700 ring-gray-200",
   preparing: "bg-amber-50 text-amber-700 ring-amber-200",
+  verification: "bg-amber-50 text-amber-700 ring-amber-200",
   packed: "bg-blue-50 text-blue-700 ring-blue-200",
   ready: "bg-cyan-50 text-cyan-700 ring-cyan-200",
   delivering: "bg-violet-50 text-violet-700 ring-violet-200",
@@ -41,10 +47,23 @@ const statusStyles: Record<string, string> = {
   cancelled: "bg-red-50 text-red-700 ring-red-200",
 };
 
+function PaymentBadge({ paid, label }: { paid: boolean; label: string }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-inset ${
+        paid ? "bg-emerald-50 text-emerald-700 ring-emerald-200" : "bg-red-50 text-red-700 ring-red-200"
+      }`}
+    >
+      {paid ? <CreditCard className="h-3.5 w-3.5" /> : <CircleAlert className="h-3.5 w-3.5" />}
+      {label}
+    </span>
+  );
+}
+
 function StatusIcon({ status }: { status: string }) {
   const className = "h-3.5 w-3.5";
   if (status === "cancelled") return <XCircle className={className} />;
-  if (status === "preparing") return <Clock3 className={className} />;
+  if (status === "preparing" || status === "verification") return <Clock3 className={className} />;
   if (status === "packed" || status === "ready") return <PackageCheck className={className} />;
   if (status === "delivering") return <Truck className={className} />;
   return <CheckCircle2 className={className} />;
@@ -97,7 +116,7 @@ export default function UserOrders() {
   }, [supabase]);
 
   const statusLabel = (status: string) => {
-    const knownStatuses = ["paid", "preparing", "packed", "ready", "delivering", "delivered", "cancelled"];
+    const knownStatuses = ["paid", "preparing", "verification", "packed", "ready", "delivering", "delivered", "cancelled"];
     return knownStatuses.includes(status) ? tc(`orderStatus.${status}`) : status;
   };
 
@@ -156,11 +175,15 @@ export default function UserOrders() {
                     </div>
                   </div>
                   <div className="flex items-center justify-between gap-4 sm:justify-end">
-                    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-inset ${statusStyles[status] || "bg-gray-50 text-gray-600 ring-gray-200"}`}>
-                      <StatusIcon status={status} />
-                      {statusLabel(status)}
-                    </span>
-                    {/* orders.total is the amount paid, VAT included */}
+                    {/* Fulfilment status and payment are independent */}
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-inset ${statusStyles[status] || "bg-gray-50 text-gray-600 ring-gray-200"}`}>
+                        <StatusIcon status={status} />
+                        {statusLabel(status)}
+                      </span>
+                      <PaymentBadge paid={isOrderPaid(order)} label={tc(`paymentStatus.${isOrderPaid(order) ? "paid" : "unpaid"}`)} />
+                    </div>
+                    {/* orders.total is VAT included */}
                     <Price
                       exclVat={Number(order.total) / (1 + VAT_RATE)}
                       className="text-xl font-bold tracking-tight text-gray-950"

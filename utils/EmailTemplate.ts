@@ -1,498 +1,278 @@
 function escapeHtml(value: unknown): string {
-    return String(value ?? "").replace(/[&<>"']/g, char => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
-    }[char]!));
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[char]!));
 }
 
-// Définition de la Locale (simplifiée car 'next-intl' n'est pas disponible ici)
-type Locale = 'fr' | 'en' | 'nl';
+type Locale = "fr" | "en" | "nl";
 
-// *******************************************************************
-// 1. Définition du type pour les articles (INCHANGÉ)
-// *******************************************************************
+const BRAND = "#ea580c";
+const CONTACT_PHONE = "+32 494 042 932";
+const CONTACT_EMAIL = "info@pexxafloor.be";
 
-interface ItemForEmail {
-    id: string;
-    description: string;
-    total_price: number;
-    quantity: number;
-    type: "product" | "pack";
-    slug?: string;
-    surface?: number;
+// Email clients (Gmail proxies images) must reach images over the public internet,
+// so they never come from NEXT_PUBLIC_URL, which is localhost in development.
+const EMAIL_ASSETS_ORIGIN = process.env.EMAIL_ASSETS_URL?.trim() || "https://www.pexxafloor.be";
+
+const copy: Record<Locale, {
+  greeting: string; orderLabel: string; recapTitle: string; noItems: string; quantity: string;
+  priceNote: string; total: string; button: string; thanks: string; team: string; questions: string;
+}> = {
+  fr: {
+    greeting: "Bonjour,", orderLabel: "Commande", recapTitle: "Récapitulatif", noItems: "Aucun article dans la commande.",
+    quantity: "Qté", priceNote: "Prix des articles HTVA", total: "Total TVAC", button: "Suivre ma commande",
+    thanks: "Merci pour votre confiance,", team: "L’équipe PexxaFloor", questions: "Une question ? Contactez-nous",
+  },
+  en: {
+    greeting: "Hello,", orderLabel: "Order", recapTitle: "Summary", noItems: "No items in the order.",
+    quantity: "Qty", priceNote: "Item prices excl. VAT", total: "Total incl. VAT", button: "Track my order",
+    thanks: "Thank you for your trust,", team: "The PexxaFloor team", questions: "Any questions? Contact us",
+  },
+  nl: {
+    greeting: "Hallo,", orderLabel: "Bestelling", recapTitle: "Overzicht", noItems: "Geen artikelen in de bestelling.",
+    quantity: "Aantal", priceNote: "Artikelprijzen excl. btw", total: "Totaal incl. btw", button: "Mijn bestelling volgen",
+    thanks: "Bedankt voor uw vertrouwen,", team: "Het PexxaFloor-team", questions: "Een vraag? Neem contact op",
+  },
+};
+
+type ItemForEmail = { name: string; detail?: string; quantity: number; totalPrice: number };
+
+function parseOrderItems(orderItems: unknown): ItemForEmail[] {
+  let rawItems = orderItems;
+  if (typeof rawItems === "string") {
+    try {
+      rawItems = JSON.parse(rawItems);
+    } catch (e) {
+      console.error("Erreur critique lors du JSON.parse des articles de commande:", e);
+      return [];
+    }
+  }
+  if (!Array.isArray(rawItems)) return [];
+
+  return rawItems.flatMap((item: any): ItemForEmail[] => {
+    if (!item?.type || !item.quantity) return [];
+    const quantity = Number(item.quantity) || 1;
+
+    if (item.type === "product") {
+      const unitPrice = Number(item.unit_price ?? item.product?.price ?? item.price);
+      if (!Number.isFinite(unitPrice)) return [];
+      return [{ name: item.product?.name ?? item.name ?? item.product_id, quantity, totalPrice: unitPrice * quantity }];
+    }
+
+    if (item.type === "pack" && item.slug) {
+      const packPrice = Number(item.total);
+      if (!Number.isFinite(packPrice)) return [];
+      const name = `Pack ${item.slug.charAt(0).toUpperCase()}${item.slug.slice(1)}`;
+      const detail = [item.surface && `${item.surface} m²`, item.tuyauType].filter(Boolean).join(" · ");
+      return [{ name, detail, quantity, totalPrice: packPrice * quantity }];
+    }
+    return [];
+  });
 }
 
-// *******************************************************************
-// 2. Logique de parsing (extraction des articles de haut niveau) (INCHANGÉ)
-// *******************************************************************
+const formatEuro = (value: number, locale: Locale) =>
+  new Intl.NumberFormat(`${locale}-BE`, { style: "currency", currency: "EUR" }).format(value);
 
-function parseOrderItems(orderItems: any): ItemForEmail[] {
-    let rawItems = orderItems;
-    
-    if (typeof rawItems === 'string') {
-        try {
-            rawItems = JSON.parse(rawItems);
-        } catch (e) {
-            console.error("Erreur critique lors du JSON.parse des articles de commande:", e);
-            return [];
-        }
-    }
-    
-    if (!Array.isArray(rawItems)) {
-        console.error("Les articles parsés ne sont pas un tableau.");
-        return [];
-    }
-
-    return rawItems.map((item: any) => {
-        if (!item || !item.type || !item.quantity) return null;
-
-        if (item.type === 'product') {
-            const totalPrice = parseFloat(((item.unit_price ?? item.product?.price ?? item.price) * item.quantity).toString());
-            if (isNaN(totalPrice)) return null;
-
-            return {
-                id: item.product_id || item.id,
-                description: item.product?.name ?? item.name ?? item.product_id,
-                total_price: totalPrice,
-                quantity: item.quantity,
-                type: 'product',
-            } as ItemForEmail;
-
-        } else if (item.type === 'pack' && item.slug) {
-            const packPrice = parseFloat(item.total) * Number(item.quantity || 1);
-            if (isNaN(packPrice)) return null;
-
-            return {
-                id: item.id,
-                description: item.slug, 
-                total_price: packPrice,
-                quantity: item.quantity,
-                type: 'pack',
-                slug: item.slug,
-                surface: item.surface,
-            } as ItemForEmail;
-        }
-        return null;
-        
-    }).filter((item: ItemForEmail | null): item is ItemForEmail => item !== null);
-}
-
-// *******************************************************************
-// 3. Génération du HTML pour la liste des articles et le total (CORRIGÉ POUR TRADUCTION)
-// *******************************************************************
-
-function generateOrderDetailsHtml(items: ItemForEmail[], orderTotal: string, locale: Locale): string {
-    const t = translations[locale] || translations['fr'];
-
-    if (!items || items.length === 0) {
-        return `
-            <div style="
-                border: 1px solid #e5e7eb;
-                border-radius: 8px;
-                padding: 15px;
-                background: #f9fafb;
-            ">
-                <h3 style="margin:0 0 10px 0; font-size:16px; color:#111827;">${t.recapTitle}</h3>
-                <p style='color:#4b5563; font-size:14px;'>${t.noItems}</p>
-            </div>
-        `;
-    }
-
-    const itemsHtml = items
-        .map((item) => {
-            let itemName = item.description;
-            let itemPrice = parseFloat(item.total_price.toString()).toFixed(2);
-            let quantityDisplay = '';
-
-            if (item.type === 'pack' && item.slug && item.surface) {
-                const packName = item.slug.charAt(0).toUpperCase() + item.slug.slice(1);
-                // Le nom du pack n'est pas traduit, c'est un nom de produit
-                itemName = `Pack: ${packName} (Surface: ${item.surface}m²)`;
-            } 
-            
-            if (item.quantity > 1) {
-                quantityDisplay = `<span style="display:block; font-size:12px; color:#9ca3af;">(x${item.quantity})</span>`;
-            }
-            
-            return `
-                <tr style="font-size:14px; color:#4b5563;">
-                    <td style="padding:8px 0;">
-                        ${escapeHtml(itemName)}
-                        ${quantityDisplay}
-                    </td>
-                    <td align="right" style="padding:8px 0; font-weight:600;">
-                        ${itemPrice} €
-                    </td>
-                </tr>
-            `;
-        })
-        .join('');
-
-    return `
-        <div style="
-            border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            padding: 15px;
-            background: #f9fafb;
-        ">
-            <h3 style="margin:0 0 10px 0; font-size:16px; color:#111827;">${t.recapTitle}</h3>
-
-            <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px; border-collapse:collapse;">
-                <tr style="font-size:15px; font-weight:700; color:#111827;">
-                    <td style="padding-bottom:10px; border-bottom:1px solid #e5e7eb;">${t.article}</td>
-                    <td align="right" style="padding-bottom:10px; border-bottom:1px solid #e5e7eb;">${t.price}</td>
-                </tr>
-                ${itemsHtml}
-            </table>
-            
-            <table width="100%" cellpadding="0" cellspacing="0" style="margin-top:20px; border-collapse:collapse; font-size:15px; color:#111827;">
-                <tr>
-                    <td style="padding-top:10px; border-top:2px solid #e5e7eb; font-weight:700;">${t.total}</td>
-                    <td align="right" style="padding-top:10px; border-top:2px solid #e5e7eb; font-weight:700;">${orderTotal} €</td>
-                </tr>
-            </table>
+function itemsHtml(items: ItemForEmail[], total: number, locale: Locale) {
+  const t = copy[locale];
+  if (items.length === 0) {
+    return `<p style="margin:0;font-size:14px;color:#6b7280;">${t.noItems}</p>`;
+  }
+  const rows = items.map((item) => `
+    <tr>
+      <td style="padding:12px 0;border-bottom:1px solid #f1f1f1;font-size:14px;color:#111827;">
+        <div style="font-weight:600;">${escapeHtml(item.name)}</div>
+        <div style="font-size:12px;color:#6b7280;margin-top:2px;">
+          ${item.detail ? `${escapeHtml(item.detail)} · ` : ""}${t.quantity} ${item.quantity}
         </div>
-    `;
+      </td>
+      <td align="right" valign="top" style="padding:12px 0;border-bottom:1px solid #f1f1f1;font-size:14px;font-weight:600;color:#111827;white-space:nowrap;">
+        ${formatEuro(item.totalPrice, locale)}
+      </td>
+    </tr>`).join("");
+
+  return `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+      ${rows}
+      <tr>
+        <td style="padding-top:14px;font-size:15px;font-weight:700;color:#111827;">${t.total}</td>
+        <td align="right" style="padding-top:14px;font-size:18px;font-weight:700;color:${BRAND};white-space:nowrap;">
+          ${formatEuro(total, locale)}
+        </td>
+      </tr>
+    </table>
+    <p style="margin:6px 0 0;font-size:11px;color:#9ca3af;">${t.priceNote}</p>`;
 }
 
-// *******************************************************************
-// 4. Objet de Traduction (INCHANGÉ)
-// *******************************************************************
-const translations = {
-    fr: {
-        titlePrefix: "Votre commande",
-        statusPaid: "Confirmation de votre commande 🎉",
-        statusPreparing: "Votre commande est en préparation 🛠️",
-        statusPacked: "Votre commande est emballée 📦",
-        statusReady: "Votre commande est prête à être expédiée 🚚✨",
-        statusDelivering: "Votre commande est en route ! 🚚💨",
-        statusDelivered: "Votre commande a été livrée 📦",
-        
-        greeting: "Cher client,",
-        recapTitle: "Récapitulatif de la commande",
-        noItems: "Aucun article dans la commande.",
-        article: "Article",
-        price: "Prix HTVA",
-        total: "Total payé TVAC",
-        status: "Statut",
-        footerThanks: "Merci pour votre confiance,",
-        footerTeam: "L’équipe PexxaFloor",
-        buttonText: "Voir ma commande",
-        
-        // Stepper
-        step1: "Préparation",
-        step2: "Prête à expédier",
-        step3: "En cours de livraison",
-        step4: "Livrée",
-    },
-    en: {
-        titlePrefix: "Your order",
-        statusPaid: "Order confirmation 🎉",
-        statusPreparing: "Your order is being prepared 🛠️",
-        statusPacked: "Your order is packed 📦",
-        statusReady: "Your order is ready to ship 🚚✨",
-        statusDelivering: "Your order is on the way! 🚚💨",
-        statusDelivered: "Your order has been delivered 📦",
-
-        greeting: "Dear customer,",
-        recapTitle: "Order Summary",
-        noItems: "No items in the order.",
-        article: "Item",
-        price: "Price excl. VAT",
-        total: "Total paid incl. VAT",
-        status: "Status",
-        footerThanks: "Thank you for your trust,",
-        footerTeam: "The PexxaFloor Team",
-        buttonText: "View my order",
-        
-        // Stepper
-        step1: "Preparation",
-        step2: "Ready to ship",
-        step3: "In transit",
-        step4: "Delivered",
-    },
-    nl: {
-        titlePrefix: "Uw bestelling",
-        statusPaid: "Bestellingsbevestiging 🎉",
-        statusPreparing: "Uw bestelling wordt voorbereid 🛠️",
-        statusPacked: "Uw bestelling is ingepakt 📦",
-        statusReady: "Uw bestelling is klaar voor verzending 🚚✨",
-        statusDelivering: "Uw bestelling is onderweg! 🚚💨",
-        statusDelivered: "Uw bestelling is geleverd 📦",
-
-        greeting: "Beste klant,",
-        recapTitle: "Besteloverzicht",
-        noItems: "Geen artikelen in de bestelling.",
-        article: "Artikel",
-        price: "Prijs excl. btw",
-        total: "Totaal betaald incl. btw",
-        status: "Status",
-        footerThanks: "Bedankt voor uw vertrouwen,",
-        footerTeam: "Het PexxaFloor Team",
-        buttonText: "Bekijk mijn bestelling",
-        
-        // Stepper
-        step1: "Voorbereiding",
-        step2: "Klaar voor verzending",
-        step3: "Onderweg",
-        step4: "Geleverd",
-    },
-};
-
-// *******************************************************************
-// 5. Fonction pour générer le Stepper HTML (CORRIGÉ POUR TRADUCTION)
-// *******************************************************************
-function generateStepperHtml(currentStep: number, locale: Locale): string {
-    const t = translations[locale] || translations['fr'];
-
-    const steps = [
-        { name: t.step1, step: 1 },
-        { name: t.step2, step: 2 },
-        { name: t.step3, step: 3 },
-        { name: t.step4, step: 4 },
-    ];
-    
-    // Conteneur principal pour la barre (méthode de la table <td> pour les blocs)
-    const barHtml = steps.map(step => {
-        const isColored = step.step <= currentStep;
-        const color = isColored ? '#ff7a00' : '#d1d5db';
-        
-        // Appliquer les bords arrondis uniquement aux extrémités
-        let borderRadius = '0';
-        if (step.step === 1) {
-            borderRadius = '8px 0 0 8px'; // Gauche
-        } else if (step.step === 4) {
-            borderRadius = '0 8px 8px 0'; // Droite
-        }
-
-        return `
-            <td width="25%" style="padding:0; line-height: 0;">
-                <div style="
-                    width:100%; 
-                    height:10px; 
-                    background:${color};
-                    border-radius: ${borderRadius};
-                    overflow: hidden;
-                    font-size: 1px; /* Réduire la hauteur de ligne pour certains clients mail */
-                    line-height: 1px;
-                "></div>
-            </td>
-        `;
-    }).join('');
-
-    // HTML des libellés (pour le positionnement)
-    const labelsHtml = steps.map(step => {
-        const isCurrent = step.step === currentStep;
-        return `
-            <td width="25%" align="center" style="padding-top: 8px;">
-                <div style="
-                    font-size:12px; 
-                    font-weight:${isCurrent ? 700 : 400};
-                    color:${isCurrent ? '#111827' : '#4b5563'};
-                    line-height:1.2;
-                ">
-                    ${step.name}
-                </div>
-            </td>
-        `;
-    }).join('');
-
-
-    return `
-        <table width="100%" cellpadding="0" cellspacing="0" style="margin:0; border-collapse:collapse;">
-            <tr>
-                ${barHtml}
-            </tr>
-        </table>
-        <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
-            <tr>
-                ${labelsHtml}
-            </tr>
-        </table>
-    `;
+// Progress through the order workflow; labels are the site's own status labels
+function stepperHtml(labels: string[], currentIndex: number) {
+  if (currentIndex < 0) return "";
+  const width = `${(100 / labels.length).toFixed(2)}%`;
+  const bars = labels.map((_, index) => `
+    <td width="${width}" style="padding:0 2px;">
+      <div style="height:6px;border-radius:3px;background:${index <= currentIndex ? BRAND : "#e5e7eb"};font-size:0;line-height:0;">&nbsp;</div>
+    </td>`).join("");
+  const names = labels.map((label, index) => `
+    <td width="${width}" align="center" valign="top" style="padding:8px 2px 0;font-size:11px;line-height:1.3;
+      color:${index === currentIndex ? "#111827" : index < currentIndex ? "#6b7280" : "#9ca3af"};
+      font-weight:${index === currentIndex ? 700 : 400};">
+      ${escapeHtml(label)}
+    </td>`).join("");
+  return `
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+      <tr>${bars}</tr>
+      <tr>${names}</tr>
+    </table>`;
 }
 
-
-// *******************************************************************
-// 6. Fonction Maîtresse (Template HTML Responsive) (CORRIGÉ POUR TRADUCTION)
-// *******************************************************************
-
-interface EmailParams {
-    orderId: string;
-    orderItems: any; // Raw order.items data
-    orderTotal: string;
-    emailTitle: string;
-    mainText: string;
-    statusBadgeText: string;
-    statusBadgeBgColor: string;
-    statusBadgeTextColor: string;
-    link: string;
-    currentStep: number; 
-    locale: Locale
+export interface EmailParams {
+  orderId: string;
+  orderItems: unknown;
+  orderTotal: number;
+  title: string;
+  mainText: string;
+  statusLabel: string;
+  steps: { labels: string[]; currentIndex: number };
+  cancelled: boolean;
+  /** Shown for the "out for delivery" email */
+  deliveryAddress?: { label: string; lines: string[] };
+  link: string;
+  siteUrl: string;
+  locale: Locale;
 }
-
-// Sous-titre du logo selon la langue
-const logoSubtitleByLocale: Record<Locale, string> = {
-  fr: "Chauffage au sol",
-  en: "Underfloor heating",
-  nl: "Vloerverwarming",
-};
-
 
 export function generateOrderEmailHtml({
-    orderId,
-    orderItems,
-    orderTotal,
-    emailTitle,
-    mainText,
-    statusBadgeText,
-    statusBadgeBgColor,
-    statusBadgeTextColor,
-    link,
-    currentStep,
-    locale
+  orderId, orderItems, orderTotal, title, mainText, statusLabel, steps, cancelled, deliveryAddress, link, siteUrl, locale,
 }: EmailParams): string {
-    
-    const t = translations[locale] || translations['fr'];
-    const productsForEmail = parseOrderItems(orderItems);
-    const orderDetailsHtml = generateOrderDetailsHtml(productsForEmail, orderTotal, locale);
-    const stepperHtml = currentStep < 0 ? "" : generateStepperHtml(currentStep, locale);
+  const t = copy[locale];
+  const logoUrl = new URL("/images/logo-email.png", EMAIL_ASSETS_ORIGIN).toString();
+  const homeUrl = new URL(`/${locale}`, siteUrl).toString();
+  const badgeBg = cancelled ? "#fef2f2" : "#fff7ed";
+  const badgeColor = cancelled ? "#b91c1c" : "#c2410c";
 
-    return `
-<!DOCTYPE html>
-<html lang="${locale}" style="margin:0; padding:0; background:#f5f5f7;">
+  return `<!DOCTYPE html>
+<html lang="${locale}">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="color-scheme" content="light">
+    <title>${escapeHtml(title)}</title>
     <style>
-      /* Reset standard */
-      body { margin: 0; padding: 0; }
-      
-      /* Media Query pour le Responsive */
       @media only screen and (max-width: 600px) {
-        .email-container {
-          width: 100% !important;
-          max-width: 100% !important;
-          padding: 20px 10px !important; 
-        }
-        .content-card {
-            padding: 20px !important; 
-        }
+        .card { padding: 24px 18px !important; }
+        .title { font-size: 22px !important; }
       }
     </style>
   </head>
-  <body style="margin:0; padding:0; background:#f5f5f7; font-family:Arial, sans-serif;">
-
-    <table cellpadding="0" cellspacing="0" width="100%" style="background:#f5f5f7; padding:30px 0;">
+  <body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+    <div style="display:none;max-height:0;overflow:hidden;">${escapeHtml(mainText)}</div>
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;">
       <tr>
-        <td align="center">
+        <td align="center" style="padding:28px 12px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
 
-          <table width="100%" style="max-width:520px; margin-bottom: 20px;">
+            <!-- Logo -->
             <tr>
-              <td align="center">
-                <div style="font-size:28px; font-weight:800; color:#ff7a00; letter-spacing:0.5px; line-height:1.2;">
-                  PexxaFloor
-                </div>
-                <div style="font-size:14px; font-weight:400; color:#4b5563; line-height:1.2;">
-                 ${logoSubtitleByLocale[locale]}
-                </div>
-              </td>
-            </tr>
-          </table>
-          <table 
-            width="100%" 
-            class="email-container content-card"
-            style="
-              max-width:520px; 
-              width: 100%; 
-              background:white; 
-              border-radius:14px; 
-              padding:40px; 
-              box-shadow:0 3px 10px rgba(0,0,0,0.08);
-            "
-          >
-            
-            <tr>
-              <td style="font-size:22px; font-weight:600; color:#111827; padding-bottom:15px;">
-                ${escapeHtml(emailTitle)}<br><span style="font-size:14px;">#${escapeHtml(orderId.slice(0, 8))}</span>
-              </td>
-            </tr>
-
-            <tr>
-                <td style="padding:0 0 25px 0;">
-                    ${stepperHtml}
-                </td>
-            </tr>
-
-            <tr>
-              <td style="font-size:15px; line-height:1.6; color:#4b5563; padding-bottom:20px;">
-                ${t.greeting}<br><br>
-                ${mainText}
-              </td>
-            </tr>
-            
-            <tr>
-                <td style="padding-bottom:25px;">
-                    ${orderDetailsHtml}
-                </td>
-            </tr>
-
-            <tr>
-              <td align="left" style="padding-bottom:25px;">
-                <span
-                  style="
-                    display:inline-block;
-                    background:${statusBadgeBgColor};
-                    color:${statusBadgeTextColor};
-                    padding:8px 14px;
-                    border-radius:8px;
-                    font-size:14px;
-                    font-weight:600;
-                  "
-                >
-                  ${t.status} : ${escapeHtml(statusBadgeText)}
-                </span>
-              </td>
-            </tr>
-
-            <tr>
-              <td align="center" style="padding-bottom:30px;">
-                <a
-                  href="${escapeHtml(link)}"
-                  style="
-                    display:inline-block;
-                    background:#ff7a00;
-                    color:white;
-                    padding:12px 22px;
-                    border-radius:8px;
-                    font-size:15px;
-                    font-weight:600;
-                    text-decoration:none;
-                  "
-                >
-                  ${t.buttonText}
+              <td align="center" style="padding-bottom:18px;">
+                <a href="${escapeHtml(homeUrl)}" style="text-decoration:none;">
+                  <img src="${escapeHtml(logoUrl)}" width="200" height="36" alt="PexxaFloor" style="display:block;width:200px;max-width:200px;height:auto;border:0;">
                 </a>
               </td>
             </tr>
 
+            <!-- Card -->
             <tr>
-              <td>
-                <hr style="border:0; border-top:1px solid #e5e7eb; margin:20px 0;" />
+              <td class="card" style="background:#ffffff;border-radius:16px;padding:36px 32px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td>
+                      <span style="display:inline-block;background:${badgeBg};color:${badgeColor};padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:0.3px;text-transform:uppercase;">
+                        ${escapeHtml(statusLabel)}
+                      </span>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="title" style="padding-top:14px;font-size:26px;line-height:1.25;font-weight:700;color:#111827;">
+                      ${escapeHtml(title)}
+                    </td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top:6px;font-size:13px;color:#6b7280;">
+                      ${t.orderLabel} <span style="font-family:Menlo,Consolas,monospace;color:#374151;">#${escapeHtml(orderId.slice(0, 8))}</span>
+                    </td>
+                  </tr>
+
+                  ${steps.currentIndex >= 0 ? `
+                  <tr>
+                    <td style="padding-top:26px;">${stepperHtml(steps.labels, steps.currentIndex)}</td>
+                  </tr>` : ""}
+
+                  <tr>
+                    <td style="padding-top:26px;font-size:15px;line-height:1.6;color:#374151;">
+                      ${t.greeting}<br>${escapeHtml(mainText)}
+                    </td>
+                  </tr>
+
+                  ${deliveryAddress ? `
+                  <tr>
+                    <td style="padding-top:22px;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border:1px solid #f1f1f1;border-radius:12px;">
+                        <tr>
+                          <td style="padding:16px 18px;">
+                            <div style="font-size:12px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#9ca3af;padding-bottom:6px;">
+                              ${escapeHtml(deliveryAddress.label)}
+                            </div>
+                            <div style="font-size:14px;line-height:1.55;color:#111827;">
+                              ${deliveryAddress.lines.map((line, index) => index === 0 ? `<strong>${escapeHtml(line)}</strong>` : escapeHtml(line)).join("<br>")}
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>` : ""}
+
+                  <tr>
+                    <td align="center" style="padding-top:26px;">
+                      <a href="${escapeHtml(link)}" style="display:inline-block;background:${BRAND};color:#ffffff;padding:13px 26px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;">
+                        ${t.button}
+                      </a>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding-top:32px;">
+                      <div style="font-size:12px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:#9ca3af;padding-bottom:4px;">
+                        ${t.recapTitle}
+                      </div>
+                      ${itemsHtml(parseOrderItems(orderItems), orderTotal, locale)}
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td style="padding-top:30px;border-bottom:1px solid #f1f1f1;font-size:0;line-height:0;">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td style="padding-top:20px;font-size:14px;line-height:1.5;color:#374151;">
+                      ${t.thanks}<br><strong>${t.team}</strong>
+                    </td>
+                  </tr>
+                </table>
               </td>
             </tr>
 
+            <!-- Footer -->
             <tr>
-              <td style="font-size:13px; color:#9ca3af; line-height:1.5;">
-                ${t.footerThanks}<br>
-                <span style="font-weight:600;">${t.footerTeam}</span>
+              <td align="center" style="padding:20px 12px 0;font-size:12px;line-height:1.6;color:#9ca3af;">
+                ${t.questions} :
+                <a href="tel:${CONTACT_PHONE.replace(/\s/g, "")}" style="color:#6b7280;text-decoration:none;">${CONTACT_PHONE}</a>
+                ·
+                <a href="mailto:${CONTACT_EMAIL}" style="color:#6b7280;text-decoration:none;">${CONTACT_EMAIL}</a>
               </td>
             </tr>
-          
           </table>
-          </td>
+        </td>
       </tr>
     </table>
-    </body>
-</html>
-    `;
+  </body>
+</html>`;
 }

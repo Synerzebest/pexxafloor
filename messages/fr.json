@@ -73,7 +73,8 @@
       "orderFrom": "Commande du {date}",
       "viewItems": "Voir les articles",
       "orderCount": "{count, plural, one {# commande} other {# commandes}}", "itemCount": "{count, plural, one {# article} other {# articles}}", "loadingOrders": "Chargement des commandes", "noOrdersDescription": "Vos commandes apparaîtront ici dès que vous aurez effectué votre premier achat.", "orderNumber": "Commande", "includedProducts": "Produits inclus", "installationSpacing": "pas", "quantityShort": "Qté", "backHome": "Retour à l’accueil",
-      "orderStatus": { "paid": "Payée", "preparing": "En préparation", "verification": "En vérification", "packed": "Emballée", "ready": "Prête", "delivering": "En livraison", "delivered": "Livrée", "cancelled": "Annulée" }
+      "paymentStatus": { "paid": "Payée", "unpaid": "Non payée" },
+      "orderStatus": { "paid": "Confirmée", "preparing": "En préparation", "verification": "En vérification", "packed": "Emballée", "ready": "Prête", "delivering": "En livraison", "delivered": "Livrée", "cancelled": "Annulée" }
     },
     "FAQ": {
       "title": { "first": "Questions", "second": "Fréquentes" },
@@ -348,6 +349,10 @@
         }
     },
     "AdminPro": {
+      "toast": {
+        "statusChanged": "Demande passée en « {status} »",
+        "statusError": "Impossible de changer le statut de la demande"
+      },
       "title": "Demandes professionnelles",
       "pendingTitle": "En attente",
       "recentTitle": "Récentes demandes",
@@ -493,6 +498,10 @@
       "productCount": "{count, plural, =0 {Aucun produit} one {# produit} other {# produits}}"
     },
     "Cart": {
+      "grossTotalExclVat": "Total brut HTVA",
+      "proDiscountExclVat": "Remise pro HTVA",
+      "netTotalExclVat": "Total net HTVA",
+      "creditLine": "Crédit appliqué",
       "errors": {
         "address": "Veuillez compléter l’adresse de livraison avant de continuer.",
         "clientName": "Veuillez indiquer le nom du client ou de l’entreprise.",

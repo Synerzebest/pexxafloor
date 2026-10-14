@@ -1,15 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PackItem } from "@/context/CartContext";
+import { parseSurface, readLastSurface, saveLastSurface } from "@/lib/lastSurface";
 
 export function usePackConfig(
   existingPack?: PackItem,
   searchSurface?: string | null
 ) {
-  const [surface, setSurface] = useState(
-    existingPack?.surface ?? Number(searchSurface ?? 100)
-  );
+  const urlSurface = parseSurface(searchSurface);
+  const [surface, setSurface] = useState(existingPack?.surface ?? urlSurface ?? 100);
+
+  // Without a surface from the cart or the URL, reuse the last one typed (after mount, for hydration)
+  useEffect(() => {
+    if (existingPack || urlSurface !== null) return;
+    const last = readLastSurface();
+    if (last !== null) setSurface(last);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Only the surface is remembered; the other settings reset on each pack, as before
+  useEffect(() => {
+    saveLastSurface(surface);
+  }, [surface]);
   const [pasDePose, setPasDePose] = useState(existingPack?.pasDePose ?? 20);
   const [tuyauType, setTuyauType] = useState<"PERT" | "PERT-AL-PERT">(
     existingPack?.tuyauType ?? "PERT"

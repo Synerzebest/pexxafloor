@@ -567,6 +567,7 @@ export default function PackSection({
       style={{ borderRadius: 12, boxShadow: "0 4px 14px rgba(0,0,0,0.08)" }}
     >
       <Table
+        scroll={{ x: "max-content" }}
         rowKey="id"
         dataSource={packs}
         loading={loading}
@@ -590,6 +591,7 @@ export default function PackSection({
                 </Button>
               </div>
               <Table
+                scroll={{ x: "max-content" }}
                 rowKey="id"
                 dataSource={pack.pack_items}
                 pagination={false}
@@ -833,6 +835,8 @@ export default function PackSection({
             </div>
 
             <Table
+
+              scroll={{ x: "max-content" }}
               rowKey="id"
               dataSource={editingPack.pack_items}
               pagination={false}

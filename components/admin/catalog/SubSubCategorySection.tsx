@@ -241,6 +241,7 @@ export default function SubSubcategorySection({
         totalCount={subsubcategories.length}
       />
       <Table
+        scroll={{ x: "max-content" }}
         rowKey="id"
         dataSource={filteredSubsubcategories}
         columns={columns}

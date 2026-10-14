@@ -34,17 +34,17 @@ export default function CatalogPage() {
 
   return (
     <>
-      <div className="p-6 pt-8">
+      <div className="px-4 py-6 sm:p-6 sm:pt-8">
 
         {/* --- MENU --- */}
-        <div className="flex flex-wrap justify-center gap-4 mb-10 relative">
+        <div className="relative mb-8 flex flex-wrap justify-center gap-2 sm:mb-10 sm:gap-4">
           {tabs.map((tab) => {
             const isActive = activeTab === tab.key;
             return (
               <motion.button
                 key={tab.key}
                 onClick={() => setActiveTab(tab.key)}
-                className={`relative px-5 py-2 text-sm md:text-base font-medium rounded-xl 
+                className={`relative px-3 py-2 text-sm sm:px-5 md:text-base font-medium rounded-xl 
                   transition-all duration-300 cursor-pointer ${
                     isActive
                       ? "text-white"

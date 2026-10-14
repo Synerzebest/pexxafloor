@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { supabase } from "@/lib/supabaseClient";
 
 export type ActionType =
@@ -17,8 +19,18 @@ const RPC_MAP: Record<ActionType, string> = {
   revision: "revision_pro_application",
 };
 
+// Status reached by each action, as keyed in AdminPro.status
+const RESULT_STATUS: Record<ActionType, string> = {
+  approve: "verified",
+  reject: "rejected",
+  start_review: "in_review",
+  suspend: "suspended",
+  revision: "revision",
+};
+
 export function useProRequestsLogic() {
   const router = useRouter();
+  const t = useTranslations("AdminPro");
   const [busyId, setBusyId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -32,8 +44,14 @@ export function useProRequestsLogic() {
 
     setBusyId(null);
 
-    if (error) setError(error.message);
-    else router.refresh();
+    if (error) {
+      setError(error.message);
+      toast.error(t("toast.statusError"), { description: error.message });
+      return;
+    }
+
+    toast.success(t("toast.statusChanged", { status: t(`status.${RESULT_STATUS[action]}`) }));
+    router.refresh();
   }
 
   return { busyId, error, act };

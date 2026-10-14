@@ -5,8 +5,7 @@ import { useState, useEffect } from "react";
 import { Table, Select, Space, Tooltip, message } from "antd";
 import { LucideShoppingBasket, ShoppingCart, Truck } from "lucide-react";
 import { useStorekeeperOrders } from "@/hooks/useStorekeeperOrders";
-import jsPDF from "jspdf";
-import { addHeader, addProductsTable, addSignatureAndStampSection, addFooter } from "@/utils/pdfUtils";
+import { generateDeliveryNote as buildDeliveryNote } from "@/utils/pdfUtils";
 import { renderStatus } from "@/utils/renderStatus";
 import { useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
@@ -32,14 +31,9 @@ export default function StorekeeperPage() {
     loadOrders(statusFilter);
   }, [statusFilter]);
 
-  function generateDeliveryNote(order: Order) {
-    const doc = new jsPDF();
+  async function generateDeliveryNote(order: Order) {
     try {
-      addHeader(doc, order);
-      addProductsTable(doc, order);
-      addSignatureAndStampSection(doc);
-      addFooter(doc);
-
+      const doc = await buildDeliveryNote(order);
       doc.save(`bon_livraison_${order.id.slice(0, 8)}.pdf`);
     } catch (err) {
       message.error("Erreur lors de la génération du PDF");
@@ -120,7 +114,7 @@ export default function StorekeeperPage() {
           style={{ width: 200 }}
         >
           <Option value="">Toutes</Option>
-          <Option value="paid">Payées</Option>
+          <Option value="paid">Confirmées</Option>
           <Option value="preparing">En préparation</Option>
           <Option value="verification">En vérification</Option>
           <Option value="packed">Emballées</Option>

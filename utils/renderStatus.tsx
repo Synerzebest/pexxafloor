@@ -6,6 +6,8 @@ import {
   CarOutlined,
   CloseCircleOutlined,
   DeliveredProcedureOutlined,
+  CreditCardOutlined,
+  ExclamationCircleOutlined,
 } from "@ant-design/icons";
 import React from "react";
 
@@ -27,12 +29,13 @@ const STATUS_CONFIG: Record<
   StatusKey,
   { label: string; icon: React.ReactNode; bg: string; text: string; border: string }
 > = {
+  // First fulfilment step; whether the order is paid is shown by renderPaymentStatus
   paid: {
-    label: "Payée",
+    label: "Confirmée",
     icon: <CheckCircleOutlined />,
-    bg: "#e6f4ea",
-    text: "#1a7f37",
-    border: "#b5e0bb",
+    bg: "#f3f4f6",
+    text: "#374151",
+    border: "#d1d5db",
   },
   preparing: {
     label: "En préparation",
@@ -88,13 +91,19 @@ const STATUS_CONFIG: Record<
 export const statusLabel = (status: string) =>
   STATUS_CONFIG[status as StatusKey]?.label ?? status;
 
-export const renderStatus = (status: string) => {
+// Smaller tag for dense tables. Kept separate from renderStatus, which antd calls as render(value, record).
+export const renderStatusCompact = (status: string) => renderStatusTag(status, true);
+
+export const renderStatus = (status: string) => renderStatusTag(status, false);
+
+const renderStatusTag = (status: string, compact: boolean) => {
   const key = status.toLowerCase() as StatusKey;
   const cfg = STATUS_CONFIG[key];
+  const sizeClass = compact ? "m-0 px-2 py-0.5 text-xs font-medium" : "uppercase px-3 py-1 text-sm font-semibold";
 
   if (!cfg)
     return (
-      <Tag color="default" className="uppercase px-3 py-1 text-sm font-semibold">
+      <Tag color="default" className={sizeClass}>
         {status}
       </Tag>
     );
@@ -107,9 +116,19 @@ export const renderStatus = (status: string) => {
         color: cfg.text,
         borderColor: cfg.border,
       }}
-      className="uppercase px-3 py-1 text-sm font-semibold"
+      className={sizeClass}
     >
       {cfg.label}
     </Tag>
   );
 };
+
+export const renderPaymentStatus = (paid: boolean) => (
+  <Tag
+    icon={paid ? <CreditCardOutlined /> : <ExclamationCircleOutlined />}
+    color={paid ? "success" : "error"}
+    className="uppercase px-3 py-1 text-sm font-semibold"
+  >
+    {paid ? "Payée" : "Non payée"}
+  </Tag>
+);
