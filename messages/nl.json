@@ -434,6 +434,9 @@
       "back_home": "Terug home"
     },
     "AddToBasketButton": {
+      "quantity": "Aantal",
+      "decrease": "Aantal verlagen",
+      "increase": "Aantal verhogen",
       "addToBasket": "Toevoegen aan winkelwagen",
       "addedToBasket": "Toegevoegd aan winkelwagen",
       "inCart": "{count, plural, one {# exemplaar in de winkelwagen} other {# exemplaren in de winkelwagen}}"

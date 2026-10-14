@@ -434,6 +434,9 @@
       "back_home": "Back home"
     },
     "AddToBasketButton": {
+      "quantity": "Quantity",
+      "decrease": "Decrease quantity",
+      "increase": "Increase quantity",
       "addToBasket": "Add to basket",
       "addedToBasket": "Added to basket",
       "inCart": "{count, plural, one {# item in cart} other {# items in cart}}"

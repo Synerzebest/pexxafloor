@@ -37,7 +37,7 @@ export default function ForgotPasswordForm({ locale }: { locale: string }) {
       return;
     }
 
-    // Message volontairement générique pour ne pas révéler les comptes existants.
+    // Message générique pour ne pas révéler les comptes existants.
     setSent(true);
   }
 

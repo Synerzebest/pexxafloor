@@ -434,6 +434,9 @@
       "back_home": "Retour à l'accueil"
     },
     "AddToBasketButton": {
+      "quantity": "Quantité",
+      "decrease": "Diminuer la quantité",
+      "increase": "Augmenter la quantité",
       "addToBasket": "Ajouter au panier",
       "addedToBasket": "Ajouté au panier",
       "inCart": "{count, plural, one {# exemplaire dans le panier} other {# exemplaires dans le panier}}"

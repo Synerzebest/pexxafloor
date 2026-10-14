@@ -210,13 +210,24 @@ export default function CartDrawer() {
               </div>
 
               <div className="mt-4 flex gap-2">
-                <Link
-                  href={`/${locale}/cart`}
-                  onClick={closeCart}
-                  className="flex-1 rounded-lg bg-green-700 py-2 text-white text-sm font-medium hover:bg-green-800 text-center duration-300"
-                >
-                  {t("checkCart")}
-                </Link>
+                {items.length === 0 ? (
+                  // A link cannot be disabled: render an inert button while the cart is empty
+                  <button
+                    type="button"
+                    disabled
+                    className="flex-1 cursor-not-allowed rounded-lg bg-gray-200 py-2 text-center text-sm font-medium text-gray-400"
+                  >
+                    {t("checkCart")}
+                  </button>
+                ) : (
+                  <Link
+                    href={`/${locale}/cart`}
+                    onClick={closeCart}
+                    className="flex-1 rounded-lg bg-green-700 py-2 text-white text-sm font-medium hover:bg-green-800 text-center duration-300"
+                  >
+                    {t("checkCart")}
+                  </Link>
+                )}
               </div>
             </div>
           </motion.aside>
