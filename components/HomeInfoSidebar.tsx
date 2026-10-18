@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
+import { usePriceDisplayContext } from "@/context/PriceDisplayContext";
 import {
   ArrowRight,
   BadgePercent,
@@ -49,6 +50,10 @@ const cards = [
 export default function HomeInfoSidebar() {
   const locale = useLocale();
   const t = useTranslations("HomeInfoSidebar");
+  // Logged-in PRO customers (same flag as the HTVA price display) don't need the "become PRO" card.
+  // It stays hidden until the status is known, so a PRO never sees it flash.
+  const { showExclVat: isPro, ready } = usePriceDisplayContext();
+  const visibleCards = cards.filter((card) => card.key !== "pro" || (ready && !isPro));
 
   return (
     <aside
@@ -64,7 +69,7 @@ export default function HomeInfoSidebar() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
-        {cards.map(({ key, href, icon: Icon, accent, featured, image }) => {
+        {visibleCards.map(({ key, href, icon: Icon, accent, featured, image }) => {
           if (image) {
             return (
               <div

@@ -6,14 +6,11 @@
         "clear": "Clear search"
       },
       "home": "Home",
-      "how-it-works": "How it works",
-      "benefits": "Benefits",
       "contact": "Contact",
       "quote_btn": "Get a Quote",
       "expert_contact": "Call an expert",
       "contact_phone": "Phone",
       "contact_email": "Email",
-      "cart": "Open cart",
       "cart_count": "Open cart, {count, plural, =0 {no items} one {# item} other {# items}}",
       "my_quotes": "My quotes",
       "quotes_description": "Select a saved quote to continue working on it.",
@@ -24,6 +21,8 @@
       "pro_space": "PRO area"
     },
     "Common": {
+      "transformToQuote": "Turn into a quote",
+      "viewQuote": "View the quote",
       "priceExclVat": "excl. VAT",
       "priceInclVat": "incl. VAT",
       "our": "Our",
@@ -34,13 +33,10 @@
       "vatIncluded": "incl. VAT",
       "proDiscount": "PRO discount −{discount}%",
       "total": "Total",
-      "totalToPay": "Total to pay",
       "totalExclVat": "Total excl. VAT",
       "totalInclVat": "Total incl. VAT",
       "add": "Add",
       "added": "Added",
-      "update": "Update",
-      "updated": "Updated",
       "addToCart": "Add to cart",
       "addedToCart": "Added to cart",
       "updateCart": "Update cart",
@@ -65,7 +61,6 @@
       "products": "Products",
       "product": "Product",
       "productCount": "{count, plural, one {# product} other {# products}}",
-      "includedCount": "{count, plural, one {# product included} other {# products included}}",
       "noProductIn": "No products in {name}.",
       "noProductsFound": "No products found in this sub-subcategory.",
       "myOrders": "My orders",
@@ -98,6 +93,9 @@
       "cta": "Become a PRO"
     },
     "QuoteSave": {
+      "share": "Share this quote",
+      "shareHint": "Save the quote to be able to share it",
+      "savedToast": "Quote saved",
       "title": "Save quote", "description": "Only the project reference is required.",
       "projectReference": "Project reference", "customerName": "Customer name", "phone": "Mobile number", "email": "Email address", "projectType": "Project type", "select": "Select",
       "projectTypes": { "maison": "House", "appartement": "Apartment", "bureaux": "Offices", "commerce": "Retail", "autre": "Other" },
@@ -109,7 +107,7 @@
       "statuses": { "pending": "Pending", "inReview": "Under review", "verified": "Verified", "rejected": "Rejected", "suspended": "Suspended", "revision": "Needs revision" },
       "messages": { "active": "Your professional account is active 🎉", "pending": "Your application is awaiting approval.", "rejected": "Your application was rejected." }
     },
-    "QuoteShare": { "title": "Share this quote", "description": "Choose which price type to send.", "guestTitle": "Create an estimate", "guestDescription": "Generate a neutral quote to estimate the price of your pack.", "guestDocumentTitle": "Your pack estimate", "previewGuest": "Preview estimated quote", "preparing": "Preparing amounts…", "prepareError": "Unable to prepare the quote for sharing.", "shareError": "Unable to share the PDF.", "previewError": "Unable to generate the PDF preview.", "customerDiscount": "Discount for the customer quote", "sharePro": "Preview quote with PRO prices", "shareCustomer": "Preview quote with customer prices", "product": "Product", "quantity": "Quantity", "totalExclVat": "Total excl. VAT", "totalInclVat": "Total incl. VAT", "estimatedProfit": "Estimated profit excl. VAT", "previewProTitle": "PRO quote preview", "previewCustomerTitle": "Customer quote preview", "previewGuestTitle": "Estimated quote preview", "previewDescription": "Review the document before downloading it.", "previewFrameTitle": "PDF quote preview", "back": "Back to selection", "download": "Download PDF" },
+    "QuoteShare": { "infoDate": "Date", "infoProject": "Project", "infoCustomer": "Customer", "title": "Share this quote", "description": "Choose who the quote is for.", "guestTitle": "Create an estimate", "guestDescription": "Generate a neutral quote to estimate the price of your pack.", "guestDocumentTitle": "Your pack estimate", "previewGuest": "Preview estimated quote", "preparing": "Preparing amounts…", "prepareError": "Unable to prepare the quote for sharing.", "previewError": "Unable to generate the PDF preview.", "customerDiscount": "Discount given to the customer", "product": "Product", "quantity": "Quantity", "totalExclVat": "Total excl. VAT", "totalInclVat": "Total incl. VAT", "estimatedProfit": "Estimated profit excl. VAT", "previewProTitle": "PRO quote preview", "previewCustomerTitle": "Customer quote preview", "previewGuestTitle": "Estimated quote preview", "previewDescription": "Review the document before downloading it.", "previewFrameTitle": "PDF quote preview", "back": "Back to selection", "download": "Download PDF", "share": "Share", "choiceQuestion": "Who is this quote for?", "customerCardTitle": "For your customer", "customerCardBadge": "Send to the customer", "customerCardText": "Retail prices, with the discount you give them. Your purchase prices are not shown.", "proCardTitle": "For you", "proCardBadge": "Internal use", "proCardText": "Your PRO purchase prices, for your records. Do not send it to your customer.", "previewAction": "See the preview" },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
       "title": "Floor heating",
@@ -132,7 +130,7 @@
       }
     },
     "Systems": {
-      "title": "Choose the ideal system for your space",
+      "title": "Choose the ideal installation method for your underfloor heating.",
       "set1": {
         "title": "Steel mesh",
         "insulation": "No standard insulation"
@@ -152,8 +150,6 @@
       "price": "Price",
       "priceLoading": "Calculating...",
       "priceUnavailable": "Price unavailable",
-      "vatExcluded": "excl. VAT",
-      "vatIncluded": "incl. VAT",
       "genericPriceNote": "Price calculated with a standard configuration: 20 cm spacing, PERT pipe and default options. The final price may change in the configurator.",
       "height-installation": "Installation height",
       "insulation": "Insulation",
@@ -283,7 +279,6 @@
       "or": "Or",
       "alreadyAccount": "Already an account ?",
       "login": "Login",
-      "success": "Account created ! Check your emails to confirm your address.",
       "confirmation": {
         "title": "Check your inbox",
         "description": "Your account has been created. We sent a confirmation email to:",
@@ -357,7 +352,6 @@
       "pendingTitle": "Pending",
       "recentTitle": "Recent Applications",
       "empty": "No applications found.",
-      "reviewDecision": "Review Decision",
       "searchPlaceholder": "Search a company",
       "edit": "Edit",
       "save": "Save",
@@ -410,16 +404,6 @@
       "suspend": "Suspend",
       "revision": "Start revision"
     },
-    "Packs": {
-      "loading": "Loading products...",
-      "description": "Discover the contents of this underfloor heating package.",
-      "content": "Package contents",
-      "article": "Article",
-      "qty": "Quantity",
-      "unitPrice": "Unit price",
-      "total": "Total",
-      "orderCta": "Order now"
-    },
     "Profile": {
       "pro": {
         "title": "Become a pro client ?",
@@ -445,10 +429,8 @@
       "free": "Free",
       "myCart": "My cart",
       "emptyCart": "Your cart is empty",
-      "productsIncluded": "products included",
       "edit": "Edit",
       "checkCart": "Go to checkout",
-      "products_included": "Products included",
       "product": "Product",
       "remove": "Remove",
       "editPack": "Edit this pack",
@@ -487,7 +469,7 @@
       "proDiscountsManagementDetails": "Discounts by customer and category"
     },
     "AdminProDiscounts": {
-      "title": "Custom PRO discounts", "description": "Assign specific discounts by category, subcategory or child subcategory. The most specific rule replaces the inherited rule.", "back": "Back to admin panel", "searchPlaceholder": "Search by name, company or email…", "loading": "Loading…", "noUsers": "No PRO customer found.", "selectUser": "Select a PRO customer to configure their discounts.", "customCount": "{count, plural, one {# custom discount} other {# custom discounts}}", "loadError": "Unable to load PRO discounts.", "saveError": "Unable to save discounts.", "saved": "Custom discounts saved.", "invalidDiscount": "Each discount must be between 0 and 100%.", "save": "Save discounts", "saving": "Saving…", "generalTitle": "General discounts by category", "generalDescription": "These discounts are the default for every PRO customer and can be overridden by a custom rule.", "saveGeneral": "Save general discounts", "generalSaved": "General discounts saved.", "generalSaveError": "Unable to save general discounts.", "ruleHelp": "Leave a field empty to inherit the discount from the parent level. Any entered value, including 0%, replaces the inherited discount without being added to it.", "generalDiscount": "General discount: {discount}%", "inheritedPlaceholder": "Inherited: {discount}%", "customDiscountLabel": "Custom discount", "inheritsDiscount": "inherits {discount}%", "categoryLevel": "Category", "subcategoryLevel": "Subcategory", "subsubcategoryLevel": "Child subcategory", "noChildren": "No subcategories"
+      "title": "Custom PRO discounts", "description": "Assign specific discounts by category, subcategory or child subcategory. The most specific rule replaces the inherited rule.", "searchPlaceholder": "Search by name, company or email…", "loading": "Loading…", "noUsers": "No PRO customer found.", "selectUser": "Select a PRO customer to configure their discounts.", "customCount": "{count, plural, one {# custom discount} other {# custom discounts}}", "loadError": "Unable to load PRO discounts.", "saveError": "Unable to save discounts.", "saved": "Custom discounts saved.", "invalidDiscount": "Each discount must be between 0 and 100%.", "save": "Save discounts", "saving": "Saving…", "generalTitle": "General discounts by category", "generalDescription": "These discounts are the default for every PRO customer and can be overridden by a custom rule.", "saveGeneral": "Save general discounts", "generalSaved": "General discounts saved.", "generalSaveError": "Unable to save general discounts.", "ruleHelp": "Leave a field empty to inherit the discount from the parent level. Any entered value, including 0%, replaces the inherited discount without being added to it.", "generalDiscount": "General discount: {discount}%", "inheritedPlaceholder": "Inherited: {discount}%", "customDiscountLabel": "Custom discount", "inheritsDiscount": "inherits {discount}%", "categoryLevel": "Category", "subcategoryLevel": "Subcategory", "subsubcategoryLevel": "Child subcategory", "noChildren": "No subcategories"
     },
     "NotFound": {
       "title": "Whoops! Page not found",
@@ -497,7 +479,6 @@
     "Categories": {
       "title": "Our categories",
       "subtitle": "Discover all our underfloor heating solutions and accessories.",
-      "subcat": "Sub-Categories",
       "productCount": "{count, plural, =0 {No products} one {# product} other {# products}}"
     },
     "Cart": {
@@ -511,8 +492,6 @@
         "checkout": "Unable to prepare the payment. Please try again.",
         "deleteAddress": "Unable to delete this address."
       },
-      "included": "products included",
-      "emptyCart": "Your cart is empty",
       "empty": {
         "title": "Your cart is ready for you",
         "description": "Explore our products or build a pack tailored to your surface area.",
@@ -520,23 +499,17 @@
         "calculate": "Calculate my pack"
       },
       "myCart":"My cart",
-      "step": "Step",
       "remove": "Remove",
       "editPack": "Edit this pack",
       "layout": {
-        "title":"Custom layout plan",
-        "gift": "Offered with the purchase of this pack",
-        "subtitle": "Pipe routing optimization by an expert."
+        "title":"Custom layout plan"
       },
-      "clientName": "Client name / Company name",
       "fullAddress": "Delivery address",
       "addressAutocompleteDisabled": "Google address suggestions are disabled by your preferences.",
       "enableAddressAutocomplete": "Allow them",
       "zipCode": "Zip code",
       "city": "City",
       "country": "Country",
-      "vatExcluded": "excl. VAT",
-      "vatIncluded": "incl. VAT",
       "totalExclVat": "Total excl. VAT",
       "totalInclVat": "Total incl. VAT",
       "savedAddresses": "Your saved addresses",
@@ -548,10 +521,8 @@
       "total": "Total",
       "payment": "Proceed to payment",
       "paymentLoading": "Preparing payment…",
-      "proDiscount": "PRO discount",
       "loginRequired": "Sign in to confirm your cart and proceed to payment.",
-      "loginToCheckout": "Sign in to continue",
-      "creditApplied": "PRO credit applied: −€{amount}"
+      "loginToCheckout": "Sign in to continue"
     },
     "PackConfig": {
       "settings": "Pack settings",

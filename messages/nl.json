@@ -6,14 +6,11 @@
         "clear": "Zoekopdracht wissen"
       },
       "home": "Home",
-      "how-it-works": "Hoe het werkt",
-      "benefits": "Voordelen",
       "contact": "Contact",
       "quote_btn": "Directe offerte",
       "expert_contact": "Praat met een expert",
       "contact_phone": "Telefoon",
       "contact_email": "E-mail",
-      "cart": "Winkelwagen openen",
       "cart_count": "Winkelwagen openen, {count, plural, =0 {geen artikelen} one {# artikel} other {# artikelen}}",
       "my_quotes": "Mijn offertes",
       "quotes_description": "Selecteer een opgeslagen offerte om eraan verder te werken.",
@@ -24,6 +21,8 @@
       "pro_space": "PRO-zone"
     },
     "Common": {
+      "transformToQuote": "Omzetten naar offerte",
+      "viewQuote": "Offerte bekijken",
       "priceExclVat": "excl. btw",
       "priceInclVat": "incl. btw",
       "our": "Onze",
@@ -34,13 +33,10 @@
       "vatIncluded": "incl. btw",
       "proDiscount": "PRO-korting −{discount}%",
       "total": "Totaal",
-      "totalToPay": "Te betalen totaal",
       "totalExclVat": "Totaal excl. btw",
       "totalInclVat": "Totaal incl. btw",
       "add": "Toevoegen",
       "added": "Toegevoegd",
-      "update": "Bijwerken",
-      "updated": "Bijgewerkt",
       "addToCart": "Toevoegen aan winkelwagen",
       "addedToCart": "Toegevoegd aan winkelwagen",
       "updateCart": "Winkelwagen bijwerken",
@@ -65,7 +61,6 @@
       "products": "Producten",
       "product": "Product",
       "productCount": "{count, plural, one {# product} other {# producten}}",
-      "includedCount": "{count, plural, one {# product inbegrepen} other {# producten inbegrepen}}",
       "noProductIn": "Geen producten in {name}.",
       "noProductsFound": "Geen producten gevonden in deze sub-subcategorie.",
       "myOrders": "Mijn bestellingen",
@@ -98,6 +93,9 @@
       "cta": "PRO-klant worden"
     },
     "QuoteSave": {
+      "share": "Deze offerte delen",
+      "shareHint": "Sla de offerte op om ze te kunnen delen",
+      "savedToast": "Offerte opgeslagen",
       "title": "Offerte opslaan", "description": "Alleen de projectreferentie is verplicht.",
       "projectReference": "Projectreferentie", "customerName": "Naam van de klant", "phone": "Gsm-nummer", "email": "E-mailadres", "projectType": "Projecttype", "select": "Selecteren",
       "projectTypes": { "maison": "Woning", "appartement": "Appartement", "bureaux": "Kantoren", "commerce": "Handelszaak", "autre": "Andere" },
@@ -109,7 +107,7 @@
       "statuses": { "pending": "In afwachting", "inReview": "In behandeling", "verified": "Geverifieerd", "rejected": "Geweigerd", "suspended": "Geschorst", "revision": "Te herzien" },
       "messages": { "active": "Uw professionele account is actief 🎉", "pending": "Uw aanvraag wacht op goedkeuring.", "rejected": "Uw aanvraag werd geweigerd." }
     },
-    "QuoteShare": { "title": "Deze offerte delen", "description": "Kies welk prijstype u wilt verzenden.", "guestTitle": "Een raming maken", "guestDescription": "Genereer een neutrale offerte om de prijs van uw pakket te ramen.", "guestDocumentTitle": "Raming van uw pakket", "previewGuest": "Voorbeeld van de prijsraming", "preparing": "Bedragen voorbereiden…", "prepareError": "Het delen van de offerte kan niet worden voorbereid.", "shareError": "De PDF kan niet worden gedeeld.", "previewError": "Het PDF-voorbeeld kan niet worden gegenereerd.", "customerDiscount": "Korting voor de particuliere offerte", "sharePro": "Voorbeeld met PRO-prijzen", "shareCustomer": "Voorbeeld met particuliere prijzen", "product": "Product", "quantity": "Aantal", "totalExclVat": "Totaal excl. btw", "totalInclVat": "Totaal incl. btw", "estimatedProfit": "Geschatte winst excl. btw", "previewProTitle": "Voorbeeld van de PRO-offerte", "previewCustomerTitle": "Voorbeeld van de particuliere offerte", "previewGuestTitle": "Voorbeeld van de prijsraming", "previewDescription": "Controleer het document voordat u het downloadt.", "previewFrameTitle": "Voorbeeld van de PDF-offerte", "back": "Terug naar keuze", "download": "PDF downloaden" },
+    "QuoteShare": { "infoDate": "Datum", "infoProject": "Project", "infoCustomer": "Klant", "title": "Deze offerte delen", "description": "Kies voor wie de offerte bestemd is.", "guestTitle": "Een raming maken", "guestDescription": "Genereer een neutrale offerte om de prijs van uw pakket te ramen.", "guestDocumentTitle": "Raming van uw pakket", "previewGuest": "Voorbeeld van de prijsraming", "preparing": "Bedragen voorbereiden…", "prepareError": "Het delen van de offerte kan niet worden voorbereid.", "previewError": "Het PDF-voorbeeld kan niet worden gegenereerd.", "customerDiscount": "Korting voor de klant", "product": "Product", "quantity": "Aantal", "totalExclVat": "Totaal excl. btw", "totalInclVat": "Totaal incl. btw", "estimatedProfit": "Geschatte winst excl. btw", "previewProTitle": "Voorbeeld van de PRO-offerte", "previewCustomerTitle": "Voorbeeld van de particuliere offerte", "previewGuestTitle": "Voorbeeld van de prijsraming", "previewDescription": "Controleer het document voordat u het downloadt.", "previewFrameTitle": "Voorbeeld van de PDF-offerte", "back": "Terug naar keuze", "download": "PDF downloaden", "share": "Delen", "choiceQuestion": "Voor wie is deze offerte?", "customerCardTitle": "Voor uw klant", "customerCardBadge": "Naar de klant sturen", "customerCardText": "Particuliere prijzen, met de korting die u toekent. Uw aankoopprijzen worden niet getoond.", "proCardTitle": "Voor uzelf", "proCardBadge": "Intern gebruik", "proCardText": "Uw PRO-aankoopprijzen, voor uw opvolging. Stuur dit niet naar uw klant.", "previewAction": "Voorbeeld bekijken" },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
       "title": "Vloerverwarming",
@@ -132,7 +130,7 @@
         }
     },
     "Systems": {
-        "title": "Kies het ideale systeem voor uw ruimte",
+        "title": "Kies de ideale installatiemethode voor uw vloerverwarming.",
         "set1": {
           "title": "Staaldraadmat",
           "insulation": "Geen standaard isolatie"
@@ -152,8 +150,6 @@
         "price": "Prijs",
         "priceLoading": "Berekenen...",
         "priceUnavailable": "Prijs niet beschikbaar",
-        "vatExcluded": "excl. btw",
-        "vatIncluded": "incl. btw",
         "genericPriceNote": "Prijs berekend met een standaardconfiguratie: legafstand 20 cm, PERT-buis en standaardopties. De eindprijs kan wijzigen in de configurator.",
         "height-installation": "Inbouwhoogte",
         "insulation": "Isolatie",
@@ -283,7 +279,6 @@
         "or": "Of",
         "alreadyAccount": "Al lid ?",
         "login": "Login",
-        "success": "Account aangemaakt! Controleer je e-mail om je adres te bevestigen.",
         "confirmation": {
           "title": "Controleer uw mailbox",
           "description": "Uw account is aangemaakt. We hebben een bevestigingsmail gestuurd naar:",
@@ -357,7 +352,6 @@
       "pendingTitle": "In afwachting",
       "recentTitle": "Recente aanvragen",
       "empty": "Geen aanvragen gevonden.",
-      "reviewDecision": "Besluit Herzien",
       "searchPlaceholder": "Bedrijf opzoeken",
       "edit": "Bewerken",
       "save": "Redden", 
@@ -410,16 +404,6 @@
       "suspend": "Opschorten",
       "revision": "Herziening starten"
     },
-    "Packs": {
-      "loading": "Producten worden geladen...",
-      "description": "Ontdek de inhoud van dit pakket voor vloerverwarming.",
-      "content": "Inhoud van het pakket",
-      "article": "Artikel",
-      "qty": "Aantal",
-      "unitPrice": "Stukprijs",
-      "total": "Totaal",
-      "orderCta": "Nu bestellen"
-    },
     "Profile": {
       "pro": {
         "title": "Professionele klant worden ?",
@@ -445,10 +429,8 @@
       "free": "Gratis",
       "myCart": "Mijn winkelwagen",
       "emptyCart": "Uw winkelwagen is leeg",
-      "productsIncluded": "producten inbegrepen",
       "edit": "Bewerken",
       "checkCart": "Bestellen",
-      "products_included": "Producten inbegrepen",
       "product": "Product",
       "remove": "Verwijderen",
       "editPack": "Dit pakket bewerken",
@@ -487,7 +469,7 @@
       "proDiscountsManagementDetails": "Kortingen per klant en categorie"
     },
     "AdminProDiscounts": {
-      "title": "Aangepaste PRO-kortingen", "description": "Ken specifieke kortingen toe per categorie, subcategorie of onderliggende subcategorie. De meest specifieke regel vervangt de overgeërfde regel.", "back": "Terug naar het beheerderspaneel", "searchPlaceholder": "Zoeken op naam, bedrijf of e-mail…", "loading": "Laden…", "noUsers": "Geen PRO-klant gevonden.", "selectUser": "Selecteer een PRO-klant om de kortingen in te stellen.", "customCount": "{count, plural, one {# aangepaste korting} other {# aangepaste kortingen}}", "loadError": "De PRO-kortingen kunnen niet worden geladen.", "saveError": "De kortingen kunnen niet worden opgeslagen.", "saved": "Aangepaste kortingen opgeslagen.", "invalidDiscount": "Elke korting moet tussen 0 en 100% liggen.", "save": "Kortingen opslaan", "saving": "Opslaan…", "generalTitle": "Algemene kortingen per categorie", "generalDescription": "Deze kortingen gelden standaard voor elke PRO-klant en kunnen door een aangepaste regel worden vervangen.", "saveGeneral": "Algemene kortingen opslaan", "generalSaved": "Algemene kortingen opgeslagen.", "generalSaveError": "De algemene kortingen kunnen niet worden opgeslagen.", "ruleHelp": "Laat een veld leeg om de korting van het bovenliggende niveau over te nemen. Elke ingevulde waarde, ook 0%, vervangt de overgeërfde korting zonder erbij te worden opgeteld.", "generalDiscount": "Algemene korting: {discount}%", "inheritedPlaceholder": "Overgeërfd: {discount}%", "customDiscountLabel": "Aangepaste korting", "inheritsDiscount": "erft {discount}%", "categoryLevel": "Categorie", "subcategoryLevel": "Subcategorie", "subsubcategoryLevel": "Onderliggende subcategorie", "noChildren": "Geen subcategorieën"
+      "title": "Aangepaste PRO-kortingen", "description": "Ken specifieke kortingen toe per categorie, subcategorie of onderliggende subcategorie. De meest specifieke regel vervangt de overgeërfde regel.", "searchPlaceholder": "Zoeken op naam, bedrijf of e-mail…", "loading": "Laden…", "noUsers": "Geen PRO-klant gevonden.", "selectUser": "Selecteer een PRO-klant om de kortingen in te stellen.", "customCount": "{count, plural, one {# aangepaste korting} other {# aangepaste kortingen}}", "loadError": "De PRO-kortingen kunnen niet worden geladen.", "saveError": "De kortingen kunnen niet worden opgeslagen.", "saved": "Aangepaste kortingen opgeslagen.", "invalidDiscount": "Elke korting moet tussen 0 en 100% liggen.", "save": "Kortingen opslaan", "saving": "Opslaan…", "generalTitle": "Algemene kortingen per categorie", "generalDescription": "Deze kortingen gelden standaard voor elke PRO-klant en kunnen door een aangepaste regel worden vervangen.", "saveGeneral": "Algemene kortingen opslaan", "generalSaved": "Algemene kortingen opgeslagen.", "generalSaveError": "De algemene kortingen kunnen niet worden opgeslagen.", "ruleHelp": "Laat een veld leeg om de korting van het bovenliggende niveau over te nemen. Elke ingevulde waarde, ook 0%, vervangt de overgeërfde korting zonder erbij te worden opgeteld.", "generalDiscount": "Algemene korting: {discount}%", "inheritedPlaceholder": "Overgeërfd: {discount}%", "customDiscountLabel": "Aangepaste korting", "inheritsDiscount": "erft {discount}%", "categoryLevel": "Categorie", "subcategoryLevel": "Subcategorie", "subsubcategoryLevel": "Onderliggende subcategorie", "noChildren": "Geen subcategorieën"
     },
     "NotFound": {
       "title": "Oeps! Pagina niet gevonden",
@@ -497,7 +479,6 @@
     "Categories": {
       "title": "Onze categorieën",
       "subtitle": "Ontdek al onze oplossingen en accessoires voor vloerverwarming.",
-      "subcat": "Subcategorieën",
       "productCount": "{count, plural, =0 {Geen producten} one {# product} other {# producten}}"
     },
     "Cart": {
@@ -511,8 +492,6 @@
         "checkout": "De betaling kan niet worden voorbereid. Probeer het opnieuw.",
         "deleteAddress": "Dit adres kan niet worden verwijderd."
       },
-      "included": "producten inbegrepen",
-      "emptyCart": "Uw winkelwagen is leeg",
       "empty": {
         "title": "Uw winkelwagen wacht op uw project",
         "description": "Ontdek onze vloerverwarmingsoplossingen of stel meteen een pakket samen dat bij uw oppervlakte past.",
@@ -520,23 +499,17 @@
         "calculate": "Mijn pakket berekenen"
       },
       "myCart": "Mijn winkelwagen",
-      "step": "Stap",
       "remove": "Verwijderen",
       "editPack": "Dit pakket bewerken",
       "layout": {
-        "title": "Gepersonaliseerd legplan",
-        "gift": "Gratis bij aankoop van dit pakket",
-        "subtitle": "Optimalisatie van het leidingtraject door een expert."
+        "title": "Gepersonaliseerd legplan"
       },
-      "clientName": "Naam klant / Bedrijfsnaam",
       "fullAddress": "Afleveradres",
       "addressAutocompleteDisabled": "Google-adressuggesties zijn uitgeschakeld volgens uw voorkeuren.",
       "enableAddressAutocomplete": "Toestaan",
       "zipCode": "Postcode",
       "city": "Stad",
       "country": "Land",
-      "vatExcluded": "excl. btw",
-      "vatIncluded": "incl. btw",
       "totalExclVat": "Totaal excl. btw",
       "totalInclVat": "Totaal incl. btw",
       "savedAddresses": "Uw opgeslagen adressen",
@@ -548,10 +521,8 @@
       "total": "Totaal",
       "payment": "Ga naar betaling",
       "paymentLoading": "Betaling voorbereiden…",
-      "proDiscount": "PRO-korting",
       "loginRequired": "Log in om uw winkelwagen te bevestigen en door te gaan naar de betaling.",
-      "loginToCheckout": "Inloggen om verder te gaan",
-      "creditApplied": "PRO-tegoed toegepast: −€ {amount}"
+      "loginToCheckout": "Inloggen om verder te gaan"
     },
     "PackConfig": {
       "settings": "Pakketinstellingen",

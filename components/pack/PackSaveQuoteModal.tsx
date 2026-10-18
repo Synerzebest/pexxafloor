@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, X } from "lucide-react";
+import { Plus, Share2, Trash2, X } from "lucide-react";
 import type {
   PackQuoteAdditionalItem,
   PackQuoteDetails,
@@ -14,7 +14,24 @@ type Props = {
   saving?: boolean;
   onClose: () => void;
   onSave: (details: PackQuoteDetails) => void;
+  /** The quote exists in the database, so it can be shared */
+  canShare?: boolean;
+  onShare?: () => void;
 };
+
+/** Same shape as what onSave sends, so saved and edited values compare directly. */
+function normalizeDetails(details: Partial<PackQuoteDetails> | undefined): PackQuoteDetails {
+  return {
+    projectReference: (details?.projectReference || "").trim(),
+    customerName: details?.customerName?.trim() || undefined,
+    customerPhone: details?.customerPhone?.trim() || undefined,
+    customerEmail: details?.customerEmail?.trim() || undefined,
+    projectType: details?.projectType || undefined,
+    additionalItems: (details?.additionalItems || [])
+      .filter((item) => item.label.trim() && item.amount > 0)
+      .map(({ id, label, amount }) => ({ id, label: label.trim(), amount })),
+  };
+}
 
 const PROJECT_TYPES = [
   { value: "", label: "Sélectionner" },
@@ -54,6 +71,8 @@ export function PackSaveQuoteModal({
   saving = false,
   onClose,
   onSave,
+  canShare = false,
+  onShare,
 }: Props) {
   const t = useTranslations("QuoteSave");
   const [projectReference, setProjectReference] = useState("");
@@ -83,6 +102,17 @@ export function PackSaveQuoteModal({
   if (!open) return null;
 
   const canSave = projectReference.trim().length > 0 && !saving;
+  const details = normalizeDetails({
+    projectReference,
+    customerName,
+    customerPhone,
+    customerEmail,
+    projectType,
+    additionalItems,
+  });
+  // Sharing sends the saved quote: unsaved edits must be saved first
+  const hasUnsavedChanges = JSON.stringify(details) !== JSON.stringify(normalizeDetails(initialDetails));
+  const shareEnabled = canShare && !hasUnsavedChanges && !saving;
 
   return (
     <div className="fixed inset-0 z-[130] flex items-center justify-center bg-black/40 px-4">
@@ -286,7 +316,7 @@ export function PackSaveQuoteModal({
           </div>
         </div>
 
-        <div className="mt-6 flex justify-end gap-2">
+        <div className="mt-6 flex flex-wrap justify-end gap-2">
           <button
             type="button"
             onClick={onClose}
@@ -297,25 +327,20 @@ export function PackSaveQuoteModal({
           <button
             type="button"
             disabled={!canSave}
-            onClick={() =>
-              onSave({
-                projectReference: projectReference.trim(),
-                customerName: customerName.trim() || undefined,
-                customerPhone: customerPhone.trim() || undefined,
-                customerEmail: customerEmail.trim() || undefined,
-                projectType: projectType || undefined,
-                additionalItems: additionalItems
-                  .filter((item) => item.label.trim() && item.amount > 0)
-                  .map(({ id, label, amount }) => ({
-                    id,
-                    label: label.trim(),
-                    amount,
-                  })),
-              })
-            }
+            onClick={() => onSave(details)}
             className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
           >
             {saving ? t("saving") : t("save")}
+          </button>
+          <button
+            type="button"
+            disabled={!shareEnabled}
+            onClick={onShare}
+            title={shareEnabled ? undefined : t("shareHint")}
+            className="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:bg-gray-200 disabled:text-gray-400"
+          >
+            <Share2 className="h-4 w-4" />
+            {t("share")}
           </button>
         </div>
       </div>

@@ -1,6 +1,8 @@
 "use client";
 
 import { useParams, useSearchParams } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import { Navbar, Footer, ProBadge } from "@/components";
 import { useCart, PackItem } from "@/context/CartContext";
 import { useEffect, useMemo, useState } from "react";
@@ -112,6 +114,7 @@ export default function PackConfigurator({ introduction }: { introduction: React
   const { getQuote, saveQuote, setCurrentDraft } = useQuotes();
   const { isPro } = useUserProfile();
   const savedQuote = quoteId ? getQuote(quoteId) : undefined;
+  const tSave = useTranslations("QuoteSave");
 
   const existingPack = items.find(
     (i): i is PackItem => i.type === "pack" && i.id === packId
@@ -137,6 +140,9 @@ export default function PackConfigurator({ introduction }: { introduction: React
   const [activeAdditionalItems, setActiveAdditionalItems] = useState(
     savedQuote?.additionalItems || []
   );
+  // The configured pack is already a saved quote (opened from the list, or saved here)
+  const hasQuote = Boolean(activeQuoteId || savedQuote?.id || quoteId);
+  const linkedQuote = getQuote(activeQuoteId || savedQuote?.id || "");
   const [isSavingQuote, setIsSavingQuote] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
@@ -347,29 +353,28 @@ export default function PackConfigurator({ introduction }: { introduction: React
   const handleSaveQuoteDetails = async (details: PackQuoteDetails) => {
     try {
       setIsSavingQuote(true);
-      const updatesLoadedQuote = Boolean(quoteId && savedQuote);
+      // Once saved, the configured pack stays linked to its quote: later saves update it
       const saved = await saveQuote(currentDraft, details, {
-        updateExisting: updatesLoadedQuote,
+        updateExisting: hasQuote,
       });
 
+      setActiveQuoteId(saved.id);
+      setActiveProjectReference(saved.projectReference);
+      setActiveCustomerName(saved.customerName);
+      setActiveCustomerPhone(saved.customerPhone);
+      setActiveCustomerEmail(saved.customerEmail);
+      setActiveProjectType(saved.projectType);
       setActiveAdditionalItems(saved.additionalItems || []);
 
-      if (updatesLoadedQuote) {
-        setActiveQuoteId(saved.id);
-        setActiveProjectReference(saved.projectReference);
-        setActiveCustomerName(saved.customerName);
-        setActiveCustomerPhone(saved.customerPhone);
-        setActiveCustomerEmail(saved.customerEmail);
-        setActiveProjectType(saved.projectType);
-      } else {
-        setActiveQuoteId(undefined);
-        setActiveProjectReference(undefined);
-        setActiveCustomerName(undefined);
-        setActiveCustomerPhone(undefined);
-        setActiveCustomerEmail(undefined);
-        setActiveProjectType(undefined);
+      // Keep the link in the URL so a reload or "back" still shows "Voir le devis"
+      if (quoteId !== saved.id) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("quoteId", saved.id);
+        window.history.replaceState(null, "", url);
       }
-      setIsSaveModalOpen(false);
+
+      // The modal stays open so the PRO can share the quote right away
+      toast.success(tSave("savedToast"));
     } catch (error) {
       console.error(error);
       window.alert("Impossible d’enregistrer le devis.");
@@ -379,6 +384,11 @@ export default function PackConfigurator({ introduction }: { introduction: React
   };
 
   const handleShareQuote = () => {
+    setIsShareModalOpen(true);
+  };
+
+  const handleShareSavedQuote = () => {
+    setIsSaveModalOpen(false);
     setIsShareModalOpen(true);
   };
 
@@ -478,11 +488,12 @@ export default function PackConfigurator({ introduction }: { introduction: React
             <PackTotalBox
               total={total}
               onAddToCart={handleAddToCart}
-              onSaveQuote={handleSaveQuote}
+              onOpenQuote={handleSaveQuote}
               onShareQuote={handleShareQuote}
               isEditing={!!existingPack}
               disabled={isRecalculating || isSavingQuote}
-              canSaveQuote={isPro === true}
+              isPro={isPro === true}
+              hasQuote={hasQuote}
             />
           </div>
         </div>
@@ -491,11 +502,12 @@ export default function PackConfigurator({ introduction }: { introduction: React
       <PackMobileFooter
         total={total}
         onAddToCart={handleAddToCart}
-        onSaveQuote={handleSaveQuote}
+        onOpenQuote={handleSaveQuote}
         onShareQuote={handleShareQuote}
         isEditing={!!existingPack}
         disabled={isRecalculating || isSavingQuote}
-        canSaveQuote={isPro === true}
+        isPro={isPro === true}
+        hasQuote={hasQuote}
       />
       </div>
 
@@ -503,6 +515,7 @@ export default function PackConfigurator({ introduction }: { introduction: React
         open={isShareModalOpen}
         draft={currentDraft}
         isPro={isPro === true}
+        quoteDate={linkedQuote?.savedAt}
         onClose={() => setIsShareModalOpen(false)}
       />
 
@@ -521,6 +534,8 @@ export default function PackConfigurator({ introduction }: { introduction: React
         }}
         onClose={() => setIsSaveModalOpen(false)}
         onSave={handleSaveQuoteDetails}
+        canShare={hasQuote}
+        onShare={handleShareSavedQuote}
       />
 
       <Footer />

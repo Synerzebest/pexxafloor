@@ -11,12 +11,14 @@ type ShareLine = {
   description: string;
   quantity: number;
   reference?: string | null;
+  image?: string | null;
   proUnitPrice: number;
   customerUnitPrice: number;
   proTotal: number;
   customerTotal: number;
   discountPercent: number;
 };
+
 
 type QuoteIssuer = {
   name: string;
@@ -29,10 +31,6 @@ type QuoteIssuer = {
   email?: string | null;
   vat?: string | null;
 };
-
-function roundMoney(value: number) {
-  return Number(value.toFixed(2));
-}
 
 async function requireProUser() {
   const supabaseAuth = await createSupabaseServerAuthClient();
@@ -94,6 +92,10 @@ async function requireProUser() {
   };
 }
 
+function roundMoney(value: number) {
+  return Number(value.toFixed(2));
+}
+
 export async function POST(req: Request) {
   const auth = await requireProUser();
   if (auth.response) return auth.response;
@@ -151,6 +153,7 @@ export async function POST(req: Request) {
       id: line.id,
       description: line.description,
       reference: line.reference,
+      image: line.image ?? null,
       quantity,
       proUnitPrice: roundMoney(proUnitPrice),
       customerUnitPrice: roundMoney(customerUnitPrice),

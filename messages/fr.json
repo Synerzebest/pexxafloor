@@ -6,14 +6,11 @@
         "clear": "Effacer la recherche"
       },
       "home": "Accueil",
-      "how-it-works": "Comment ça marche",
-      "benefits": "Avantages",
       "contact": "Contact",
       "quote_btn": "Devis instantané",
       "expert_contact": "Parler à un expert",
       "contact_phone": "Téléphone",
       "contact_email": "E-mail",
-      "cart": "Afficher le panier",
       "cart_count": "Afficher le panier, {count, plural, =0 {aucun article} one {# article} other {# articles}}",
       "my_quotes": "Mes devis",
       "quotes_description": "Sélectionnez un devis enregistré pour continuer à travailler dessus.",
@@ -24,6 +21,8 @@
       "pro_space": "Espace PRO"
     },
     "Common": {
+      "transformToQuote": "Transformer en devis",
+      "viewQuote": "Voir le devis",
       "priceExclVat": "HTVA",
       "priceInclVat": "TVAC",
       "our": "Nos",
@@ -34,13 +33,10 @@
       "vatIncluded": "TVAC",
       "proDiscount": "Remise PRO −{discount}%",
       "total": "Total",
-      "totalToPay": "Total à payer",
       "totalExclVat": "Total HTVA",
       "totalInclVat": "Total TVAC",
       "add": "Ajouter",
       "added": "Ajouté",
-      "update": "Mettre à jour",
-      "updated": "Modifié",
       "addToCart": "Ajouter au panier",
       "addedToCart": "Ajouté au panier",
       "updateCart": "Mettre à jour le panier",
@@ -65,7 +61,6 @@
       "products": "Produits",
       "product": "Produit",
       "productCount": "{count, plural, one {# produit} other {# produits}}",
-      "includedCount": "{count, plural, one {# produit inclus} other {# produits inclus}}",
       "noProductIn": "Aucun produit dans {name}.",
       "noProductsFound": "Aucun produit trouvé dans cette sous-sous-catégorie.",
       "myOrders": "Mes commandes",
@@ -98,6 +93,9 @@
       "cta": "Devenir PRO"
     },
     "QuoteSave": {
+      "share": "Partager ce devis",
+      "shareHint": "Enregistrez le devis pour pouvoir le partager",
+      "savedToast": "Devis enregistré",
       "title": "Enregistrer le devis", "description": "Seule la référence du projet est obligatoire.",
       "projectReference": "Référence du projet", "customerName": "Nom du client", "phone": "N° de GSM", "email": "Adresse e-mail", "projectType": "Type de projet", "select": "Sélectionner",
       "projectTypes": { "maison": "Maison", "appartement": "Appartement", "bureaux": "Bureaux", "commerce": "Commerce", "autre": "Autre" },
@@ -109,7 +107,7 @@
       "statuses": { "pending": "En attente", "inReview": "En cours d’examen", "verified": "Vérifié", "rejected": "Refusé", "suspended": "Suspendu", "revision": "À réviser" },
       "messages": { "active": "Votre compte professionnel est actif 🎉", "pending": "Votre demande est en attente de validation.", "rejected": "Votre demande a été refusée." }
     },
-    "QuoteShare": { "title": "Partager ce devis", "description": "Choisissez le type de prix à envoyer.", "guestTitle": "Créer une estimation", "guestDescription": "Générez un devis neutre pour obtenir une estimation du prix de votre pack.", "guestDocumentTitle": "Estimation de votre pack", "previewGuest": "Aperçu du devis estimatif", "preparing": "Préparation des montants…", "prepareError": "Impossible de préparer le partage du devis.", "shareError": "Impossible de partager le PDF.", "previewError": "Impossible de générer l’aperçu du PDF.", "customerDiscount": "Remise pour le devis particulier", "sharePro": "Aperçu du devis avec les prix PRO", "shareCustomer": "Aperçu du devis avec les prix particuliers", "product": "Produit", "quantity": "Quantité", "totalExclVat": "Total HTVA", "totalInclVat": "Total TVAC", "estimatedProfit": "Bénéfice estimé HTVA", "previewProTitle": "Aperçu du devis PRO", "previewCustomerTitle": "Aperçu du devis particulier", "previewGuestTitle": "Aperçu du devis estimatif", "previewDescription": "Vérifiez le document avant de le télécharger.", "previewFrameTitle": "Aperçu du devis PDF", "back": "Retour au choix", "download": "Télécharger le PDF" },
+    "QuoteShare": { "infoDate": "Date", "infoProject": "Projet", "infoCustomer": "Client", "title": "Partager ce devis", "description": "Choisissez à qui s’adresse le devis.", "guestTitle": "Créer une estimation", "guestDescription": "Générez un devis neutre pour obtenir une estimation du prix de votre pack.", "guestDocumentTitle": "Estimation de votre pack", "previewGuest": "Aperçu du devis estimatif", "preparing": "Préparation des montants…", "prepareError": "Impossible de préparer le partage du devis.", "previewError": "Impossible de générer l’aperçu du PDF.", "customerDiscount": "Remise accordée au client", "product": "Produit", "quantity": "Quantité", "totalExclVat": "Total HTVA", "totalInclVat": "Total TVAC", "estimatedProfit": "Bénéfice estimé HTVA", "previewProTitle": "Aperçu du devis PRO", "previewCustomerTitle": "Aperçu du devis particulier", "previewGuestTitle": "Aperçu du devis estimatif", "previewDescription": "Vérifiez le document avant de le télécharger.", "previewFrameTitle": "Aperçu du devis PDF", "back": "Retour au choix", "download": "Télécharger le PDF", "share": "Partager", "choiceQuestion": "Pour qui est ce devis ?", "customerCardTitle": "Pour votre client", "customerCardBadge": "À envoyer au client", "customerCardText": "Prix particuliers, avec la remise que vous lui accordez. Vos prix d’achat n’apparaissent pas.", "proCardTitle": "Pour vous", "proCardBadge": "Usage interne", "proCardText": "Vos prix d’achat PRO, pour votre suivi. Ne l’envoyez pas à votre client.", "previewAction": "Voir l’aperçu" },
     "Hero": {
       "badge": "Solutions professionnelles de chauffage au sol",
       "title": "Le chauffage au sol",
@@ -132,7 +130,7 @@
         }
     },
     "Systems": {
-        "title": "Choisissez le système idéal pour votre espace",
+        "title": "Choisissez le type de pose idéal pour votre chauffage au sol.",
         "set1": {
           "title": "Treillis acier",
           "insulation": "Pas d'isolation standard"
@@ -152,8 +150,6 @@
         "price": "Prix",
         "priceLoading": "Calcul...",
         "priceUnavailable": "Prix indisponible",
-        "vatExcluded": "HTVA",
-        "vatIncluded": "TVAC",
         "genericPriceNote": "Prix calculé avec une configuration standard : pas de pose 20 cm, tuyau PERT et options par défaut. Le prix final peut changer dans le configurateur.",
         "height-installation": "Hauteur d'installation",
         "insulation": "Isolation",
@@ -281,7 +277,6 @@
         "or": "Ou",
         "cta": "Créer mon compte", 
         "google": "S'inscrire avec Google",
-        "success": "Compte créé ! Vérifie tes emails pour confirmer ton adresse.",
         "alreadyAccount": "Déjà un compte ?",
         "login": "Se connecter",
         "confirmation": {
@@ -357,7 +352,6 @@
       "pendingTitle": "En attente",
       "recentTitle": "Récentes demandes",
       "empty": "Aucune demande trouvée.",
-      "reviewDecision": "Revoir la décision",
       "searchPlaceholder": "Chercher une société",
       "edit": "Modifier",
       "save": "Enregistrer",
@@ -410,16 +404,6 @@
       "suspend": "Suspendre",
       "revision": "Mettre en révision"
     },
-    "Packs": {
-      "loading": "Chargement des produits...",
-      "description": "Découvrez le contenu de ce pack pour votre chauffage au sol.",
-      "content": "Contenu du pack",
-      "article": "Article",
-      "qty": "Quantité",
-      "unitPrice": "Prix unitaire",
-      "total": "Total",
-      "orderCta": "Commander maintenant"
-    },
     "Profile": {
       "pro": {
         "title": "Devenir un client professionnel ?",
@@ -445,10 +429,8 @@
       "free": "Offert",
       "myCart": "Mon panier",
       "emptyCart": "Votre panier est vide",
-      "productsIncluded": "produits inclus",
       "edit": "Modifier",
       "checkCart": "Valider mon panier",
-      "products_included": "Produits inclus",
       "product": "Produit",
       "remove": "Supprimer",
       "editPack": "Modifier ce pack",
@@ -487,7 +469,7 @@
       "proDiscountsManagementDetails": "Remises par client et par catégorie"
     },
     "AdminProDiscounts": {
-      "title": "Remises PRO personnalisées", "description": "Attribuez des remises spécifiques par catégorie, sous-catégorie ou sous-sous-catégorie. La règle la plus précise remplace la règle héritée.", "back": "Retour au panneau d’administration", "searchPlaceholder": "Rechercher par nom, société ou e-mail…", "loading": "Chargement…", "noUsers": "Aucun client PRO trouvé.", "selectUser": "Sélectionnez un client PRO pour configurer ses remises.", "customCount": "{count, plural, one {# remise personnalisée} other {# remises personnalisées}}", "loadError": "Impossible de charger les remises PRO.", "saveError": "Impossible d’enregistrer les remises.", "saved": "Remises personnalisées enregistrées.", "invalidDiscount": "Chaque remise doit être comprise entre 0 et 100 %.", "save": "Enregistrer les remises", "saving": "Enregistrement…", "generalTitle": "Remises générales par catégorie", "generalDescription": "Ces remises servent de base à tous les clients PRO et peuvent être remplacées par une règle personnalisée.", "saveGeneral": "Enregistrer les remises générales", "generalSaved": "Remises générales enregistrées.", "generalSaveError": "Impossible d’enregistrer les remises générales.", "ruleHelp": "Laissez un champ vide pour hériter de la remise du niveau supérieur. Toute valeur renseignée, y compris 0 %, remplace la remise héritée sans s’y additionner.", "generalDiscount": "Remise générale : {discount} %", "inheritedPlaceholder": "Héritée : {discount} %", "customDiscountLabel": "Remise personnalisée", "inheritsDiscount": "hérite de {discount} %", "categoryLevel": "Catégorie", "subcategoryLevel": "Sous-catégorie", "subsubcategoryLevel": "Sous-sous-catégorie", "noChildren": "Aucune sous-catégorie"
+      "title": "Remises PRO personnalisées", "description": "Attribuez des remises spécifiques par catégorie, sous-catégorie ou sous-sous-catégorie. La règle la plus précise remplace la règle héritée.", "searchPlaceholder": "Rechercher par nom, société ou e-mail…", "loading": "Chargement…", "noUsers": "Aucun client PRO trouvé.", "selectUser": "Sélectionnez un client PRO pour configurer ses remises.", "customCount": "{count, plural, one {# remise personnalisée} other {# remises personnalisées}}", "loadError": "Impossible de charger les remises PRO.", "saveError": "Impossible d’enregistrer les remises.", "saved": "Remises personnalisées enregistrées.", "invalidDiscount": "Chaque remise doit être comprise entre 0 et 100 %.", "save": "Enregistrer les remises", "saving": "Enregistrement…", "generalTitle": "Remises générales par catégorie", "generalDescription": "Ces remises servent de base à tous les clients PRO et peuvent être remplacées par une règle personnalisée.", "saveGeneral": "Enregistrer les remises générales", "generalSaved": "Remises générales enregistrées.", "generalSaveError": "Impossible d’enregistrer les remises générales.", "ruleHelp": "Laissez un champ vide pour hériter de la remise du niveau supérieur. Toute valeur renseignée, y compris 0 %, remplace la remise héritée sans s’y additionner.", "generalDiscount": "Remise générale : {discount} %", "inheritedPlaceholder": "Héritée : {discount} %", "customDiscountLabel": "Remise personnalisée", "inheritsDiscount": "hérite de {discount} %", "categoryLevel": "Catégorie", "subcategoryLevel": "Sous-catégorie", "subsubcategoryLevel": "Sous-sous-catégorie", "noChildren": "Aucune sous-catégorie"
     },
     "NotFound": {
       "title": "Oups! Page introuvable",
@@ -497,7 +479,6 @@
     "Categories": {
       "title": "Nos catégories",
       "subtitle": "Découvrez l’ensemble de nos solutions de chauffage au sol et accessoires.",
-      "subcat": "Sous-Catégories",
       "productCount": "{count, plural, =0 {Aucun produit} one {# produit} other {# produits}}"
     },
     "Cart": {
@@ -511,8 +492,6 @@
         "checkout": "Impossible de préparer le paiement. Veuillez réessayer.",
         "deleteAddress": "Impossible de supprimer cette adresse."
       },
-      "included": "produits inclus",
-      "emptyCart": "Votre panier est vide",
       "empty": {
         "title": "Votre panier vous attend",
         "description": "Découvrez nos produits pour chauffage au sol ou composez directement un pack adapté à votre surface.",
@@ -520,23 +499,17 @@
         "calculate": "Calculer mon pack"
       },
       "myCart":"Mon panier",
-      "step": "Pas",
       "remove": "Retirer",
       "editPack": "Modifier ce pack",
       "layout": {
-        "title":"Plan de calepinage personnalisé",
-        "gift": "Offert à l'achat de ce pack",
-        "subtitle": "Optimisation du parcours des tuyaux par un expert."
+        "title":"Plan de calepinage personnalisé"
       },
-      "clientName": "Nom du client / Nom de l'entreprise",
       "fullAddress": "Adresse de livraison",
       "addressAutocompleteDisabled": "La saisie automatique Google est désactivée selon vos préférences.",
       "enableAddressAutocomplete": "L’autoriser",
       "zipCode": "Code postal",
       "city": "Ville",
       "country": "Pays",
-      "vatExcluded": "HTVA",
-      "vatIncluded": "TVAC",
       "totalExclVat": "Total HTVA",
       "totalInclVat": "Total TVAC",
       "savedAddresses": "Vos adresses enregistrées",
@@ -548,10 +521,8 @@
       "total": "Total",
       "payment": "Procéder au paiement",
       "paymentLoading": "Préparation du paiement…",
-      "proDiscount": "remise PRO",
       "loginRequired": "Connectez-vous pour valider votre panier et procéder au paiement.",
-      "loginToCheckout": "Se connecter pour continuer",
-      "creditApplied": "Crédit PRO appliqué : −{amount} €"
+      "loginToCheckout": "Se connecter pour continuer"
     },
     "PackConfig": {
       "settings": "Paramètres du pack",

@@ -2,28 +2,33 @@
 
 import { Price } from "@/components/ui/Price";
 import { useState } from "react";
-import { CheckCircle2, Save, Share2, ShoppingCart } from "lucide-react";
+import { CheckCircle2, FileText, Share2, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 
 type Props = {
   total: number;
   onAddToCart: () => void;
-  onSaveQuote: () => void;
+  /** PRO: opens the quote details (create, or view the linked saved quote) */
+  onOpenQuote: () => void;
+  /** Visitor without PRO account: neutral estimate */
   onShareQuote: () => void;
   isEditing: boolean;
   disabled?: boolean;
-  canSaveQuote?: boolean;
+  isPro?: boolean;
+  /** The configured pack is already saved as a quote */
+  hasQuote?: boolean;
 };
 
 export function PackMobileFooter({
   total,
   onAddToCart,
-  onSaveQuote,
+  onOpenQuote,
   onShareQuote,
   isEditing,
   disabled = false,
-  canSaveQuote = false,
+  isPro = false,
+  hasQuote = false,
 }: Props) {
   const tc = useTranslations("Common");
   const [added, setAdded] = useState(false);
@@ -79,28 +84,27 @@ export function PackMobileFooter({
           </AnimatePresence>
         </button>
 
-        <div className={canSaveQuote ? "grid grid-cols-2 gap-2" : "grid grid-cols-1 gap-2"}>
+        {isPro ? (
+          <button
+            type="button"
+            onClick={onOpenQuote}
+            disabled={disabled}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 disabled:opacity-60"
+          >
+            <FileText className="h-4 w-4" />
+            {tc(hasQuote ? "viewQuote" : "transformToQuote")}
+          </button>
+        ) : (
           <button
             type="button"
             onClick={onShareQuote}
             disabled={disabled}
-            className="inline-flex items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm font-medium text-gray-700 disabled:opacity-60"
           >
             <Share2 className="h-4 w-4" />
             {tc("share")}
           </button>
-          {canSaveQuote && (
-            <button
-              type="button"
-              onClick={onSaveQuote}
-              disabled={disabled}
-              className="inline-flex items-center justify-center gap-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 disabled:opacity-60"
-            >
-              <Save className="h-4 w-4" />
-              {tc("save")}
-            </button>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
