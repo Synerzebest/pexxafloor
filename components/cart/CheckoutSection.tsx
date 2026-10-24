@@ -174,10 +174,11 @@ export default function CheckoutSection({ items, isPro }: Props) {
       if (i.type === "pack") {
         const quantity = Number(i.quantity || 1);
         const unitTotal = Number(i.total || 0);
-        const total = unitTotal * quantity;
-        acc.baseTotal += total;
-        acc.finalTotal += total;
-        acc.baseTotalTVACCents += toVatIncludedCents(unitTotal) * quantity;
+        // base_total: retail price before the PRO discount (sent by /api/cart/pricing)
+        const baseUnitTotal = Number(i.base_total ?? i.total ?? 0);
+        acc.baseTotal += baseUnitTotal * quantity;
+        acc.finalTotal += unitTotal * quantity;
+        acc.baseTotalTVACCents += toVatIncludedCents(baseUnitTotal) * quantity;
         acc.finalTotalTVACCents += toVatIncludedCents(unitTotal) * quantity;
       }
   

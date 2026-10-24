@@ -1,5 +1,6 @@
 "use client";
 
+import { roleHomePath } from "@/lib/roleHome";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
@@ -57,9 +58,7 @@ export default function LoginForm({
       }
 
       router.replace(
-        result.userRole === "admin"
-          ? `/${locale}/admin`
-          : safeNextPath || `/${locale}/profile`
+        roleHomePath(result.userRole, locale) || safeNextPath || `/${locale}/profile`
       );
       router.refresh();
     } catch (error) {

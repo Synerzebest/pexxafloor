@@ -112,7 +112,7 @@
       "badge": "Solutions professionnelles de chauffage au sol",
       "title": "Le chauffage au sol",
       "subtitle": "simple et sur-mesure",
-      "description": { "bold1": "Calculez", "text1": " votre pack de chauffage au sol en quelques secondes ou ", "bold2": "explorez ", "text2": "notre gamme complète de solutions professionnelles."},
+      "description": { "bold1": "Calculez", "text1": " votre pack de chauffage au sol en quelques secondes ou ", "bold2": "explorez ", "text2": "notre gamme complète de fournitures professionnelles pour chauffage au sol."},
       "calculate_button": "Calculer mon pack",
       "products_button": "Explorez tous les produits"
     },
@@ -426,6 +426,8 @@
       "inCart": "{count, plural, one {# exemplaire dans le panier} other {# exemplaires dans le panier}}"
     },
     "CartDrawer": {
+      "unitPrice": "Prix unitaire",
+      "lineTotal": "Total",
       "free": "Offert",
       "myCart": "Mon panier",
       "emptyCart": "Votre panier est vide",
@@ -512,7 +514,7 @@
       "country": "Pays",
       "totalExclVat": "Total HTVA",
       "totalInclVat": "Total TVAC",
-      "savedAddresses": "Vos adresses enregistrées",
+      "savedAddresses": "Vos adresses de livraison enregistrées",
       "newAddress": "Utiliser une nouvelle adresse",
       "savedAddressesHint": "Sélectionnez une ancienne adresse ou saisissez-en une nouvelle ci-dessous.",
       "saveAddress": "Enregistrer cette adresse pour mes prochaines commandes",

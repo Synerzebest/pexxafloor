@@ -25,9 +25,10 @@ export default function CartItem({
   
   const basePrice = isProduct
     ? (item.base_price ?? item.product?.price ?? 0)
-    : item.total;
-  
-  const hasDiscount = isProduct && basePrice > unitPrice;
+    : (item.base_total ?? item.total);
+
+  // PRO discount: shown for products and packs (base_total = pack retail price)
+  const hasDiscount = basePrice > unitPrice;
   const lineTotalHTVA = unitPrice * item.quantity;
   const { getPackImage } = useStoreData();
   const imageSrc = isProduct ? item.product?.image || "/images/box.png" : getPackImage(item.slug);

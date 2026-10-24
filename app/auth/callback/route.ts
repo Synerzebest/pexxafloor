@@ -1,3 +1,4 @@
+import { roleHomePath } from "@/lib/roleHome";
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
@@ -56,10 +57,9 @@ export async function GET(request: Request) {
         .eq("id", user.id)
         .maybeSingle();
 
-      if (profile?.user_role === "admin") {
-        return NextResponse.redirect(
-          new URL(`/${supportedLocale}/admin`, url.origin)
-        );
+      const roleHome = roleHomePath(profile?.user_role, supportedLocale);
+      if (roleHome) {
+        return NextResponse.redirect(new URL(roleHome, url.origin));
       }
     }
   }

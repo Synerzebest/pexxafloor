@@ -38,7 +38,7 @@ export default function Hero() {
       <div
         className="
           relative z-10 
-          max-w-3xl 
+          max-w-3xl lg:max-w-4xl
           pl-0 md:pl-20
           text-center md:text-left
           mx-auto md:mx-0
@@ -65,14 +65,18 @@ export default function Hero() {
           transition={{ duration: 0.7 }}
           className="
             mt-4 text-lg text-gray-700 
-            max-w-xl 
+            max-w-xl lg:max-w-none
             mx-auto md:mx-0
           "
         >
           <b>{t("description.bold1")}</b>
           {t("description.text1")}
-          <b>{t('description.bold2')}</b>
-          {t('description.text2')}
+          {/* On desktop, "explore …" gets its own unbroken line */}
+          <br className="hidden lg:block" />
+          <span className="lg:whitespace-nowrap">
+            <b>{t('description.bold2')}</b>
+            {t('description.text2')}
+          </span>
         </motion.p>
 
         {/* CTA buttons */}

@@ -112,7 +112,7 @@
       "badge": "Professional Floor Heating Solutions",
       "title": "Vloerverwarming",
       "subtitle": "eenvoudig en op maat",
-      "description": { "bold1": "Bereken", "text1": " in enkele seconden uw perfecte vloerverwarmingspakket of ", "bold2": "ontdek ", "text2": "ons volledige assortiment professionele oplossingen."},
+      "description": { "bold1": "Bereken", "text1": " in enkele seconden uw perfecte vloerverwarmingspakket of ", "bold2": "ontdek ", "text2": "ons volledige assortiment professionele benodigdheden voor vloerverwarming."},
       "calculate_button": "Mijn pakket berekenen",
       "products_button": "Alle producten ontdekken"
     },
@@ -426,6 +426,8 @@
       "inCart": "{count, plural, one {# exemplaar in de winkelwagen} other {# exemplaren in de winkelwagen}}"
     },
     "CartDrawer": {
+      "unitPrice": "Eenheidsprijs",
+      "lineTotal": "Totaal",
       "free": "Gratis",
       "myCart": "Mijn winkelwagen",
       "emptyCart": "Uw winkelwagen is leeg",

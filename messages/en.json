@@ -112,7 +112,7 @@
       "badge": "Professional Floor Heating Solutions",
       "title": "Floor heating",
       "subtitle": "simple and tailor-made",
-      "description": { "bold1": "Calculate", "text1": " your perfect floor heating pack in seconds, or ", "bold2": "explore ", "text2": "our complete range of premium heating products."},
+      "description": { "bold1": "Calculate", "text1": " your perfect floor heating pack in seconds, or ", "bold2": "explore ", "text2": "our complete range of professional underfloor heating supplies."},
       "calculate_button": "Calculate My Pack",
       "products_button": "Explore All Products"
     },
@@ -426,6 +426,8 @@
       "inCart": "{count, plural, one {# item in cart} other {# items in cart}}"
     },
     "CartDrawer": {
+      "unitPrice": "Unit price",
+      "lineTotal": "Total",
       "free": "Free",
       "myCart": "My cart",
       "emptyCart": "Your cart is empty",
@@ -512,7 +514,7 @@
       "country": "Country",
       "totalExclVat": "Total excl. VAT",
       "totalInclVat": "Total incl. VAT",
-      "savedAddresses": "Your saved addresses",
+      "savedAddresses": "Your saved delivery addresses",
       "newAddress": "Use a new address",
       "savedAddressesHint": "Choose a previous address or enter a new one below.",
       "saveAddress": "Save this address for future orders",

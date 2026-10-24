@@ -1,3 +1,4 @@
+import { roleHomePath } from "@/lib/roleHome";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import createIntlMiddleware from "next-intl/middleware";
@@ -87,10 +88,7 @@ export async function middleware(req: NextRequest) {
       .select("user_role")
       .eq("id", user.id)
       .maybeSingle();
-    url.pathname =
-      profile?.user_role === "admin"
-        ? `/${locale}/admin`
-        : `/${locale}/profile`;
+    url.pathname = roleHomePath(profile?.user_role, locale) || `/${locale}/profile`;
     return NextResponse.redirect(url);
   }
 

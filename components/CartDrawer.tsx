@@ -88,8 +88,21 @@ export default function CartDrawer() {
                             </p>
                           </div>
 
-                          {/* Prix */}
-                          <Price exclVat={priceHTVA} className="text-orange-600 font-semibold text-lg" />
+                          {/* Prix : total de la ligne, et prix unitaire */}
+                          <div className="flex items-end justify-between gap-3">
+                            <div className="text-xs text-gray-500">
+                              {t("unitPrice")}
+                              <Price exclVat={priceHTVA} className="block font-medium text-gray-700" labelClassName="font-normal text-gray-500" />
+                            </div>
+                            <div className="text-right text-xs text-gray-500">
+                              {t("lineTotal")}
+                              <Price
+                                exclVat={priceHTVA * item.quantity}
+                                className="block text-lg font-semibold text-orange-600"
+                                labelClassName="text-xs font-normal text-gray-500"
+                              />
+                            </div>
+                          </div>
 
                           {/* Contrôles quantité + supprimer */}
                           <div className="flex items-center justify-start">

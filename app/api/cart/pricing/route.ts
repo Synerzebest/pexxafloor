@@ -117,11 +117,9 @@ export async function POST(req: Request) {
           typeIsolation: Number(item.typeIsolation) as 0 | 15 | 30,
           selectedOptions: item.selectedOptions || {},
         });
-        const result = applyProDiscountToPack(
-          applyPackQuantityOverrides(computedPack, item.quantities),
-          pack,
-          pricingContext
-        );
+        // Retail price (what a private customer pays) and the PRO-discounted price
+        const retail = applyPackQuantityOverrides(computedPack, item.quantities);
+        const result = applyProDiscountToPack(retail, pack, pricingContext);
 
         pricedItems.push({
           ...item,
@@ -142,6 +140,7 @@ export async function POST(req: Request) {
             total_price: product.price * (result.quantities[product.id] ?? 1),
           })),
           total: result.total,
+          base_total: retail.total,
         });
       }
     }
