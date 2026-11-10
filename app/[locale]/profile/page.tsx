@@ -6,7 +6,11 @@ import ProButton from "@/components/profile/ProButton";
 import LogoutButton from "@/components/auth/LogoutButton";
 import { createSupabaseServerAuthClient } from "@/lib/supabaseServerAuth";
 
-export default async function ProfilePage() {
+export default async function ProfilePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ editAddress?: string }>;
+}) {
   const locale = await getLocale();
   const supabase = await createSupabaseServerAuthClient();
 
@@ -14,7 +18,14 @@ export default async function ProfilePage() {
     data: { user }
   } = await supabase.auth.getUser();
 
-  if (!user) redirect(`/${locale}/login`);
+  if (!user) {
+    // Keep the email link's target (?editAddress=…) through the login
+    const { editAddress } = await searchParams;
+    const next = editAddress && /^[0-9a-f-]{36}$/i.test(editAddress)
+      ? `/${locale}/profile?editAddress=${editAddress}`
+      : null;
+    redirect(`/${locale}/login${next ? `?next=${encodeURIComponent(next)}` : ""}`);
+  }
 
   return (
     <>

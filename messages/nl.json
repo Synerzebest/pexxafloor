@@ -21,6 +21,17 @@
       "pro_space": "PRO-zone"
     },
     "Common": {
+      "deliveryAddress": "Levering",
+      "editAddress": "Adres wijzigen",
+      "addressStreet": "Straat en nummer",
+      "addressPostalCode": "Postcode",
+      "addressCity": "Gemeente",
+      "addressCountry": "Land",
+      "saveAddress": "Opslaan",
+      "cancelEdit": "Annuleren",
+      "addressSaved": "Leveringsadres bijgewerkt",
+      "addressError": "Kan het adres niet wijzigen. Neem contact met ons op.",
+      "addressLocked": "Uw bestelling is onderweg: neem contact met ons op om het adres te wijzigen.",
       "transformToQuote": "Omzetten naar offerte",
       "viewQuote": "Offerte bekijken",
       "priceExclVat": "excl. btw",
@@ -107,7 +118,7 @@
       "statuses": { "pending": "In afwachting", "inReview": "In behandeling", "verified": "Geverifieerd", "rejected": "Geweigerd", "suspended": "Geschorst", "revision": "Te herzien" },
       "messages": { "active": "Uw professionele account is actief 🎉", "pending": "Uw aanvraag wacht op goedkeuring.", "rejected": "Uw aanvraag werd geweigerd." }
     },
-    "QuoteShare": { "infoDate": "Datum", "infoProject": "Project", "infoCustomer": "Klant", "title": "Deze offerte delen", "description": "Kies voor wie de offerte bestemd is.", "guestTitle": "Een raming maken", "guestDescription": "Genereer een neutrale offerte om de prijs van uw pakket te ramen.", "guestDocumentTitle": "Raming van uw pakket", "previewGuest": "Voorbeeld van de prijsraming", "preparing": "Bedragen voorbereiden…", "prepareError": "Het delen van de offerte kan niet worden voorbereid.", "previewError": "Het PDF-voorbeeld kan niet worden gegenereerd.", "customerDiscount": "Korting voor de klant", "product": "Product", "quantity": "Aantal", "totalExclVat": "Totaal excl. btw", "totalInclVat": "Totaal incl. btw", "estimatedProfit": "Geschatte winst excl. btw", "previewProTitle": "Voorbeeld van de PRO-offerte", "previewCustomerTitle": "Voorbeeld van de particuliere offerte", "previewGuestTitle": "Voorbeeld van de prijsraming", "previewDescription": "Controleer het document voordat u het downloadt.", "previewFrameTitle": "Voorbeeld van de PDF-offerte", "back": "Terug naar keuze", "download": "PDF downloaden", "share": "Delen", "choiceQuestion": "Voor wie is deze offerte?", "customerCardTitle": "Voor uw klant", "customerCardBadge": "Naar de klant sturen", "customerCardText": "Particuliere prijzen, met de korting die u toekent. Uw aankoopprijzen worden niet getoond.", "proCardTitle": "Voor uzelf", "proCardBadge": "Intern gebruik", "proCardText": "Uw PRO-aankoopprijzen, voor uw opvolging. Stuur dit niet naar uw klant.", "previewAction": "Voorbeeld bekijken" },
+    "QuoteShare": { "infoDate": "Datum", "infoProject": "Project", "infoCustomer": "Klant", "title": "Deze offerte delen", "description": "Kies voor wie de offerte bestemd is.", "guestTitle": "Een raming maken", "guestDescription": "Genereer een neutrale offerte om de prijs van uw pakket te ramen.", "guestDocumentTitle": "Raming van uw pakket", "previewGuest": "Voorbeeld van de prijsraming", "preparing": "Bedragen voorbereiden…", "prepareError": "Het delen van de offerte kan niet worden voorbereid.", "previewError": "Het PDF-voorbeeld kan niet worden gegenereerd.", "customerDiscount": "Korting voor de klant", "product": "Product", "quantity": "Aantal", "totalExclVat": "Totaal excl. btw", "totalInclVat": "Totaal incl. btw", "estimatedProfit": "Geschatte winst excl. btw", "previewProTitle": "Voorbeeld van de PRO-offerte", "previewCustomerTitle": "Voorbeeld van de particuliere offerte", "previewGuestTitle": "Voorbeeld van de prijsraming", "previewDescription": "Controleer het document voordat u het downloadt.", "previewFrameTitle": "Voorbeeld van de PDF-offerte", "back": "Terug naar keuze", "download": "PDF downloaden", "share": "Delen", "choiceQuestion": "Voor wie is deze offerte?", "customerCardTitle": "Voor uw klant", "customerCardBadge": "Naar de klant sturen", "customerCardText": "Particuliere prijzen, met de korting die u toekent. Uw aankoopprijzen worden niet getoond.", "proCardTitle": "Voor uzelf", "proCardBadge": "Intern gebruik", "proCardText": "Uw PRO-aankoopprijzen, voor uw opvolging. Stuur dit niet naar uw klant.", "previewAction": "Voorbeeld bekijken", "customerDiscountScope": "Enkel op de PexxaFloor-levering" },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
       "title": "Vloerverwarming",
@@ -299,6 +310,9 @@
         }
     },
     "ProSignup": {
+      "successTitle": "Aanvraag verzonden",
+      "successNext": "We controleren uw gegevens. U ontvangt een e-mail zodra uw PRO-account geactiveerd is.",
+      "successBack": "Terug naar home",
       "title": "Word professionele klant",
       "subtitle": "Vul dit formulier in om toegang te krijgen tot onze professionele tarieven en exclusieve voordelen.",
       "subtitle_advantage": {"first": "Als nieuwe Pro-klant biedt Pexxafloor u ", "price": "10.00€ ", "second": "aankooptegoed op uw eerste bestelling !"},
@@ -345,6 +359,8 @@
     },    
     "AdminPro": {
       "toast": {
+        "approvalEmailSent": "De klant is per e-mail verwittigd.",
+        "approvalEmailError": "Account goedgekeurd, maar de e-mail naar de klant kon niet worden verzonden.",
         "statusChanged": "Aanvraag gewijzigd naar “{status}”",
         "statusError": "Kan de status van de aanvraag niet wijzigen"
       },

@@ -52,6 +52,13 @@ export function useProRequestsLogic() {
 
     toast.success(t("toast.statusChanged", { status: t(`status.${RESULT_STATUS[action]}`) }));
     router.refresh();
+
+    // Approval: tell the customer their account is now PRO
+    if (action === "approve") {
+      const response = await fetch(`/api/admin/pro-applications/${id}/approved-email`, { method: "POST" }).catch(() => null);
+      if (response?.ok) toast.success(t("toast.approvalEmailSent"));
+      else toast.warning(t("toast.approvalEmailError"));
+    }
   }
 
   return { busyId, error, act };

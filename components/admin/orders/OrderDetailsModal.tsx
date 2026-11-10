@@ -1,5 +1,6 @@
 "use client";
 
+import type { OrderAddress } from "@/hooks/useOrdersAdmin";
 import { Modal, Popconfirm } from "antd";
 import Image from "next/image";
 import { ArrowLeftOutlined, ArrowRightOutlined, CreditCardOutlined, DownOutlined, UserOutlined } from "@ant-design/icons";
@@ -15,6 +16,7 @@ import type { ProductItem, PackItem, CartItem } from "@/context/CartContext";
 type ProcessingState = {
   moving: boolean;
   paying: boolean;
+  address: boolean;
 };
 
 type Props = {
@@ -24,6 +26,7 @@ type Props = {
   processing: ProcessingState;
   moveOrderStatus: (order: Order, direction: "next" | "previous") => void;
   setOrderPaid: (id: string, paid: boolean) => void;
+  updateOrderAddress: (id: string, address: OrderAddress) => Promise<boolean>;
 };
 
 export function OrderDetailsModal({
@@ -33,6 +36,7 @@ export function OrderDetailsModal({
   processing,
   moveOrderStatus,
   setOrderPaid,
+  updateOrderAddress,
 }: Props) {
   if (!selected) return null;
 
@@ -83,9 +87,30 @@ export function OrderDetailsModal({
         {/* Customer + payment */}
         <div className="grid gap-3 sm:grid-cols-2">
           <InfoCard icon={<UserOutlined />} title="Client">
-            <p className="font-medium text-gray-900">{selected.company_name || selected.client_name || "—"}</p>
-            {selected.company_name && selected.client_name && <p className="text-gray-600">{selected.client_name}</p>}
-            {addressLine && <p className="mt-1 text-gray-500">{addressLine}</p>}
+            {selected.company_name && <p className="font-medium text-gray-900">{selected.company_name}</p>}
+            {(selected.customer_last_name || selected.customer_first_name) ? (
+              <dl className="mt-0.5 grid grid-cols-[auto_1fr] gap-x-2 text-gray-700">
+                <dt className="text-gray-400">Nom</dt>
+                <dd>{selected.customer_last_name || "—"}</dd>
+                <dt className="text-gray-400">Prénom</dt>
+                <dd>{selected.customer_first_name || "—"}</dd>
+              </dl>
+            ) : (
+              <p className="text-gray-700">{selected.client_name || "—"}</p>
+            )}
+            {selected.customer_email && (
+              <a href={`mailto:${selected.customer_email}`} className="text-blue-600 hover:underline">
+                {selected.customer_email}
+              </a>
+            )}
+
+            <AddressEditor
+              key={selected.id}
+              order={selected}
+              addressLine={addressLine}
+              busy={processing.address}
+              onSave={(address) => updateOrderAddress(selected.id, address)}
+            />
           </InfoCard>
 
           <InfoCard icon={<CreditCardOutlined />} title="Paiement">
@@ -241,6 +266,84 @@ function StatusStepper({
           </li>
         ))}
       </ol>
+    </div>
+  );
+}
+
+// Delivery address, editable by the admin until the order is delivered
+function AddressEditor({
+  order,
+  addressLine,
+  busy,
+  onSave,
+}: {
+  order: Order;
+  addressLine: string;
+  busy: boolean;
+  onSave: (address: OrderAddress) => Promise<boolean>;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [form, setForm] = useState<OrderAddress>({ address: "", postal_code: "", city: "", country: "" });
+  const canEdit = order.status !== "delivered";
+
+  const start = () => {
+    setForm({
+      address: order.address || "",
+      postal_code: order.postal_code || "",
+      city: order.city || "",
+      country: order.country || "",
+    });
+    setEditing(true);
+  };
+
+  if (!editing) {
+    return (
+      <div className="mt-2 border-t border-gray-100 pt-2">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Adresse de livraison</p>
+        <p className="text-gray-600">{addressLine || "—"}</p>
+        {canEdit && (
+          <button type="button" onClick={start} className="mt-1 text-xs font-medium text-blue-600 hover:underline">
+            Modifier l’adresse
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  const field = (key: keyof OrderAddress, placeholder: string, className = "") => (
+    <input
+      value={form[key]}
+      placeholder={placeholder}
+      onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))}
+      className={`rounded-md border border-gray-300 px-2 py-1 text-sm outline-none focus:border-orange-500 ${className}`}
+    />
+  );
+  const valid = Object.values(form).every((value) => value.trim());
+
+  return (
+    <div className="mt-2 space-y-2 border-t border-gray-100 pt-2">
+      <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Adresse de livraison</p>
+      {field("address", "Rue et numéro", "w-full")}
+      <div className="grid grid-cols-[96px_1fr] gap-2">
+        {field("postal_code", "Code postal")}
+        {field("city", "Ville")}
+      </div>
+      {field("country", "Pays", "w-full")}
+      <div className="flex justify-end gap-2">
+        <button type="button" onClick={() => setEditing(false)} className="rounded-md px-3 py-1 text-xs text-gray-600 hover:bg-gray-100">
+          Annuler
+        </button>
+        <button
+          type="button"
+          disabled={!valid || busy}
+          onClick={async () => {
+            if (await onSave(form)) setEditing(false);
+          }}
+          className="rounded-md bg-orange-600 px-3 py-1 text-xs font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
+        >
+          {busy ? "…" : "Enregistrer"}
+        </button>
+      </div>
     </div>
   );
 }

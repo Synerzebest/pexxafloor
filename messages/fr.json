@@ -21,6 +21,17 @@
       "pro_space": "Espace PRO"
     },
     "Common": {
+      "deliveryAddress": "Livraison",
+      "editAddress": "Modifier l’adresse",
+      "addressStreet": "Rue et numéro",
+      "addressPostalCode": "Code postal",
+      "addressCity": "Ville",
+      "addressCountry": "Pays",
+      "saveAddress": "Enregistrer",
+      "cancelEdit": "Annuler",
+      "addressSaved": "Adresse de livraison mise à jour",
+      "addressError": "Impossible de modifier l’adresse. Contactez-nous.",
+      "addressLocked": "Votre commande est en route : contactez-nous pour modifier l’adresse.",
       "transformToQuote": "Transformer en devis",
       "viewQuote": "Voir le devis",
       "priceExclVat": "HTVA",
@@ -107,7 +118,7 @@
       "statuses": { "pending": "En attente", "inReview": "En cours d’examen", "verified": "Vérifié", "rejected": "Refusé", "suspended": "Suspendu", "revision": "À réviser" },
       "messages": { "active": "Votre compte professionnel est actif 🎉", "pending": "Votre demande est en attente de validation.", "rejected": "Votre demande a été refusée." }
     },
-    "QuoteShare": { "infoDate": "Date", "infoProject": "Projet", "infoCustomer": "Client", "title": "Partager ce devis", "description": "Choisissez à qui s’adresse le devis.", "guestTitle": "Créer une estimation", "guestDescription": "Générez un devis neutre pour obtenir une estimation du prix de votre pack.", "guestDocumentTitle": "Estimation de votre pack", "previewGuest": "Aperçu du devis estimatif", "preparing": "Préparation des montants…", "prepareError": "Impossible de préparer le partage du devis.", "previewError": "Impossible de générer l’aperçu du PDF.", "customerDiscount": "Remise accordée au client", "product": "Produit", "quantity": "Quantité", "totalExclVat": "Total HTVA", "totalInclVat": "Total TVAC", "estimatedProfit": "Bénéfice estimé HTVA", "previewProTitle": "Aperçu du devis PRO", "previewCustomerTitle": "Aperçu du devis particulier", "previewGuestTitle": "Aperçu du devis estimatif", "previewDescription": "Vérifiez le document avant de le télécharger.", "previewFrameTitle": "Aperçu du devis PDF", "back": "Retour au choix", "download": "Télécharger le PDF", "share": "Partager", "choiceQuestion": "Pour qui est ce devis ?", "customerCardTitle": "Pour votre client", "customerCardBadge": "À envoyer au client", "customerCardText": "Prix particuliers, avec la remise que vous lui accordez. Vos prix d’achat n’apparaissent pas.", "proCardTitle": "Pour vous", "proCardBadge": "Usage interne", "proCardText": "Vos prix d’achat PRO, pour votre suivi. Ne l’envoyez pas à votre client.", "previewAction": "Voir l’aperçu" },
+    "QuoteShare": { "infoDate": "Date", "infoProject": "Projet", "infoCustomer": "Client", "title": "Partager ce devis", "description": "Choisissez à qui s’adresse le devis.", "guestTitle": "Créer une estimation", "guestDescription": "Générez un devis neutre pour obtenir une estimation du prix de votre pack.", "guestDocumentTitle": "Estimation de votre pack", "previewGuest": "Aperçu du devis estimatif", "preparing": "Préparation des montants…", "prepareError": "Impossible de préparer le partage du devis.", "previewError": "Impossible de générer l’aperçu du PDF.", "customerDiscount": "Remise accordée au client", "product": "Produit", "quantity": "Quantité", "totalExclVat": "Total HTVA", "totalInclVat": "Total TVAC", "estimatedProfit": "Bénéfice estimé HTVA", "previewProTitle": "Aperçu du devis PRO", "previewCustomerTitle": "Aperçu du devis particulier", "previewGuestTitle": "Aperçu du devis estimatif", "previewDescription": "Vérifiez le document avant de le télécharger.", "previewFrameTitle": "Aperçu du devis PDF", "back": "Retour au choix", "download": "Télécharger le PDF", "share": "Partager", "choiceQuestion": "Pour qui est ce devis ?", "customerCardTitle": "Pour votre client", "customerCardBadge": "À envoyer au client", "customerCardText": "Prix particuliers, avec la remise que vous lui accordez. Vos prix d’achat n’apparaissent pas.", "proCardTitle": "Pour vous", "proCardBadge": "Usage interne", "proCardText": "Vos prix d’achat PRO, pour votre suivi. Ne l’envoyez pas à votre client.", "previewAction": "Voir l’aperçu", "customerDiscountScope": "Uniquement sur la fourniture PexxaFloor" },
     "Hero": {
       "badge": "Solutions professionnelles de chauffage au sol",
       "title": "Le chauffage au sol",
@@ -299,6 +310,9 @@
         }
     },
     "ProSignup": {
+        "successTitle": "Demande envoyée",
+        "successNext": "Nous vérifions vos informations. Vous recevrez un e-mail dès que votre compte PRO sera activé.",
+        "successBack": "Retour à l’accueil",
         "title": "Devenir client pro",
         "subtitle": "Remplissez ce formulaire pour accéder à nos tarifs professionnels et avantages dédiés.",
         "subtitle_advantage": {"first": "En tant que nouveau client Pro, Pexxafloor vous offre ", "price": "10.00€ ", "second": "de crédit d'achat sur votre première commande !"},
@@ -345,6 +359,8 @@
     },
     "AdminPro": {
       "toast": {
+        "approvalEmailSent": "Le client a été prévenu par e-mail.",
+        "approvalEmailError": "Compte validé, mais l’e-mail au client n’a pas pu être envoyé.",
         "statusChanged": "Demande passée en « {status} »",
         "statusError": "Impossible de changer le statut de la demande"
       },

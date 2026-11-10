@@ -136,13 +136,15 @@ export interface EmailParams {
   cancelled: boolean;
   /** Shown for the "out for delivery" email */
   deliveryAddress?: { label: string; lines: string[] };
+  /** "Change your delivery address" link, while the customer can still do it online */
+  editAddress?: { question: string; linkText: string; url: string };
   link: string;
   siteUrl: string;
   locale: Locale;
 }
 
 export function generateOrderEmailHtml({
-  orderId, orderItems, orderTotal, title, mainText, statusLabel, steps, cancelled, deliveryAddress, link, siteUrl, locale,
+  orderId, orderItems, orderTotal, title, mainText, statusLabel, steps, cancelled, deliveryAddress, editAddress, link, siteUrl, locale,
 }: EmailParams): string {
   const t = copy[locale];
   const logoUrl = new URL("/images/logo-email.png", EMAIL_ASSETS_ORIGIN).toString();
@@ -238,6 +240,13 @@ export function generateOrderEmailHtml({
                       </a>
                     </td>
                   </tr>
+                  ${editAddress ? `
+                  <tr>
+                    <td align="center" style="padding-top:14px;font-size:13px;line-height:1.5;color:#6b7280;">
+                      ${escapeHtml(editAddress.question)}
+                      <a href="${escapeHtml(editAddress.url)}" style="color:${BRAND};font-weight:600;text-decoration:underline;">${escapeHtml(editAddress.linkText)}</a>
+                    </td>
+                  </tr>` : ""}
 
                   <tr>
                     <td style="padding-top:32px;">
@@ -261,6 +270,69 @@ export function generateOrderEmailHtml({
             </tr>
 
             <!-- Footer -->
+            <tr>
+              <td align="center" style="padding:20px 12px 0;font-size:12px;line-height:1.6;color:#9ca3af;">
+                ${t.questions} :
+                <a href="tel:${CONTACT_PHONE.replace(/\s/g, "")}" style="color:#6b7280;text-decoration:none;">${CONTACT_PHONE}</a>
+                ·
+                <a href="mailto:${CONTACT_EMAIL}" style="color:#6b7280;text-decoration:none;">${CONTACT_EMAIL}</a>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`;
+}
+
+/** Simple branded email (logo, title, paragraphs, one button, contact footer) for account notices. */
+export function generateNoticeEmailHtml({
+  locale,
+  title,
+  paragraphs,
+  button,
+}: {
+  locale: Locale;
+  title: string;
+  paragraphs: string[];
+  button?: { label: string; url: string };
+}): string {
+  const t = copy[locale];
+  const logoUrl = new URL("/images/logo-email.png", EMAIL_ASSETS_ORIGIN).toString();
+  return `<!DOCTYPE html>
+<html lang="${locale}">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>${escapeHtml(title)}</title>
+  </head>
+  <body style="margin:0;padding:0;background:#f4f4f5;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f5;">
+      <tr>
+        <td align="center" style="padding:28px 12px;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;">
+            <tr>
+              <td align="center" style="padding-bottom:18px;">
+                <img src="${escapeHtml(logoUrl)}" width="200" height="36" alt="PexxaFloor" style="display:block;width:200px;max-width:200px;height:auto;border:0;">
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#ffffff;border-radius:16px;padding:36px 32px;box-shadow:0 1px 3px rgba(0,0,0,0.06);">
+                <div style="font-size:24px;line-height:1.3;font-weight:700;color:#111827;">${escapeHtml(title)}</div>
+                ${paragraphs.map((paragraph) => `<p style="margin:16px 0 0;font-size:15px;line-height:1.6;color:#374151;">${escapeHtml(paragraph)}</p>`).join("")}
+                ${button ? `
+                <div style="padding-top:26px;text-align:center;">
+                  <a href="${escapeHtml(button.url)}" style="display:inline-block;background:${BRAND};color:#ffffff;padding:13px 26px;border-radius:10px;font-size:15px;font-weight:600;text-decoration:none;">
+                    ${escapeHtml(button.label)}
+                  </a>
+                </div>` : ""}
+                <p style="margin:30px 0 0;padding-top:20px;border-top:1px solid #f1f1f1;font-size:14px;line-height:1.5;color:#374151;">
+                  ${t.thanks}<br><strong>${t.team}</strong>
+                </p>
+              </td>
+            </tr>
             <tr>
               <td align="center" style="padding:20px 12px 0;font-size:12px;line-height:1.6;color:#9ca3af;">
                 ${t.questions} :

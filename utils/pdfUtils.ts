@@ -186,11 +186,15 @@ function collectRows(order: Order): ProductRow[] {
 function drawProducts(doc: jsPDF, order: Order, y: number) {
   const rows = collectRows(order);
   const totalExclVat = rows.reduce((sum, row) => sum + row.quantity * row.unitPrice, 0);
+  // Same rule as the site: PRO customers see HTVA line prices, everyone else TVAC (totals below show both)
+  const linesInclVat = order.customer_is_pro !== true;
+  const lineAmount = (value: number) => (linesInclVat ? value * 1.21 : value);
+  const vatLabel = linesInclVat ? "TVAC" : "HTVA";
 
   autoTable(doc, {
     startY: y,
     margin: { left: MARGIN, right: MARGIN, bottom: FOOTER_HEIGHT + 4 },
-    head: [["Désignation", "Réf.", "Qté", "PU HTVA", "Total HTVA", "Livré"].map(pdfText)],
+    head: [["Désignation", "Réf.", "Qté", `PU ${vatLabel}`, `Total ${vatLabel}`, "Livré"].map(pdfText)],
     body: rows.map((row) =>
       row.isPack
         ? [{ content: pdfText(row.label), colSpan: 6 }]
@@ -198,8 +202,8 @@ function drawProducts(doc: jsPDF, order: Order, y: number) {
             pdfText(row.label),
             pdfText(row.reference),
             String(row.quantity),
-            pdfText(money(row.unitPrice)),
-            pdfText(money(row.unitPrice * row.quantity)),
+            pdfText(money(lineAmount(row.unitPrice))),
+            pdfText(money(lineAmount(row.unitPrice * row.quantity))),
             "",
           ]
     ),

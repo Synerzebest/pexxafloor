@@ -696,7 +696,8 @@ export function PackShareQuoteModal({ open, draft, isPro, quoteDate, onClose }: 
                 <p className="mt-2 text-sm text-gray-600">{t("customerCardText")}</p>
 
                 <label className="mt-4 block text-xs font-medium text-gray-700">
-                  {t("customerDiscount")}
+                  {t("customerDiscount")}{" "}
+                  <span className="font-normal text-gray-500">({t("customerDiscountScope")})</span>
                 </label>
                 <div className="mt-1 flex items-center gap-2">
                   <input

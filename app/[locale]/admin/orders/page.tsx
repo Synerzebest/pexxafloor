@@ -20,6 +20,7 @@ export default function OrdersAdminPage() {
     loadOrders,
     moveOrderStatus,
     setOrderPaid,
+    updateOrderAddress,
     processing,
   } = useOrdersAdmin();
 
@@ -111,6 +112,7 @@ export default function OrdersAdminPage() {
           processing={processing}
           moveOrderStatus={moveOrderStatus}
           setOrderPaid={setOrderPaid}
+          updateOrderAddress={updateOrderAddress}
         />
       </div>
 

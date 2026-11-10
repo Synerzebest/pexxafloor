@@ -8,6 +8,11 @@ export type Order = {
     items: any;
     client_name: string;
     company_name?: string | null;
+    // Account holder, added by /api/orders/fetchOrders
+    customer_is_pro?: boolean;
+    customer_first_name?: string | null;
+    customer_last_name?: string | null;
+    customer_email?: string | null;
     created_at: string;
     address: string;
     postal_code: string;

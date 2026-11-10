@@ -16,6 +16,10 @@ function loadModule(file, mocks = {}, env = {}) {
     setTimeout: fn => { fn(); },
     require: name => {
       if (Object.hasOwn(mocks, name)) return mocks[name];
+      if (name.endsWith('.json')) {
+        const json = JSON.parse(fs.readFileSync(name.startsWith('@/') ? path.resolve(name.slice(2)) : path.resolve(path.dirname(filename), name), 'utf8'));
+        return { ...json, default: json, __esModule: true };
+      }
       if (name.startsWith('@/')) return loadModule(`${name.slice(2)}.ts`, mocks, env);
       if (name.startsWith('.')) return loadModule(path.resolve(path.dirname(filename), `${name}.ts`), mocks, env);
       return require(name);
@@ -29,15 +33,20 @@ const order = { id: '12345678-1234-1234-1234-123456789012', user_id: 'owner-id',
 test('all customer statuses render in all languages on the configured domain', () => {
   const { buildOrderMessage } = loadModule('lib/email/orderMessage.ts');
   for (const language of ['fr','nl','en','unsupported']) {
-    for (const status of ['paid','preparing','packed','ready','delivering','delivered','cancelled']) {
+    const locale = language === 'unsupported' ? 'en' : language;
+    const lineTotal = new Intl.NumberFormat(`${locale}-BE`, { style: 'currency', currency: 'EUR' }).format(20);
+    for (const status of ['paid','preparing','ready','delivering','delivered','cancelled']) {
       const message = buildOrderMessage({...order, language, status}, config.NEXT_PUBLIC_URL);
+      assert.ok(message.subject.startsWith('PexxaFloor'));
       assert.ok(message.subject.includes('#12345678'));
-      assert.ok(message.html.includes(`https://shop.example.com/${language === 'unsupported' ? 'en' : language}/profile`));
+      assert.ok(message.html.includes(`https://shop.example.com/${locale}/profile`));
       assert.ok(message.html.includes('&lt;b&gt;Tube &amp; kit&lt;/b&gt;'));
-      assert.ok(message.html.includes('20.00 €'));
+      assert.ok(message.html.includes(lineTotal));
       assert.ok(message.text.includes('24.20 EUR'));
       assert.ok(!message.html.includes('undefined'));
     }
+    // "packed" is an internal warehouse step: no customer email is ever built for it
+    assert.throws(() => buildOrderMessage({...order, language, status: 'packed'}, config.NEXT_PUBLIC_URL));
   }
 });
 

@@ -1,5 +1,6 @@
 'use client';
 
+import { swapLocaleInPath, type SupportedLocale } from "@/lib/locale";
 import LanguageSwitcher from "./LanguageSwitcher";
 import { Price } from "@/components/ui/Price";
 import React, { useEffect, useState } from 'react';
@@ -18,8 +19,6 @@ import { useQuotes } from '@/context/QuoteContext';
 import { FaWhatsapp } from 'react-icons/fa';
 import { useUserProfile } from '@/hooks/useUserProfile';
 
-const SUPPORTED_LOCALES = ['fr', 'nl', 'en'] as const;
-type SupportedLocale = (typeof SUPPORTED_LOCALES)[number];
 const logoImage = "/images/logo.png";
 const whatsappUrl = "https://wa.me/32494042932";
 type Translatable = {
@@ -27,17 +26,6 @@ type Translatable = {
   name_nl: string;
   name_en: string;
 };
-
-function swapLocaleInPath(pathname: string, nextLocale: SupportedLocale) {
-  const parts = pathname.split('/').filter(Boolean);
-  if (parts.length === 0) return `/${nextLocale}`;
-  if (SUPPORTED_LOCALES.includes(parts[0] as SupportedLocale)) {
-    parts[0] = nextLocale;
-  } else {
-    parts.unshift(nextLocale);
-  }
-  return '/' + parts.join('/');
-}
 
 export default function Navbar() {
   const locale = useLocale() as SupportedLocale;

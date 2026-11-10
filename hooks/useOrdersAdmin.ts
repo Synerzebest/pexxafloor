@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Order } from "@/types/OrderType";
+
+export type OrderAddress = { address: string; postal_code: string; city: string; country: string };
 import { toast } from "sonner";
 
 export function useOrdersAdmin() {
@@ -10,7 +12,35 @@ export function useOrdersAdmin() {
   const [processing, setProcessing] = useState({
     moving: false,
     paying: false,
+    address: false,
   });
+
+  async function updateOrderAddress(orderId: string, address: OrderAddress) {
+    setProcessing((prev) => ({ ...prev, address: true }));
+    try {
+      const res = await fetch(`/api/orders/${orderId}/address`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(address),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        toast.error(json.error || "Impossible de modifier l’adresse");
+        return false;
+      }
+      const saved: OrderAddress = json.order;
+      const apply = (o: Order) => ({ ...o, address: saved.address, postal_code: saved.postal_code, city: saved.city, country: saved.country });
+      setOrders((prev) => prev.map((o) => (o.id === orderId ? apply(o) : o)));
+      setSelected((prev) => (prev && prev.id === orderId ? apply(prev) : prev));
+      toast.success("Adresse de livraison mise à jour");
+      return true;
+    } catch {
+      toast.error("Erreur réseau");
+      return false;
+    } finally {
+      setProcessing((prev) => ({ ...prev, address: false }));
+    }
+  }
 
   async function setOrderPaid(orderId: string, paid: boolean) {
     setProcessing((prev) => ({ ...prev, paying: true }));
@@ -101,5 +131,6 @@ export function useOrdersAdmin() {
     processing,
     moveOrderStatus,
     setOrderPaid,
+    updateOrderAddress,
   };
 }

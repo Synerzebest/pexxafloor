@@ -21,6 +21,17 @@
       "pro_space": "PRO area"
     },
     "Common": {
+      "deliveryAddress": "Delivery",
+      "editAddress": "Change address",
+      "addressStreet": "Street and number",
+      "addressPostalCode": "Postcode",
+      "addressCity": "City",
+      "addressCountry": "Country",
+      "saveAddress": "Save",
+      "cancelEdit": "Cancel",
+      "addressSaved": "Delivery address updated",
+      "addressError": "Unable to change the address. Please contact us.",
+      "addressLocked": "Your order is on its way: contact us to change the address.",
       "transformToQuote": "Turn into a quote",
       "viewQuote": "View the quote",
       "priceExclVat": "excl. VAT",
@@ -107,7 +118,7 @@
       "statuses": { "pending": "Pending", "inReview": "Under review", "verified": "Verified", "rejected": "Rejected", "suspended": "Suspended", "revision": "Needs revision" },
       "messages": { "active": "Your professional account is active 🎉", "pending": "Your application is awaiting approval.", "rejected": "Your application was rejected." }
     },
-    "QuoteShare": { "infoDate": "Date", "infoProject": "Project", "infoCustomer": "Customer", "title": "Share this quote", "description": "Choose who the quote is for.", "guestTitle": "Create an estimate", "guestDescription": "Generate a neutral quote to estimate the price of your pack.", "guestDocumentTitle": "Your pack estimate", "previewGuest": "Preview estimated quote", "preparing": "Preparing amounts…", "prepareError": "Unable to prepare the quote for sharing.", "previewError": "Unable to generate the PDF preview.", "customerDiscount": "Discount given to the customer", "product": "Product", "quantity": "Quantity", "totalExclVat": "Total excl. VAT", "totalInclVat": "Total incl. VAT", "estimatedProfit": "Estimated profit excl. VAT", "previewProTitle": "PRO quote preview", "previewCustomerTitle": "Customer quote preview", "previewGuestTitle": "Estimated quote preview", "previewDescription": "Review the document before downloading it.", "previewFrameTitle": "PDF quote preview", "back": "Back to selection", "download": "Download PDF", "share": "Share", "choiceQuestion": "Who is this quote for?", "customerCardTitle": "For your customer", "customerCardBadge": "Send to the customer", "customerCardText": "Retail prices, with the discount you give them. Your purchase prices are not shown.", "proCardTitle": "For you", "proCardBadge": "Internal use", "proCardText": "Your PRO purchase prices, for your records. Do not send it to your customer.", "previewAction": "See the preview" },
+    "QuoteShare": { "infoDate": "Date", "infoProject": "Project", "infoCustomer": "Customer", "title": "Share this quote", "description": "Choose who the quote is for.", "guestTitle": "Create an estimate", "guestDescription": "Generate a neutral quote to estimate the price of your pack.", "guestDocumentTitle": "Your pack estimate", "previewGuest": "Preview estimated quote", "preparing": "Preparing amounts…", "prepareError": "Unable to prepare the quote for sharing.", "previewError": "Unable to generate the PDF preview.", "customerDiscount": "Discount given to the customer", "product": "Product", "quantity": "Quantity", "totalExclVat": "Total excl. VAT", "totalInclVat": "Total incl. VAT", "estimatedProfit": "Estimated profit excl. VAT", "previewProTitle": "PRO quote preview", "previewCustomerTitle": "Customer quote preview", "previewGuestTitle": "Estimated quote preview", "previewDescription": "Review the document before downloading it.", "previewFrameTitle": "PDF quote preview", "back": "Back to selection", "download": "Download PDF", "share": "Share", "choiceQuestion": "Who is this quote for?", "customerCardTitle": "For your customer", "customerCardBadge": "Send to the customer", "customerCardText": "Retail prices, with the discount you give them. Your purchase prices are not shown.", "proCardTitle": "For you", "proCardBadge": "Internal use", "proCardText": "Your PRO purchase prices, for your records. Do not send it to your customer.", "previewAction": "See the preview", "customerDiscountScope": "PexxaFloor supplies only" },
     "Hero": {
       "badge": "Professional Floor Heating Solutions",
       "title": "Floor heating",
@@ -299,6 +310,9 @@
       }
     },
     "ProSignup": {
+      "successTitle": "Request sent",
+      "successNext": "We are reviewing your details. You will receive an email as soon as your PRO account is activated.",
+      "successBack": "Back to home",
       "title": "Become a trade customer",
       "subtitle": "Fill in this form to access trade pricing and dedicated benefits.",
       "subtitle_advantage": {"first": "As a new Pro customer, Pexxafloor offers you", "price": "10.00€ ", "second": "of purchase credit on your first order !"},
@@ -345,6 +359,8 @@
     },
     "AdminPro": {
       "toast": {
+        "approvalEmailSent": "The customer has been notified by email.",
+        "approvalEmailError": "Account approved, but the email to the customer could not be sent.",
         "statusChanged": "Application moved to “{status}”",
         "statusError": "Unable to change the application status"
       },

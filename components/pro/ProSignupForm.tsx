@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+import { CheckCircle2 } from 'lucide-react';
 import { createBrowserClient } from '@supabase/ssr';
 import { motion } from 'framer-motion';
 import { FaWhatsapp } from "react-icons/fa";
@@ -198,6 +199,23 @@ export default function ProSignupForm({ locale }: Props) {
             </p>
           </header>
     
+          {ok ? (
+            // Request sent: the form is replaced by a confirmation
+            <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-8 text-center">
+              <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-emerald-100 text-emerald-700">
+                <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
+              </span>
+              <h2 className="mt-5 text-2xl font-semibold text-slate-900">{t("successTitle")}</h2>
+              <p className="mt-3 text-slate-700">{ok}</p>
+              <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">{t("successNext")}</p>
+              <Link
+                href={`/${locale}`}
+                className="mt-6 inline-flex rounded-xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
+              >
+                {t("successBack")}
+              </Link>
+            </div>
+          ) : (
           <form onSubmit={onSubmit} className="space-y-10">
             {/* GRID PRINCIPALE */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -358,12 +376,6 @@ export default function ProSignupForm({ locale }: Props) {
               </div>
             )}
     
-            {ok && (
-              <div className="rounded-xl bg-emerald-50 border border-emerald-200 px-4 py-3 text-sm text-emerald-700">
-                {ok}
-              </div>
-            )}
-    
             {/* CTA + Terms */}
             <div className="space-y-4">
               {/* Checkbox */}
@@ -421,6 +433,7 @@ export default function ProSignupForm({ locale }: Props) {
               </div>
             </div>
           </form>
+          )}
         </motion.div>
       </div>
     </section>  

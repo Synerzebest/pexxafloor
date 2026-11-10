@@ -1,3 +1,4 @@
+import { CUSTOMER_ADDRESS_EDITABLE_STATUSES } from "@/lib/orderAddress";
 import { generateOrderEmailHtml } from "@/utils/EmailTemplate";
 import fr from "@/messages/fr.json";
 import en from "@/messages/en.json";
@@ -39,9 +40,10 @@ const statusLabels: Record<EmailLocale, Record<string, string>> = {
 
 type EmailCopy = { title: string; text: string };
 
-const copy: Record<EmailLocale, { prefix: string; button: string; deliveryAddress: string } & Record<Exclude<OrderEmailStatus, "packed">, EmailCopy>> = {
+const copy: Record<EmailLocale, { prefix: string; button: string; deliveryAddress: string; addressQuestion: string; addressLink: string } & Record<Exclude<OrderEmailStatus, "packed">, EmailCopy>> = {
   fr: {
     prefix: "Commande", button: "Suivre ma commande", deliveryAddress: "Adresse de livraison",
+    addressQuestion: "Vous souhaitez corriger ou modifier l’adresse de livraison ?", addressLink: "Cliquez ici",
     paid: { title: "Votre commande est confirmée", text: "Merci pour votre commande ! Nous l’avons bien reçue et vous préviendrons dès le début de sa préparation." },
     preparing: { title: "Votre commande est en préparation", text: "Nous préparons votre commande. Vous serez informé à chaque étape." },
     ready: { title: "Votre commande est prête", text: "Votre commande est prête et va bientôt quitter notre entrepôt. Nous vous préviendrons de son départ." },
@@ -51,6 +53,7 @@ const copy: Record<EmailLocale, { prefix: string; button: string; deliveryAddres
   },
   en: {
     prefix: "Order", button: "Track my order", deliveryAddress: "Delivery address",
+    addressQuestion: "Need to correct or change the delivery address?", addressLink: "Click here",
     paid: { title: "Your order is confirmed", text: "Thank you for your order! We have received it and will let you know as soon as preparation begins." },
     preparing: { title: "Your order is being prepared", text: "We are preparing your order and will keep you informed at every step." },
     ready: { title: "Your order is ready", text: "Your order is ready and will soon leave our warehouse. We will let you know when it departs." },
@@ -60,6 +63,7 @@ const copy: Record<EmailLocale, { prefix: string; button: string; deliveryAddres
   },
   nl: {
     prefix: "Bestelling", button: "Mijn bestelling volgen", deliveryAddress: "Leveringsadres",
+    addressQuestion: "Wilt u het leveringsadres corrigeren of wijzigen?", addressLink: "Klik hier",
     paid: { title: "Uw bestelling is bevestigd", text: "Bedankt voor uw bestelling! We hebben ze goed ontvangen en laten u weten zodra de voorbereiding begint." },
     preparing: { title: "Uw bestelling is in voorbereiding", text: "We bereiden uw bestelling voor en houden u bij elke stap op de hoogte." },
     ready: { title: "Uw bestelling is klaar", text: "Uw bestelling is klaar en verlaat binnenkort ons magazijn. We laten u weten wanneer ze vertrekt." },
@@ -77,6 +81,7 @@ export function buildOrderMessage(order: OrderEmailSnapshot, siteUrl: string, sh
   const { title, text } = t[status];
   const statusLabel = statusLabels[locale][status] ?? status;
   const link = new URL(`/${locale}/profile`, siteUrl).toString();
+  const editAddressUrl = new URL(`/${locale}/profile?editAddress=${order.id}`, siteUrl).toString();
   const total = Number(order.total);
   if (!Number.isFinite(total)) throw new Error("Invalid order total");
   const orderRef = `#${order.id.slice(0, 8)}`;
@@ -97,6 +102,7 @@ export function buildOrderMessage(order: OrderEmailSnapshot, siteUrl: string, sh
       addressLines.length ? `${t.deliveryAddress}:\n${addressLines.join("\n")}` : null,
       `${t.prefix} ${orderRef}\n${total.toFixed(2)} EUR`,
       `${t.button}: ${link}`,
+      CUSTOMER_ADDRESS_EDITABLE_STATUSES.includes(status) ? `${t.addressQuestion} ${editAddressUrl}` : null,
     ].filter(Boolean).join("\n\n"),
     html: generateOrderEmailHtml({
       orderId: order.id,
@@ -111,6 +117,9 @@ export function buildOrderMessage(order: OrderEmailSnapshot, siteUrl: string, sh
       },
       cancelled: status === "cancelled",
       deliveryAddress: addressLines.length ? { label: t.deliveryAddress, lines: addressLines } : undefined,
+      editAddress: CUSTOMER_ADDRESS_EDITABLE_STATUSES.includes(status)
+        ? { question: t.addressQuestion, linkText: t.addressLink, url: editAddressUrl }
+        : undefined,
       link,
       siteUrl,
       locale,

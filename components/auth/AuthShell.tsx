@@ -1,5 +1,8 @@
 "use client";
 
+import { swapLocaleInPath } from "@/lib/locale";
+import { usePathname, useRouter } from "next/navigation";
+import LanguageSwitcher, { type LanguageCode } from "@/components/LanguageSwitcher";
 import type { ReactNode } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +26,17 @@ export default function AuthShell({
   footer?: ReactNode;
 }) {
   const t = useTranslations("AuthShell");
+  const router = useRouter();
+  const pathname = usePathname() ?? `/${locale}`;
+
+  // Same page in the other language, keeping ?next= (itself switched to the new language)
+  const changeLanguage = (nextLocale: LanguageCode) => {
+    const params = new URLSearchParams(window.location.search);
+    const next = params.get("next");
+    if (next?.startsWith("/")) params.set("next", swapLocaleInPath(next, nextLocale));
+    const query = params.toString();
+    router.push(`${swapLocaleInPath(pathname, nextLocale)}${query ? `?${query}` : ""}`);
+  };
   const benefits = t.raw("benefits") as string[];
 
   return (
@@ -66,13 +80,16 @@ export default function AuthShell({
           <Link href={`/${locale}`} className="lg:hidden">
             <Image src="/images/logo.png" alt="PexxaFloor" width={210} height={140} priority className="h-auto w-[170px] sm:w-[210px]" />
           </Link>
-          <Link
-            href={`/${locale}`}
-            className="ml-auto inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            {t("backHome")}
-          </Link>
+          <div className="ml-auto flex items-center gap-2">
+            <Link
+              href={`/${locale}`}
+              className="inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-sm font-medium text-gray-500 transition hover:bg-gray-100 hover:text-gray-900"
+            >
+              <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+              <span className="hidden sm:inline">{t("backHome")}</span>
+            </Link>
+            <LanguageSwitcher locale={locale} onSelect={changeLanguage} />
+          </div>
         </div>
 
         <div className="flex flex-1 items-center justify-center py-4">

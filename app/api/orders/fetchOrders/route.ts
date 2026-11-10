@@ -33,21 +33,41 @@ export async function GET(req: Request) {
 
   const userIds = [...new Set((data || []).map((order) => order.user_id).filter(Boolean))];
   // profiles.company_name mirrors the latest PRO application (trigger pro_applications_sync_profile_company)
-  const { data: profiles, error: profilesError } = userIds.length
-    ? await supabaseServer.from("profiles").select("id, company_name").in("id", userIds)
-    : { data: [], error: null };
+  const [{ data: profiles, error: profilesError }, { data: applications }] = userIds.length
+    ? await Promise.all([
+        supabaseServer.from("profiles").select("id, company_name, is_pro, name, email").in("id", userIds),
+        supabaseServer
+          .from("pro_applications")
+          .select("user_id, first_name, last_name, created_at")
+          .in("user_id", userIds)
+          .order("created_at", { ascending: false }),
+      ])
+    : [{ data: [], error: null }, { data: [] }];
 
   if (profilesError) {
     return NextResponse.json({ error: profilesError.message }, { status: 500 });
   }
 
-  const profileCompanies = new Map(
-    (profiles || []).map((profile) => [profile.id, profile.company_name] as const)
-  );
-  const enrichedOrders = (data || []).map((order) => ({
-    ...order,
-    company_name: order.user_id ? profileCompanies.get(order.user_id) || null : null,
-  }));
+  const profileById = new Map((profiles || []).map((profile) => [profile.id, profile] as const));
+  // First/last name: from the PRO application when there is one, else split the account's full name
+  const applicationNames = new Map<string, { first_name: string; last_name: string }>();
+  for (const application of applications || []) {
+    if (!applicationNames.has(application.user_id)) applicationNames.set(application.user_id, application);
+  }
+
+  const enrichedOrders = (data || []).map((order) => {
+    const profile = order.user_id ? profileById.get(order.user_id) : undefined;
+    const application = order.user_id ? applicationNames.get(order.user_id) : undefined;
+    const [first = "", ...rest] = String(profile?.name || "").trim().split(/\s+/);
+    return {
+      ...order,
+      company_name: profile?.company_name || null,
+      customer_is_pro: profile?.is_pro === true,
+      customer_first_name: application?.first_name || first || null,
+      customer_last_name: application?.last_name || rest.join(" ") || null,
+      customer_email: profile?.email || null,
+    };
+  });
 
   return NextResponse.json({ data: enrichedOrders });
 }

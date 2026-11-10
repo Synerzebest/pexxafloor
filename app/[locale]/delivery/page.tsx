@@ -28,19 +28,14 @@ export default function StorekeeperPage() {
 
   const fetchOrders = async (status?: string) => {
     setLoading(true);
-    let query = supabase
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false });
-
-    if (status) query = query.eq("status", status);
-
-    const { data, error } = await query;
-    if (error) {
-      console.error(error);
+    // Through the API so each order carries the customer's PRO status (delivery note prices)
+    const response = await fetch(`/api/orders/fetchOrders${status ? `?status=${status}` : ""}`);
+    const json = await response.json().catch(() => ({}));
+    if (!response.ok || json.error) {
+      console.error(json.error);
       message.error("Erreur lors du chargement des commandes");
     } else {
-      setOrders(data || []);
+      setOrders(json.data || []);
     }
     setLoading(false);
   };

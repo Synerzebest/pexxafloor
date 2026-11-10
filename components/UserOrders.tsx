@@ -1,5 +1,7 @@
 "use client";
 
+import { toast } from "sonner";
+import { CUSTOMER_ADDRESS_EDITABLE_STATUSES } from "@/lib/orderAddress";
 import { isOrderPaid } from "@/types/OrderType";
 import { VAT_RATE } from "@/lib/pricing/vat";
 import { Price } from "@/components/ui/Price";
@@ -34,6 +36,10 @@ type Order = {
   created_at: string;
   paid_at?: string | null;
   stripe_session_id?: string | null;
+  address?: string | null;
+  postal_code?: string | null;
+  city?: string | null;
+  country?: string | null;
 };
 
 const statusStyles: Record<string, string> = {
@@ -82,6 +88,8 @@ export default function UserOrders() {
     []
   );
   const [orders, setOrders] = useState<Order[]>([]);
+  // ?editAddress=<order id>, from the "change your delivery address" link in order emails
+  const [addressOrderId, setAddressOrderId] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -114,6 +122,13 @@ export default function UserOrders() {
       subscription.subscription.unsubscribe();
     };
   }, [supabase]);
+
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("editAddress");
+    if (!requested || !orders.some((order) => order.id === requested)) return;
+    setAddressOrderId(requested);
+    document.getElementById(`order-${requested}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }, [orders]);
 
   const statusLabel = (status: string) => {
     const knownStatuses = ["paid", "preparing", "verification", "packed", "ready", "delivering", "delivered", "cancelled"];
@@ -159,7 +174,7 @@ export default function UserOrders() {
           {orders.map((order) => {
             const status = order.status.toLowerCase();
             return (
-              <article key={order.id} className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-gray-300 hover:shadow-md">
+              <article key={order.id} id={`order-${order.id}`} className="scroll-mt-32 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:border-gray-300 hover:shadow-md">
                 <div className="flex flex-col gap-5 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
                   <div className="flex min-w-0 items-center gap-4">
                     <div className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-orange-50 text-orange-600">
@@ -190,6 +205,14 @@ export default function UserOrders() {
                     />
                   </div>
                 </div>
+
+                <OrderAddress
+                  order={order}
+                  autoOpen={addressOrderId === order.id}
+                  onSaved={(saved) =>
+                    setOrders((current) => current.map((o) => (o.id === order.id ? { ...o, ...saved } : o)))
+                  }
+                />
 
                 <details className="group border-t border-gray-100">
                   <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 sm:px-6 [&::-webkit-details-marker]:hidden">
@@ -258,5 +281,116 @@ export default function UserOrders() {
         </Link>
       </div>
     </section>
+  );
+}
+
+type SavedAddress = Pick<Order, "address" | "postal_code" | "city" | "country">;
+
+// Delivery address of an order, editable by the customer until the order leaves the warehouse
+function OrderAddress({
+  order,
+  autoOpen,
+  onSaved,
+}: {
+  order: Order;
+  autoOpen: boolean;
+  onSaved: (address: SavedAddress) => void;
+}) {
+  const tc = useTranslations("Common");
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ address: "", postal_code: "", city: "", country: "" });
+  const editable = CUSTOMER_ADDRESS_EDITABLE_STATUSES.includes(order.status.toLowerCase());
+  const line = [order.address, [order.postal_code, order.city].filter(Boolean).join(" "), order.country]
+    .filter(Boolean)
+    .join(", ");
+
+  const open = () => {
+    setForm({
+      address: order.address || "",
+      postal_code: order.postal_code || "",
+      city: order.city || "",
+      country: order.country || "",
+    });
+    setEditing(true);
+  };
+
+  useEffect(() => {
+    if (autoOpen && editable) open();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoOpen]);
+
+  const save = async () => {
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/orders/${order.id}/address`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error);
+      onSaved(json.order);
+      setEditing(false);
+      toast.success(tc("addressSaved"));
+    } catch {
+      toast.error(tc("addressError"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (order.status.toLowerCase() === "cancelled") return null;
+
+  const input = (key: keyof typeof form, label: string, className = "") => (
+    <label className={`block ${className}`}>
+      <span className="text-xs text-gray-500">{label}</span>
+      <input
+        value={form[key]}
+        onChange={(e) => setForm((current) => ({ ...current, [key]: e.target.value }))}
+        className="mt-1 w-full rounded-lg border border-gray-300 px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
+      />
+    </label>
+  );
+
+  return (
+    <div className="border-t border-gray-100 px-5 py-3 text-sm sm:px-6">
+      {editing ? (
+        <div className="space-y-3">
+          {input("address", tc("addressStreet"))}
+          <div className="grid gap-3 sm:grid-cols-[140px_1fr_1fr]">
+            {input("postal_code", tc("addressPostalCode"))}
+            {input("city", tc("addressCity"))}
+            {input("country", tc("addressCountry"))}
+          </div>
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={() => setEditing(false)} className="rounded-lg px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100">
+              {tc("cancelEdit")}
+            </button>
+            <button
+              type="button"
+              onClick={save}
+              disabled={saving || Object.values(form).some((value) => !value.trim())}
+              className="rounded-lg bg-orange-600 px-4 py-2 text-sm font-semibold text-white hover:bg-orange-700 disabled:opacity-50"
+            >
+              {tc("saveAddress")}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="min-w-0 text-gray-600">
+            <span className="font-medium text-gray-900">{tc("deliveryAddress")} :</span> {line || "—"}
+          </p>
+          {editable ? (
+            <button type="button" onClick={open} className="text-sm font-semibold text-orange-600 hover:text-orange-700">
+              {tc("editAddress")}
+            </button>
+          ) : order.status.toLowerCase() !== "delivered" ? (
+            <p className="text-xs text-gray-400">{tc("addressLocked")}</p>
+          ) : null}
+        </div>
+      )}
+    </div>
   );
 }
